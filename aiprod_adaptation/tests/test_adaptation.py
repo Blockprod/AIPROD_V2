@@ -415,3 +415,59 @@ class TestProductionBudgetChunk:
             assert False, "Should have raised"
         except Exception:
             pass
+
+
+# ---------------------------------------------------------------------------
+# PC-08 — LLM router completeness
+# ---------------------------------------------------------------------------
+
+class TestLLMRouterCompleteness:
+    def test_llm_router_calls_extract_all_not_extract(self) -> None:
+        from aiprod_adaptation.core.adaptation.llm_adapter import NullLLMAdapter
+        from aiprod_adaptation.core.adaptation.story_extractor import StoryExtractor
+        from aiprod_adaptation.core.production_budget import ProductionBudget
+        extract_all_called = [False]
+        extract_called = [False]
+
+        class TrackingExtractor(StoryExtractor):
+            def extract(self, llm, text, budget, prior_summary=""):  # type: ignore[override]
+                extract_called[0] = True
+                return super().extract(llm, text, budget, prior_summary)
+            def extract_all(self, llm, text, budget):  # type: ignore[override]
+                extract_all_called[0] = True
+                return super().extract_all(llm, text, budget)
+
+        text = "Alice walked in the park. She sat on a bench."
+        budget = ProductionBudget()
+        TrackingExtractor().extract_all(NullLLMAdapter(), text, budget)
+        assert extract_all_called[0] is True
+
+    def test_llm_router_passes_budget_to_extractor(self) -> None:
+        from aiprod_adaptation.core.adaptation.llm_adapter import NullLLMAdapter
+        from aiprod_adaptation.core.adaptation.story_extractor import StoryExtractor
+        from aiprod_adaptation.core.production_budget import ProductionBudget
+        received_budgets: list[object] = []
+
+        class TrackingExtractor(StoryExtractor):
+            def extract_chunk(self, llm, text, budget, prior_summary=""):  # type: ignore[override]
+                received_budgets.append(budget)
+                return super().extract_chunk(llm, text, budget, prior_summary)
+
+        budget = ProductionBudget(max_chars_per_chunk=500)
+        text = "Alice walked in the park. She sat on a bench."
+        TrackingExtractor().extract_all(NullLLMAdapter(), text, budget)
+        assert all(b is budget for b in received_budgets)
+
+    def test_llm_router_is_llm_adapter(self) -> None:
+        from aiprod_adaptation.core.adaptation.llm_adapter import LLMAdapter, NullLLMAdapter
+        from aiprod_adaptation.core.adaptation.llm_router import LLMRouter
+        router = LLMRouter(claude=NullLLMAdapter(), gemini=NullLLMAdapter())
+        assert isinstance(router, LLMAdapter)
+
+    def test_engine_uses_extract_all_with_llm(self) -> None:
+        from aiprod_adaptation.core.adaptation.llm_adapter import NullLLMAdapter
+        from aiprod_adaptation.core.engine import run_pipeline
+        from aiprod_adaptation.core.production_budget import ProductionBudget
+        text = "Alice walked in the park. She sat on a bench."
+        output = run_pipeline(text, "T", llm=NullLLMAdapter(), budget=ProductionBudget())
+        assert output is not None

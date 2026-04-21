@@ -35,12 +35,14 @@ class StoryboardGenerator:
         style_token: str = DEFAULT_STYLE_TOKEN,
         character_prompts: dict[str, str] | None = None,
         checkpoint: Optional[CheckpointStore] = None,
+        prepass_registry: Optional[CharacterImageRegistry] = None,
     ) -> None:
         self._adapter = adapter
         self._base_seed = base_seed
         self._style_token = style_token
         self._character_prompts: dict[str, str] = character_prompts or {}
         self._checkpoint = checkpoint
+        self._prepass_registry = prepass_registry
 
     def build_requests(self, output: AIPRODOutput) -> List[ImageRequest]:
         """Build ImageRequests without generating — useful for inspection and tests."""
@@ -78,6 +80,16 @@ class StoryboardGenerator:
         scenes = _scene_map(output)
         frames: List[ShotStoryboardFrame] = []
         char_registry = CharacterImageRegistry()
+
+        # If a prepass registry was provided, seed char_registry with its data
+        if self._prepass_registry is not None:
+            for char in self._prepass_registry.known_characters():
+                ref = self._prepass_registry.get_reference(char)
+                prompt = self._prepass_registry.get_canonical_prompt(char)
+                if ref:
+                    char_registry.register(char, ref)
+                if prompt:
+                    char_registry.register_prompt(char, prompt)
 
         for name, prompt in self._character_prompts.items():
             char_registry.register_prompt(name, prompt)

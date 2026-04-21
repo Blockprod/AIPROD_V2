@@ -116,6 +116,7 @@ class AudioSynchronizer:
                     start_sec=start_sec,
                     audio_duration_sec=real_audio_dur,
                     silence_padding_sec=silence_padding,
+                    latency_ms=audio.latency_ms,
                 )
             )
             start_sec += clip_duration

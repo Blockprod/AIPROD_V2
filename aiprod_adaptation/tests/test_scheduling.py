@@ -89,3 +89,79 @@ class TestRunMetrics:
     def test_scheduler_metrics_shots_generated_matches_generated(self) -> None:
         result = _scheduler().run(_output())
         assert result.metrics.shots_generated == result.storyboard.generated
+
+
+# ---------------------------------------------------------------------------
+# PC-06 — Audio latency tracking
+# ---------------------------------------------------------------------------
+
+class TestAudioLatency:
+    def test_timeline_clip_has_latency_ms_field(self) -> None:
+        from aiprod_adaptation.post_prod.audio_request import TimelineClip
+        clip = TimelineClip(
+            shot_id="S1", scene_id="SC1", video_url="null://v.mp4",
+            audio_url="null://a.mp3", duration_sec=3, start_sec=0,
+        )
+        assert clip.latency_ms == 0
+
+    def test_audio_synchronizer_populates_latency_ms(self) -> None:
+        from aiprod_adaptation.post_prod.audio_synchronizer import AudioSynchronizer
+        output = _output()
+        from aiprod_adaptation.image_gen.storyboard import StoryboardGenerator
+        from aiprod_adaptation.video_gen.video_sequencer import VideoSequencer
+        sb = StoryboardGenerator(adapter=NullImageAdapter(), base_seed=0).generate(output)
+        video = VideoSequencer(adapter=NullVideoAdapter(), base_seed=0).generate(sb, output)
+        _, production = AudioSynchronizer(adapter=NullAudioAdapter()).generate(video, output)
+        for clip in production.timeline:
+            assert isinstance(clip.latency_ms, int)
+
+    def test_scheduler_metrics_audio_latency_zero_with_null_adapter(self) -> None:
+        result = _scheduler().run(_output())
+        assert result.metrics.audio_latency_ms == 0
+
+    def test_scheduler_metrics_total_latency_includes_all_stages(self) -> None:
+        result = _scheduler().run(_output())
+        expected = (
+            result.metrics.image_latency_ms
+            + result.metrics.video_latency_ms
+            + result.metrics.audio_latency_ms
+        )
+        assert result.metrics.total_latency_ms == expected
+
+
+# ---------------------------------------------------------------------------
+# PC-07 — CostReport observabilité
+# ---------------------------------------------------------------------------
+
+class TestCostReport:
+    def test_cost_report_default_values_are_zero(self) -> None:
+        from aiprod_adaptation.core.cost_report import CostReport
+        report = CostReport()
+        assert report.total_cost_usd == 0.0
+        assert report.llm_tokens_input == 0
+        assert report.image_api_calls == 0
+
+    def test_cost_report_total_cost_sums_all_categories(self) -> None:
+        from aiprod_adaptation.core.cost_report import CostReport
+        report = CostReport(
+            llm_cost_usd=0.01,
+            image_cost_usd=0.05,
+            video_cost_usd=0.10,
+            audio_cost_usd=0.02,
+        )
+        assert abs(report.total_cost_usd - 0.18) < 1e-9
+
+    def test_cost_report_merge_sums_fields(self) -> None:
+        from aiprod_adaptation.core.cost_report import CostReport
+        a = CostReport(llm_tokens_input=100, image_api_calls=3, llm_cost_usd=0.01)
+        b = CostReport(llm_tokens_input=200, image_api_calls=1, llm_cost_usd=0.02)
+        merged = a.merge(b)
+        assert merged.llm_tokens_input == 300
+        assert merged.image_api_calls == 4
+        assert abs(merged.llm_cost_usd - 0.03) < 1e-9
+
+    def test_run_metrics_has_cost_field(self) -> None:
+        from aiprod_adaptation.core.cost_report import CostReport
+        result = _scheduler().run(_output())
+        assert hasattr(result.metrics, "cost")
+        assert isinstance(result.metrics.cost, CostReport)

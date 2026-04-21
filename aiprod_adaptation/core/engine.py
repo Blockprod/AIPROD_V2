@@ -57,7 +57,7 @@ def run_pipeline(
         logger.info("pass1_complete", scene_count=len(scenes_pass2), path="script")
     else:
         logger.debug("pass1_start", path="novel")
-        scenes_llm = StoryExtractor().extract(effective_llm, text, _budget)
+        scenes_llm = StoryExtractor().extract_all(effective_llm, text, _budget)
         if scenes_llm:
             scenes_pass2 = scenes_llm
             logger.info("pass1_complete", scene_count=len(scenes_pass2), path="novel_llm")

@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from aiprod_adaptation.core.run_metrics import RunMetrics
+from aiprod_adaptation.image_gen.character_prepass import CharacterPrepass
 from aiprod_adaptation.image_gen.image_request import StoryboardOutput
 from aiprod_adaptation.image_gen.image_adapter import ImageAdapter
 from aiprod_adaptation.image_gen.storyboard import DEFAULT_STYLE_TOKEN, StoryboardGenerator
@@ -41,10 +42,18 @@ class EpisodeScheduler:
     def run(self, output: AIPRODOutput) -> SchedulerResult:
         metrics = RunMetrics()
 
+        prepass = CharacterPrepass(
+            adapter=self._image_adapter,
+            base_seed=self._base_seed,
+            style_token=self._style_token,
+        )
+        prepass_result = prepass.run(output)
+
         storyboard = StoryboardGenerator(
             adapter=self._image_adapter,
             base_seed=self._base_seed,
             style_token=self._style_token,
+            prepass_registry=prepass_result.registry,
         ).generate(output)
         metrics.shots_requested += storyboard.total_shots
         metrics.shots_generated += storyboard.generated
@@ -62,7 +71,8 @@ class EpisodeScheduler:
         _audio_results, production = AudioSynchronizer(
             adapter=self._audio_adapter,
         ).generate(video, output)
-        # TimelineClip does not expose individual latencies — audio latency not tracked here
+        metrics.audio_latency_ms += sum(c.latency_ms for c in production.timeline)
+        metrics.total_latency_ms += metrics.audio_latency_ms
 
         return SchedulerResult(
             storyboard=storyboard,

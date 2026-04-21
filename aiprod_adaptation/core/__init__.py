@@ -1,3 +1,4 @@
+﻿from aiprod_adaptation.core.cost_report import CostReport
 from aiprod_adaptation.core.io import (
     load_output,
     load_production,
@@ -12,6 +13,7 @@ from aiprod_adaptation.core.production_budget import ProductionBudget
 from aiprod_adaptation.core.run_metrics import RunMetrics
 
 __all__ = [
+    "CostReport",
     "ProductionBudget",
     "RunMetrics",
     "save_output",
@@ -23,3 +25,4 @@ __all__ = [
     "save_production",
     "load_production",
 ]
+

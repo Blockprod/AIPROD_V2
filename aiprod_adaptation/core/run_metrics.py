@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+
+from aiprod_adaptation.core.cost_report import CostReport
 
 
 @dataclass
@@ -12,6 +14,7 @@ class RunMetrics:
     image_latency_ms: int = 0
     video_latency_ms: int = 0
     audio_latency_ms: int = 0
+    cost: CostReport = field(default_factory=CostReport)
 
     @property
     def success_rate(self) -> float:

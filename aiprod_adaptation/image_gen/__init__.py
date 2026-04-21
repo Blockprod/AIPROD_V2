@@ -1,4 +1,5 @@
 from aiprod_adaptation.image_gen.character_image_registry import CharacterImageRegistry
+from aiprod_adaptation.image_gen.character_prepass import CharacterPrepass, CharacterPrepassResult
 from aiprod_adaptation.image_gen.character_sheet import CharacterSheet, CharacterSheetRegistry
 from aiprod_adaptation.image_gen.checkpoint import CheckpointStore
 from aiprod_adaptation.image_gen.image_adapter import ImageAdapter, NullImageAdapter
@@ -12,6 +13,8 @@ from aiprod_adaptation.image_gen.storyboard import DEFAULT_STYLE_TOKEN, Storyboa
 
 __all__ = [
     "CharacterImageRegistry",
+    "CharacterPrepass",
+    "CharacterPrepassResult",
     "CharacterSheet",
     "CharacterSheetRegistry",
     "CheckpointStore",

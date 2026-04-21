@@ -207,3 +207,80 @@ class TestEngineWithContinuity:
         prompts = [s.prompt for ep in result.episodes for s in ep.shots]
         # At least one prompt should contain the injected description
         assert any("red hair" in p for p in prompts)
+
+
+# ---------------------------------------------------------------------------
+# PC-04 — LocationRegistry + PropRegistry
+# ---------------------------------------------------------------------------
+
+class TestLocationRegistry:
+    def test_location_registry_builds_from_output(self) -> None:
+        from aiprod_adaptation.core.continuity.location_registry import LocationRegistry
+        output = run_pipeline(_NOVEL, "T")
+        reg = LocationRegistry().build_from_output(output)
+        locations = {sc.location for ep in output.episodes for sc in ep.scenes}
+        for loc in locations:
+            hint = reg.get_prompt_hint(loc)
+            assert hint != ""
+
+    def test_location_registry_get_prompt_hint_contains_location_name(self) -> None:
+        from aiprod_adaptation.core.continuity.location_registry import LocationRegistry
+        output = run_pipeline(_NOVEL, "T")
+        reg = LocationRegistry().build_from_output(output)
+        loc = output.episodes[0].scenes[0].location
+        hint = reg.get_prompt_hint(loc)
+        assert "LOCATION CONTEXT" in hint
+
+    def test_location_registry_unknown_location_returns_empty(self) -> None:
+        from aiprod_adaptation.core.continuity.location_registry import LocationRegistry
+        reg = LocationRegistry()
+        assert reg.get_prompt_hint("nonexistent place") == ""
+
+
+class TestPropRegistry:
+    def test_prop_registry_register_and_retrieve(self) -> None:
+        from aiprod_adaptation.core.continuity.prop_registry import PropRegistry
+        reg = PropRegistry()
+        reg.register("sword", "S001", held_by="Alice", description="silver sword")
+        props = reg.get_active_props_for_character("Alice")
+        assert len(props) == 1
+        assert props[0].name == "sword"
+
+    def test_prop_registry_get_active_props_for_character(self) -> None:
+        from aiprod_adaptation.core.continuity.prop_registry import PropRegistry
+        reg = PropRegistry()
+        reg.register("book", "S001", held_by="Alice")
+        reg.register("lamp", "S001", held_by="Bob")
+        assert len(reg.get_active_props_for_character("Alice")) == 1
+        assert len(reg.get_active_props_for_character("Bob")) == 1
+        assert len(reg.get_active_props_for_character("Charlie")) == 0
+
+    def test_prop_registry_get_prompt_hint_contains_prop_name(self) -> None:
+        from aiprod_adaptation.core.continuity.prop_registry import PropRegistry
+        reg = PropRegistry()
+        reg.register("torch", "S001", held_by="Alice")
+        hint = reg.get_prompt_hint("S001")
+        assert "PROPS IN SCENE" in hint
+        assert "torch" in hint
+
+
+class TestPromptEnricherWithLocationAndProp:
+    def test_prompt_enricher_injects_location_hint(self) -> None:
+        from aiprod_adaptation.core.continuity.location_registry import LocationRegistry
+        from aiprod_adaptation.core.continuity.prompt_enricher import PromptEnricher
+        output = run_pipeline(_NOVEL, "T")
+        reg = LocationRegistry().build_from_output(output)
+        enriched = PromptEnricher().enrich(output, {}, [], location_registry=reg)
+        prompts = [s.prompt for ep in enriched.episodes for s in ep.shots]
+        assert any("LOCATION CONTEXT" in p for p in prompts)
+
+    def test_prompt_enricher_injects_prop_hint(self) -> None:
+        from aiprod_adaptation.core.continuity.prop_registry import PropRegistry
+        from aiprod_adaptation.core.continuity.prompt_enricher import PromptEnricher
+        output = run_pipeline(_NOVEL, "T")
+        prop_reg = PropRegistry()
+        first_shot_id = output.episodes[0].shots[0].shot_id
+        prop_reg.register("lantern", first_shot_id, held_by="Alice")
+        enriched = PromptEnricher().enrich(output, {}, [], prop_registry=prop_reg)
+        prompts = [s.prompt for ep in enriched.episodes for s in ep.shots]
+        assert any("PROPS IN SCENE" in p for p in prompts)

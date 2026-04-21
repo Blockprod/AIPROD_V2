@@ -481,3 +481,63 @@ class TestCheckpointStore:
             store2 = CheckpointStore(path=path)
             assert store2.has("S1")
             assert store2.get("S1") is not None
+
+
+# ---------------------------------------------------------------------------
+# 11. CharacterPrepass (PC-02)
+# ---------------------------------------------------------------------------
+
+class TestCharacterPrepass:
+    def test_character_prepass_generates_one_image_per_character(self) -> None:
+        from aiprod_adaptation.image_gen.character_prepass import CharacterPrepass
+        output = run_pipeline(_NOVEL, "T")
+        all_chars = {c for ep in output.episodes for sc in ep.scenes for c in sc.characters}
+        result = CharacterPrepass(adapter=NullImageAdapter(), base_seed=0).run(output)
+        assert result.generated == len(all_chars)
+        assert result.failed == 0
+
+    def test_character_prepass_populates_registry(self) -> None:
+        from aiprod_adaptation.image_gen.character_prepass import CharacterPrepass
+        output = run_pipeline(_NOVEL, "T")
+        all_chars = {c for ep in output.episodes for sc in ep.scenes for c in sc.characters}
+        result = CharacterPrepass(adapter=NullImageAdapter(), base_seed=0).run(output)
+        for char in all_chars:
+            assert result.registry.get_reference(char) != ""
+
+    def test_character_prepass_handles_adapter_failure_gracefully(self) -> None:
+        from aiprod_adaptation.image_gen.character_prepass import (
+            CharacterPrepass,
+            _unique_characters,
+        )
+
+        class FailingAdapter(NullImageAdapter):
+            def generate(self, request: ImageRequest) -> ImageResult:
+                raise RuntimeError("adapter down")
+
+        output = run_pipeline(_NOVEL, "T")
+        chars = _unique_characters(output)
+        if not chars:
+            # Inject synthetic characters directly to test failure handling
+            scene = output.episodes[0].scenes[0] if output.episodes and output.episodes[0].scenes else None
+            if scene is not None:
+                # Patch characters list for test
+                object.__setattr__(scene, "characters", ["Alice", "Bob"])
+        result = CharacterPrepass(adapter=FailingAdapter(), base_seed=0).run(output)
+        # With FailingAdapter: if there are characters, all fail; if none, result is trivially ok
+        chars_after = _unique_characters(output)
+        if chars_after:
+            assert result.failed > 0
+            assert result.generated == 0
+        else:
+            assert result.failed == 0
+
+    def test_storyboard_generator_uses_prepass_registry(self) -> None:
+        from aiprod_adaptation.image_gen.character_prepass import CharacterPrepass
+        output = run_pipeline(_NOVEL, "T")
+        prepass_result = CharacterPrepass(adapter=NullImageAdapter(), base_seed=0).run(output)
+        sb = StoryboardGenerator(
+            adapter=NullImageAdapter(),
+            base_seed=0,
+            prepass_registry=prepass_result.registry,
+        ).generate(output)
+        assert len(sb.frames) == sb.total_shots

@@ -50,6 +50,7 @@ class TimelineClip(BaseModel):
     start_sec: int
     audio_duration_sec: int = 0    # real measured audio duration (0 = not measured)
     silence_padding_sec: int = 0   # silence to append when audio < video
+    latency_ms: int = 0            # audio adapter call duration in ms (0 if not measured)
 
 
 class ProductionOutput(BaseModel):

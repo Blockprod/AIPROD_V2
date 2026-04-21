@@ -321,3 +321,44 @@ class TestStoryboardToVideoIntegration:
         seq = VideoSequencer(adapter=NullVideoAdapter(), base_seed=0)
         requests = seq.build_requests(storyboard, output)
         assert len(requests) == len(storyboard.frames)
+
+
+# ---------------------------------------------------------------------------
+# PC-05 — SmartVideoRouter interface validation
+# ---------------------------------------------------------------------------
+
+class TestSmartVideoRouterInterface:
+    def test_smart_video_router_implements_video_adapter_interface(self) -> None:
+        from aiprod_adaptation.video_gen.smart_video_router import SmartVideoRouter
+        from aiprod_adaptation.video_gen.video_adapter import VideoAdapter
+        router = SmartVideoRouter(
+            runway_adapter=NullVideoAdapter(),
+            kling_adapter=NullVideoAdapter(),
+        )
+        assert isinstance(router, VideoAdapter)
+
+    def test_smart_video_router_routes_short_clip_to_runway(self) -> None:
+        from aiprod_adaptation.video_gen.smart_video_router import SmartVideoRouter
+
+        class TaggedAdapter(NullVideoAdapter):
+            def __init__(self, tag: str) -> None:
+                self.tag = tag
+            def generate(self, request: VideoRequest) -> VideoClipResult:
+                return super().generate(request).model_copy(update={"model_used": self.tag})
+
+        router = SmartVideoRouter(TaggedAdapter("runway"), TaggedAdapter("kling"), threshold_sec=5)
+        req = VideoRequest(shot_id="S1", scene_id="SC1", image_url="", prompt="p", duration_sec=4)
+        assert router.generate(req).model_used == "runway"
+
+    def test_smart_video_router_routes_long_clip_to_kling(self) -> None:
+        from aiprod_adaptation.video_gen.smart_video_router import SmartVideoRouter
+
+        class TaggedAdapter(NullVideoAdapter):
+            def __init__(self, tag: str) -> None:
+                self.tag = tag
+            def generate(self, request: VideoRequest) -> VideoClipResult:
+                return super().generate(request).model_copy(update={"model_used": self.tag})
+
+        router = SmartVideoRouter(TaggedAdapter("runway"), TaggedAdapter("kling"), threshold_sec=5)
+        req = VideoRequest(shot_id="S1", scene_id="SC1", image_url="", prompt="p", duration_sec=7)
+        assert router.generate(req).model_used == "kling"
