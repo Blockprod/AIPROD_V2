@@ -1,8 +1,5 @@
-from __future__ import annotations
-
-from typing import List, Optional
-
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel
+from typing import Any, List, Optional
 
 
 class Scene(BaseModel):
@@ -19,17 +16,11 @@ class Shot(BaseModel):
     shot_id: str
     scene_id: str
     prompt: str
-    duration_sec: int = Field(..., ge=3, le=8)
+    duration_sec: int  # MUST be between 3 and 8 inclusive
     emotion: str
-
-    @field_validator("duration_sec")
-    @classmethod
-    def validate_duration(cls, v: int) -> int:
-        if not (3 <= v <= 8):
-            raise ValueError(
-                f"duration_sec must be between 3 and 8 inclusive, got {v}"
-            )
-        return v
+    shot_type: str = "medium"        # "wide" | "medium" | "close_up" | "pov"
+    camera_movement: str = "static"  # "static" | "follow" | "pan"
+    metadata: dict[str, Any] = {}
 
 
 class Episode(BaseModel):

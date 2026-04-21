@@ -1,21 +1,51 @@
-"""
-AIPROD ADAPTATION ENGINE — Entry point
-Orchestrates the four deterministic passes in strict order:
-  PASS 1 (segment) → PASS 2 (transform visuals) → PASS 3 (atomize shots) → PASS 4 (compile)
-"""
-
 from __future__ import annotations
 
-from aiprod_adaptation.core.pass1_segment import segment
-from aiprod_adaptation.core.pass2_visual import transform_visuals
-from aiprod_adaptation.core.pass3_shots import atomize_shots
-from aiprod_adaptation.core.pass4_compile import compile_output
+import sys
+
+import structlog
+
 from aiprod_adaptation.models.schema import AIPRODOutput
 
+structlog.configure(
+    processors=[structlog.processors.JSONRenderer()],
+    logger_factory=structlog.PrintLoggerFactory(file=sys.stderr),
+    cache_logger_on_first_use=True,
+)
 
-def run_pipeline(text: str, title: str) -> AIPRODOutput:
-    """Strict deterministic pipeline: PASS 1 → PASS 2 → PASS 3 → PASS 4."""
-    scenes_raw   = segment(text)
-    scenes_visual = transform_visuals(scenes_raw)
-    shots_raw     = atomize_shots(scenes_visual)
-    return compile_output(title, scenes_visual, shots_raw)
+logger = structlog.get_logger()
+
+
+def run_pipeline(text: str, title: str, episode_id: str = "EP01") -> AIPRODOutput:
+    """
+    Execute the complete 4-pass transformation pipeline.
+
+    Args:
+        text: Raw narrative input text
+        title: Episode title for the output
+
+    Returns:
+        AIPRODOutput: Fully validated structured output
+    """
+    logger.info("pipeline_start", input_length=len(text), title=title)
+
+    from aiprod_adaptation.core.pass1_segment import segment
+    logger.debug("pass1_start")
+    scenes_pass1 = segment(text)
+    logger.info("pass1_complete", scene_count=len(scenes_pass1))
+
+    from aiprod_adaptation.core.pass2_visual import visual_rewrite
+    logger.debug("pass2_start")
+    scenes_pass2 = visual_rewrite(scenes_pass1)
+    logger.info("pass2_complete", scene_count=len(scenes_pass2))
+
+    from aiprod_adaptation.core.pass3_shots import simplify_shots
+    logger.debug("pass3_start")
+    shots_pass3 = simplify_shots(scenes_pass2)
+    logger.info("pass3_complete", shot_count=len(shots_pass3))
+
+    from aiprod_adaptation.core.pass4_compile import compile_episode
+    logger.debug("pass4_start")
+    output = compile_episode(scenes_pass2, shots_pass3, title, episode_id)
+    logger.info("pipeline_complete", episode_count=len(output.episodes))
+
+    return output

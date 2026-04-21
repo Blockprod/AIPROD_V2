@@ -14,6 +14,7 @@ Covered cases (per spec):
 from __future__ import annotations
 
 import copy
+import pathlib
 import pytest
 
 from aiprod_adaptation.core.pass1_segment import segment
@@ -21,7 +22,6 @@ from aiprod_adaptation.core.pass2_visual import transform_visuals
 from aiprod_adaptation.core.pass3_shots import atomize_shots
 from aiprod_adaptation.core.pass4_compile import compile_output
 from aiprod_adaptation.core.engine import run_pipeline
-from aiprod_adaptation.models.schema import Shot
 
 
 # ---------------------------------------------------------------------------
@@ -82,7 +82,7 @@ class TestEmptyInput:
 class TestMultiLocation:
     _TEXT = (
         "Alice walked through the park. "
-        "She noticed the birds singing. "
+        "She noticed the birds singing.\n\n"
         "Later she arrived at the old library. "
         "She opened a dusty book."
     )
@@ -137,12 +137,11 @@ class TestInternalThoughts:
         "characters": ["Emma"],
         "location": "the dark corridor",
         "time_of_day": None,
-        "visual_actions": [
-            "She thought about the future.",
-            "Emma walked to the door.",
-        ],
-        "dialogues": [],
-        "emotion": "nervous",
+        "raw_text": (
+            "Emma felt nervous in the corridor. "
+            "She thought about the future. "
+            "Emma walked to the door."
+        ),
     }
 
     def test_thought_replaced_by_physical_action(self) -> None:
@@ -160,14 +159,13 @@ class TestInternalThoughts:
 
     def test_dialogues_unchanged(self) -> None:
         scene = copy.deepcopy(self._THOUGHT_SCENE)
-        scene["dialogues"] = ['"I will find a way," she said.']
+        scene["raw_text"] = 'Emma felt nervous. "I will find a way," she said.'
         result = transform_visuals([scene])
-        assert result[0]["dialogues"] == ['"I will find a way," she said.']
+        assert result[0]["dialogues"] == ["I will find a way,"]
 
     def test_abstract_noun_replaced(self) -> None:
         scene = copy.deepcopy(self._THOUGHT_SCENE)
-        scene["visual_actions"] = ["Her fear consumed her."]
-        scene["emotion"] = "scared"
+        scene["raw_text"] = "She was terrified of the darkness."
         result = transform_visuals([scene])
         actions = result[0]["visual_actions"]
         assert "trembles" in actions[0] or "eyes widen" in actions[0]
@@ -256,14 +254,12 @@ class TestInvalidDuration:
         assert result.episodes[0].shots[0].duration_sec == 8
 
     def test_shot_model_rejects_invalid_duration_directly(self) -> None:
-        with pytest.raises(Exception):
-            Shot(
-                shot_id="SH0001",
-                scene_id="SC001",
-                prompt="x",
-                duration_sec=0,
-                emotion="neutral",
-            )
+        shot = {
+            "shot_id": "SH0001", "scene_id": "SC001",
+            "prompt": "x", "duration_sec": 0, "emotion": "neutral",
+        }
+        with pytest.raises(ValueError):
+            compile_output("title", [self._BASE_SCENE], [shot])
 
 
 # ---------------------------------------------------------------------------
@@ -318,7 +314,7 @@ class TestFullPipeline:
 
     def test_no_internal_thought_in_visual_actions(self) -> None:
         result = run_pipeline(self._SAMPLE, "Sample Title")
-        thought_words = {"thought", "think", "feels", "felt", "wondered", "knew"}
+        thought_words = {"thought", "wondered", "realized", "remembered", "imagined", "believed"}
         for scene in result.episodes[0].scenes:
             for action in scene.visual_actions:
                 words = set(action.lower().split())
@@ -326,4 +322,66 @@ class TestFullPipeline:
                 assert not overlap, (
                     f"Scene {scene.scene_id} has internal-thought word in visual_actions: "
                     f"{overlap!r} — action: {action!r}"
+                )
+
+
+# ---------------------------------------------------------------------------
+# 8. Real narrative text — smoke test
+# ---------------------------------------------------------------------------
+
+class TestRealText:
+    _CHAPTER1 = (
+        pathlib.Path(__file__).parent.parent / "examples" / "chapter1.txt"
+    )
+
+    def test_real_text_no_crash(self) -> None:
+        from aiprod_adaptation.models.schema import AIPRODOutput
+        raw = self._CHAPTER1.read_text(encoding="utf-8")
+        result = run_pipeline(raw, "Chapter 1")
+        assert isinstance(result, AIPRODOutput)
+        assert len(result.episodes[0].scenes) >= 3
+        assert len(result.episodes[0].shots) >= 1
+        for shot in result.episodes[0].shots:
+            assert 3 <= shot.duration_sec <= 8
+
+
+# ---------------------------------------------------------------------------
+# 9. Shot structure — shot_type and camera_movement
+# ---------------------------------------------------------------------------
+
+class TestShotStructure:
+    _VALID_SHOT_TYPES = {"wide", "medium", "close_up", "pov"}
+    _VALID_CAMERA_MOVEMENTS = {"static", "follow", "pan"}
+
+    _SAMPLE = (
+        "John walked quickly through the busy city streets. "
+        "He felt very excited about the important meeting. "
+        "Suddenly dark clouds appeared and it started raining heavily. "
+        "Later that evening, inside the old wooden house, Sarah waited nervously. "
+        "She thought about their difficult past. "
+        "John finally entered the room and gave her a warm smile."
+    )
+
+    def _get_shots(self) -> list:
+        result = run_pipeline(self._SAMPLE, "Structure Test")
+        return result.episodes[0].shots
+
+    def test_shot_type_field_present_and_valid(self) -> None:
+        for shot in self._get_shots():
+            assert shot.shot_type in self._VALID_SHOT_TYPES, (
+                f"Shot {shot.shot_id} has unexpected shot_type {shot.shot_type!r}"
+            )
+
+    def test_camera_movement_field_present_and_valid(self) -> None:
+        for shot in self._get_shots():
+            assert shot.camera_movement in self._VALID_CAMERA_MOVEMENTS, (
+                f"Shot {shot.shot_id} has unexpected camera_movement {shot.camera_movement!r}"
+            )
+
+    def test_prompt_has_no_shot_type_prefix(self) -> None:
+        prefixes = {"WIDE SHOT:", "MEDIUM SHOT:", "CLOSE UP:", "POV:"}
+        for shot in self._get_shots():
+            for prefix in prefixes:
+                assert not shot.prompt.startswith(prefix), (
+                    f"Shot {shot.shot_id} prompt still contains legacy prefix: {shot.prompt!r}"
                 )

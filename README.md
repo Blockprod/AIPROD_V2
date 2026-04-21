@@ -11,17 +11,23 @@ It is NOT a creative system. It is a strict compiler: same input always produces
 ```
 aiprod_adaptation/
 ├── core/
-│   ├── pass1_segment.py   — PASS 1: Segmentation (text → scene dicts)
+│   ├── pass1_segment.py   — PASS 1: Segmentation (text → List[RawScene])
 │   ├── pass2_visual.py    — PASS 2: Visual transformation (thoughts → physical actions)
-│   ├── pass3_shots.py     — PASS 3: Shot atomization (scenes → shot dicts)
-│   ├── pass4_compile.py   — PASS 4: Compilation + validation (dicts → Pydantic models)
-│   └── engine.py          — run_pipeline() entry point
+│   ├── pass3_shots.py     — PASS 3: Shot atomization (scenes → List[ShotDict])
+│   ├── pass4_compile.py   — PASS 4: Compilation + validation (→ Pydantic models)
+│   ├── engine.py          — run_pipeline() entry point
+│   └── rules/
+│       ├── segmentation_rules.py  — LOCATION_PHRASES, TIME_PHRASES
+│       ├── emotion_rules.py       — EMOTION_RULES, _INTERNAL_THOUGHT_WORDS
+│       └── duration_rules.py      — _MOTION_VERBS, _INTERACTION_VERBS, _PERCEPTION_VERBS
 ├── models/
-│   └── schema.py          — Scene / Shot / Episode / AIPRODOutput (Pydantic v2)
+│   ├── schema.py          — Scene / Shot / Episode / AIPRODOutput (Pydantic v2)
+│   └── intermediate.py    — RawScene / VisualScene / ShotDict (TypedDict inter-pass contracts)
 ├── tests/
-│   └── test_pipeline.py   — pytest suite (7 categories, 23 test cases)
+│   └── test_pipeline.py   — pytest suite (8 categories, 33 test cases)
 └── examples/
-    └── sample.txt         — Sample narrative input
+    ├── sample.txt         — Minimal narrative input (smoke test baseline)
+    └── chapter1.txt       — Rich narrative input (4 characters, 3+ locations, dialogues)
 main.py                    — CLI entry point
 pyproject.toml             — Project metadata and dependencies
 .env                       — Environment configuration
@@ -33,6 +39,7 @@ pyproject.toml             — Project metadata and dependencies
 
 - Python 3.11+
 - pydantic >= 2.0
+- structlog >= 21.0
 
 ---
 
@@ -52,8 +59,17 @@ pip install -e ".[dev]"
 ## Usage
 
 ```bash
-# Run the pipeline on the sample text
-python main.py
+# Run the pipeline on a narrative text file
+python main.py --input aiprod_adaptation/examples/sample.txt
+
+# With a custom title and episode ID
+python main.py --input chapter.txt --title "Episode 1" --episode-id EP01
+
+# Write output to a file instead of stdout
+python main.py --input chapter.txt --output output.json
+
+# Full help
+python main.py --help
 ```
 
 Output is pretty-printed JSON conforming to `AIPRODOutput`.
@@ -66,16 +82,35 @@ Output is pretty-printed JSON conforming to `AIPRODOutput`.
 pytest aiprod_adaptation/tests/ -v
 ```
 
+33 test cases across 8 categories: empty input, multi-location segmentation, time-jump segmentation, internal-thought conversion, determinism, invalid duration, full pipeline smoke test, real narrative text.
+
+---
+
+## Development — Lint Sequence
+
+```bash
+# 1. Style and imports
+ruff check aiprod_adaptation/
+
+# 2. Static type checking (strict)
+mypy aiprod_adaptation/core/ aiprod_adaptation/models/ --strict
+
+# 3. Tests
+pytest aiprod_adaptation/tests/ -v
+```
+
+All three commands must pass before any commit.
+
 ---
 
 ## Pipeline Passes
 
 | Pass | File | Input | Output |
 |------|------|-------|--------|
-| 1 | `pass1_segment.py` | `str` raw text | `List[dict]` scene dicts |
-| 2 | `pass2_visual.py` | `List[dict]` scenes | `List[dict]` scenes (visuals rewritten) |
-| 3 | `pass3_shots.py` | `List[dict]` scenes | `List[dict]` shot dicts |
-| 4 | `pass4_compile.py` | title + scenes + shots | `AIPRODOutput` (Pydantic) |
+| 1 | `pass1_segment.py` | `str` raw text | `List[RawScene]` |
+| 2 | `pass2_visual.py` | `List[RawScene]` | `List[VisualScene]` |
+| 3 | `pass3_shots.py` | `List[VisualScene]` | `List[ShotDict]` |
+| 4 | `pass4_compile.py` | title + scenes + shots | `AIPRODOutput` (Pydantic v2) |
 
 ---
 
