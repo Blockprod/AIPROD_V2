@@ -33,6 +33,7 @@ Chaque audit suit le même pipeline en **3 étapes** :
 | 5 | [Déterminisme](#5--déterminisme) | Invariants byte-level · Absence randomness/datetime/sets/sorting · Reproductibilité | Ask |
 | 6 | [Schémas & Validation](#6--schémas--validation) | Pydantic v2 · Contraintes · ValueError · AIPRODOutput · Episode · Scene · Shot | Ask |
 | 7 | [Master](#7--master) | Audit complet toutes dimensions | Agent |
+| 8 | [IR & Maturité Conceptuelle](#8--ir--maturité-conceptuelle) | Maturité IR · Gaps architecturaux · Qualité prompt vs vrai IR · Risques à l'échelle | Agent |
 
 ---
 
@@ -218,6 +219,32 @@ Démarre l'exécution du plan d'action disponible.
 
 ---
 
+## `8 · IR & MATURITÉ CONCEPTUELLE`
+
+> Maturité IR · Gaps architecturaux · Qualité prompt vs vrai IR · Risques à l'échelle · Score /10
+
+**Produit A** : `tasks/audits/resultats/audit_ir_maturity_aiprod.md`
+
+**A — Audit**
+```
+#file:tasks/audits/code/audit_ir_maturity_prompt.md
+Lance cet audit sur le workspace.
+```
+
+**B — Plan d'action**
+```
+#file:tasks/corrections/generate_action_plan_prompt.md
+Génère le plan d'action depuis l'audit disponible.
+```
+
+**C — Exécution**
+```
+#file:tasks/corrections/execute_corrections_prompt.md
+Démarre l'exécution du plan d'action disponible.
+```
+
+---
+
 ## INVARIANTS ABSOLUS DU PROJET
 
 Ces règles ne doivent **jamais** être violées :
@@ -259,9 +286,9 @@ ruff check .
 
 ## CRITÈRES PASSAGE EN PRODUCTION
 
-- [ ] 32/32 tests pytest verts
+- [ ] 42/42 tests pytest verts
 - [ ] Déterminisme byte-level vérifié (`test_json_byte_identical`)
-- [ ] mypy core/ models/ : exit 0
+- [ ] mypy core/ models/ backends/ : exit 0
 - [ ] ruff check . : 0 erreurs
 - [ ] `python main.py | python -m json.tool` : JSON valide, exit 0
 - [ ] Aucun `random`, `uuid4`, `shuffle`, `datetime.now()` dans core/
