@@ -2,12 +2,13 @@
 title: Plan d'action — Continuity Engine v1
 source: concept_adaptation_engine.md + analyse pipeline audiovisuel complet
 creation: 2026-04-21 à 14:49
-last_updated: 2026-04-21 à 14:49
-status: active
+last_updated: 2026-04-21 à 14:57
+status: completed
 corrections_totales: 5 (P1:2 P2:2 P3:1)
 prerequis: adaptation_layer_v1_plan.md complété (2026-04-21) — 60/60 tests
 tests_avant: 60
 tests_apres_cible: 75+
+tests_apres_reel: 76
 ---
 
 # PLAN D'ACTION — CONTINUITY ENGINE v1 — 2026-04-21
@@ -97,7 +98,7 @@ class EmotionState(TypedDict):
 
 ---
 
-### [CE-01] ⏳ — `CharacterRegistry`
+### [CE-01] ✅ FAIT (2026-04-21 à 14:57) — `CharacterRegistry`
 
 **Priorité** : P1
 **Sévérité** : 🔴
@@ -167,7 +168,7 @@ test_enrich_from_text_updates_description   # description injectée → visible 
 
 ---
 
-### [CE-02] ⏳ — `EmotionArcTracker`
+### [CE-02] ✅ FAIT (2026-04-21 à 14:57) — `EmotionArcTracker`
 
 **Priorité** : P1
 **Sévérité** : 🔴
@@ -249,7 +250,7 @@ test_arc_get_warnings_returns_messages  # 1 rupture → 1 warning
 
 ---
 
-### [CE-03] ⏳ — `PromptEnricher`
+### [CE-03] ✅ FAIT (2026-04-21 à 14:57) — `PromptEnricher`
 
 **Priorité** : P2
 **Sévérité** : 🟠
@@ -325,7 +326,7 @@ test_enrich_does_not_mutate_input           # output original inchangé après e
 
 ---
 
-### [CE-04] ⏳ — Wiring dans `engine.py` (flag `enable_continuity`)
+### [CE-04] ✅ FAIT (2026-04-21 à 14:57) — Wiring dans `engine.py` (flag `character_descriptions`)
 
 **Priorité** : P2
 **Sévérité** : 🟠
@@ -386,7 +387,7 @@ test_engine_with_descriptions_enriches_prompts  # descriptions dict → prompts 
 
 ---
 
-### [CE-05] ⏳ — `__init__.py` + exports publics du module continuity
+### [CE-05] ✅ FAIT (2026-04-21 à 14:57) — `__init__.py` + exports publics du module continuity
 
 **Priorité** : P3
 **Sévérité** : 🟡

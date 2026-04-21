@@ -9,6 +9,8 @@ from aiprod_adaptation.models.schema import AIPRODOutput
 
 if TYPE_CHECKING:
     from aiprod_adaptation.core.adaptation.llm_adapter import LLMAdapter
+    from aiprod_adaptation.image_gen.image_adapter import ImageAdapter
+    from aiprod_adaptation.image_gen.image_request import StoryboardOutput
 
 structlog.configure(
     processors=[structlog.processors.JSONRenderer()],
@@ -79,3 +81,24 @@ def run_pipeline(
         logger.info("continuity_applied", characters=len(registry))
 
     return output
+
+
+def run_pipeline_with_images(
+    text: str,
+    title: str,
+    episode_id: str = "EP01",
+    llm: "LLMAdapter | None" = None,
+    character_descriptions: "dict[str, str] | None" = None,
+    image_adapter: "ImageAdapter | None" = None,
+    image_base_seed: "int | None" = None,
+) -> "tuple[AIPRODOutput, StoryboardOutput | None]":
+    output = run_pipeline(text, title, episode_id, llm, character_descriptions)
+    storyboard: "StoryboardOutput | None" = None
+    if image_adapter is not None:
+        from aiprod_adaptation.image_gen.storyboard import StoryboardGenerator
+        storyboard = StoryboardGenerator(
+            adapter=image_adapter,
+            base_seed=image_base_seed,
+        ).generate(output)
+        logger.info("storyboard_complete", generated=storyboard.generated, total=storyboard.total_shots)
+    return output, storyboard
