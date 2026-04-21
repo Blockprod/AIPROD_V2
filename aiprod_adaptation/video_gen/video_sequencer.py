@@ -32,14 +32,14 @@ class VideoSequencer:
     ) -> List[VideoRequest]:
         shots = _shot_map(output)
         requests: List[VideoRequest] = []
-        for i, image in enumerate(storyboard.images):
-            shot = shots.get(image.shot_id)
+        for i, frame in enumerate(storyboard.frames):
+            shot = shots.get(frame.shot_id)
             duration = shot.duration_sec if shot is not None else 4
             requests.append(
                 VideoRequest(
-                    shot_id=image.shot_id,
+                    shot_id=frame.shot_id,
                     scene_id=shot.scene_id if shot is not None else "",
-                    image_url=image.image_url,
+                    image_url=frame.image_url,
                     prompt=shot.prompt if shot is not None else "",
                     duration_sec=duration,
                     seed=self._base_seed + i if self._base_seed is not None else None,

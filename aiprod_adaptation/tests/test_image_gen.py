@@ -20,7 +20,7 @@ from aiprod_adaptation.image_gen.image_request import (
     ImageResult,
     StoryboardOutput,
 )
-from aiprod_adaptation.image_gen.storyboard import StoryboardGenerator
+from aiprod_adaptation.image_gen.storyboard import DEFAULT_STYLE_TOKEN, StoryboardGenerator
 from aiprod_adaptation.core.engine import run_pipeline, run_pipeline_with_images
 
 
@@ -60,7 +60,8 @@ class TestImageRequest:
     def test_storyboard_output_generated_count(self) -> None:
         sb = StoryboardOutput(
             title="T",
-            images=[],
+            frames=[],
+            style_token="",
             total_shots=5,
             generated=3,
         )
@@ -105,7 +106,7 @@ class TestStoryboardGenerator:
         output = self._output()
         sb = self.gen.generate(output)  # type: ignore[arg-type]
         total = sum(len(ep.shots) for ep in output.episodes)  # type: ignore[union-attr]
-        assert len(sb.images) == total
+        assert len(sb.frames) == total
 
     def test_storyboard_is_deterministic(self) -> None:
         output = self._output()
@@ -138,7 +139,7 @@ class TestStoryboardGenerator:
         gen = StoryboardGenerator(adapter=BrokenAdapter(), base_seed=0)
         output = run_pipeline(_NOVEL, "T")
         sb = gen.generate(output)
-        assert all(r.model_used == "error" for r in sb.images)
+        assert all(r.model_used == "error" for r in sb.frames)
         assert sb.generated == 0
 
 
@@ -209,3 +210,191 @@ class TestCharacterImageRegistry:
         # First shot of a character has no reference; at least one later shot may have one
         assert len(received_refs) > 0
         assert received_refs[0] == ""   # first shot never has a reference
+
+
+# ---------------------------------------------------------------------------
+# 6. CharacterImageRegistry — canonical_prompt (SB-01)
+# ---------------------------------------------------------------------------
+
+class TestCharacterImageRegistryCanonical:
+    def setup_method(self) -> None:
+        from aiprod_adaptation.image_gen.character_image_registry import CharacterImageRegistry
+        self.reg = CharacterImageRegistry()
+
+    def test_registry_stores_canonical_prompt(self) -> None:
+        self.reg.register_prompt("John", "tall man, brown coat")
+        assert self.reg.get_canonical_prompt("John") == "tall man, brown coat"
+
+    def test_registry_canonical_prompt_not_overwritten(self) -> None:
+        self.reg.register_prompt("John", "tall man, brown coat")
+        self.reg.register_prompt("John", "short woman, red dress")
+        assert self.reg.get_canonical_prompt("John") == "tall man, brown coat"
+
+    def test_storyboard_injects_canonical_prompt_in_prompt(self) -> None:
+        received_prompts: list[str] = []
+
+        class TrackingAdapter(NullImageAdapter):
+            def generate(self, request: ImageRequest) -> ImageResult:
+                received_prompts.append(request.prompt)
+                return NullImageAdapter().generate(request)
+
+        output = run_pipeline(_NOVEL, "T")
+        # Discover actual character names produced by the pipeline
+        chars = [c for ep in output.episodes for sc in ep.scenes for c in sc.characters]
+        char_prompts = {name: "tall man, brown coat" for name in chars} if chars else {}
+        StoryboardGenerator(
+            adapter=TrackingAdapter(),
+            character_prompts=char_prompts,
+        ).generate(output)
+        if chars:
+            assert any("tall man, brown coat" in p for p in received_prompts)
+
+    def test_storyboard_no_canonical_prompt_does_not_crash(self) -> None:
+        output = run_pipeline(_NOVEL, "T")
+        sb = StoryboardGenerator(adapter=NullImageAdapter()).generate(output)
+        assert len(sb.frames) > 0
+
+
+# ---------------------------------------------------------------------------
+# 7. StoryboardGenerator — STYLE_TOKEN (SB-02)
+# ---------------------------------------------------------------------------
+
+class TestStyleToken:
+    def test_style_token_default_injected_in_all_prompts(self) -> None:
+        received_prompts: list[str] = []
+
+        class TrackingAdapter(NullImageAdapter):
+            def generate(self, request: ImageRequest) -> ImageResult:
+                received_prompts.append(request.prompt)
+                return NullImageAdapter().generate(request)
+
+        output = run_pipeline(_NOVEL, "T")
+        StoryboardGenerator(adapter=TrackingAdapter(), base_seed=0).generate(output)
+        assert all(DEFAULT_STYLE_TOKEN in p for p in received_prompts)
+
+    def test_style_token_custom_overrides_default(self) -> None:
+        received_prompts: list[str] = []
+
+        class TrackingAdapter(NullImageAdapter):
+            def generate(self, request: ImageRequest) -> ImageResult:
+                received_prompts.append(request.prompt)
+                return NullImageAdapter().generate(request)
+
+        output = run_pipeline(_NOVEL, "T")
+        StoryboardGenerator(
+            adapter=TrackingAdapter(),
+            style_token="CUSTOM_STYLE_XYZ",
+        ).generate(output)
+        assert all("CUSTOM_STYLE_XYZ" in p for p in received_prompts)
+        assert all(DEFAULT_STYLE_TOKEN not in p for p in received_prompts)
+
+    def test_style_token_empty_string_accepted(self) -> None:
+        output = run_pipeline(_NOVEL, "T")
+        sb = StoryboardGenerator(adapter=NullImageAdapter(), style_token="").generate(output)
+        assert len(sb.frames) > 0
+
+
+# ---------------------------------------------------------------------------
+# 8. CharacterSheet + CharacterSheetRegistry (SB-03)
+# ---------------------------------------------------------------------------
+
+class TestCharacterSheetRegistry:
+    def setup_method(self) -> None:
+        from aiprod_adaptation.image_gen.character_sheet import (
+            CharacterSheet,
+            CharacterSheetRegistry,
+        )
+        self.CharacterSheet = CharacterSheet
+        self.CharacterSheetRegistry = CharacterSheetRegistry
+
+    def test_character_sheet_registry_register_and_get(self) -> None:
+        reg = self.CharacterSheetRegistry()
+        sheet = self.CharacterSheet(name="John", canonical_prompt="tall man, brown coat")
+        reg.register(sheet)
+        assert reg.get("John") is sheet
+
+    def test_character_sheet_registry_no_overwrite(self) -> None:
+        reg = self.CharacterSheetRegistry()
+        s1 = self.CharacterSheet(name="John", canonical_prompt="first")
+        s2 = self.CharacterSheet(name="John", canonical_prompt="second")
+        reg.register(s1)
+        reg.register(s2)
+        assert reg.get("John") is s1
+
+    def test_character_sheet_registry_all_sheets_returns_list(self) -> None:
+        reg = self.CharacterSheetRegistry()
+        reg.register(self.CharacterSheet(name="John", canonical_prompt="a"))
+        reg.register(self.CharacterSheet(name="Sarah", canonical_prompt="b"))
+        assert len(reg.all_sheets()) == 2
+
+    def test_prepass_generates_one_image_per_sheet(self) -> None:
+        from unittest.mock import MagicMock
+        from aiprod_adaptation.image_gen.character_sheet import (
+            CharacterSheet,
+            CharacterSheetRegistry,
+        )
+        mock_adapter = MagicMock()
+        mock_adapter.generate.return_value = ImageResult(
+            shot_id="X", image_url="null://x.png", model_used="null", latency_ms=0
+        )
+        reg = CharacterSheetRegistry()
+        reg.register(CharacterSheet(name="John", canonical_prompt="tall man"))
+        reg.register(CharacterSheet(name="Sarah", canonical_prompt="young woman"))
+        StoryboardGenerator(adapter=mock_adapter).prepass_character_sheets(reg)
+        assert mock_adapter.generate.call_count == 2
+
+    def test_prepass_idempotent(self) -> None:
+        from unittest.mock import MagicMock
+        from aiprod_adaptation.image_gen.character_sheet import (
+            CharacterSheet,
+            CharacterSheetRegistry,
+        )
+        mock_adapter = MagicMock()
+        reg = CharacterSheetRegistry()
+        sheet = CharacterSheet(name="John", canonical_prompt="tall man", image_url="already://set.png")
+        reg.register(sheet)
+        StoryboardGenerator(adapter=mock_adapter).prepass_character_sheets(reg)
+        assert mock_adapter.generate.call_count == 0
+
+    def test_prepass_error_does_not_crash(self) -> None:
+        from aiprod_adaptation.image_gen.character_sheet import (
+            CharacterSheet,
+            CharacterSheetRegistry,
+        )
+
+        class BrokenAdapter(NullImageAdapter):
+            def generate(self, request: ImageRequest) -> ImageResult:
+                raise RuntimeError("API down")
+
+        reg = CharacterSheetRegistry()
+        reg.register(CharacterSheet(name="John", canonical_prompt="tall man"))
+        StoryboardGenerator(adapter=BrokenAdapter()).prepass_character_sheets(reg)
+        assert reg.get("John") is not None
+        assert reg.get("John").image_url == ""  # type: ignore[union-attr]
+
+
+# ---------------------------------------------------------------------------
+# 9. ShotStoryboardFrame + StoryboardOutput enrichi (SB-05)
+# ---------------------------------------------------------------------------
+
+class TestShotStoryboardFrame:
+    def _gen(self) -> "StoryboardOutput":
+        output = run_pipeline(_NOVEL, "T")
+        return StoryboardGenerator(adapter=NullImageAdapter(), base_seed=10).generate(output)
+
+    def test_storyboard_frame_has_prompt_used(self) -> None:
+        sb = self._gen()
+        assert all(isinstance(f.prompt_used, str) and f.prompt_used for f in sb.frames)
+
+    def test_storyboard_frame_has_seed_used(self) -> None:
+        sb = self._gen()
+        assert sb.frames[0].seed_used == 10
+        assert sb.frames[1].seed_used == 11
+
+    def test_storyboard_output_has_style_token(self) -> None:
+        sb = self._gen()
+        assert sb.style_token == DEFAULT_STYLE_TOKEN
+
+    def test_storyboard_output_frames_count(self) -> None:
+        sb = self._gen()
+        assert len(sb.frames) == sb.total_shots

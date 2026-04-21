@@ -30,6 +30,12 @@ class FluxAdapter(ImageAdapter):
             "guidance_scale": request.guidance_scale,
             "seed": request.seed if request.seed is not None else -1,
         }
+        if request.reference_image_url:
+            payload["alwayson_scripts"] = {
+                "IP-Adapter": {
+                    "args": [{"image": request.reference_image_url, "weight": 0.6, "enabled": True}]
+                }
+            }
         resp = requests.post(
             f"{self._url}/sdapi/v1/txt2img", json=payload, timeout=120
         )

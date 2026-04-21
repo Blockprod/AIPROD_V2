@@ -281,3 +281,43 @@ class TestSmartVideoRouter:
         router = SmartVideoRouter(self.runway, self.kling, threshold_sec=3)
         assert router.generate(self._req(3)).model_used == "runway"
         assert router.generate(self._req(4)).model_used == "kling"
+
+
+# ---------------------------------------------------------------------------
+# 7. Storyboard → Video image_url injection (SB-06)
+# ---------------------------------------------------------------------------
+
+class TestStoryboardToVideoIntegration:
+    def test_video_request_has_image_url_field(self) -> None:
+        req = VideoRequest(
+            shot_id="S1", scene_id="SC001",
+            image_url="", prompt="test", duration_sec=4,
+        )
+        assert hasattr(req, "image_url")
+        assert req.image_url == ""
+
+    def test_sequencer_build_requests_image_url_from_storyboard(self) -> None:
+        storyboard, output = _storyboard_and_output()
+        seq = VideoSequencer(adapter=NullVideoAdapter(), base_seed=0)
+        requests = seq.build_requests(storyboard, output)
+        frame_urls = {f.shot_id: f.image_url for f in storyboard.frames}
+        for req in requests:
+            assert req.image_url == frame_urls[req.shot_id]
+
+    def test_sequencer_with_storyboard_injects_image_url(self) -> None:
+        received_image_urls: list[str] = []
+
+        class TrackingAdapter(NullVideoAdapter):
+            def generate(self, request: VideoRequest) -> VideoClipResult:
+                received_image_urls.append(request.image_url)
+                return super().generate(request)
+
+        storyboard, output = _storyboard_and_output()
+        VideoSequencer(adapter=TrackingAdapter(), base_seed=0).generate(storyboard, output)
+        assert all(url.startswith("null://") for url in received_image_urls)
+
+    def test_sequencer_storyboard_frame_count_matches_request_count(self) -> None:
+        storyboard, output = _storyboard_and_output()
+        seq = VideoSequencer(adapter=NullVideoAdapter(), base_seed=0)
+        requests = seq.build_requests(storyboard, output)
+        assert len(requests) == len(storyboard.frames)

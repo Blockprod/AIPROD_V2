@@ -2,12 +2,14 @@
 title: Plan d'action — Story Engine v1
 source: analyse_technique_p1_p2_2026-04-21
 creation: 2026-04-21 à 16:30
-last_updated: 2026-04-21 à 16:30
-status: active
+last_updated: 2026-04-21 à 17:00
+status: completed
 phase: SE (Story Engine — refonte P1/P2)
 prerequis: pipeline_quality_v1_plan.md complété (2026-04-21) — 150/150 tests
 tests_avant: 150
-tests_apres_cible: 180+
+tests_apres_cible: 179
+tests_apres_reel: 179
+commit: ba5242e
 ---
 
 # PLAN D'ACTION — STORY ENGINE v1 — 2026-04-21

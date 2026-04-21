@@ -23,18 +23,21 @@ class ReplicateAdapter(ImageAdapter):
         import replicate as _replicate  # type: ignore[import-untyped]
 
         t0 = time.monotonic()
+        input_data = {
+            "prompt": request.prompt,
+            "negative_prompt": request.negative_prompt,
+            "width": request.width,
+            "height": request.height,
+            "num_inference_steps": request.num_steps,
+            "guidance": request.guidance_scale,
+            "seed": request.seed,
+            "output_format": "webp",
+        }
+        if request.reference_image_url:
+            input_data["image"] = request.reference_image_url
         output = _replicate.run(
             self.MODEL,
-            input={
-                "prompt": request.prompt,
-                "negative_prompt": request.negative_prompt,
-                "width": request.width,
-                "height": request.height,
-                "num_inference_steps": request.num_steps,
-                "guidance": request.guidance_scale,
-                "seed": request.seed,
-                "output_format": "webp",
-            },
+            input=input_data,
         )
         latency = int((time.monotonic() - t0) * 1000)
         return ImageResult(

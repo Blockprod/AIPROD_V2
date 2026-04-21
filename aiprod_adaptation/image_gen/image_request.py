@@ -40,8 +40,26 @@ class ImageResult(BaseModel):
     latency_ms: int
 
 
+class ShotStoryboardFrame(BaseModel):
+    shot_id: str
+    scene_id: str
+    image_url: str
+    image_b64: str = ""
+    model_used: str
+    latency_ms: int
+    prompt_used: str
+    seed_used: Optional[int] = None
+    shot_type: str = ""
+    camera_movement: str = ""
+    time_of_day_visual: str = "day"
+    dominant_sound: str = "dialogue"
+    characters_in_frame: List[str] = []
+    reference_image_url: str = ""
+
+
 class StoryboardOutput(BaseModel):
     title: str
-    images: List[ImageResult]
+    frames: List[ShotStoryboardFrame]
+    style_token: str = ""
     total_shots: int
     generated: int
