@@ -11,6 +11,8 @@ if TYPE_CHECKING:
     from aiprod_adaptation.core.adaptation.llm_adapter import LLMAdapter
     from aiprod_adaptation.image_gen.image_adapter import ImageAdapter
     from aiprod_adaptation.image_gen.image_request import StoryboardOutput
+    from aiprod_adaptation.video_gen.video_adapter import VideoAdapter
+    from aiprod_adaptation.video_gen.video_request import VideoOutput
 
 structlog.configure(
     processors=[structlog.processors.JSONRenderer()],
@@ -102,3 +104,25 @@ def run_pipeline_with_images(
         ).generate(output)
         logger.info("storyboard_complete", generated=storyboard.generated, total=storyboard.total_shots)
     return output, storyboard
+
+
+def run_pipeline_with_video(
+    text: str,
+    title: str,
+    episode_id: str = "EP01",
+    llm: "LLMAdapter | None" = None,
+    character_descriptions: "dict[str, str] | None" = None,
+    image_adapter: "ImageAdapter | None" = None,
+    image_base_seed: "int | None" = None,
+    video_adapter: "VideoAdapter | None" = None,
+) -> "tuple[AIPRODOutput, StoryboardOutput | None, VideoOutput | None]":
+    output, storyboard = run_pipeline_with_images(
+        text, title, episode_id, llm, character_descriptions,
+        image_adapter, image_base_seed,
+    )
+    video: "VideoOutput | None" = None
+    if video_adapter is not None and storyboard is not None:
+        from aiprod_adaptation.video_gen.video_sequencer import VideoSequencer
+        video = VideoSequencer(adapter=video_adapter).generate(storyboard, output)
+        logger.info("video_complete", generated=video.generated, total=video.total_shots)
+    return output, storyboard, video

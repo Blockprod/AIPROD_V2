@@ -29,6 +29,8 @@ exclude = [
     "aiprod_adaptation/core/adaptation/claude_adapter\\.py",
     "aiprod_adaptation/image_gen/flux_adapter\\.py",
     "aiprod_adaptation/image_gen/replicate_adapter\\.py",
+    "aiprod_adaptation/video_gen/runway_adapter\\.py",
+    "aiprod_adaptation/video_gen/kling_adapter\\.py",
 ]
 
 [tool.pytest.ini_options]

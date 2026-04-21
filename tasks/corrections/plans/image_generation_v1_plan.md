@@ -2,13 +2,14 @@
 title: Plan d'action — Image Generation Connector v1
 source: plan_global_revise.md
 creation: 2026-04-21 à 15:01
-last_updated: 2026-04-21 à 15:01
-status: active
+last_updated: 2026-04-21 à 15:06
+status: completed
 phase: P3
 corrections_totales: 6 (P1:2 P2:2 P3:2)
 prerequis: continuity_engine_v1_plan.md complété (2026-04-21) — 76/76 tests
 tests_avant: 76
 tests_apres_cible: 96+
+tests_apres_reel: 92
 ---
 
 # PLAN D'ACTION — IMAGE GENERATION CONNECTOR v1 — 2026-04-21
@@ -115,7 +116,7 @@ class StoryboardOutput(BaseModel):
 
 ---
 
-### [IG-01] ⏳ — `ImageRequest` + `ImageResult` + `StoryboardOutput`
+### [IG-01] ✅ FAIT (2026-04-21 à 15:06) — `ImageRequest` + `ImageResult` + `StoryboardOutput`
 
 **Priorité** : P1
 **Sévérité** : 🔴
@@ -195,7 +196,7 @@ test_storyboard_output_generated_count       # generated <= total_shots
 
 ---
 
-### [IG-02] ⏳ — `ImageAdapter` ABC + `NullImageAdapter`
+### [IG-02] ✅ FAIT (2026-04-21 à 15:06) — `ImageAdapter` ABC + `NullImageAdapter`
 
 **Priorité** : P1
 **Sévérité** : 🔴
@@ -252,7 +253,7 @@ test_null_adapter_shot_id_preserved          # result.shot_id == request.shot_id
 
 ---
 
-### [IG-03] ⏳ — `FluxAdapter` + `ReplicateAdapter` (prod, exclus CI)
+### [IG-03] ✅ FAIT (2026-04-21 à 15:06) — `FluxAdapter` + `ReplicateAdapter` (prod, exclus CI)
 
 **Priorité** : P2
 **Sévérité** : 🟠
@@ -349,7 +350,7 @@ exclude = [
 
 ---
 
-### [IG-04] ⏳ — `StoryboardGenerator`
+### [IG-04] ✅ FAIT (2026-04-21 à 15:06) — `StoryboardGenerator`
 
 **Priorité** : P2
 **Sévérité** : 🟠
@@ -447,7 +448,7 @@ test_storyboard_error_in_adapter_does_not_crash # adapter raise → result.model
 
 ---
 
-### [IG-05] ⏳ — Wiring `engine.py` (flag `enable_image_gen`)
+### [IG-05] ✅ FAIT (2026-04-21 à 15:06) — Wiring `engine.py` (flag `enable_image_gen`)
 
 **Priorité** : P3
 **Sévérité** : 🟡
@@ -523,7 +524,7 @@ test_run_pipeline_output_unchanged               # output identique avec ou sans
 
 ---
 
-### [IG-06] ⏳ — `__init__.py` + exports publics `image_gen`
+### [IG-06] ✅ FAIT (2026-04-21 à 15:06) — `__init__.py` + exports publics `image_gen`
 
 **Priorité** : P3
 **Sévérité** : 🟡
