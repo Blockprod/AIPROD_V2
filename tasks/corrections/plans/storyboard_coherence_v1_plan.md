@@ -2,12 +2,13 @@
 title: Plan d'action — Storyboard Coherence v1
 source: analyse_technique_p3_storyboard_2026-04-21
 creation: 2026-04-21 à 17:20
-last_updated: 2026-04-21 à 17:20
-status: active
+last_updated: 2026-04-21 à 17:36
+status: completed
 phase: SB (Storyboard — refonte P3)
 prerequis: story_engine_v1_plan.md complété (2026-04-21) — 179/179 tests
 tests_avant: 179
 tests_apres_cible: 210+
+tests_apres_reel: 200
 ---
 
 # PLAN D'ACTION — STORYBOARD COHERENCE v1 — 2026-04-21
@@ -16,12 +17,12 @@ tests_apres_cible: 210+
 
 | ID | Priorité | Action | Phase | Fichier(s) impactés |
 |---|---|---|---|---|
-| SB-01 | 🔴 Critique | Injecter `canonical_prompt` du personnage dans le prompt texte | P3 | `image_gen/storyboard.py`, `image_gen/character_image_registry.py` |
-| SB-02 | 🔴 Critique | Ajouter `STYLE_TOKEN` global dans `StoryboardGenerator` | P3 | `image_gen/storyboard.py` |
-| SB-03 | 🟠 Important | Créer `CharacterSheet` + `CharacterSheetRegistry` + prépass dédiée | P3 | `image_gen/character_sheet.py` (NEW), `image_gen/storyboard.py` |
-| SB-04 | 🟠 Important | Faire circuler `reference_image_url` vers les adapters prod (IP-Adapter) | P3 | `image_gen/flux_adapter.py`, `image_gen/replicate_adapter.py` |
-| SB-05 | 🟡 Nice-to-have | Enrichir `StoryboardOutput` : `prompt_used`, `seed_used`, champs cinématiques | P3/P4 | `image_gen/image_request.py`, `image_gen/storyboard.py` |
-| SB-06 | 🟡 Nice-to-have | Brancher `ImageResult.image_url` → `VideoRequest` comme keyframe img2vid | P4 | `video_gen/video_sequencer.py`, `video_gen/video_request.py` |
+| SB-01 | 🔴 Critique | Injecter `canonical_prompt` du personnage dans le prompt texte | P3 | `image_gen/storyboard.py`, `image_gen/character_image_registry.py` | ✅ FAIT |
+| SB-02 | 🔴 Critique | Ajouter `STYLE_TOKEN` global dans `StoryboardGenerator` | P3 | `image_gen/storyboard.py` | ✅ FAIT |
+| SB-03 | 🟠 Important | Créer `CharacterSheet` + `CharacterSheetRegistry` + prépass dédiée | P3 | `image_gen/character_sheet.py` (NEW), `image_gen/storyboard.py` | ✅ FAIT |
+| SB-04 | 🟠 Important | Faire circuler `reference_image_url` vers les adapters prod (IP-Adapter) | P3 | `image_gen/flux_adapter.py`, `image_gen/replicate_adapter.py` | ✅ FAIT |
+| SB-05 | 🟡 Nice-to-have | Enrichir `StoryboardOutput` : `prompt_used`, `seed_used`, champs cinématiques | P3/P4 | `image_gen/image_request.py`, `image_gen/storyboard.py` | ✅ FAIT |
+| SB-06 | 🟡 Nice-to-have | Brancher `ImageResult.image_url` → `VideoRequest` comme keyframe img2vid | P4 | `video_gen/video_sequencer.py`, `video_gen/video_request.py` | ✅ FAIT |
 
 ---
 
@@ -44,7 +45,7 @@ tests_apres_cible: 210+
 
 ---
 
-## SB-01 ⏳ — Injecter `canonical_prompt` du personnage dans le prompt texte
+## SB-01 ✅ — Injecter `canonical_prompt` du personnage dans le prompt texte
 
 **Problème** : actuellement `CharacterImageRegistry` ne stocke qu'une URL d'image. Le prompt du shot ne contient aucune description du personnage → incohérence visuelle garantie entre plans.
 
