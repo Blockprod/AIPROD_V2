@@ -21,7 +21,7 @@ from aiprod_adaptation.core.adaptation.classifier import InputClassifier
 from aiprod_adaptation.core.adaptation.llm_adapter import NullLLMAdapter
 from aiprod_adaptation.core.adaptation.llm_router import LLMRouter
 from aiprod_adaptation.core.adaptation.script_parser import ScriptParser
-from aiprod_adaptation.core.adaptation.story_extractor import StoryExtractor
+from aiprod_adaptation.core.adaptation.story_extractor import StoryExtractor, split_into_chunks
 from aiprod_adaptation.core.adaptation.story_validator import StoryValidator
 from aiprod_adaptation.core.engine import run_pipeline
 from aiprod_adaptation.core.production_budget import ProductionBudget
@@ -331,3 +331,87 @@ class TestLLMRouter:
         assert router_short.generate_json("x") == {"scenes": []}
         router_long = LLMRouter(NullLLMAdapter(), NullLLMAdapter(), token_threshold=1)
         assert router_long.generate_json("x" * 100) == {"scenes": []}
+
+
+# ---------------------------------------------------------------------------
+# 9. split_into_chunks + ProductionBudget.max_chars_per_chunk (SO-01, SO-02)
+# ---------------------------------------------------------------------------
+
+class TestSplitIntoChunks:
+    def test_split_into_chunks_respects_max_chars(self) -> None:
+        text = "\n\n".join(["x" * 100] * 20)
+        chunks = split_into_chunks(text, max_chars=300)
+        assert all(len(c) <= 300 for c in chunks)
+
+    def test_split_into_chunks_splits_at_paragraph_boundaries(self) -> None:
+        text = "paragraph one.\n\nparagraph two.\n\nparagraph three."
+        chunks = split_into_chunks(text, max_chars=20)
+        # each paragraph is ~14-16 chars < 20 → each lands in its own chunk
+        assert len(chunks) == 3
+
+    def test_split_into_chunks_single_paragraph_truncated(self) -> None:
+        long_para = "A very long sentence. " * 100
+        chunks = split_into_chunks(long_para, max_chars=200)
+        assert all(len(c) <= 200 for c in chunks)
+        assert len(chunks) >= 1
+
+    def test_split_into_chunks_empty_text_returns_empty_list(self) -> None:
+        assert split_into_chunks("", max_chars=1000) == []
+        assert split_into_chunks("   \n\n  ", max_chars=1000) == []
+
+    def test_extract_all_single_chunk_equivalent_to_extract(self) -> None:
+        extractor = StoryExtractor()
+        budget = ProductionBudget(max_chars_per_chunk=100_000)
+        text = "Alice walks in the park. She sits on the bench."
+        result_extract = extractor.extract(NullLLMAdapter(), text, budget)
+        result_all = extractor.extract_all(NullLLMAdapter(), text, budget)
+        assert result_extract == result_all
+
+    def test_extract_all_multiple_chunks_passes_prior_summary(self) -> None:
+        received_prompts: list[str] = []
+
+        class TrackingLLM(NullLLMAdapter):
+            def generate_json(self, prompt: str) -> dict[str, object]:
+                received_prompts.append(prompt)
+                # Return a minimal scene so prior_summary gets populated
+                return {"scenes": [{"location": "Park", "description": "test",
+                                    "mood": "neutral", "characters": []}]}
+
+        # Force 3 chunks by setting a tiny max_chars_per_chunk
+        text = "First paragraph with content here.\n\nSecond paragraph with content.\n\nThird paragraph here."
+        budget = ProductionBudget(max_chars_per_chunk=40)
+        StoryExtractor().extract_all(TrackingLLM(), text, budget)
+        # From chunk 2 onwards, prompt should contain prior_summary context
+        assert any("CONTEXT FROM PREVIOUS SCENES" in p for p in received_prompts[1:])
+
+
+class TestProductionBudgetChunk:
+    def test_budget_default_max_chars_per_chunk(self) -> None:
+        assert ProductionBudget().max_chars_per_chunk == 8_000
+
+    def test_budget_for_episode_45_has_larger_chunk(self) -> None:
+        assert ProductionBudget.for_episode_45().max_chars_per_chunk > 8_000
+
+    def test_extract_all_respects_budget_max_chars(self) -> None:
+        received_texts: list[str] = []
+
+        class TrackingLLM(NullLLMAdapter):
+            def generate_json(self, prompt: str) -> dict[str, object]:
+                received_texts.append(prompt)
+                return {"scenes": []}
+
+        text = "\n\n".join(["word " * 20] * 10)  # ~10 paragraphs
+        budget = ProductionBudget(max_chars_per_chunk=200)
+        StoryExtractor().extract_all(TrackingLLM(), text, budget)
+        # Each LLM call prompt ends with "TEXT:\n{chunk}", chunk must be <= 200 chars
+        for p in received_texts:
+            chunk = p.split("TEXT:\n")[-1] if "TEXT:\n" in p else ""
+            assert len(chunk) <= 200
+
+    def test_budget_frozen_dataclass_max_chars_immutable(self) -> None:
+        budget = ProductionBudget()
+        try:
+            budget.max_chars_per_chunk = 999  # type: ignore[misc]
+            assert False, "Should have raised"
+        except Exception:
+            pass

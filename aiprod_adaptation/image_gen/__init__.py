@@ -1,5 +1,6 @@
 from aiprod_adaptation.image_gen.character_image_registry import CharacterImageRegistry
 from aiprod_adaptation.image_gen.character_sheet import CharacterSheet, CharacterSheetRegistry
+from aiprod_adaptation.image_gen.checkpoint import CheckpointStore
 from aiprod_adaptation.image_gen.image_adapter import ImageAdapter, NullImageAdapter
 from aiprod_adaptation.image_gen.image_request import (
     ImageRequest,
@@ -13,6 +14,7 @@ __all__ = [
     "CharacterImageRegistry",
     "CharacterSheet",
     "CharacterSheetRegistry",
+    "CheckpointStore",
     "ImageAdapter",
     "NullImageAdapter",
     "ImageRequest",

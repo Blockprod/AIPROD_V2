@@ -11,6 +11,7 @@ Covers:
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 import pytest
 
@@ -18,6 +19,7 @@ from aiprod_adaptation.image_gen.image_adapter import NullImageAdapter
 from aiprod_adaptation.image_gen.image_request import (
     ImageRequest,
     ImageResult,
+    ShotStoryboardFrame,
     StoryboardOutput,
 )
 from aiprod_adaptation.image_gen.storyboard import DEFAULT_STYLE_TOKEN, StoryboardGenerator
@@ -398,3 +400,84 @@ class TestShotStoryboardFrame:
     def test_storyboard_output_frames_count(self) -> None:
         sb = self._gen()
         assert len(sb.frames) == sb.total_shots
+
+
+# ---------------------------------------------------------------------------
+# 10. CheckpointStore + StoryboardGenerator reprise (SO-06)
+# ---------------------------------------------------------------------------
+
+class TestCheckpointStore:
+    def _frame(self, shot_id: str = "S1") -> "ShotStoryboardFrame":
+        return ShotStoryboardFrame(
+            shot_id=shot_id,
+            scene_id="SC001",
+            image_url=f"null://{shot_id}.png",
+            model_used="null",
+            latency_ms=10,
+            prompt_used="test prompt",
+        )
+
+    def test_checkpoint_store_memory_has_after_save(self) -> None:
+        from aiprod_adaptation.image_gen.checkpoint import CheckpointStore
+        store = CheckpointStore()
+        store.save(self._frame("S1"))
+        assert store.has("S1")
+        assert not store.has("S2")
+
+    def test_checkpoint_store_get_returns_frame(self) -> None:
+        from aiprod_adaptation.image_gen.checkpoint import CheckpointStore
+        store = CheckpointStore()
+        frame = self._frame("S1")
+        store.save(frame)
+        assert store.get("S1") == frame
+        assert store.get("MISSING") is None
+
+    def test_storyboard_skips_cached_shots(self) -> None:
+        from aiprod_adaptation.image_gen.checkpoint import CheckpointStore
+        call_count = 0
+
+        class CountingAdapter(NullImageAdapter):
+            def generate(self, request: ImageRequest) -> ImageResult:
+                nonlocal call_count
+                call_count += 1
+                return NullImageAdapter().generate(request)
+
+        output = run_pipeline(_NOVEL, "T")
+        shots = [s for ep in output.episodes for s in ep.shots]
+        # Pre-cache all shots except the last one
+        store = CheckpointStore()
+        for shot in shots[:-1]:
+            store.save(self._frame(shot.shot_id))
+
+        StoryboardGenerator(adapter=CountingAdapter(), checkpoint=store).generate(output)
+        assert call_count == 1  # only the last uncached shot calls the adapter
+
+    def test_storyboard_resumes_from_partial_checkpoint(self) -> None:
+        from aiprod_adaptation.image_gen.checkpoint import CheckpointStore
+        call_count = 0
+
+        class CountingAdapter(NullImageAdapter):
+            def generate(self, request: ImageRequest) -> ImageResult:
+                nonlocal call_count
+                call_count += 1
+                return NullImageAdapter().generate(request)
+
+        output = run_pipeline(_NOVEL, "T")
+        shots = [s for ep in output.episodes for s in ep.shots]
+        assert len(shots) >= 2
+        store = CheckpointStore()
+        store.save(self._frame(shots[0].shot_id))  # pre-cache first shot only
+        sb = StoryboardGenerator(adapter=CountingAdapter(), checkpoint=store).generate(output)
+        assert call_count == len(shots) - 1
+        assert len(sb.frames) == len(shots)
+
+    def test_checkpoint_store_file_persists_and_reloads(self) -> None:
+        import tempfile
+        from aiprod_adaptation.image_gen.checkpoint import CheckpointStore
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "checkpoint.json"
+            store1 = CheckpointStore(path=path)
+            store1.save(self._frame("S1"))
+            store2 = CheckpointStore(path=path)
+            assert store2.has("S1")
+            assert store2.get("S1") is not None

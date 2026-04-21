@@ -4,6 +4,7 @@ from typing import List, Optional
 
 from aiprod_adaptation.image_gen.character_image_registry import CharacterImageRegistry
 from aiprod_adaptation.image_gen.character_sheet import CharacterSheetRegistry
+from aiprod_adaptation.image_gen.checkpoint import CheckpointStore
 from aiprod_adaptation.image_gen.image_adapter import ImageAdapter
 from aiprod_adaptation.image_gen.image_request import (
     ImageRequest,
@@ -33,11 +34,13 @@ class StoryboardGenerator:
         base_seed: Optional[int] = None,
         style_token: str = DEFAULT_STYLE_TOKEN,
         character_prompts: dict[str, str] | None = None,
+        checkpoint: Optional[CheckpointStore] = None,
     ) -> None:
         self._adapter = adapter
         self._base_seed = base_seed
         self._style_token = style_token
         self._character_prompts: dict[str, str] = character_prompts or {}
+        self._checkpoint = checkpoint
 
     def build_requests(self, output: AIPRODOutput) -> List[ImageRequest]:
         """Build ImageRequests without generating — useful for inspection and tests."""
@@ -103,6 +106,13 @@ class StoryboardGenerator:
                 seed=seed,
                 reference_image_url=reference_url,
             )
+            if self._checkpoint is not None and self._checkpoint.has(shot.shot_id):
+                cached = self._checkpoint.get(shot.shot_id)
+                assert cached is not None
+                frames.append(cached)
+                if primary_char and cached.model_used != "error":
+                    char_registry.register(primary_char, cached.image_url)
+                continue
             try:
                 result = self._adapter.generate(request)
             except Exception:
@@ -116,8 +126,7 @@ class StoryboardGenerator:
             if primary_char and result.model_used != "error":
                 char_registry.register(primary_char, result.image_url)
 
-            frames.append(
-                ShotStoryboardFrame(
+            frame = ShotStoryboardFrame(
                     shot_id=result.shot_id,
                     scene_id=shot.scene_id,
                     image_url=result.image_url,
@@ -133,7 +142,9 @@ class StoryboardGenerator:
                     characters_in_frame=characters_in_frame,
                     reference_image_url=reference_url,
                 )
-            )
+            if self._checkpoint is not None:
+                self._checkpoint.save(frame)
+            frames.append(frame)
 
         return StoryboardOutput(
             title=output.title,

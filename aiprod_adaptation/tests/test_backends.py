@@ -15,10 +15,10 @@ from __future__ import annotations
 import csv
 import io
 import json
-
 from aiprod_adaptation.backends.csv_export import CsvExport
 from aiprod_adaptation.backends.json_flat_export import JsonFlatExport
 from aiprod_adaptation.core.engine import run_pipeline
+from aiprod_adaptation.models.schema import AIPRODOutput
 
 _SAMPLE = (
     "John walked quickly through the busy city streets. "
@@ -81,3 +81,60 @@ class TestJsonFlatExport:
         out1 = JsonFlatExport().export(_get_output())
         out2 = JsonFlatExport().export(_get_output())
         assert out1 == out2
+
+
+# ---------------------------------------------------------------------------
+# Multi-épisodes backends (SO-07)
+# ---------------------------------------------------------------------------
+
+def _multi_episode_output() -> AIPRODOutput:
+    from aiprod_adaptation.core.pass3_shots import simplify_shots
+    from aiprod_adaptation.core.pass4_compile import compile_episode
+    from aiprod_adaptation.models.schema import AIPRODOutput
+
+    scenes_a = [
+        {
+            "scene_id": "SCN_A01", "characters": ["Alice"], "location": "the park",
+            "time_of_day": "day",
+            "visual_actions": ["Alice walks.", "Alice sits."],
+            "dialogues": [], "emotion": "neutral",
+        },
+    ]
+    scenes_b = [
+        {
+            "scene_id": "SCN_B01", "characters": ["Bob"], "location": "the office",
+            "time_of_day": "interior",
+            "visual_actions": ["Bob opens the door.", "Bob walks in."],
+            "dialogues": [], "emotion": "nervous",
+        },
+    ]
+    shots_a = simplify_shots(scenes_a)  # type: ignore[arg-type]
+    shots_b = simplify_shots(scenes_b)  # type: ignore[arg-type]
+    ep_a = compile_episode(scenes_a, shots_a, "T", "EP01")  # type: ignore[arg-type]
+    ep_b = compile_episode(scenes_b, shots_b, "T", "EP02")  # type: ignore[arg-type]
+    return AIPRODOutput(title="T", episodes=ep_a.episodes + ep_b.episodes)
+
+
+class TestMultiEpisodeBackends:
+    def test_csv_export_includes_all_episodes(self) -> None:
+        output = _multi_episode_output()
+        result = CsvExport().export(output)
+        reader = csv.reader(io.StringIO(result))
+        rows = list(reader)[1:]  # skip header
+        total_shots = sum(len(ep.shots) for ep in output.episodes)
+        assert len(rows) == total_shots
+
+    def test_json_flat_export_includes_all_episodes(self) -> None:
+        output = _multi_episode_output()
+        result = JsonFlatExport().export(output)
+        parsed = json.loads(result)
+        total_shots = sum(len(ep.shots) for ep in output.episodes)
+        assert len(parsed) == total_shots
+
+    def test_json_flat_export_both_episode_ids_present(self) -> None:
+        output = _multi_episode_output()
+        result = JsonFlatExport().export(output)
+        parsed = json.loads(result)
+        ep_ids = {item["episode_id"] for item in parsed}
+        assert "EP01" in ep_ids
+        assert "EP02" in ep_ids

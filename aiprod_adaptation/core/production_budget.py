@@ -17,6 +17,7 @@ class ProductionBudget:
     max_shots_per_scene: int = 6
     max_characters: int = 4
     chunk_size: int = 20
+    max_chars_per_chunk: int = 8_000
 
     @property
     def shots_estimate(self) -> int:
@@ -33,4 +34,5 @@ class ProductionBudget:
             max_scenes=135,
             max_characters=6,
             chunk_size=20,
+            max_chars_per_chunk=12_000,
         )

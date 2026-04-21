@@ -11,6 +11,9 @@ dependencies = [
     "structlog>=21.0",
 ]
 
+[project.scripts]
+aiprod = "aiprod_adaptation.cli:main"
+
 [project.optional-dependencies]
 dev = [
     "pytest>=7.0",

@@ -22,7 +22,7 @@ from aiprod_adaptation.core.pass2_visual import transform_visuals
 from aiprod_adaptation.core.pass3_shots import atomize_shots
 from aiprod_adaptation.core.pass4_compile import compile_output
 from aiprod_adaptation.core.engine import run_pipeline
-from aiprod_adaptation.models.schema import Shot
+from aiprod_adaptation.models.schema import AIPRODOutput, Shot
 
 
 # ---------------------------------------------------------------------------
@@ -566,3 +566,79 @@ class TestVisualSceneEnrichment:
         shots = simplify_shots([scene])
         # base=3, no motion/interaction/perception, short text → 3 sec (medium, unclamped)
         assert shots[0]["duration_sec"] == 3
+
+
+# ---------------------------------------------------------------------------
+# Multi-épisode compilation (SO-07)
+# ---------------------------------------------------------------------------
+
+def _multi_episode_output() -> "AIPRODOutput":
+    from aiprod_adaptation.core.pass3_shots import simplify_shots
+    from aiprod_adaptation.core.pass4_compile import compile_episode
+    from aiprod_adaptation.models.schema import AIPRODOutput
+
+    scenes_a = [
+        {
+            "scene_id": "SCN_A01",
+            "characters": ["Alice"],
+            "location": "the park",
+            "time_of_day": "day",
+            "visual_actions": ["Alice walks toward the bench.", "Alice sits down slowly."],
+            "dialogues": [],
+            "emotion": "neutral",
+        },
+        {
+            "scene_id": "SCN_A02",
+            "characters": ["Bob"],
+            "location": "the office",
+            "time_of_day": "interior",
+            "visual_actions": ["Bob opens the door.", "Bob looks around the room."],
+            "dialogues": [],
+            "emotion": "nervous",
+        },
+    ]
+    scenes_b = [
+        {
+            "scene_id": "SCN_B01",
+            "characters": ["Alice", "Bob"],
+            "location": "the rooftop",
+            "time_of_day": "night",
+            "visual_actions": ["Alice and Bob face each other.", "They walk apart slowly."],
+            "dialogues": [],
+            "emotion": "sad",
+        },
+    ]
+    shots_a = simplify_shots(scenes_a)  # type: ignore[arg-type]
+    shots_b = simplify_shots(scenes_b)  # type: ignore[arg-type]
+    ep_a = compile_episode(scenes_a, shots_a, "Multi Title", "EP01")  # type: ignore[arg-type]
+    ep_b = compile_episode(scenes_b, shots_b, "Multi Title", "EP02")  # type: ignore[arg-type]
+    return AIPRODOutput(
+        title="Multi Title",
+        episodes=ep_a.episodes + ep_b.episodes,
+    )
+
+
+class TestMultiEpisode:
+    def test_compile_two_episodes(self) -> None:
+        output = _multi_episode_output()
+        assert len(output.episodes) == 2
+
+    def test_shot_ids_unique_across_episodes(self) -> None:
+        output = _multi_episode_output()
+        all_shot_ids = [s.shot_id for ep in output.episodes for s in ep.shots]
+        assert len(all_shot_ids) == len(set(all_shot_ids))
+
+    def test_scene_ids_unique_across_episodes(self) -> None:
+        output = _multi_episode_output()
+        all_scene_ids = [sc.scene_id for ep in output.episodes for sc in ep.scenes]
+        assert len(all_scene_ids) == len(set(all_scene_ids))
+
+    def test_episode_ids_distinct(self) -> None:
+        output = _multi_episode_output()
+        ep_ids = [ep.episode_id for ep in output.episodes]
+        assert len(ep_ids) == len(set(ep_ids))
+
+    def test_total_shot_count_spans_all_episodes(self) -> None:
+        output = _multi_episode_output()
+        total = sum(len(ep.shots) for ep in output.episodes)
+        assert total >= 4  # at least 2 shots per episode
