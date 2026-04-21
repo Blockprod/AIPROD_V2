@@ -55,7 +55,12 @@ class VideoSequencer:
         requests = self.build_requests(storyboard, output)
         clips: List[VideoClipResult] = []
 
-        for request in requests:
+        for i, request in enumerate(requests):
+            # Intra-scene last_frame chaining: inject previous clip's last_frame
+            if i > 0 and requests[i - 1].scene_id == request.scene_id:
+                prev_last = clips[i - 1].last_frame_url
+                if prev_last:
+                    request = request.model_copy(update={"last_frame_hint_url": prev_last})
             try:
                 clip = self._adapter.generate(request)
             except Exception:

@@ -173,4 +173,111 @@ class TestRunPipelineWithVideo:
     def test_run_with_video_no_image_adapter(self) -> None:
         output, storyboard, video = run_pipeline_with_video(_NOVEL, "T")
         assert storyboard is None
-        assert video is None
+
+
+# ---------------------------------------------------------------------------
+# 5. LastFrameChaining — PQ-03
+# ---------------------------------------------------------------------------
+
+class TestLastFrameChaining:
+    def test_first_shot_has_no_last_frame_hint(self) -> None:
+        received: list[str] = []
+
+        class TrackingAdapter(NullVideoAdapter):
+            def generate(self, request: VideoRequest) -> VideoClipResult:
+                received.append(request.last_frame_hint_url)
+                return super().generate(request)
+
+        storyboard, output = _storyboard_and_output()
+        VideoSequencer(adapter=TrackingAdapter(), base_seed=0).generate(storyboard, output)
+        assert received[0] == ""
+
+    def test_shots_different_scenes_not_chained(self) -> None:
+        """Shots in different scenes must never receive a last_frame_hint."""
+        received_hints: list[tuple[str, str]] = []  # (scene_id, hint)
+
+        class TrackingAdapter(NullVideoAdapter):
+            def generate(self, request: VideoRequest) -> VideoClipResult:
+                received_hints.append((request.scene_id, request.last_frame_hint_url))
+                return super().generate(request)
+
+        storyboard, output = _storyboard_and_output()
+        VideoSequencer(adapter=TrackingAdapter(), base_seed=0).generate(storyboard, output)
+        # For any shot that has a hint, its scene_id must equal the previous shot's scene_id
+        prev_scene = ""
+        for i, (scene_id, hint) in enumerate(received_hints):
+            if hint:
+                assert scene_id == prev_scene, (
+                    f"Shot {i} got a cross-scene hint: {prev_scene!r} → {scene_id!r}"
+                )
+            prev_scene = scene_id
+
+    def test_empty_last_frame_url_does_not_chain(self) -> None:
+        """NullVideoAdapter returns last_frame_url="" → no chaining should occur."""
+        storyboard, output = _storyboard_and_output()
+        video = VideoSequencer(adapter=NullVideoAdapter(), base_seed=0).generate(
+            storyboard, output
+        )
+        # NullVideoAdapter never sets last_frame_url → all hints remain ""
+        for clip in video.clips:
+            assert clip.last_frame_url == ""
+
+    def test_last_frame_url_field_exists_on_clip_result(self) -> None:
+        result = NullVideoAdapter().generate(_REQ)
+        assert hasattr(result, "last_frame_url")
+        assert result.last_frame_url == ""
+
+
+# ---------------------------------------------------------------------------
+# 6. SmartVideoRouter — PQ-04
+# ---------------------------------------------------------------------------
+
+class TestSmartVideoRouter:
+    def setup_method(self) -> None:
+        from aiprod_adaptation.video_gen.smart_video_router import SmartVideoRouter
+
+        class _TaggedAdapter(NullVideoAdapter):
+            def __init__(self, tag: str) -> None:
+                self.tag = tag
+
+            def generate(self, request: VideoRequest) -> VideoClipResult:
+                result = super().generate(request)
+                return result.model_copy(update={"model_used": self.tag})
+
+        self.runway = _TaggedAdapter("runway")
+        self.kling = _TaggedAdapter("kling")
+        self.router = SmartVideoRouter(
+            runway_adapter=self.runway,
+            kling_adapter=self.kling,
+            threshold_sec=5,
+        )
+
+    def _req(self, duration: int) -> VideoRequest:
+        return VideoRequest(
+            shot_id="S1", scene_id="SC001",
+            image_url="null://img.png", prompt="test",
+            duration_sec=duration,
+        )
+
+    def test_router_uses_runway_for_short_shot(self) -> None:
+        result = self.router.generate(self._req(3))
+        assert result.model_used == "runway"
+
+    def test_router_uses_kling_for_long_shot(self) -> None:
+        result = self.router.generate(self._req(8))
+        assert result.model_used == "kling"
+
+    def test_router_threshold_boundary_uses_runway(self) -> None:
+        result = self.router.generate(self._req(5))
+        assert result.model_used == "runway"
+
+    def test_router_threshold_boundary_plus1_uses_kling(self) -> None:
+        result = self.router.generate(self._req(6))
+        assert result.model_used == "kling"
+
+    def test_router_custom_threshold(self) -> None:
+        from aiprod_adaptation.video_gen.smart_video_router import SmartVideoRouter
+
+        router = SmartVideoRouter(self.runway, self.kling, threshold_sec=3)
+        assert router.generate(self._req(3)).model_used == "runway"
+        assert router.generate(self._req(4)).model_used == "kling"

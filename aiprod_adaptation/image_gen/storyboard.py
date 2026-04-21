@@ -2,17 +2,22 @@ from __future__ import annotations
 
 from typing import List, Optional
 
+from aiprod_adaptation.image_gen.character_image_registry import CharacterImageRegistry
 from aiprod_adaptation.image_gen.image_adapter import ImageAdapter
 from aiprod_adaptation.image_gen.image_request import (
     ImageRequest,
     ImageResult,
     StoryboardOutput,
 )
-from aiprod_adaptation.models.schema import AIPRODOutput, Shot
+from aiprod_adaptation.models.schema import AIPRODOutput, Scene, Shot
 
 
 def _all_shots(output: AIPRODOutput) -> List[Shot]:
     return [shot for ep in output.episodes for shot in ep.shots]
+
+
+def _scene_map(output: AIPRODOutput) -> dict[str, Scene]:
+    return {scene.scene_id: scene for ep in output.episodes for scene in ep.scenes}
 
 
 class StoryboardGenerator:
@@ -38,15 +43,21 @@ class StoryboardGenerator:
 
     def generate(self, output: AIPRODOutput) -> StoryboardOutput:
         shots = _all_shots(output)
+        scenes = _scene_map(output)
         results: List[ImageResult] = []
+        char_registry = CharacterImageRegistry()
 
         for i, shot in enumerate(shots):
             seed = self._base_seed + i if self._base_seed is not None else None
+            scene = scenes.get(shot.scene_id)
+            primary_char = scene.characters[0] if scene and scene.characters else ""
+            reference_url = char_registry.get_reference(primary_char) if primary_char else ""
             request = ImageRequest(
                 shot_id=shot.shot_id,
                 scene_id=shot.scene_id,
                 prompt=shot.prompt,
                 seed=seed,
+                reference_image_url=reference_url,
             )
             try:
                 result = self._adapter.generate(request)
@@ -58,6 +69,8 @@ class StoryboardGenerator:
                     model_used="error",
                     latency_ms=0,
                 )
+            if primary_char and result.model_used != "error":
+                char_registry.register(primary_char, result.image_url)
             results.append(result)
 
         return StoryboardOutput(

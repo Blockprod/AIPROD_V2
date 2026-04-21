@@ -1,11 +1,14 @@
 """
-pytest test suite — Post-production v1
+pytest test suite — Post-production v1 + Pipeline Quality (PQ-02, PQ-05, PQ-06)
 
 Covers:
   1. AudioRequest validation           — PP-01
   2. NullAudioAdapter                  — PP-02
   3. AudioSynchronizer                 — PP-04
   4. run_pipeline_full()               — PP-05
+  5. AudioDurationSync                 — PQ-02
+  6. SSMLBuilder                       — PQ-05
+  7. FFmpegExporter                    — PQ-06
 """
 
 from __future__ import annotations
@@ -203,3 +206,168 @@ class TestRunPipelineFull:
         output, _, _, _ = run_pipeline_full(_NOVEL, title="T")
         assert output.title == baseline.title
         assert len(output.episodes) == len(baseline.episodes)
+
+
+# ---------------------------------------------------------------------------
+# 5. AudioDurationSync — PQ-02
+# ---------------------------------------------------------------------------
+
+
+class TestAudioDurationSync:
+    def test_timeline_clip_has_audio_duration_field(self) -> None:
+        from aiprod_adaptation.post_prod.audio_request import TimelineClip
+
+        clip = TimelineClip(
+            shot_id="S1", scene_id="SC001",
+            video_url="v", audio_url="a",
+            duration_sec=4, start_sec=0,
+        )
+        assert clip.audio_duration_sec == 0
+        assert clip.silence_padding_sec == 0
+
+    def test_timeline_clip_silence_padding_when_audio_shorter(self) -> None:
+        from aiprod_adaptation.post_prod.audio_request import TimelineClip
+
+        clip = TimelineClip(
+            shot_id="S1", scene_id="SC001",
+            video_url="v", audio_url="a",
+            duration_sec=6, start_sec=0,
+            audio_duration_sec=4, silence_padding_sec=2,
+        )
+        assert clip.silence_padding_sec == clip.duration_sec - clip.audio_duration_sec
+
+    def test_synchronizer_uses_real_duration_when_available(self) -> None:
+        # NullAudioAdapter returns audio_b64="" → fallback to duration_hint_sec
+        # duration_hint_sec == clip.duration_sec → silence_padding should be 0
+        sync = AudioSynchronizer(adapter=NullAudioAdapter())
+        video, output = _video_and_output()
+        _, production = sync.generate(video, output)
+        for clip in production.timeline:
+            assert clip.audio_duration_sec >= 1
+
+    def test_audio_utils_fallback_without_mutagen(self) -> None:
+        from aiprod_adaptation.post_prod.audio_utils import audio_duration_from_b64
+
+        # Empty b64 → fallback
+        assert audio_duration_from_b64("", duration_hint_sec=5) == 5
+        # Invalid b64 → fallback
+        assert audio_duration_from_b64("NOT_VALID_B64!!!", duration_hint_sec=3) == 3
+
+
+# ---------------------------------------------------------------------------
+# 6. SSMLBuilder — PQ-05
+# ---------------------------------------------------------------------------
+
+
+class TestSSMLBuilder:
+    def setup_method(self) -> None:
+        from aiprod_adaptation.post_prod.ssml_builder import SSMLBuilder
+
+        self.builder = SSMLBuilder()
+
+    def test_ssml_wraps_text_in_speak_tags(self) -> None:
+        result = self.builder.build("Hello world.", "neutral")
+        assert result.startswith("<speak>")
+        assert result.endswith("</speak>")
+
+    def test_ssml_fear_uses_slow_rate(self) -> None:
+        result = self.builder.build("Run!", "fear")
+        assert 'rate="slow"' in result
+
+    def test_ssml_joy_uses_high_pitch(self) -> None:
+        result = self.builder.build("Great!", "joy")
+        assert 'pitch="high"' in result
+
+    def test_ssml_unknown_emotion_falls_back_to_neutral(self) -> None:
+        neutral = self.builder.build("X", "neutral")
+        unknown = self.builder.build("X", "nonexistent_emotion")
+        assert neutral == unknown
+
+    def test_audio_request_ssml_flag_default_false(self) -> None:
+        req = AudioRequest(shot_id="S1", scene_id="SC001", text="hello")
+        assert req.ssml is False
+
+
+# ---------------------------------------------------------------------------
+# 7. FFmpegExporter — PQ-06
+# ---------------------------------------------------------------------------
+
+
+class TestFFmpegExporter:
+    def _make_production(self) -> "ProductionOutput":
+        from aiprod_adaptation.post_prod.audio_request import ProductionOutput, TimelineClip
+
+        clips = [
+            TimelineClip(
+                shot_id="S1", scene_id="SC001",
+                video_url="/tmp/v1.mp4", audio_url="/tmp/a1.mp3",
+                duration_sec=4, start_sec=0,
+            ),
+        ]
+        return ProductionOutput(title="T", timeline=clips, total_duration_sec=4)
+
+    def test_exporter_raises_if_ffmpeg_not_found(self) -> None:
+        from aiprod_adaptation.post_prod.ffmpeg_exporter import FFmpegExporter
+
+        exporter = FFmpegExporter("/tmp/out.mp4", ffmpeg_bin="ffmpeg_does_not_exist_xyz")
+        production = self._make_production()
+        with pytest.raises(FileNotFoundError):
+            exporter.export(production)
+
+    def test_exporter_builds_correct_command_args(self) -> None:
+        """Verify the concat ffmpeg call includes resolution and fps."""
+        from unittest.mock import patch
+
+        from aiprod_adaptation.post_prod.ffmpeg_exporter import FFmpegExporter
+
+        production = self._make_production()
+        calls: list[list[str]] = []
+
+        def fake_run(cmd: list[str], check: bool) -> None:
+            calls.append(cmd)
+
+        with patch("subprocess.run", side_effect=fake_run):
+            FFmpegExporter("/tmp/out.mp4").export(production)
+
+        # Last call is the concat — should include resolution and fps
+        concat_call = calls[-1]
+        assert production.resolution in concat_call
+        assert str(production.fps) in concat_call
+
+    def test_exporter_respects_resolution_from_production(self) -> None:
+        from unittest.mock import patch
+
+        from aiprod_adaptation.post_prod.ffmpeg_exporter import FFmpegExporter
+        from aiprod_adaptation.post_prod.audio_request import ProductionOutput, TimelineClip
+
+        clips = [TimelineClip(
+            shot_id="S1", scene_id="SC001",
+            video_url="/v.mp4", audio_url="/a.mp3",
+            duration_sec=4, start_sec=0,
+        )]
+        prod = ProductionOutput(
+            title="T", timeline=clips, total_duration_sec=4, resolution="1920x1080"
+        )
+        calls: list[list[str]] = []
+        with patch("subprocess.run", side_effect=lambda cmd, check: calls.append(cmd)):
+            FFmpegExporter("/tmp/out.mp4").export(prod)
+        assert "1920x1080" in calls[-1]
+
+    def test_exporter_respects_fps_from_production(self) -> None:
+        from unittest.mock import patch
+
+        from aiprod_adaptation.post_prod.ffmpeg_exporter import FFmpegExporter
+        from aiprod_adaptation.post_prod.audio_request import ProductionOutput, TimelineClip
+
+        clips = [TimelineClip(
+            shot_id="S1", scene_id="SC001",
+            video_url="/v.mp4", audio_url="/a.mp3",
+            duration_sec=4, start_sec=0,
+        )]
+        prod = ProductionOutput(
+            title="T", timeline=clips, total_duration_sec=4, fps=30
+        )
+        calls: list[list[str]] = []
+        with patch("subprocess.run", side_effect=lambda cmd, check: calls.append(cmd)):
+            FFmpegExporter("/tmp/out.mp4").export(prod)
+        assert "30" in calls[-1]

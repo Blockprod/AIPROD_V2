@@ -13,6 +13,7 @@ class VideoRequest(BaseModel):
     duration_sec: int
     motion_score: float = 5.0
     seed: Optional[int] = None
+    last_frame_hint_url: str = ""   # last_frame of previous clip (intra-scene continuity)
 
     @field_validator("motion_score")
     @classmethod
@@ -28,6 +29,7 @@ class VideoClipResult(BaseModel):
     duration_sec: int
     model_used: str
     latency_ms: int
+    last_frame_url: str = ""   # last frame of this clip (used as hint for next shot)
 
 
 class VideoOutput(BaseModel):

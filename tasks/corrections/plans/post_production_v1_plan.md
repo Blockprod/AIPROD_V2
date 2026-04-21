@@ -2,13 +2,14 @@
 title: Plan d'action — Post-production v1
 source: plan_global_revise.md
 creation: 2026-04-21 à 15:12
-last_updated: 2026-04-21 à 15:12
-status: active
+last_updated: 2026-04-21 à 15:18
+status: completed
 phase: P5
 corrections_totales: 6 (P1:2 P2:2 P3:2)
 prerequis: video_generation_v1_plan.md complété (2026-04-21) — 108/108 tests
 tests_avant: 108
 tests_apres_cible: 124+
+tests_apres_reel: 124
 ---
 
 # PLAN D'ACTION — POST-PRODUCTION v1 — 2026-04-21
@@ -60,7 +61,7 @@ aiprod_adaptation/
 
 ---
 
-## PP-01 ⏳ — Modèles de données
+## PP-01 ✅ FAIT (2026-04-21 à 15:18) — Modèles de données
 
 ```python
 class AudioRequest(BaseModel):
@@ -94,7 +95,7 @@ test_timeline_clip_start_sec_cumulative
 
 ---
 
-## PP-02 ⏳ — `AudioAdapter` ABC + `NullAudioAdapter`
+## PP-02 ✅ FAIT (2026-04-21 à 15:18) — `AudioAdapter` ABC + `NullAudioAdapter`
 
 ```python
 class NullAudioAdapter(AudioAdapter):
@@ -117,7 +118,7 @@ test_null_adapter_shot_id_preserved
 
 ---
 
-## PP-03 ⏳ — `ElevenLabsAdapter` + `OpenAITTSAdapter` (prod, exclus CI)
+## PP-03 ✅ FAIT (2026-04-21 à 15:18) — `ElevenLabsAdapter` + `OpenAITTSAdapter` (prod, exclus CI)
 
 **ElevenLabsAdapter** : ElevenLabs TTS API — `ELEVENLABS_API_KEY`
 **OpenAITTSAdapter** : OpenAI TTS (`tts-1-hd`) — `OPENAI_API_KEY`
@@ -130,7 +131,7 @@ Exclusion mypy :
 
 ---
 
-## PP-04 ⏳ — `AudioSynchronizer`
+## PP-04 ✅ FAIT (2026-04-21 à 15:18) — `AudioSynchronizer`
 
 Prend `VideoOutput` + `AIPRODOutput` + `AudioAdapter`.
 Construit la timeline ordonnée avec `start_sec` cumulatif.
@@ -154,7 +155,7 @@ test_synchronizer_error_does_not_crash
 
 ---
 
-## PP-05 ⏳ — `run_pipeline_full()` dans `engine.py`
+## PP-05 ✅ FAIT (2026-04-21 à 15:18) — `run_pipeline_full()` dans `engine.py`
 
 ```python
 def run_pipeline_full(
@@ -175,7 +176,7 @@ test_full_pipeline_output_unchanged   # AIPRODOutput identique sans adapters
 
 ---
 
-## PP-06 ⏳ — `__init__.py` exports
+## PP-06 ✅ FAIT (2026-04-21 à 15:18) — `__init__.py` exports
 
 ```python
 from aiprod_adaptation.post_prod.audio_adapter import AudioAdapter, NullAudioAdapter

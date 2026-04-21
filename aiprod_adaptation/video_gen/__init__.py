@@ -1,3 +1,4 @@
+from aiprod_adaptation.video_gen.smart_video_router import SmartVideoRouter
 from aiprod_adaptation.video_gen.video_adapter import NullVideoAdapter, VideoAdapter
 from aiprod_adaptation.video_gen.video_request import (
     VideoClipResult,
@@ -7,6 +8,7 @@ from aiprod_adaptation.video_gen.video_request import (
 from aiprod_adaptation.video_gen.video_sequencer import VideoSequencer
 
 __all__ = [
+    "SmartVideoRouter",
     "VideoAdapter",
     "NullVideoAdapter",
     "VideoRequest",

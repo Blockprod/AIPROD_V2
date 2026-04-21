@@ -15,6 +15,7 @@ class ImageRequest(BaseModel):
     num_steps: int = 28
     guidance_scale: float = 7.5
     seed: Optional[int] = None
+    reference_image_url: str = ""
 
     @field_validator("num_steps")
     @classmethod

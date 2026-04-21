@@ -165,3 +165,47 @@ class TestRunPipelineWithImages:
         )
         assert json.dumps(plain.model_dump(), sort_keys=False) == \
                json.dumps(enriched.model_dump(), sort_keys=False)
+
+
+# ---------------------------------------------------------------------------
+# 5. CharacterImageRegistry — PQ-01
+# ---------------------------------------------------------------------------
+
+class TestCharacterImageRegistry:
+    def setup_method(self) -> None:
+        from aiprod_adaptation.image_gen.character_image_registry import CharacterImageRegistry
+        self.reg = CharacterImageRegistry()
+
+    def test_registry_stores_first_image_for_character(self) -> None:
+        self.reg.register("John", "null://storyboard/SH0001.png")
+        assert self.reg.get_reference("John") == "null://storyboard/SH0001.png"
+
+    def test_registry_does_not_overwrite_existing_character(self) -> None:
+        self.reg.register("John", "null://storyboard/SH0001.png")
+        self.reg.register("John", "null://storyboard/SH0002.png")
+        assert self.reg.get_reference("John") == "null://storyboard/SH0001.png"
+
+    def test_registry_returns_empty_for_unknown_character(self) -> None:
+        assert self.reg.get_reference("Nobody") == ""
+
+    def test_storyboard_passes_reference_to_second_shot_same_character(self) -> None:
+        received_refs: list[str] = []
+
+        from aiprod_adaptation.image_gen.image_adapter import ImageAdapter
+        from aiprod_adaptation.image_gen.image_request import ImageResult
+
+        class TrackingAdapter(ImageAdapter):
+            def generate(self, request: ImageRequest) -> ImageResult:
+                received_refs.append(request.reference_image_url)
+                return ImageResult(
+                    shot_id=request.shot_id,
+                    image_url=f"null://storyboard/{request.shot_id}.png",
+                    model_used="tracking",
+                    latency_ms=0,
+                )
+
+        output = run_pipeline(_NOVEL, "T")
+        StoryboardGenerator(adapter=TrackingAdapter(), base_seed=0).generate(output)
+        # First shot of a character has no reference; at least one later shot may have one
+        assert len(received_refs) > 0
+        assert received_refs[0] == ""   # first shot never has a reference

@@ -15,6 +15,7 @@ from aiprod_adaptation.post_prod.audio_request import (
     ProductionOutput,
     TimelineClip,
 )
+from aiprod_adaptation.post_prod.audio_utils import audio_duration_from_b64
 from aiprod_adaptation.video_gen.video_request import VideoClipResult, VideoOutput
 
 
@@ -91,7 +92,10 @@ class AudioSynchronizer:
         for audio in audio_results:
             video_clip = clip_by_shot.get(audio.shot_id)
             video_url = video_clip.video_url if video_clip is not None else ""
-            duration = audio.duration_sec
+            video_dur = video_clip.duration_sec if video_clip is not None else audio.duration_sec
+            real_audio_dur = audio_duration_from_b64(audio.audio_b64, audio.duration_sec)
+            silence_padding = max(0, video_dur - real_audio_dur)
+            clip_duration = max(real_audio_dur, video_dur)
             shot = shots_map.get(audio.shot_id)
             scene_id = shot.scene_id if shot is not None else ""
             timeline.append(
@@ -100,11 +104,13 @@ class AudioSynchronizer:
                     scene_id=scene_id,
                     video_url=video_url,
                     audio_url=audio.audio_url,
-                    duration_sec=duration,
+                    duration_sec=clip_duration,
                     start_sec=start_sec,
+                    audio_duration_sec=real_audio_dur,
+                    silence_padding_sec=silence_padding,
                 )
             )
-            start_sec += duration
+            start_sec += clip_duration
 
         production = ProductionOutput(
             title=video.title,

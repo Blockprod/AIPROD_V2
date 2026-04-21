@@ -18,6 +18,7 @@ class AudioRequest(BaseModel):
     voice_id: str = "default"
     language: str = "en"
     duration_hint_sec: int = 4
+    ssml: bool = False   # True if text contains SSML markup
 
     @field_validator("duration_hint_sec")
     @classmethod
@@ -47,6 +48,8 @@ class TimelineClip(BaseModel):
     audio_url: str
     duration_sec: int
     start_sec: int
+    audio_duration_sec: int = 0    # real measured audio duration (0 = not measured)
+    silence_padding_sec: int = 0   # silence to append when audio < video
 
 
 class ProductionOutput(BaseModel):

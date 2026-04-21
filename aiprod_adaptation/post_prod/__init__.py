@@ -10,6 +10,8 @@ from aiprod_adaptation.post_prod.audio_request import (
     TimelineClip,
 )
 from aiprod_adaptation.post_prod.audio_synchronizer import AudioSynchronizer
+from aiprod_adaptation.post_prod.ffmpeg_exporter import FFmpegExporter
+from aiprod_adaptation.post_prod.ssml_builder import SSMLBuilder
 
 __all__ = [
     "AudioAdapter",
@@ -19,4 +21,6 @@ __all__ = [
     "ProductionOutput",
     "TimelineClip",
     "AudioSynchronizer",
+    "FFmpegExporter",
+    "SSMLBuilder",
 ]
