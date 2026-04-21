@@ -14,11 +14,18 @@ Covers:
 
 from __future__ import annotations
 
+from typing import Any, cast
+from unittest.mock import MagicMock
+
 from aiprod_adaptation.core.adaptation.classifier import InputClassifier
 from aiprod_adaptation.core.adaptation.llm_adapter import NullLLMAdapter
-from aiprod_adaptation.core.adaptation.novel_pipe import run_novel_pipe
+from aiprod_adaptation.core.adaptation.llm_router import LLMRouter
 from aiprod_adaptation.core.adaptation.script_parser import ScriptParser
+from aiprod_adaptation.core.adaptation.story_extractor import StoryExtractor
+from aiprod_adaptation.core.adaptation.story_validator import StoryValidator
 from aiprod_adaptation.core.engine import run_pipeline
+from aiprod_adaptation.core.production_budget import ProductionBudget
+from aiprod_adaptation.models.intermediate import VisualScene
 
 
 # ---------------------------------------------------------------------------
@@ -114,18 +121,18 @@ class TestScriptParser:
 
 
 # ---------------------------------------------------------------------------
-# 4. NovelPipe (NullLLMAdapter)
+# 4. StoryExtractor — remplace NovelPipe (déprécié)
 # ---------------------------------------------------------------------------
 
 class TestNovelPipe:
     def test_novel_pipe_null_adapter_returns_list(self) -> None:
-        result = run_novel_pipe(NullLLMAdapter(), "John walked into the room.")
+        result = StoryExtractor().extract(NullLLMAdapter(), "John walked into the room.", ProductionBudget.for_short())
         assert isinstance(result, list)
 
     def test_novel_pipe_null_adapter_deterministic(self) -> None:
         text = "John walked into the room. He smiled at Sarah."
-        r1 = run_novel_pipe(NullLLMAdapter(), text)
-        r2 = run_novel_pipe(NullLLMAdapter(), text)
+        r1 = StoryExtractor().extract(NullLLMAdapter(), text, ProductionBudget.for_short())
+        r2 = StoryExtractor().extract(NullLLMAdapter(), text, ProductionBudget.for_short())
         assert r1 == r2
 
 
@@ -174,40 +181,24 @@ class TestEngineRouting:
 
 class TestStoryExtractor:
     def test_extractor_returns_list(self) -> None:
-        from aiprod_adaptation.core.adaptation.story_extractor import StoryExtractor
-        from aiprod_adaptation.core.production_budget import ProductionBudget
-
         result = StoryExtractor().extract(
             NullLLMAdapter(), "John walked into the room.", ProductionBudget.for_short()
         )
         assert isinstance(result, list)
 
     def test_extractor_fallback_on_empty_llm_output(self) -> None:
-        from aiprod_adaptation.core.adaptation.story_extractor import StoryExtractor
-        from aiprod_adaptation.core.production_budget import ProductionBudget
-
         result = StoryExtractor().extract(
             NullLLMAdapter(), "any text", ProductionBudget.for_short()
         )
         assert result == []
 
     def test_extractor_single_call_not_three(self) -> None:
-        from unittest.mock import MagicMock
-
-        from aiprod_adaptation.core.adaptation.story_extractor import StoryExtractor
-        from aiprod_adaptation.core.production_budget import ProductionBudget
-
         mock_llm = MagicMock()
         mock_llm.generate_json.return_value = {"scenes": []}
         StoryExtractor().extract(mock_llm, "text", ProductionBudget.for_short())
         assert mock_llm.generate_json.call_count == 1
 
     def test_extractor_respects_max_scenes_in_prompt(self) -> None:
-        from unittest.mock import MagicMock
-
-        from aiprod_adaptation.core.adaptation.story_extractor import StoryExtractor
-        from aiprod_adaptation.core.production_budget import ProductionBudget
-
         mock_llm = MagicMock()
         mock_llm.generate_json.return_value = {"scenes": []}
         budget = ProductionBudget(max_scenes=7)
@@ -216,11 +207,6 @@ class TestStoryExtractor:
         assert "7" in prompt
 
     def test_extractor_prior_summary_injected_in_prompt(self) -> None:
-        from unittest.mock import MagicMock
-
-        from aiprod_adaptation.core.adaptation.story_extractor import StoryExtractor
-        from aiprod_adaptation.core.production_budget import ProductionBudget
-
         mock_llm = MagicMock()
         mock_llm.generate_json.return_value = {"scenes": []}
         StoryExtractor().extract(
@@ -236,14 +222,8 @@ class TestStoryExtractor:
 
 
 class TestStoryValidator:
-    from typing import Any
-
-    def _make_scene(self, **kwargs: "Any") -> "Any":
-        from typing import cast
-
-        from aiprod_adaptation.models.intermediate import VisualScene
-
-        d: dict[str, object] = {
+    def _make_scene(self, **kwargs: Any) -> VisualScene:
+        d: dict[str, Any] = {
             "scene_id": "SCN_001",
             "characters": ["John"],
             "location": "the park",
@@ -256,53 +236,35 @@ class TestStoryValidator:
         return cast(VisualScene, d)
 
     def test_valid_scene_scores_1_0(self) -> None:
-        from aiprod_adaptation.core.adaptation.story_validator import StoryValidator
-
         result = StoryValidator().validate(self._make_scene())
         assert result.score == 1.0
         assert result.is_valid is True
 
     def test_missing_location_detected(self) -> None:
-        from aiprod_adaptation.core.adaptation.story_validator import StoryValidator
-
         result = StoryValidator().validate(self._make_scene(location="Unknown"))
         assert "location_missing" in result.issues
 
     def test_internal_thought_detected(self) -> None:
-        from aiprod_adaptation.core.adaptation.story_validator import StoryValidator
-
-        scene = self._make_scene(
-            visual_actions=["John thought about the future."]
-        )
+        scene = self._make_scene(visual_actions=["John thought about the future."])
         result = StoryValidator().validate(scene)
         assert any("internal_thought" in i for i in result.issues)
 
     def test_impossible_action_detected(self) -> None:
-        from aiprod_adaptation.core.adaptation.story_validator import StoryValidator
-
-        scene = self._make_scene(
-            visual_actions=["John dreamed of flying over the city."]
-        )
+        scene = self._make_scene(visual_actions=["John dreamed of flying over the city."])
         result = StoryValidator().validate(scene)
         assert any("impossible_action" in i for i in result.issues)
 
     def test_too_many_characters_detected(self) -> None:
-        from aiprod_adaptation.core.adaptation.story_validator import StoryValidator
-
         scene = self._make_scene(characters=["A", "B", "C"])
         result = StoryValidator().validate(scene)
         assert any("too_many_characters" in i for i in result.issues)
 
     def test_invalid_emotion_detected(self) -> None:
-        from aiprod_adaptation.core.adaptation.story_validator import StoryValidator
-
         scene = self._make_scene(emotion="confused")
         result = StoryValidator().validate(scene)
         assert any("invalid_emotion" in i for i in result.issues)
 
     def test_validate_all_filters_below_threshold(self) -> None:
-        from aiprod_adaptation.core.adaptation.story_validator import StoryValidator
-
         valid = self._make_scene()
         invalid = self._make_scene(
             scene_id="SCN_002",
@@ -316,8 +278,6 @@ class TestStoryValidator:
         assert result[0]["scene_id"] == "SCN_001"
 
     def test_validate_all_returns_all_valid_scenes(self) -> None:
-        from aiprod_adaptation.core.adaptation.story_validator import StoryValidator
-
         s1 = self._make_scene(scene_id="SCN_001")
         s2 = self._make_scene(scene_id="SCN_002")
         result = StoryValidator().validate_all([s1, s2], threshold=0.5)
@@ -331,10 +291,6 @@ class TestStoryValidator:
 
 class TestLLMRouter:
     def test_router_uses_claude_for_short_input(self) -> None:
-        from unittest.mock import MagicMock
-
-        from aiprod_adaptation.core.adaptation.llm_router import LLMRouter
-
         claude = MagicMock()
         gemini = MagicMock()
         claude.generate_json.return_value = {"scenes": []}
@@ -344,10 +300,6 @@ class TestLLMRouter:
         assert gemini.generate_json.call_count == 0
 
     def test_router_uses_gemini_for_long_input(self) -> None:
-        from unittest.mock import MagicMock
-
-        from aiprod_adaptation.core.adaptation.llm_router import LLMRouter
-
         claude = MagicMock()
         gemini = MagicMock()
         claude.generate_json.return_value = {"scenes": []}
@@ -357,10 +309,6 @@ class TestLLMRouter:
         assert claude.generate_json.call_count == 0
 
     def test_router_threshold_boundary(self) -> None:
-        from unittest.mock import MagicMock
-
-        from aiprod_adaptation.core.adaptation.llm_router import LLMRouter
-
         claude = MagicMock()
         gemini = MagicMock()
         claude.generate_json.return_value = {"scenes": []}
@@ -370,10 +318,6 @@ class TestLLMRouter:
         assert claude.generate_json.call_count == 1
 
     def test_router_custom_threshold(self) -> None:
-        from unittest.mock import MagicMock
-
-        from aiprod_adaptation.core.adaptation.llm_router import LLMRouter
-
         claude = MagicMock()
         gemini = MagicMock()
         claude.generate_json.return_value = {"scenes": []}
@@ -383,8 +327,6 @@ class TestLLMRouter:
         assert claude.generate_json.call_count == 1
 
     def test_router_null_adapters_both_paths(self) -> None:
-        from aiprod_adaptation.core.adaptation.llm_router import LLMRouter
-
         router_short = LLMRouter(NullLLMAdapter(), NullLLMAdapter(), token_threshold=1000)
         assert router_short.generate_json("x") == {"scenes": []}
         router_long = LLMRouter(NullLLMAdapter(), NullLLMAdapter(), token_threshold=1)
