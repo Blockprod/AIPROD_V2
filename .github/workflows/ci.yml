@@ -2,13 +2,13 @@ name: CI
 
 on:
   push:
-    branches: ["master"]
+    branches: ["main"]
   pull_request:
-    branches: ["master"]
+    branches: ["main"]
 
 jobs:
-  test:
-    name: pytest — Python 3.11
+  lint-and-test:
+    name: ruff + mypy + pytest — Python 3.11
     runs-on: ubuntu-latest
 
     steps:
@@ -23,5 +23,11 @@ jobs:
       - name: Install dependencies
         run: pip install -e ".[dev]"
 
-      - name: Run tests
-        run: pytest aiprod_adaptation/tests/ -v
+      - name: Ruff
+        run: ruff check aiprod_adaptation/
+
+      - name: Mypy
+        run: mypy aiprod_adaptation/core/ aiprod_adaptation/models/ aiprod_adaptation/backends/ --strict
+
+      - name: Pytest
+        run: pytest aiprod_adaptation/tests/ -v --tb=short
