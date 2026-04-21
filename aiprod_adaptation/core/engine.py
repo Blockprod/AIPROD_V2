@@ -11,6 +11,8 @@ if TYPE_CHECKING:
     from aiprod_adaptation.core.adaptation.llm_adapter import LLMAdapter
     from aiprod_adaptation.image_gen.image_adapter import ImageAdapter
     from aiprod_adaptation.image_gen.image_request import StoryboardOutput
+    from aiprod_adaptation.post_prod.audio_adapter import AudioAdapter
+    from aiprod_adaptation.post_prod.audio_request import ProductionOutput
     from aiprod_adaptation.video_gen.video_adapter import VideoAdapter
     from aiprod_adaptation.video_gen.video_request import VideoOutput
 
@@ -126,3 +128,26 @@ def run_pipeline_with_video(
         video = VideoSequencer(adapter=video_adapter).generate(storyboard, output)
         logger.info("video_complete", generated=video.generated, total=video.total_shots)
     return output, storyboard, video
+
+
+def run_pipeline_full(
+    text: str,
+    title: str,
+    episode_id: str = "EP01",
+    llm: "LLMAdapter | None" = None,
+    character_descriptions: "dict[str, str] | None" = None,
+    image_adapter: "ImageAdapter | None" = None,
+    image_base_seed: "int | None" = None,
+    video_adapter: "VideoAdapter | None" = None,
+    audio_adapter: "AudioAdapter | None" = None,
+) -> "tuple[AIPRODOutput, StoryboardOutput | None, VideoOutput | None, ProductionOutput | None]":
+    output, storyboard, video = run_pipeline_with_video(
+        text, title, episode_id, llm, character_descriptions,
+        image_adapter, image_base_seed, video_adapter,
+    )
+    production: "ProductionOutput | None" = None
+    if audio_adapter is not None and video is not None:
+        from aiprod_adaptation.post_prod.audio_synchronizer import AudioSynchronizer
+        _, production = AudioSynchronizer(adapter=audio_adapter).generate(video, output)
+        logger.info("production_complete", total_duration_sec=production.total_duration_sec)
+    return output, storyboard, video, production

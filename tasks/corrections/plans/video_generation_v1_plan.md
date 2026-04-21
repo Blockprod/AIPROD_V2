@@ -2,13 +2,14 @@
 title: Plan d'action — Video Generation Connector v1
 source: plan_global_revise.md
 creation: 2026-04-21 à 15:08
-last_updated: 2026-04-21 à 15:08
-status: active
+last_updated: 2026-04-21 à 15:11
+status: completed
 phase: P4
 corrections_totales: 6 (P1:2 P2:2 P3:2)
 prerequis: image_generation_v1_plan.md complété (2026-04-21) — 92/92 tests
 tests_avant: 92
 tests_apres_cible: 108+
+tests_apres_reel: 108
 ---
 
 # PLAN D'ACTION — VIDEO GENERATION CONNECTOR v1 — 2026-04-21
@@ -95,7 +96,7 @@ class VideoOutput(BaseModel):
 
 ---
 
-## VG-01 ⏳ — `VideoRequest` + `VideoClipResult` + `VideoOutput`
+## VG-01 ✅ FAIT (2026-04-21 à 15:11) — `VideoRequest` + `VideoClipResult` + `VideoOutput`
 
 **Fichier** : `aiprod_adaptation/video_gen/video_request.py`
 
@@ -108,7 +109,7 @@ test_video_output_generated_lte_total       # generated <= total_shots
 
 ---
 
-## VG-02 ⏳ — `VideoAdapter` ABC + `NullVideoAdapter`
+## VG-02 ✅ FAIT (2026-04-21 à 15:11) — `VideoAdapter` ABC + `NullVideoAdapter`
 
 **Fichier** : `aiprod_adaptation/video_gen/video_adapter.py`
 
@@ -134,7 +135,7 @@ test_null_adapter_shot_id_preserved
 
 ---
 
-## VG-03 ⏳ — `RunwayAdapter` + `KlingAdapter` (prod, exclus CI)
+## VG-03 ✅ FAIT (2026-04-21 à 15:11) — `RunwayAdapter` + `KlingAdapter` (prod, exclus CI)
 
 **RunwayAdapter** : Runway Gen-3 Alpha Turbo image-to-video  
 Env var : `RUNWAY_API_TOKEN`
@@ -150,7 +151,7 @@ Exclusion mypy :
 
 ---
 
-## VG-04 ⏳ — `VideoSequencer`
+## VG-04 ✅ FAIT (2026-04-21 à 15:11) — `VideoSequencer`
 
 **Fichier** : `aiprod_adaptation/video_gen/video_sequencer.py`
 
@@ -175,7 +176,7 @@ test_sequencer_error_does_not_crash
 
 ---
 
-## VG-05 ⏳ — `run_pipeline_with_video()` dans `engine.py`
+## VG-05 ✅ FAIT (2026-04-21 à 15:11) — `run_pipeline_with_video()` dans `engine.py`
 
 Nouvelle fonction (pas de breaking change) :
 
@@ -202,7 +203,7 @@ test_run_with_video_no_image_adapter      # image_adapter=None → storyboard No
 
 ---
 
-## VG-06 ⏳ — `__init__.py` exports
+## VG-06 ✅ FAIT (2026-04-21 à 15:11) — `__init__.py` exports
 
 ```python
 from aiprod_adaptation.video_gen.video_adapter import VideoAdapter, NullVideoAdapter

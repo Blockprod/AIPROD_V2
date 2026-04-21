@@ -31,6 +31,8 @@ exclude = [
     "aiprod_adaptation/image_gen/replicate_adapter\\.py",
     "aiprod_adaptation/video_gen/runway_adapter\\.py",
     "aiprod_adaptation/video_gen/kling_adapter\\.py",
+    "aiprod_adaptation/post_prod/elevenlabs_adapter\\.py",
+    "aiprod_adaptation/post_prod/openai_tts_adapter\\.py",
 ]
 
 [tool.pytest.ini_options]
