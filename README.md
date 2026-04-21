@@ -1,8 +1,6 @@
 # AIPROD ADAPTATION ENGINE v2
 
-A **deterministic narrative compiler** that transforms raw narrative text into structured cinematic data.
-
-It is NOT a creative system. It is a strict compiler: same input always produces byte-identical output.
+AIPROD Adaptation Engine v2 est un compilateur narratif déterministe écrit en Python qui transforme un texte brut (roman, script, synopsis) en une représentation structurée de séquences visuelles exploitables dans des pipelines de génération de contenu. Le système repose sur une architecture en quatre passes strictes : segmentation du texte en scènes via des règles explicites (changements de lieu, de temps ou d'action), transformation des éléments narratifs abstraits (pensées, émotions) en actions physiques observables, décomposition de ces actions en shots atomiques accompagnés de descriptions visuelles textuelles et de durées calculées de manière déterministe, puis validation et compilation finale en un modèle de données hiérarchique typé (`AIPRODOutput` via Pydantic). Le moteur garantit un déterminisme strict — même entrée, même sortie au niveau byte — sans recours à des modèles IA, sans aléatoire ni dépendance externe. Le résultat constitue une forme intermédiaire orientée "prompt visuel structuré", servant de base à des couches aval (export, transformation ou intégration), tout en restant volontairement découplé des moteurs de rendu finaux.
 
 ---
 
@@ -11,26 +9,31 @@ It is NOT a creative system. It is a strict compiler: same input always produces
 ```
 aiprod_adaptation/
 ├── core/
-│   ├── pass1_segment.py   — PASS 1: Segmentation (text → List[RawScene])
-│   ├── pass2_visual.py    — PASS 2: Visual transformation (thoughts → physical actions)
-│   ├── pass3_shots.py     — PASS 3: Shot atomization (scenes → List[ShotDict])
-│   ├── pass4_compile.py   — PASS 4: Compilation + validation (→ Pydantic models)
-│   ├── engine.py          — run_pipeline() entry point
+│   ├── pass1_segment.py      — PASS 1: Segmentation (text → List[RawScene])
+│   ├── pass2_visual.py       — PASS 2: Visual transformation (thoughts → physical actions)
+│   ├── pass3_shots.py        — PASS 3: Shot atomization (scenes → List[ShotDict])
+│   ├── pass4_compile.py      — PASS 4: Compilation + validation (→ Pydantic models)
+│   ├── engine.py             — run_pipeline() entry point
 │   └── rules/
-│       ├── segmentation_rules.py  — LOCATION_PHRASES, TIME_PHRASES
-│       ├── emotion_rules.py       — EMOTION_RULES, _INTERNAL_THOUGHT_WORDS
-│       └── duration_rules.py      — _MOTION_VERBS, _INTERACTION_VERBS, _PERCEPTION_VERBS
+│       ├── segmentation_rules.py    — LOCATION_PHRASES, TIME_PHRASES
+│       ├── emotion_rules.py         — EMOTION_RULES, _INTERNAL_THOUGHT_WORDS
+│       ├── duration_rules.py        — _MOTION_VERBS, _INTERACTION_VERBS, _PERCEPTION_VERBS
+│       └── cinematography_rules.py  — SHOT_TYPE_RULES, CAMERA_MOVEMENT_*_KEYWORDS
 ├── models/
-│   ├── schema.py          — Scene / Shot / Episode / AIPRODOutput (Pydantic v2)
-│   └── intermediate.py    — RawScene / VisualScene / ShotDict (TypedDict inter-pass contracts)
+│   ├── schema.py             — Scene / Shot / Episode / AIPRODOutput (Pydantic v2)
+│   └── intermediate.py       — RawScene / VisualScene / ShotDict (TypedDict inter-pass contracts)
+├── backends/
+│   ├── base.py               — BackendBase (abstract export interface)
+│   ├── csv_export.py         — CsvExport (one row per shot, 8 columns)
+│   └── json_flat_export.py   — JsonFlatExport (flat list of shot objects)
 ├── tests/
-│   └── test_pipeline.py   — pytest suite (8 categories, 33 test cases)
+│   ├── test_pipeline.py      — pytest suite (9 categories, 39 test cases)
+│   └── test_backends.py      — pytest suite (2 categories, 6 test cases)
 └── examples/
-    ├── sample.txt         — Minimal narrative input (smoke test baseline)
-    └── chapter1.txt       — Rich narrative input (4 characters, 3+ locations, dialogues)
-main.py                    — CLI entry point
-pyproject.toml             — Project metadata and dependencies
-.env                       — Environment configuration
+    ├── sample.txt            — Minimal narrative input (smoke test baseline)
+    └── chapter1.txt          — Rich narrative input (4 characters, 3+ locations, dialogues)
+main.py                       — CLI entry point
+pyproject.toml                — Project metadata and dependencies
 ```
 
 ---
@@ -68,11 +71,18 @@ python main.py --input chapter.txt --title "Episode 1" --episode-id EP01
 # Write output to a file instead of stdout
 python main.py --input chapter.txt --output output.json
 
+# Export as CSV or flat JSON
+python main.py --input chapter.txt --output output.csv --format csv
+python main.py --input chapter.txt --output output.json --format json-flat
+
 # Full help
 python main.py --help
 ```
 
-Output is pretty-printed JSON conforming to `AIPRODOutput`.
+Output format:
+- `json` (default) — pretty-printed `AIPRODOutput` with nested episodes/scenes/shots
+- `csv` — one row per shot: `episode_id, scene_id, shot_id, shot_type, camera_movement, prompt, duration_sec, emotion`
+- `json-flat` — flat JSON array, one object per shot
 
 ---
 
@@ -82,7 +92,7 @@ Output is pretty-printed JSON conforming to `AIPRODOutput`.
 pytest aiprod_adaptation/tests/ -v
 ```
 
-33 test cases across 8 categories: empty input, multi-location segmentation, time-jump segmentation, internal-thought conversion, determinism, invalid duration, full pipeline smoke test, real narrative text.
+42 test cases across 9 categories: empty input, multi-location segmentation, time-jump segmentation, internal-thought conversion, determinism, invalid duration, full pipeline smoke test, real narrative text, shot structure validation.
 
 ---
 
@@ -93,7 +103,7 @@ pytest aiprod_adaptation/tests/ -v
 ruff check aiprod_adaptation/
 
 # 2. Static type checking (strict)
-mypy aiprod_adaptation/core/ aiprod_adaptation/models/ --strict
+mypy aiprod_adaptation/core/ aiprod_adaptation/models/ aiprod_adaptation/backends/ --strict
 
 # 3. Tests
 pytest aiprod_adaptation/tests/ -v
@@ -114,6 +124,41 @@ All three commands must pass before any commit.
 
 ---
 
+## Shot IR Fields
+
+Each `Shot` in the output carries structured cinematic fields:
+
+| Field | Type | Values | Description |
+|---|---|---|---|
+| `shot_type` | `str` | `wide` · `medium` · `close_up` · `pov` | Framing type, derived deterministically from action verbs |
+| `camera_movement` | `str` | `static` · `follow` · `pan` | Camera behaviour: follows motion, pans on interaction, static otherwise |
+| `prompt` | `str` | free text | Visual description without any prefix |
+| `duration_sec` | `int` | 3–8 | Duration clamped to [3, 8] |
+| `emotion` | `str` | — | Dominant emotion of the parent scene |
+
+---
+
+## Cinematography Rules (deterministic)
+
+**`shot_type` — first match wins:**
+
+| Rule | Trigger keywords |
+|---|---|
+| `pov` | `pov`, `point of view` |
+| `close_up` | facial words: smile, frown, jaw, eyes, stare, glare… |
+| `wide` | motion words: walk, run, move, approach, rush… |
+| `medium` | fallback (default) |
+
+**`camera_movement`:**
+
+| Value | Condition |
+|---|---|
+| `follow` | motion verb present (walk, run, enter, arrive…) |
+| `pan` | interaction verb present, no motion (touch, grab, give…) |
+| `static` | default |
+
+---
+
 ## Absolute Invariants
 
 - Fully deterministic: same input → identical output (byte-level)
@@ -121,6 +166,7 @@ All three commands must pass before any commit.
 - Raises `ValueError` on any validation failure — never corrects or ignores
 - All lists preserve strict input order
 - No sets, no implicit sorting
+- Core never imports from backends
 
 ---
 
@@ -142,5 +188,5 @@ All three commands must pass before any commit.
 - +1 s if motion verb present
 - +1 s if interaction verb present
 - +1 s if perception verb present
-- +1 s if prompt length > 80 characters
+- +1 s if action description > 10 words
 - Clamped to [3, 8]
