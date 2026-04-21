@@ -24,6 +24,7 @@ def run_pipeline(
     title: str,
     episode_id: str = "EP01",
     llm: "LLMAdapter | None" = None,
+    character_descriptions: "dict[str, str] | None" = None,
 ) -> AIPRODOutput:
     from aiprod_adaptation.core.adaptation.classifier import InputClassifier
     from aiprod_adaptation.core.adaptation.llm_adapter import NullLLMAdapter
@@ -65,5 +66,16 @@ def run_pipeline(
     logger.debug("pass4_start")
     output = compile_episode(scenes_pass2, shots_pass3, title, episode_id)
     logger.info("pipeline_complete", episode_count=len(output.episodes))
+
+    if character_descriptions:
+        from aiprod_adaptation.core.continuity.character_registry import CharacterRegistry
+        from aiprod_adaptation.core.continuity.emotion_arc import EmotionArcTracker
+        from aiprod_adaptation.core.continuity.prompt_enricher import PromptEnricher
+
+        registry = CharacterRegistry().build(output)
+        registry = CharacterRegistry().enrich_from_text(registry, character_descriptions)
+        arc_states = EmotionArcTracker().track(output)
+        output = PromptEnricher().enrich(output, registry, arc_states)
+        logger.info("continuity_applied", characters=len(registry))
 
     return output
