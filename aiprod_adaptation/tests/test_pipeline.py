@@ -22,6 +22,7 @@ from aiprod_adaptation.core.pass2_visual import transform_visuals
 from aiprod_adaptation.core.pass3_shots import atomize_shots
 from aiprod_adaptation.core.pass4_compile import compile_output
 from aiprod_adaptation.core.engine import run_pipeline
+from aiprod_adaptation.models.schema import Shot
 
 
 # ---------------------------------------------------------------------------
@@ -261,6 +262,16 @@ class TestInvalidDuration:
         with pytest.raises(ValueError):
             compile_output("title", [self._BASE_SCENE], [shot])
 
+    def test_shot_references_unknown_scene_raises(self) -> None:
+        shot = {
+            "shot_id": "SH0001", "scene_id": "SC999",
+            "prompt": "someone stands, in a room.",
+            "duration_sec": 4,
+            "emotion": "neutral",
+        }
+        with pytest.raises(ValueError, match="unknown scene_id"):
+            compile_output("title", [self._BASE_SCENE], [shot])
+
 
 # ---------------------------------------------------------------------------
 # 7. Full pipeline smoke test on sample text
@@ -385,3 +396,19 @@ class TestShotStructure:
                 assert not shot.prompt.startswith(prefix), (
                     f"Shot {shot.shot_id} prompt still contains legacy prefix: {shot.prompt!r}"
                 )
+
+    def test_shot_invalid_shot_type_raises(self) -> None:
+        with pytest.raises(ValueError, match="shot_type"):
+            Shot(
+                shot_id="SH0001", scene_id="SC001",
+                prompt="someone stands.", duration_sec=4, emotion="neutral",
+                shot_type="extreme_close_up",
+            )
+
+    def test_shot_invalid_camera_movement_raises(self) -> None:
+        with pytest.raises(ValueError, match="camera_movement"):
+            Shot(
+                shot_id="SH0001", scene_id="SC001",
+                prompt="someone stands.", duration_sec=4, emotion="neutral",
+                camera_movement="zoom",
+            )

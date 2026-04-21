@@ -33,7 +33,9 @@ class VisualScene(TypedDict):
     characters:     List[str]
     location:       str
     time_of_day:    Optional[str]
-    visual_actions: List[str]
+    visual_actions: List[str]  # Each entry: one declarative sentence in English, subject + verb + object.
+    #                            Example: "John walks toward the door."
+    #                            No dialogue, no stage directions, no internal thoughts.
     dialogues:      List[str]
     emotion:        str
 

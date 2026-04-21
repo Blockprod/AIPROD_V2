@@ -38,7 +38,7 @@ from aiprod_adaptation.models.intermediate import ShotDict, VisualScene
 # Vocabulary
 # ---------------------------------------------------------------------------
 
-from .rules.duration_rules import _MOTION_VERBS, _INTERACTION_VERBS, _PERCEPTION_VERBS
+from .rules.verb_categories import MOTION_VERBS as _MOTION_VERBS, INTERACTION_VERBS as _INTERACTION_VERBS, PERCEPTION_VERBS as _PERCEPTION_VERBS
 from .rules.cinematography_rules import (
     SHOT_TYPE_RULES,
     SHOT_TYPE_DEFAULT,
@@ -168,5 +168,5 @@ def simplify_shots(scenes: List[VisualScene]) -> List[ShotDict]:
     return shots
 
 
-# Backward-compatibility alias (engine.py + test_pipeline.py import this name)
+# Deprecated — use simplify_shots. Kept for backward compatibility.
 atomize_shots = simplify_shots

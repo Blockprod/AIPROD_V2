@@ -158,5 +158,5 @@ def visual_rewrite(scenes: List[RawScene]) -> List[VisualScene]:
     return output
 
 
-# Backward-compatibility alias used by engine.py and existing tests.
+# Deprecated — use visual_rewrite. Kept for backward compatibility.
 transform_visuals = visual_rewrite

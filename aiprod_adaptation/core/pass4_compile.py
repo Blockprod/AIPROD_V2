@@ -30,6 +30,13 @@ def compile_episode(scenes: List[VisualScene], shots: List[ShotDict], title: str
     if not shots:
         raise ValueError("PASS 4: shots list must not be empty.")
 
+    known_scene_ids = {s["scene_id"] for s in scenes}
+    for shot in shots:
+        if shot.get("scene_id") not in known_scene_ids:
+            raise ValueError(
+                f"PASS 4: shot '{shot.get('shot_id')}' references unknown scene_id '{shot.get('scene_id')}'"
+            )
+
     try:
         pydantic_scenes = [Scene(**s) for s in scenes]
     except ValidationError as exc:
@@ -58,6 +65,6 @@ def compile_episode(scenes: List[VisualScene], shots: List[ShotDict], title: str
         raise ValueError(str(exc)) from exc
 
 
-# Backward-compatibility alias (test_pipeline.py imports compile_output)
+# Deprecated — use compile_episode. Kept for backward compatibility.
 def compile_output(title: str, scenes: List[VisualScene], shots: List[ShotDict], episode_id: str = "EP01") -> AIPRODOutput:
     return compile_episode(scenes, shots, title, episode_id)
