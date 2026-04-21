@@ -191,7 +191,9 @@ class TestDeterminism:
         out2 = run_pipeline(self._SAMPLE, "Test Title")
         assert out1.model_dump() == out2.model_dump()
 
-    def test_json_byte_identical(self) -> None:
+    def test_rule_pipeline_byte_identical(self) -> None:
+        # Teste le déterminisme byte-level du pipeline rules-based (NullLLMAdapter path).
+        # Le novel pipe LLM réel (ClaudeAdapter) est non-déterministe par nature.
         import json
         out1 = run_pipeline(self._SAMPLE, "Test Title")
         out2 = run_pipeline(self._SAMPLE, "Test Title")

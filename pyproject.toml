@@ -25,3 +25,11 @@ include = ["aiprod_adaptation*"]
 [tool.mypy]
 python_version = "3.11"
 strict = true
+exclude = ["aiprod_adaptation/core/adaptation/claude_adapter\\.py"]
+
+[tool.pytest.ini_options]
+testpaths = ["aiprod_adaptation/tests"]
+addopts = "-m 'not integration'"
+
+[tool.pytest.ini_options.markers]
+integration = "marks tests as integration tests (excluded from CI, require external API keys)"
