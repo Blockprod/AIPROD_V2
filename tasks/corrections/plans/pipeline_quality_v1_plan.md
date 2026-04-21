@@ -2,12 +2,13 @@
 title: Plan d'action — Pipeline Quality v1
 source: analyse_technique_p3_p4_p5_2026-04-21
 creation: 2026-04-21 à 15:54
-last_updated: 2026-04-21 à 15:54
-status: active
+last_updated: 2026-04-21 à 16:05
+status: completed
 phase: PQ (Post-P5)
 prerequis: post_production_v1_plan.md complété (2026-04-21) — 124/124 tests
 tests_avant: 124
 tests_apres_cible: 148+
+tests_apres_reel: 150
 ---
 
 # PLAN D'ACTION — PIPELINE QUALITY v1 — 2026-04-21

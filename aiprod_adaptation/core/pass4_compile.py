@@ -1,11 +1,15 @@
 from __future__ import annotations
 
-from typing import List
+from typing import Any, List, cast
 
 from pydantic import ValidationError
 
 from aiprod_adaptation.models.intermediate import ShotDict, VisualScene
 from aiprod_adaptation.models.schema import AIPRODOutput, Episode, Scene, Shot
+
+_SCENE_KNOWN_KEYS: frozenset[str] = frozenset(
+    {"scene_id", "characters", "location", "time_of_day", "visual_actions", "dialogues", "emotion"}
+)
 
 
 def compile_episode(scenes: List[VisualScene], shots: List[ShotDict], title: str, episode_id: str = "EP01") -> AIPRODOutput:
@@ -38,7 +42,10 @@ def compile_episode(scenes: List[VisualScene], shots: List[ShotDict], title: str
             )
 
     try:
-        pydantic_scenes = [Scene(**s) for s in scenes]
+        pydantic_scenes = [
+            Scene(**cast(Any, {k: v for k, v in s.items() if k in _SCENE_KNOWN_KEYS}))
+            for s in scenes
+        ]
     except ValidationError as exc:
         raise ValueError(str(exc)) from exc
 

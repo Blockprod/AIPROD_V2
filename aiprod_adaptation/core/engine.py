@@ -9,6 +9,7 @@ from aiprod_adaptation.models.schema import AIPRODOutput
 
 if TYPE_CHECKING:
     from aiprod_adaptation.core.adaptation.llm_adapter import LLMAdapter
+    from aiprod_adaptation.core.production_budget import ProductionBudget
     from aiprod_adaptation.image_gen.image_adapter import ImageAdapter
     from aiprod_adaptation.image_gen.image_request import StoryboardOutput
     from aiprod_adaptation.post_prod.audio_adapter import AudioAdapter
@@ -31,20 +32,23 @@ def run_pipeline(
     episode_id: str = "EP01",
     llm: "LLMAdapter | None" = None,
     character_descriptions: "dict[str, str] | None" = None,
+    budget: "ProductionBudget | None" = None,
 ) -> AIPRODOutput:
     from aiprod_adaptation.core.adaptation.classifier import InputClassifier
     from aiprod_adaptation.core.adaptation.llm_adapter import NullLLMAdapter
-    from aiprod_adaptation.core.adaptation.normalizer import Normalizer
-    from aiprod_adaptation.core.adaptation.novel_pipe import run_novel_pipe
     from aiprod_adaptation.core.adaptation.script_parser import ScriptParser
+    from aiprod_adaptation.core.adaptation.story_extractor import StoryExtractor
+    from aiprod_adaptation.core.adaptation.story_validator import StoryValidator
     from aiprod_adaptation.core.pass1_segment import segment
     from aiprod_adaptation.core.pass2_visual import visual_rewrite
     from aiprod_adaptation.core.pass3_shots import simplify_shots
     from aiprod_adaptation.core.pass4_compile import compile_episode
+    from aiprod_adaptation.core.production_budget import ProductionBudget
 
     logger.info("pipeline_start", input_length=len(text), title=title)
 
     effective_llm = llm if llm is not None else NullLLMAdapter()
+    _budget = budget if budget is not None else ProductionBudget.for_short()
     input_type = InputClassifier().classify(text)
 
     if input_type == "script":
@@ -53,9 +57,9 @@ def run_pipeline(
         logger.info("pass1_complete", scene_count=len(scenes_pass2), path="script")
     else:
         logger.debug("pass1_start", path="novel")
-        raw_scenes = run_novel_pipe(effective_llm, text)
-        if raw_scenes:
-            scenes_pass2 = Normalizer().normalize(raw_scenes)
+        scenes_llm = StoryExtractor().extract(effective_llm, text, _budget)
+        if scenes_llm:
+            scenes_pass2 = scenes_llm
             logger.info("pass1_complete", scene_count=len(scenes_pass2), path="novel_llm")
         else:
             # Fallback: rule-based pipeline (NullLLMAdapter path / CI)
@@ -64,6 +68,11 @@ def run_pipeline(
             logger.debug("pass2_start")
             scenes_pass2 = visual_rewrite(scenes_pass1)
             logger.info("pass2_complete", scene_count=len(scenes_pass2))
+
+    scenes_pass2 = StoryValidator().validate_all(scenes_pass2, threshold=0.5)
+    if not scenes_pass2:
+        raise ValueError("StoryValidator: no filmable scenes produced after validation.")
+    logger.info("story_validator_complete", valid_scene_count=len(scenes_pass2))
 
     logger.debug("pass3_start")
     shots_pass3 = simplify_shots(scenes_pass2)
@@ -95,8 +104,9 @@ def run_pipeline_with_images(
     character_descriptions: "dict[str, str] | None" = None,
     image_adapter: "ImageAdapter | None" = None,
     image_base_seed: "int | None" = None,
+    budget: "ProductionBudget | None" = None,
 ) -> "tuple[AIPRODOutput, StoryboardOutput | None]":
-    output = run_pipeline(text, title, episode_id, llm, character_descriptions)
+    output = run_pipeline(text, title, episode_id, llm, character_descriptions, budget)
     storyboard: "StoryboardOutput | None" = None
     if image_adapter is not None:
         from aiprod_adaptation.image_gen.storyboard import StoryboardGenerator
@@ -117,10 +127,11 @@ def run_pipeline_with_video(
     image_adapter: "ImageAdapter | None" = None,
     image_base_seed: "int | None" = None,
     video_adapter: "VideoAdapter | None" = None,
+    budget: "ProductionBudget | None" = None,
 ) -> "tuple[AIPRODOutput, StoryboardOutput | None, VideoOutput | None]":
     output, storyboard = run_pipeline_with_images(
         text, title, episode_id, llm, character_descriptions,
-        image_adapter, image_base_seed,
+        image_adapter, image_base_seed, budget,
     )
     video: "VideoOutput | None" = None
     if video_adapter is not None and storyboard is not None:
@@ -140,10 +151,11 @@ def run_pipeline_full(
     image_base_seed: "int | None" = None,
     video_adapter: "VideoAdapter | None" = None,
     audio_adapter: "AudioAdapter | None" = None,
+    budget: "ProductionBudget | None" = None,
 ) -> "tuple[AIPRODOutput, StoryboardOutput | None, VideoOutput | None, ProductionOutput | None]":
     output, storyboard, video = run_pipeline_with_video(
         text, title, episode_id, llm, character_descriptions,
-        image_adapter, image_base_seed, video_adapter,
+        image_adapter, image_base_seed, video_adapter, budget,
     )
     production: "ProductionOutput | None" = None
     if audio_adapter is not None and video is not None:

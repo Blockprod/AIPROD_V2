@@ -33,6 +33,7 @@ exclude = [
     "aiprod_adaptation/video_gen/kling_adapter\\.py",
     "aiprod_adaptation/post_prod/elevenlabs_adapter\\.py",
     "aiprod_adaptation/post_prod/openai_tts_adapter\\.py",
+    "aiprod_adaptation/core/adaptation/gemini_adapter\\.py",
 ]
 
 [tool.pytest.ini_options]

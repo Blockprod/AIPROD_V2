@@ -38,6 +38,10 @@ class VisualScene(TypedDict):
     #                            No dialogue, no stage directions, no internal thoughts.
     dialogues:      List[str]
     emotion:        str
+    # Optional enrichment fields (SE-04) — set by StoryExtractor when LLM provides them
+    pacing:             NotRequired[str]   # "fast" | "medium" | "slow"
+    time_of_day_visual: NotRequired[str]   # "dawn" | "day" | "dusk" | "night" | "interior"
+    dominant_sound:     NotRequired[str]   # "dialogue" | "ambient" | "silence"
 
 
 class ShotDict(TypedDict):

@@ -135,6 +135,9 @@ def simplify_shots(scenes: List[VisualScene]) -> List[ShotDict]:
         location:       str       = scene.get("location", "unknown location")
         emotion:        str       = scene.get("emotion", "neutral")
         visual_actions: List[str] = scene.get("visual_actions", [])
+        pacing:         str       = scene.get("pacing", "medium")
+        tod_visual:     str       = scene.get("time_of_day_visual", "day")
+        dom_sound:      str       = scene.get("dominant_sound", "dialogue")
 
         if not visual_actions:
             raise ValueError(f"PASS 3: scene '{scene_id}' has empty visual_actions.")
@@ -148,6 +151,10 @@ def simplify_shots(scenes: List[VisualScene]) -> List[ShotDict]:
                 movement = _compute_camera_movement(part)
                 prompt   = _build_prompt(part, location)
                 duration = _compute_duration(part)
+                if pacing == "fast":
+                    duration = min(duration, 5)
+                elif pacing == "slow":
+                    duration = max(duration, 5)
                 shots.append(
                     {
                         "shot_id":         _make_shot_id(scene_id, shot_num),
@@ -157,7 +164,10 @@ def simplify_shots(scenes: List[VisualScene]) -> List[ShotDict]:
                         "emotion":         emotion,
                         "shot_type":       stype,
                         "camera_movement": movement,
-                        "metadata":        {},
+                        "metadata": {
+                            "time_of_day_visual": tod_visual,
+                            "dominant_sound":     dom_sound,
+                        },
                     }
                 )
                 shot_num += 1

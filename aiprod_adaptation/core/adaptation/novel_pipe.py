@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import warnings
 from typing import Any
 
 from aiprod_adaptation.core.adaptation.llm_adapter import LLMAdapter
@@ -52,6 +53,11 @@ def to_screenplay(llm: LLMAdapter, scenes: list[dict[str, Any]]) -> list[dict[st
 
 
 def run_novel_pipe(llm: LLMAdapter, text: str) -> list[dict[str, Any]]:
+    warnings.warn(
+        "run_novel_pipe() is deprecated. Use StoryExtractor.extract() instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     scenes = extract_scenes(llm, text)
     scenes = make_cinematic(llm, scenes)
     scenes = to_screenplay(llm, scenes)

@@ -414,3 +414,155 @@ class TestShotStructure:
                 prompt="someone stands.", duration_sec=4, emotion="neutral",
                 camera_movement="zoom",
             )
+
+
+# ---------------------------------------------------------------------------
+# 8. ProductionBudget — SE-03
+# ---------------------------------------------------------------------------
+
+
+class TestProductionBudget:
+    def test_budget_default_values(self) -> None:
+        from aiprod_adaptation.core.production_budget import ProductionBudget
+
+        b = ProductionBudget()
+        assert b.target_duration_sec == 180
+        assert b.max_scenes == 12
+        assert b.max_shots_per_scene == 6
+
+    def test_budget_for_short_factory(self) -> None:
+        from aiprod_adaptation.core.production_budget import ProductionBudget
+
+        b = ProductionBudget.for_short()
+        assert b.target_duration_sec == 180
+        assert b.max_scenes == 12
+
+    def test_budget_for_episode_45_factory(self) -> None:
+        from aiprod_adaptation.core.production_budget import ProductionBudget
+
+        b = ProductionBudget.for_episode_45()
+        assert b.target_duration_sec == 2700
+        assert b.max_scenes == 135
+
+    def test_budget_shots_estimate_property(self) -> None:
+        from aiprod_adaptation.core.production_budget import ProductionBudget
+
+        b = ProductionBudget(max_scenes=10, max_shots_per_scene=4)
+        assert b.shots_estimate == 40
+
+    def test_pipeline_accepts_budget_param(self) -> None:
+        from aiprod_adaptation.core.production_budget import ProductionBudget
+
+        budget = ProductionBudget.for_short()
+        result = run_pipeline(
+            "John walked into the room. He smiled.", "Budget Test", budget=budget
+        )
+        assert result.title == "Budget Test"
+
+    def test_pipeline_budget_none_uses_default(self) -> None:
+        result = run_pipeline("John walked into the room.", "No Budget Test", budget=None)
+        assert len(result.episodes[0].shots) > 0
+
+
+# ---------------------------------------------------------------------------
+# 9. VisualScene enrichment — SE-04
+# ---------------------------------------------------------------------------
+
+
+class TestVisualSceneEnrichment:
+    from typing import Any
+
+    def _make_scene(self, **kwargs: "Any") -> "Any":
+        from typing import cast
+
+        from aiprod_adaptation.models.intermediate import VisualScene
+
+        d: dict[str, object] = {
+            "scene_id": "SCN_001",
+            "characters": ["John"],
+            "location": "the park",
+            "time_of_day": None,
+            "visual_actions": ["John walks toward the bench."],
+            "dialogues": [],
+            "emotion": "neutral",
+        }
+        d.update(kwargs)
+        return cast(VisualScene, d)
+
+    def test_pacing_fast_clamps_shot_duration_to_5(self) -> None:
+        from aiprod_adaptation.core.pass3_shots import simplify_shots
+
+        scene = self._make_scene(
+            visual_actions=[
+                "John runs and grabs the door and looks around carefully then walks fast."
+            ],
+            pacing="fast",
+        )
+        shots = simplify_shots([scene])
+        assert all(s["duration_sec"] <= 5 for s in shots)
+
+    def test_pacing_slow_clamps_shot_duration_minimum_5(self) -> None:
+        from aiprod_adaptation.core.pass3_shots import simplify_shots
+
+        scene = self._make_scene(visual_actions=["John stands."], pacing="slow")
+        shots = simplify_shots([scene])
+        assert all(s["duration_sec"] >= 5 for s in shots)
+
+    def test_time_of_day_visual_injected_in_image_prompt(self) -> None:
+        from aiprod_adaptation.core.pass3_shots import simplify_shots
+        from aiprod_adaptation.core.pass4_compile import compile_episode
+        from aiprod_adaptation.image_gen.image_adapter import ImageAdapter
+        from aiprod_adaptation.image_gen.image_request import ImageRequest, ImageResult
+        from aiprod_adaptation.image_gen.storyboard import StoryboardGenerator
+
+        scene = self._make_scene(time_of_day_visual="night")
+        shots = simplify_shots([scene])
+        output = compile_episode([scene], shots, "T", "EP01")
+
+        received: list[ImageRequest] = []
+
+        class TrackingAdapter(ImageAdapter):
+            def generate(self, req: ImageRequest) -> ImageResult:
+                received.append(req)
+                return ImageResult(
+                    shot_id=req.shot_id,
+                    image_url="u://x",
+                    image_b64="",
+                    model_used="test",
+                    latency_ms=0,
+                )
+
+        StoryboardGenerator(TrackingAdapter()).generate(output)
+        assert received
+        assert "night" in received[0].prompt.lower()
+
+    def test_dominant_sound_silence_skips_tts(self) -> None:
+        from aiprod_adaptation.core.pass3_shots import simplify_shots
+        from aiprod_adaptation.core.pass4_compile import compile_episode
+        from aiprod_adaptation.post_prod.audio_adapter import NullAudioAdapter
+        from aiprod_adaptation.post_prod.audio_synchronizer import AudioSynchronizer
+        from aiprod_adaptation.video_gen.video_request import VideoClipResult, VideoOutput
+
+        scene = self._make_scene(dominant_sound="silence")
+        shots = simplify_shots([scene])
+        output = compile_episode([scene], shots, "T", "EP01")
+        clips = [
+            VideoClipResult(
+                shot_id=shots[0]["shot_id"],
+                video_url="v.mp4",
+                duration_sec=4,
+                model_used="test",
+                latency_ms=0,
+            )
+        ]
+        video = VideoOutput(title="T", clips=clips, total_shots=1, generated=1)
+        requests = AudioSynchronizer(NullAudioAdapter()).build_requests(video, output)
+        assert requests[0].text == ""
+
+    def test_missing_pacing_uses_medium_default(self) -> None:
+        from aiprod_adaptation.core.pass3_shots import simplify_shots
+
+        scene = self._make_scene(visual_actions=["John stands."])
+        shots = simplify_shots([scene])
+        # base=3, no motion/interaction/perception, short text → 3 sec (medium, unclamped)
+        assert shots[0]["duration_sec"] == 3

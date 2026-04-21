@@ -51,7 +51,15 @@ class AudioSynchronizer:
         for clip in video.clips:
             shot = shots.get(clip.shot_id)
             scene = scenes.get(shot.scene_id) if shot is not None else None
-            text = _text_for_shot(shot, scene) if shot is not None else clip.video_url
+            dominant_sound = (
+                shot.metadata.get("dominant_sound", "dialogue")
+                if shot is not None
+                else "dialogue"
+            )
+            if dominant_sound == "silence":
+                text = ""
+            else:
+                text = _text_for_shot(shot, scene) if shot is not None else clip.video_url
             requests.append(
                 AudioRequest(
                     shot_id=clip.shot_id,

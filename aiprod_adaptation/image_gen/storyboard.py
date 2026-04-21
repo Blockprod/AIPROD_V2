@@ -52,10 +52,12 @@ class StoryboardGenerator:
             scene = scenes.get(shot.scene_id)
             primary_char = scene.characters[0] if scene and scene.characters else ""
             reference_url = char_registry.get_reference(primary_char) if primary_char else ""
+            tod_visual = shot.metadata.get("time_of_day_visual", "day")
+            enriched_prompt = f"{shot.prompt} {tod_visual} lighting."
             request = ImageRequest(
                 shot_id=shot.shot_id,
                 scene_id=shot.scene_id,
-                prompt=shot.prompt,
+                prompt=enriched_prompt,
                 seed=seed,
                 reference_image_url=reference_url,
             )
