@@ -101,6 +101,19 @@ def _normalize_subject(subject: str) -> str:
     return subject[:1].upper() + subject[1:]
 
 
+def _speaker_visual_label(subject: str) -> str:
+    normalized = _normalize_subject(subject)
+    generic_by_pronoun = {
+        "She": "A woman",
+        "He": "A man",
+        "They": "People",
+        "We": "People",
+        "I": "A person",
+        "You": "Someone",
+    }
+    return generic_by_pronoun.get(normalized, normalized)
+
+
 def _extract_speech_subject(sentence: str) -> str | None:
     stripped = _DIALOGUE_RE.sub("", sentence).strip(" ,")
     stripped = re.sub(r"\s{2,}", " ", stripped).strip(" ,")
@@ -218,7 +231,10 @@ def visual_rewrite(scenes: list[RawScene]) -> list[VisualScene]:
             )
             if speaker is None and chars:
                 speaker = chars[0]
-            visual_actions = [f"{speaker} speaks."] if speaker else ["Dialogue scene."]
+            if speaker is not None:
+                visual_actions = [f"{_speaker_visual_label(speaker)} speaks."]
+            else:
+                visual_actions = ["Dialogue scene."]
 
         output.append(
             {

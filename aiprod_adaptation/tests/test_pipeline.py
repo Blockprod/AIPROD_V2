@@ -212,6 +212,13 @@ class TestInternalThoughts:
         result = visual_rewrite([scene])
         assert result[0]["visual_actions"] == ["Marcus speaks."]
 
+    def test_pure_dialogue_fallback_uses_generic_label_for_pronoun(self) -> None:
+        scene = copy.deepcopy(self._THOUGHT_SCENE)
+        scene["characters"] = []
+        scene["raw_text"] = '"The captain waited," she said.'
+        result = visual_rewrite([scene])
+        assert result[0]["visual_actions"] == ["A woman speaks."]
+
 
 # ---------------------------------------------------------------------------
 # 5. Deterministic consistency
