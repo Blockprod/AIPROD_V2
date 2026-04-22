@@ -92,7 +92,8 @@ def _compute_duration(action: str) -> int:
 
 _SPEECH_VERBS_SOUND: list[str] = [
     "said", "asked", "replied", "whispered", "shouted", "spoke",
-    "answered", "called", "told", "says", "exclaimed",
+    "answered", "told", "says", "exclaimed",
+    # NOTE: "called" excluded — too ambiguous ("seagulls called", "he called out")
 ]
 
 
@@ -109,7 +110,7 @@ def _compute_dominant_sound(action: str) -> str:
 def _build_prompt(action: str, location: str) -> str:
     clean = _AMBIGUOUS_RE.sub("", action).strip().rstrip(".!?,;")
     clean = re.sub(r"\s{2,}", " ", clean).strip()
-    if location and location.lower() != "unknown":
+    if location and location.lower() != "unknown" and location.lower() not in clean.lower():
         return f"{clean}, in {location}."
     return f"{clean}."
 

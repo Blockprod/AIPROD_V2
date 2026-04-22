@@ -120,17 +120,38 @@ def _detect_time(sentence_lower: str) -> str | None:
     return None
 
 
-def _extract_proper_nouns(sentences: list[str]) -> list[str]:
+def _collect_confirmed_nouns(all_paragraphs: list[str]) -> frozenset[str]:
+    """Pre-scan all paragraphs; return words that appear at non-initial token
+    position in at least one sentence (these are reliably proper nouns)."""
+    confirmed: set[str] = set()
+    for para in all_paragraphs:
+        for sentence in _split_sentences(para):
+            tokens = sentence.split()
+            for i, token in enumerate(tokens):
+                if i == 0:
+                    continue
+                clean = re.sub(r"'s?$", "", token).rstrip(".,!?;:\"'")
+                if clean.isalpha() and clean[0].isupper() and clean not in _EXCLUDE_WORDS:
+                    confirmed.add(clean)
+    return frozenset(confirmed)
+
+
+def _extract_proper_nouns(
+    sentences: list[str], confirmed: frozenset[str]
+) -> list[str]:
     seen: list[str] = []
     for sentence in sentences:
         tokens = sentence.split()
         for i, token in enumerate(tokens):
-            clean = token.rstrip(".,!?;:\"'")
+            clean = re.sub(r"'s?$", "", token).rstrip(".,!?;:\"'")
             if not clean.isalpha():
                 continue
             if not clean[0].isupper():
                 continue
-            if i == 0:
+            # Sentence-initial word: only keep if confirmed at non-initial
+            # position elsewhere in the document (avoids "Together", "Hours",
+            # "Seagulls" etc. while preserving "Marcus", "Clara", "Thomas").
+            if i == 0 and clean not in confirmed:
                 continue
             if clean in _EXCLUDE_WORDS:
                 continue
@@ -144,10 +165,11 @@ def _build_scene(
     paragraphs: list[str],
     location: str,
     time_of_day: str | None,
+    confirmed: frozenset[str],
 ) -> RawScene:
     raw = " ".join(paragraphs)
     sentences = _split_sentences(raw)
-    characters = _extract_proper_nouns(sentences)
+    characters = _extract_proper_nouns(sentences, confirmed)
     return {
         "scene_id":    _make_scene_id(index),
         "characters":  characters,
@@ -172,6 +194,10 @@ def segment(raw_text: str) -> list[RawScene]:
     paragraphs: list[str] = [
         p.strip() for p in re.split(r"\n{2,}", raw_text) if p.strip()
     ]
+
+    # Global pre-scan to find confirmed proper nouns (appear at non-initial
+    # position at least once — ensures character names at sentence-start are kept).
+    confirmed = _collect_confirmed_nouns(paragraphs)
 
     scenes:      list[RawScene] = []
     scene_index: int = 0
@@ -212,7 +238,9 @@ def segment(raw_text: str) -> list[RawScene]:
 
         if open_new_scene and current_paragraphs:
             scenes.append(
-                _build_scene(scene_index, current_paragraphs, current_location, current_time)
+                _build_scene(
+                    scene_index, current_paragraphs, current_location, current_time, confirmed
+                )
             )
             scene_index += 1
             current_paragraphs = []
@@ -229,7 +257,7 @@ def segment(raw_text: str) -> list[RawScene]:
 
     if current_paragraphs:
         scenes.append(
-            _build_scene(scene_index, current_paragraphs, current_location, current_time)
+            _build_scene(scene_index, current_paragraphs, current_location, current_time, confirmed)
         )
 
     if not scenes:
