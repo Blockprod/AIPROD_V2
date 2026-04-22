@@ -91,7 +91,7 @@ def _compute_duration(action: str) -> int:
 
 
 _SPEECH_VERBS_SOUND: list[str] = [
-    "said", "asked", "replied", "whispered", "shouted", "spoke",
+    "said", "asked", "replied", "whispered", "shouted", "spoke", "speaks",
     "answered", "told", "says", "exclaimed",
     # NOTE: "called" excluded — too ambiguous ("seagulls called", "he called out")
 ]

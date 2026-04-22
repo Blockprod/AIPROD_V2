@@ -196,6 +196,22 @@ class TestInternalThoughts:
         actions = result[0]["visual_actions"]
         assert "trembles" in actions[0] or "eyes widen" in actions[0]
 
+    def test_dialogue_tail_keeps_subject_context(self) -> None:
+        scene = copy.deepcopy(self._THOUGHT_SCENE)
+        scene["raw_text"] = (
+            '"I found the passage," Clara said quietly, '
+            "tracing a line with her finger."
+        )
+        result = visual_rewrite([scene])
+        assert result[0]["visual_actions"] == ["Clara was tracing a line with her finger."]
+
+    def test_pure_dialogue_fallback_uses_speaker(self) -> None:
+        scene = copy.deepcopy(self._THOUGHT_SCENE)
+        scene["characters"] = ["Marcus"]
+        scene["raw_text"] = '"We go forward," Marcus said.'
+        result = visual_rewrite([scene])
+        assert result[0]["visual_actions"] == ["Marcus speaks."]
+
 
 # ---------------------------------------------------------------------------
 # 5. Deterministic consistency

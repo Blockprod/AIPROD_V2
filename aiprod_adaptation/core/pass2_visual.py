@@ -79,7 +79,9 @@ def _visual_action_for_emotion(emotion: str) -> str | None:
 
 
 _SPEECH_TAG_RE: re.Pattern[str] = re.compile(
-    r"^[A-Za-z]+ (said|asked|replied|whispered|shouted|exclaimed|told|called|answered)[.,]?$",
+    r"^(?P<subject>[A-Za-z]+) "
+    r"(?P<verb>said|asked|replied|whispered|shouted|exclaimed|told|called|answered)"
+    r"[.,]?$",
     re.IGNORECASE,
 )
 
@@ -88,9 +90,24 @@ _SPEECH_TAG_RE: re.Pattern[str] = re.compile(
 # "Thomas asked, his voice low." → "his voice low."
 # Requires a comma — bare "she said." is caught by _SPEECH_TAG_RE instead.
 _SPEECH_ATTR_PREFIX_RE: re.Pattern[str] = re.compile(
-    r"^[A-Za-z]+ (said|asked|replied|whispered|shouted|exclaimed|told|answered)\b[^,]*,\s*",
+    r"^(?P<subject>[A-Za-z]+) "
+    r"(?P<verb>said|asked|replied|whispered|shouted|exclaimed|told|answered)"
+    r"\b[^,]*,\s*(?P<detail>.+)$",
     re.IGNORECASE,
 )
+
+
+def _normalize_subject(subject: str) -> str:
+    return subject[:1].upper() + subject[1:]
+
+
+def _extract_speech_subject(sentence: str) -> str | None:
+    stripped = _DIALOGUE_RE.sub("", sentence).strip(" ,")
+    stripped = re.sub(r"\s{2,}", " ", stripped).strip(" ,")
+    match = _SPEECH_TAG_RE.match(stripped.rstrip(".!?,;"))
+    if match is None:
+        return None
+    return _normalize_subject(match.group("subject"))
 
 
 def _transform_sentence(sentence: str) -> str | None:
@@ -112,21 +129,22 @@ def _transform_sentence(sentence: str) -> str | None:
         sentence = re.sub(r"\s{2,}", " ", sentence).strip(" ,")
         if not sentence:
             return None  # Pure dialogue — no surrounding action text
-        # Strip speech-attribution prefix revealed after quote removal:
-        # "Clara said quietly, tracing a line" → "tracing a line"
-        sentence = _SPEECH_ATTR_PREFIX_RE.sub("", sentence).strip(" ,")
-        if not sentence:
-            return None
-        # Discard adverbial/sound fragments revealed after prefix strip:
-        # "his voice low", "her hands trembling", "eyes wide" — < 4 words,
-        # no main verb, not a visual action.
-        if len(sentence.split()) < 4:
-            return None
-        # Re-capitalize first letter (prefix strip may expose a lowercase continuation).
-        sentence = sentence[0].upper() + sentence[1:]
         # Discard pure speech tags: "she said.", "Marcus asked.", etc.
         if _SPEECH_TAG_RE.match(sentence.rstrip(".!?,;")):
             return None
+        attr_match = _SPEECH_ATTR_PREFIX_RE.match(sentence)
+        if attr_match is not None:
+            detail = attr_match.group("detail").strip(" ,")
+            if not detail:
+                return None
+            # "his voice low", "her eyes wide" — fragment only, not a visual action.
+            if len(detail.split()) < 4:
+                return None
+            subject = _normalize_subject(attr_match.group("subject"))
+            if re.match(r"^[A-Za-z]+ing\b", detail):
+                sentence = f"{subject} was {detail}"
+            else:
+                sentence = detail[0].upper() + detail[1:]
     lower = sentence.lower()
     for _, keywords, visual_action in EMOTION_RULES:
         for kw in keywords:
@@ -189,7 +207,18 @@ def visual_rewrite(scenes: list[RawScene]) -> list[VisualScene]:
         # produce a minimal visual placeholder rather than an empty list.
         if not visual_actions:
             chars: list[str] = list(scene.get("characters", []))
-            visual_actions = [f"{chars[0]} speaks."] if chars else ["Dialogue scene."]
+            speaker = next(
+                (
+                    extracted for extracted in (
+                        _extract_speech_subject(sentence) for sentence in sentences
+                    )
+                    if extracted is not None
+                ),
+                None,
+            )
+            if speaker is None and chars:
+                speaker = chars[0]
+            visual_actions = [f"{speaker} speaks."] if speaker else ["Dialogue scene."]
 
         output.append(
             {
