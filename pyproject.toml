@@ -21,6 +21,23 @@ dev = [
     "mypy>=1.0",
     "ruff>=0.1",
 ]
+llm = [
+    "anthropic",
+    "google-generativeai",
+]
+image = [
+    "replicate",
+]
+video = [
+    "runwayml",
+    "requests",
+    "PyJWT",
+]
+audio = [
+    "openai",
+    "elevenlabs",
+]
+
 
 [tool.setuptools.packages.find]
 where = ["."]
