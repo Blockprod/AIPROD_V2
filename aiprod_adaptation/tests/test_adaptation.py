@@ -14,8 +14,11 @@ Covers:
 
 from __future__ import annotations
 
+import os
 from typing import Any, cast
 from unittest.mock import MagicMock
+
+import pytest
 
 from aiprod_adaptation.core.adaptation.classifier import InputClassifier
 from aiprod_adaptation.core.adaptation.llm_adapter import LLMAdapter, NullLLMAdapter
@@ -495,11 +498,49 @@ class TestEngineStoryValidatorAllFiltered:
     def test_engine_raises_when_story_validator_filters_all_scenes(self) -> None:
         from unittest.mock import patch
 
-        import pytest
-
         with patch(
             "aiprod_adaptation.core.adaptation.story_validator.StoryValidator.validate_all",
             return_value=[],
         ):
             with pytest.raises(ValueError, match="StoryValidator produced no filmable scenes"):
                 run_pipeline("John walked into the room.", "T")
+
+
+# ---------------------------------------------------------------------------
+# Integration — real LLM adapters (opt-in via API keys)
+# ---------------------------------------------------------------------------
+
+_JSON_CONTRACT_PROMPT = (
+    "Return only valid JSON with this exact structure and no commentary: "
+    '{"scenes": []}'
+)
+
+
+class TestRealLLMAdapters:
+    @pytest.mark.integration
+    @pytest.mark.skipif(
+        not os.environ.get("ANTHROPIC_API_KEY"),
+        reason="ANTHROPIC_API_KEY not set",
+    )
+    def test_claude_adapter_returns_parseable_json(self) -> None:
+        from aiprod_adaptation.core.adaptation.claude_adapter import ClaudeAdapter
+
+        result = ClaudeAdapter().generate_json(_JSON_CONTRACT_PROMPT)
+
+        assert isinstance(result, dict)
+        assert "scenes" in result
+        assert isinstance(result["scenes"], list)
+
+    @pytest.mark.integration
+    @pytest.mark.skipif(
+        not os.environ.get("GEMINI_API_KEY"),
+        reason="GEMINI_API_KEY not set",
+    )
+    def test_gemini_adapter_returns_parseable_json(self) -> None:
+        from aiprod_adaptation.core.adaptation.gemini_adapter import GeminiAdapter
+
+        result = GeminiAdapter().generate_json(_JSON_CONTRACT_PROMPT)
+
+        assert isinstance(result, dict)
+        assert "scenes" in result
+        assert isinstance(result["scenes"], list)

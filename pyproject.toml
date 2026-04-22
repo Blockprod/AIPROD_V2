@@ -63,9 +63,9 @@ ignore_missing_imports = true
 [tool.pytest.ini_options]
 testpaths = ["aiprod_adaptation/tests"]
 addopts = "-m 'not integration'"
-
-[tool.pytest.ini_options.markers]
-integration = "marks tests as integration tests (excluded from CI, require external API keys)"
+markers = [
+    "integration: marks tests as integration tests (excluded from CI, require external API keys)",
+]
 
 [tool.ruff]
 target-version = "py311"
