@@ -117,6 +117,11 @@ def _transform_sentence(sentence: str) -> str | None:
         sentence = _SPEECH_ATTR_PREFIX_RE.sub("", sentence).strip(" ,")
         if not sentence:
             return None
+        # Discard adverbial/sound fragments revealed after prefix strip:
+        # "his voice low", "her hands trembling", "eyes wide" — < 4 words,
+        # no main verb, not a visual action.
+        if len(sentence.split()) < 4:
+            return None
         # Re-capitalize first letter (prefix strip may expose a lowercase continuation).
         sentence = sentence[0].upper() + sentence[1:]
         # Discard pure speech tags: "she said.", "Marcus asked.", etc.
