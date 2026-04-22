@@ -90,11 +90,28 @@ def _compute_duration(action: str) -> int:
     return max(3, min(8, duration))
 
 
+_SPEECH_VERBS_SOUND: list[str] = [
+    "said", "asked", "replied", "whispered", "shouted", "spoke",
+    "answered", "called", "told", "says", "exclaimed",
+]
+
+
+def _compute_dominant_sound(action: str) -> str:
+    """Infer dominant_sound from the action text."""
+    if '"' in action or "\u201C" in action:
+        return "dialogue"
+    lower = action.lower()
+    if any(re.search(r"\b" + v + r"\b", lower) for v in _SPEECH_VERBS_SOUND):
+        return "dialogue"
+    return "ambient"
+
+
 def _build_prompt(action: str, location: str) -> str:
-    clean = _AMBIGUOUS_RE.sub("", action).strip()
-    clean = re.sub(r"\s{2,}", " ", clean)
-    location_str = location if location else "unknown location"
-    return f"{clean}, in {location_str}."
+    clean = _AMBIGUOUS_RE.sub("", action).strip().rstrip(".!?,;")
+    clean = re.sub(r"\s{2,}", " ", clean).strip()
+    if location and location.lower() != "unknown":
+        return f"{clean}, in {location}."
+    return f"{clean}."
 
 
 def _atomize_action(action: str) -> list[str]:
@@ -136,12 +153,11 @@ def simplify_shots(scenes: list[VisualScene]) -> list[ShotDict]:
         location:       str       = scene.get("location", "unknown location")
         emotion:        str       = scene.get("emotion", "neutral")
         visual_actions: list[str] = scene.get("visual_actions", [])
-        # NOTE: pacing/time_of_day_visual/dominant_sound are only populated on the LLM
-        # path (StoryExtractor via Normalizer). On the rule-based path (Pass1→Pass2),
-        # these fields always equal their defaults ("medium" / "day" / "dialogue").
-        pacing:         str       = scene.get("pacing", "medium")
-        tod_visual:     str       = scene.get("time_of_day_visual", "day")
-        dom_sound:      str       = scene.get("dominant_sound", "dialogue")
+        # NOTE: pacing/time_of_day_visual are only populated on the LLM path.
+        # dominant_sound is computed per-shot on the rules path (NotRequired field).
+        pacing:             str       = scene.get("pacing", "medium")
+        tod_visual:         str       = scene.get("time_of_day_visual", "day")
+        scene_dom_sound:    str | None = scene.get("dominant_sound")  # None on rules path
 
         if not visual_actions:
             raise ValueError(f"PASS 3: scene '{scene_id}' has empty visual_actions.")
@@ -170,7 +186,11 @@ def simplify_shots(scenes: list[VisualScene]) -> list[ShotDict]:
                         "camera_movement": movement,
                         "metadata": {
                             "time_of_day_visual": tod_visual,
-                            "dominant_sound":     dom_sound,
+                            "dominant_sound": (
+                                scene_dom_sound
+                                if scene_dom_sound is not None
+                                else _compute_dominant_sound(part)
+                            ),
                         },
                     }
                 )

@@ -82,11 +82,18 @@ def _transform_sentence(sentence: str) -> str | None:
     """
     Transform one sentence:
     - Internal thought  → None (discard)
+    - Dialogue-only     → None (captured separately in dialogues list)
+    - Contains dialogue → strip quoted content, keep surrounding action text
     - Contains emotion keyword → replace with corresponding visual action
     - Otherwise → return unchanged
     """
     if _is_internal_thought(sentence):
         return None
+    # Strip inline quoted dialogue; keep surrounding action text.
+    if _DIALOGUE_RE.search(sentence):
+        sentence = _DIALOGUE_RE.sub("", sentence).strip(" ,")
+        if not sentence:
+            return None  # Pure dialogue — no surrounding action text
     lower = sentence.lower()
     for _, keywords, visual_action in EMOTION_RULES:
         for kw in keywords:

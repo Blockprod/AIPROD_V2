@@ -15,27 +15,27 @@ EMOTION_RULES: list[tuple[str, list[str], str]] = [
     (
         "angry",
         ["angry", "furious", "enraged", "mad", "annoyed"],
-        "clenches fists, jaw tightens, steps forward aggressively",
+        "Clenches fists, jaw tightens, steps forward aggressively.",
     ),
     (
         "scared",
         ["scared", "afraid", "terrified", "fearful", "panicked"],
-        "trembles, takes backward steps, eyes widen",
+        "Trembles, takes backward steps, eyes widen.",
     ),
     (
         "sad",
         ["sad", "depressed", "heartbroken", "grieving", "miserable"],
-        "lowers head, moves slowly, shoulders slumped",
+        "Lowers head, moves slowly, shoulders slumped.",
     ),
     (
         "happy",
         ["happy", "joyful", "delighted", "pleased", "cheerful"],
-        "smiles broadly, moves with energy, gestures openly",
+        "Smiles broadly, moves with energy, gestures openly.",
     ),
     (
         "nervous",
         ["nervous", "anxious", "worried", "uneasy", "tense"],
-        "fidgets, paces, bites lip",
+        "Fidgets, paces, bites lip.",
     ),
 ]
 
