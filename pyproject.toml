@@ -39,7 +39,7 @@ module = [
     "jwt.*",
     "elevenlabs.*",
     "openai.*",
-    "google.generativeai.*",
+    "google.*",
 ]
 ignore_missing_imports = true
 
