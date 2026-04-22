@@ -8,6 +8,7 @@ from aiprod_adaptation.core.engine import run_pipeline
 from aiprod_adaptation.core.run_metrics import RunMetrics
 from aiprod_adaptation.core.scheduling.episode_scheduler import EpisodeScheduler, SchedulerResult
 from aiprod_adaptation.image_gen.image_adapter import NullImageAdapter
+from aiprod_adaptation.models.schema import AIPRODOutput
 from aiprod_adaptation.post_prod.audio_adapter import NullAudioAdapter
 from aiprod_adaptation.video_gen.video_adapter import NullVideoAdapter
 
@@ -17,7 +18,7 @@ _NOVEL = (
 )
 
 
-def _output():  # type: ignore[return]
+def _output() -> AIPRODOutput:
     return run_pipeline(_NOVEL, "Scheduler Test")
 
 
@@ -165,3 +166,23 @@ class TestCostReport:
         result = _scheduler().run(_output())
         assert hasattr(result.metrics, "cost")
         assert isinstance(result.metrics.cost, CostReport)
+
+    def test_cost_report_to_summary_str_format(self) -> None:
+        from aiprod_adaptation.core.cost_report import CostReport
+        c = CostReport(
+            image_api_calls=3, video_api_calls=2, audio_api_calls=5,
+            llm_tokens_input=100, llm_tokens_output=50,
+        )
+        s = c.to_summary_str()
+        assert "Image: 3 calls" in s
+        assert "Video: 2 calls" in s
+        assert "Audio: 5 calls" in s
+        assert "Total: $0.0000" in s
+
+    def test_cost_report_merge_with_empty_is_identity(self) -> None:
+        from aiprod_adaptation.core.cost_report import CostReport
+        c = CostReport(image_api_calls=3, video_api_calls=2, llm_cost_usd=1.5)
+        merged = c.merge(CostReport())
+        assert merged.image_api_calls == 3
+        assert merged.video_api_calls == 2
+        assert abs(merged.llm_cost_usd - 1.5) < 1e-9

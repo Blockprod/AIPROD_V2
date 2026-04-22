@@ -18,7 +18,10 @@ from aiprod_adaptation.core.engine import run_pipeline
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="aiprod",
-        description="AIPROD Adaptation Engine — transforms narrative text into structured cinematic data.",
+        description=(
+            "AIPROD Adaptation Engine"
+            " — transforms narrative text into structured cinematic data."
+        ),
     )
     parser.add_argument(
         "--input", "-i",

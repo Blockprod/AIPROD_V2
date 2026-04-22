@@ -22,10 +22,14 @@ from aiprod_adaptation.core.io import (
     save_video,
 )
 from aiprod_adaptation.image_gen.image_adapter import NullImageAdapter
+from aiprod_adaptation.image_gen.image_request import StoryboardOutput
 from aiprod_adaptation.image_gen.storyboard import StoryboardGenerator
+from aiprod_adaptation.models.schema import AIPRODOutput
 from aiprod_adaptation.post_prod.audio_adapter import NullAudioAdapter
+from aiprod_adaptation.post_prod.audio_request import ProductionOutput
 from aiprod_adaptation.post_prod.audio_synchronizer import AudioSynchronizer
 from aiprod_adaptation.video_gen.video_adapter import NullVideoAdapter
+from aiprod_adaptation.video_gen.video_request import VideoOutput
 from aiprod_adaptation.video_gen.video_sequencer import VideoSequencer
 
 _NOVEL = (
@@ -34,19 +38,19 @@ _NOVEL = (
 )
 
 
-def _pipeline():  # type: ignore[return]
+def _pipeline() -> AIPRODOutput:
     return run_pipeline(_NOVEL, "IO Test")
 
 
-def _storyboard(output):  # type: ignore[return]
+def _storyboard(output: AIPRODOutput) -> StoryboardOutput:
     return StoryboardGenerator(adapter=NullImageAdapter(), base_seed=0).generate(output)
 
 
-def _video(sb, output):  # type: ignore[return]
+def _video(sb: StoryboardOutput, output: AIPRODOutput) -> VideoOutput:
     return VideoSequencer(adapter=NullVideoAdapter(), base_seed=0).generate(sb, output)
 
 
-def _production(video, output):  # type: ignore[return]
+def _production(video: VideoOutput, output: AIPRODOutput) -> ProductionOutput:
     _audio_results, prod = AudioSynchronizer(adapter=NullAudioAdapter()).generate(video, output)
     return prod
 

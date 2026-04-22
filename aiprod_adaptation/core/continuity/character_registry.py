@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import List
-
 from typing_extensions import TypedDict
 
 from aiprod_adaptation.models.schema import AIPRODOutput
@@ -11,7 +9,7 @@ class CharacterProfile(TypedDict):
     name: str
     description: str
     first_scene: str
-    scenes: List[str]
+    scenes: list[str]
 
 
 class CharacterRegistry:

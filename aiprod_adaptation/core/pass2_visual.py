@@ -32,26 +32,24 @@ Emotion → trigger keywords → visual action mapping:
 from __future__ import annotations
 
 import re
-from typing import List, Optional
 
 from aiprod_adaptation.models.intermediate import RawScene, VisualScene
 
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
+from .rules.emotion_rules import _INTERNAL_THOUGHT_WORDS, EMOTION_RULES
 
-from .rules.emotion_rules import EMOTION_RULES, _INTERNAL_THOUGHT_WORDS
-
-# Regex to extract quoted dialogue.
-_DIALOGUE_RE: re.Pattern[str] = re.compile(r'"([^"]*)"')
+# Regex to extract quoted dialogue (ASCII straight quotes and typographic curly quotes).
+_DIALOGUE_RE: re.Pattern[str] = re.compile(r'["\u201C]([^"\u201C\u201D]*)["\u201D]')
 
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _split_sentences(text: str) -> List[str]:
-    parts: List[str] = re.split(r"(?<=[.!?])\s+", text.strip())
+def _split_sentences(text: str) -> list[str]:
+    parts: list[str] = re.split(r"(?<=[.!?])\s+", text.strip())
     return [p.strip() for p in parts if p.strip()]
 
 
@@ -72,7 +70,7 @@ def _detect_emotion_in_text(text_lower: str) -> str:
     return "neutral"
 
 
-def _visual_action_for_emotion(emotion: str) -> Optional[str]:
+def _visual_action_for_emotion(emotion: str) -> str | None:
     """Return the visual action string for a named emotion, or None for neutral."""
     for emotion_name, _, visual_action in EMOTION_RULES:
         if emotion_name == emotion:
@@ -80,7 +78,7 @@ def _visual_action_for_emotion(emotion: str) -> Optional[str]:
     return None
 
 
-def _transform_sentence(sentence: str) -> Optional[str]:
+def _transform_sentence(sentence: str) -> str | None:
     """
     Transform one sentence:
     - Internal thought  → None (discard)
@@ -97,7 +95,7 @@ def _transform_sentence(sentence: str) -> Optional[str]:
     return sentence
 
 
-def _extract_dialogues(raw_text: str) -> List[str]:
+def _extract_dialogues(raw_text: str) -> list[str]:
     """Extract all quoted strings from raw_text, preserving order."""
     return _DIALOGUE_RE.findall(raw_text)
 
@@ -106,7 +104,7 @@ def _extract_dialogues(raw_text: str) -> List[str]:
 # Public API
 # ---------------------------------------------------------------------------
 
-def visual_rewrite(scenes: List[RawScene]) -> List[VisualScene]:
+def visual_rewrite(scenes: list[RawScene]) -> list[VisualScene]:
     """
     Convert abstract narration into visual actions.
 
@@ -124,20 +122,24 @@ def visual_rewrite(scenes: List[RawScene]) -> List[VisualScene]:
     if not scenes:
         raise ValueError("PASS 2: scenes list must not be empty.")
 
-    output: List[VisualScene] = []
+    output: list[VisualScene] = []
 
     for scene in scenes:
         raw_text: str = scene.get("raw_text", "")
+        if not raw_text.strip():
+            raise ValueError(
+                f"PASS 2: scene '{scene.get('scene_id', '?')}' has empty raw_text."
+            )
         sentences = _split_sentences(raw_text)
 
         # Detect dominant scene emotion from the full raw_text.
         emotion = _detect_emotion_in_text(raw_text.lower())
 
         # Extract dialogues via regex.
-        dialogues: List[str] = _extract_dialogues(raw_text)
+        dialogues: list[str] = _extract_dialogues(raw_text)
 
         # Build visual_actions: transform each sentence, discard None.
-        visual_actions: List[str] = []
+        visual_actions: list[str] = []
         for sentence in sentences:
             result = _transform_sentence(sentence)
             if result is not None:
@@ -159,4 +161,12 @@ def visual_rewrite(scenes: List[RawScene]) -> List[VisualScene]:
 
 
 # Deprecated — use visual_rewrite. Kept for backward compatibility.
-transform_visuals = visual_rewrite
+def transform_visuals(scenes: list[RawScene]) -> list[VisualScene]:
+    """Deprecated. Use visual_rewrite()."""
+    import warnings
+    warnings.warn(
+        "transform_visuals() is deprecated. Use visual_rewrite().",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return visual_rewrite(scenes)

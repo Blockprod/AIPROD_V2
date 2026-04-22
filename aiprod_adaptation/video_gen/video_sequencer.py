@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Dict, List, Optional
-
 from aiprod_adaptation.image_gen.image_request import StoryboardOutput
 from aiprod_adaptation.models.schema import AIPRODOutput, Shot
 from aiprod_adaptation.video_gen.video_adapter import VideoAdapter
@@ -12,7 +10,7 @@ from aiprod_adaptation.video_gen.video_request import (
 )
 
 
-def _shot_map(output: AIPRODOutput) -> Dict[str, Shot]:
+def _shot_map(output: AIPRODOutput) -> dict[str, Shot]:
     return {shot.shot_id: shot for ep in output.episodes for shot in ep.shots}
 
 
@@ -20,7 +18,7 @@ class VideoSequencer:
     def __init__(
         self,
         adapter: VideoAdapter,
-        base_seed: Optional[int] = None,
+        base_seed: int | None = None,
     ) -> None:
         self._adapter = adapter
         self._base_seed = base_seed
@@ -29,9 +27,9 @@ class VideoSequencer:
         self,
         storyboard: StoryboardOutput,
         output: AIPRODOutput,
-    ) -> List[VideoRequest]:
+    ) -> list[VideoRequest]:
         shots = _shot_map(output)
-        requests: List[VideoRequest] = []
+        requests: list[VideoRequest] = []
         for i, frame in enumerate(storyboard.frames):
             shot = shots.get(frame.shot_id)
             duration = shot.duration_sec if shot is not None else 4
@@ -53,7 +51,7 @@ class VideoSequencer:
         output: AIPRODOutput,
     ) -> VideoOutput:
         requests = self.build_requests(storyboard, output)
-        clips: List[VideoClipResult] = []
+        clips: list[VideoClipResult] = []
 
         for i, request in enumerate(requests):
             # Intra-scene last_frame chaining: inject previous clip's last_frame

@@ -10,8 +10,6 @@ camera_movement values : "static" | "follow" | "pan"
 
 from __future__ import annotations
 
-from typing import List, Tuple
-
 from aiprod_adaptation.core.rules.verb_categories import (
     CAMERA_INTERACTION_VERBS,
     CAMERA_MOTION_VERBS,
@@ -22,7 +20,7 @@ from aiprod_adaptation.core.rules.verb_categories import (
 # Evaluated in order — first match wins.
 # ---------------------------------------------------------------------------
 
-SHOT_TYPE_RULES: List[Tuple[str, List[str]]] = [
+SHOT_TYPE_RULES: list[tuple[str, list[str]]] = [
     ("pov", [
         "pov",
         "point of view",
@@ -57,5 +55,5 @@ SHOT_TYPE_DEFAULT: str = "medium"
 # Default → "static"
 # ---------------------------------------------------------------------------
 
-CAMERA_MOVEMENT_MOTION_KEYWORDS: List[str] = CAMERA_MOTION_VERBS
-CAMERA_MOVEMENT_INTERACTION_KEYWORDS: List[str] = CAMERA_INTERACTION_VERBS
+CAMERA_MOVEMENT_MOTION_KEYWORDS: list[str] = CAMERA_MOTION_VERBS
+CAMERA_MOVEMENT_INTERACTION_KEYWORDS: list[str] = CAMERA_INTERACTION_VERBS

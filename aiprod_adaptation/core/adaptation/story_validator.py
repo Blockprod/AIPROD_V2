@@ -21,7 +21,7 @@ class StoryValidator:
 
     INTERNAL_THOUGHT_WORDS: list[str] = [
         "thought", "wondered", "realized", "remembered",
-        "imagined", "believed", "felt", "knew", "hoped",
+        "imagined", "believed", "felt that", "knew", "hoped",
     ]
 
     IMPOSSIBLE_ACTION_PATTERNS: list[str] = [

@@ -3,7 +3,7 @@ title: Plan d'action — Production Completeness v1
 source: bilan_conceptuel_2026-04-21_post_SO
 creation: 2026-04-21 à 18:17
 last_updated: 2026-04-21 à 18:17
-status: active
+status: completed
 phase: PC (Production Completeness — combler les lacunes des 5 axes à < 100%)
 prerequis: scale_orchestration_v1_plan.md complété (2026-04-21) — 247/247 tests
 tests_avant: 247

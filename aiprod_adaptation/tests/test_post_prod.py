@@ -17,7 +17,9 @@ import json
 
 import pytest
 
+from aiprod_adaptation.core.engine import run_pipeline, run_pipeline_full
 from aiprod_adaptation.image_gen.image_adapter import NullImageAdapter
+from aiprod_adaptation.models.schema import AIPRODOutput
 from aiprod_adaptation.post_prod.audio_adapter import NullAudioAdapter
 from aiprod_adaptation.post_prod.audio_request import (
     AudioRequest,
@@ -27,7 +29,7 @@ from aiprod_adaptation.post_prod.audio_request import (
 )
 from aiprod_adaptation.post_prod.audio_synchronizer import AudioSynchronizer
 from aiprod_adaptation.video_gen.video_adapter import NullVideoAdapter
-from aiprod_adaptation.core.engine import run_pipeline, run_pipeline_full
+from aiprod_adaptation.video_gen.video_request import VideoOutput
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -46,7 +48,7 @@ _REQ = AudioRequest(
 )
 
 
-def _video_and_output():
+def _video_and_output() -> tuple[VideoOutput, AIPRODOutput]:
     from aiprod_adaptation.image_gen.storyboard import StoryboardGenerator
     from aiprod_adaptation.video_gen.video_sequencer import VideoSequencer
 
@@ -161,7 +163,7 @@ class TestAudioSynchronizer:
 
     def test_synchronizer_error_does_not_crash(self) -> None:
         class _BrokenAdapter(NullAudioAdapter):
-            def generate(self, request: AudioRequest) -> AudioResult:
+            def generate(self, _request: AudioRequest) -> AudioResult:
                 raise RuntimeError("boom")
 
         sync = AudioSynchronizer(adapter=_BrokenAdapter())
@@ -169,6 +171,16 @@ class TestAudioSynchronizer:
         audio_results, production = sync.generate(video, output)
         assert len(audio_results) == video.total_shots
         assert all(r.model_used == "error" for r in audio_results)
+
+    def test_synchronizer_with_empty_clips(self) -> None:
+        video = VideoOutput(title="T", clips=[], total_shots=0, generated=0)
+        _, output = _video_and_output()
+        audio_results, production = AudioSynchronizer(
+            adapter=NullAudioAdapter()
+        ).generate(video, output)
+        assert audio_results == []
+        assert production.timeline == []
+        assert production.total_duration_sec == 0
 
 
 # ---------------------------------------------------------------------------
@@ -294,7 +306,7 @@ class TestSSMLBuilder:
 
 
 class TestFFmpegExporter:
-    def _make_production(self) -> "ProductionOutput":
+    def _make_production(self) -> ProductionOutput:
         from aiprod_adaptation.post_prod.audio_request import ProductionOutput, TimelineClip
 
         clips = [
@@ -323,7 +335,7 @@ class TestFFmpegExporter:
         production = self._make_production()
         calls: list[list[str]] = []
 
-        def fake_run(cmd: list[str], check: bool) -> None:
+        def fake_run(cmd: list[str], **_: object) -> None:
             calls.append(cmd)
 
         with patch("subprocess.run", side_effect=fake_run):
@@ -337,8 +349,8 @@ class TestFFmpegExporter:
     def test_exporter_respects_resolution_from_production(self) -> None:
         from unittest.mock import patch
 
-        from aiprod_adaptation.post_prod.ffmpeg_exporter import FFmpegExporter
         from aiprod_adaptation.post_prod.audio_request import ProductionOutput, TimelineClip
+        from aiprod_adaptation.post_prod.ffmpeg_exporter import FFmpegExporter
 
         clips = [TimelineClip(
             shot_id="S1", scene_id="SC001",
@@ -349,15 +361,15 @@ class TestFFmpegExporter:
             title="T", timeline=clips, total_duration_sec=4, resolution="1920x1080"
         )
         calls: list[list[str]] = []
-        with patch("subprocess.run", side_effect=lambda cmd, check: calls.append(cmd)):
+        with patch("subprocess.run", side_effect=lambda cmd, **_: calls.append(cmd)):
             FFmpegExporter("/tmp/out.mp4").export(prod)
         assert "1920x1080" in calls[-1]
 
     def test_exporter_respects_fps_from_production(self) -> None:
         from unittest.mock import patch
 
-        from aiprod_adaptation.post_prod.ffmpeg_exporter import FFmpegExporter
         from aiprod_adaptation.post_prod.audio_request import ProductionOutput, TimelineClip
+        from aiprod_adaptation.post_prod.ffmpeg_exporter import FFmpegExporter
 
         clips = [TimelineClip(
             shot_id="S1", scene_id="SC001",
@@ -368,6 +380,6 @@ class TestFFmpegExporter:
             title="T", timeline=clips, total_duration_sec=4, fps=30
         )
         calls: list[list[str]] = []
-        with patch("subprocess.run", side_effect=lambda cmd, check: calls.append(cmd)):
+        with patch("subprocess.run", side_effect=lambda cmd, **_: calls.append(cmd)):
             FFmpegExporter("/tmp/out.mp4").export(prod)
         assert "30" in calls[-1]

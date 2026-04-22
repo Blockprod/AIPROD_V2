@@ -25,43 +25,41 @@ Segmentation rules (strict, deterministic):
 from __future__ import annotations
 
 import re
-from typing import List, Optional
 
 from aiprod_adaptation.models.intermediate import RawScene
 
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
-
 from .rules.segmentation_rules import LOCATION_PHRASES, TIME_PHRASES
 
-_MOTION_VERBS: List[str] = [
+_MOTION_VERBS: list[str] = [
     "walk", "walked", "run", "ran", "move", "moved", "enter", "entered",
     "arrive", "arrived", "leave", "left", "step", "stepped", "rush", "rushed",
     "hurry", "hurried",
 ]
-_SPEECH_VERBS: List[str] = [
+_SPEECH_VERBS: list[str] = [
     "said", "say", "told", "tell", "asked", "ask", "replied", "reply",
     "whispered", "whisper", "shouted", "shout", "spoke", "speak",
     "answered", "answer", "called", "call",
 ]
-_PERCEPTION_VERBS: List[str] = [
+_PERCEPTION_VERBS: list[str] = [
     "saw", "see", "looked", "look", "heard", "hear", "felt", "feel",
     "noticed", "notice", "watched", "watch", "observed", "observe",
     "sensed", "sense",
 ]
-_INTERACTION_VERBS: List[str] = [
+_INTERACTION_VERBS: list[str] = [
     "gave", "give", "took", "take", "touched", "touch", "held", "hold",
     "grabbed", "grab", "handed", "hand", "pushed", "push", "pulled", "pull",
     "opened", "open", "closed", "close",
 ]
-_STATE_VERBS: List[str] = [
+_STATE_VERBS: list[str] = [
     "was", "were", "is", "are", "became", "become", "seemed", "seem",
     "appeared", "appear", "remained", "remain", "stayed", "stay",
     "waited", "wait",
 ]
 
-_CATEGORY_VERBS: List[tuple[str, List[str]]] = [
+_CATEGORY_VERBS: list[tuple[str, list[str]]] = [
     ("motion",      _MOTION_VERBS),
     ("speech",      _SPEECH_VERBS),
     ("perception",  _PERCEPTION_VERBS),
@@ -86,8 +84,8 @@ def _make_scene_id(index: int) -> str:
     return f"SCN_{index + 1:03d}"
 
 
-def _split_sentences(text: str) -> List[str]:
-    parts: List[str] = re.split(r"(?<=[.!?])\s+", text.strip())
+def _split_sentences(text: str) -> list[str]:
+    parts: list[str] = re.split(r"(?<=[.!?])\s+", text.strip())
     return [p.strip() for p in parts if p.strip()]
 
 
@@ -99,7 +97,7 @@ def _action_category(sentence_lower: str) -> str:
     return "state"
 
 
-def _detect_location(sentence_lower: str) -> Optional[str]:
+def _detect_location(sentence_lower: str) -> str | None:
     for phrase in LOCATION_PHRASES:
         if phrase in sentence_lower:
             idx = sentence_lower.index(phrase) + len(phrase)
@@ -115,15 +113,15 @@ def _detect_location(sentence_lower: str) -> Optional[str]:
     return None
 
 
-def _detect_time(sentence_lower: str) -> Optional[str]:
+def _detect_time(sentence_lower: str) -> str | None:
     for phrase in TIME_PHRASES:
         if phrase in sentence_lower:
             return phrase
     return None
 
 
-def _extract_proper_nouns(sentences: List[str]) -> List[str]:
-    seen: List[str] = []
+def _extract_proper_nouns(sentences: list[str]) -> list[str]:
+    seen: list[str] = []
     for sentence in sentences:
         tokens = sentence.split()
         for i, token in enumerate(tokens):
@@ -143,9 +141,9 @@ def _extract_proper_nouns(sentences: List[str]) -> List[str]:
 
 def _build_scene(
     index: int,
-    paragraphs: List[str],
+    paragraphs: list[str],
     location: str,
-    time_of_day: Optional[str],
+    time_of_day: str | None,
 ) -> RawScene:
     raw = " ".join(paragraphs)
     sentences = _split_sentences(raw)
@@ -163,7 +161,7 @@ def _build_scene(
 # Public API
 # ---------------------------------------------------------------------------
 
-def segment(raw_text: str) -> List[RawScene]:
+def segment(raw_text: str) -> list[RawScene]:
     """
     PASS 1 — Segment raw_text into a list of intermediate scene dicts.
     Raises ValueError on empty input or when segmentation produces zero scenes.
@@ -171,17 +169,17 @@ def segment(raw_text: str) -> List[RawScene]:
     if not raw_text or not raw_text.strip():
         raise ValueError("PASS 1: raw_text must not be empty.")
 
-    paragraphs: List[str] = [
+    paragraphs: list[str] = [
         p.strip() for p in re.split(r"\n{2,}", raw_text) if p.strip()
     ]
 
-    scenes:      List[RawScene] = []
+    scenes:      list[RawScene] = []
     scene_index: int = 0
 
-    current_paragraphs: List[str] = []
+    current_paragraphs: list[str] = []
     current_location:   str = "Unknown"
-    current_time:       Optional[str] = None
-    prev_category:      Optional[str] = None
+    current_time:       str | None = None
+    prev_category:      str | None = None
 
     for para_idx, paragraph in enumerate(paragraphs):
         sentences = _split_sentences(paragraph)
@@ -189,8 +187,8 @@ def segment(raw_text: str) -> List[RawScene]:
             continue
 
         # Detect triggers in this paragraph.
-        loc:  Optional[str] = None
-        time: Optional[str] = None
+        loc:  str | None = None
+        time: str | None = None
         for sentence in sentences:
             sl = sentence.lower()
             if loc is None:

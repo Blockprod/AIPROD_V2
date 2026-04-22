@@ -11,8 +11,11 @@ from aiprod_adaptation.image_gen.character_image_registry import CharacterImageR
 from aiprod_adaptation.image_gen.character_sheet import CharacterSheetRegistry
 from aiprod_adaptation.image_gen.image_adapter import ImageAdapter
 from aiprod_adaptation.image_gen.image_request import ImageRequest
-from aiprod_adaptation.image_gen.storyboard import DEFAULT_STYLE_TOKEN
 from aiprod_adaptation.models.schema import AIPRODOutput
+
+_DEFAULT_STYLE_TOKEN = (
+    "cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded"
+)
 
 
 def _unique_characters(output: AIPRODOutput) -> list[str]:
@@ -40,7 +43,7 @@ class CharacterPrepass:
         adapter: ImageAdapter,
         sheet_registry: CharacterSheetRegistry | None = None,
         base_seed: int = 0,
-        style_token: str = DEFAULT_STYLE_TOKEN,
+        style_token: str = _DEFAULT_STYLE_TOKEN,
     ) -> None:
         self._adapter = adapter
         self._sheet_registry = sheet_registry or CharacterSheetRegistry()

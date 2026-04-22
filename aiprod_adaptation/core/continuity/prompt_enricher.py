@@ -1,12 +1,14 @@
 from __future__ import annotations
 
-from typing import List
-
 from aiprod_adaptation.core.continuity.character_registry import CharacterProfile
 from aiprod_adaptation.core.continuity.emotion_arc import EmotionState
 from aiprod_adaptation.core.continuity.location_registry import LocationRegistry
 from aiprod_adaptation.core.continuity.prop_registry import PropRegistry
-from aiprod_adaptation.models.schema import AIPRODOutput, Episode, Shot  # Episode/Shot used in type hints below
+from aiprod_adaptation.models.schema import (  # Episode/Shot used in type hints below
+    AIPRODOutput,
+    Episode,
+    Shot,
+)
 
 
 class PromptEnricher:
@@ -14,7 +16,7 @@ class PromptEnricher:
         self,
         output: AIPRODOutput,
         registry: dict[str, CharacterProfile],
-        arc_states: List[EmotionState],
+        arc_states: list[EmotionState],
         location_registry: LocationRegistry | None = None,
         prop_registry: PropRegistry | None = None,
     ) -> AIPRODOutput:
@@ -24,17 +26,20 @@ class PromptEnricher:
             for ep in output.episodes
             for scene in ep.scenes
         }
-        enriched_episodes: List[Episode] = []
+        enriched_episodes: list[Episode] = []
 
         for episode in output.episodes:
-            enriched_shots: List[Shot] = []
+            enriched_shots: list[Shot] = []
             for shot in episode.shots:
                 location = scene_location.get(shot.scene_id, "")
                 enriched_prompt = self._enrich_prompt(
                     shot.prompt,
                     registry,
                     arc_by_shot.get(shot.shot_id),
-                    location_hint=location_registry.get_prompt_hint(location) if location_registry else "",
+                    location_hint=(
+                        location_registry.get_prompt_hint(location)
+                        if location_registry else ""
+                    ),
                     prop_hint=prop_registry.get_prompt_hint(shot.shot_id) if prop_registry else "",
                 )
                 enriched_shots.append(shot.model_copy(update={"prompt": enriched_prompt}))

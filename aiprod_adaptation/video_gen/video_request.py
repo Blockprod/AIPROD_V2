@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import List, Optional
-
 from pydantic import BaseModel, field_validator
 
 
@@ -12,7 +10,7 @@ class VideoRequest(BaseModel):
     prompt: str
     duration_sec: int
     motion_score: float = 5.0
-    seed: Optional[int] = None
+    seed: int | None = None
     last_frame_hint_url: str = ""   # last_frame of previous clip (intra-scene continuity)
 
     @field_validator("motion_score")
@@ -34,6 +32,6 @@ class VideoClipResult(BaseModel):
 
 class VideoOutput(BaseModel):
     title: str
-    clips: List[VideoClipResult]
+    clips: list[VideoClipResult]
     total_shots: int
     generated: int

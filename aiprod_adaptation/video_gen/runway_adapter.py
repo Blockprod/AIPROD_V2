@@ -21,7 +21,7 @@ class RunwayAdapter(VideoAdapter):
         self._token = api_token or os.environ.get("RUNWAY_API_TOKEN", "")
 
     def generate(self, request: VideoRequest) -> VideoClipResult:
-        import runwayml  # type: ignore[import-untyped]
+        import runwayml
 
         t0 = time.monotonic()
         client = runwayml.RunwayML(api_key=self._token)

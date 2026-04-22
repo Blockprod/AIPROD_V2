@@ -10,10 +10,8 @@ _INTERNAL_THOUGHT_WORDS: verbs whose presence marks a sentence as an internal th
 
 from __future__ import annotations
 
-from typing import List, Tuple
-
 # Ordered list: (emotion_name, trigger_keywords, visual_action)
-EMOTION_RULES: List[Tuple[str, List[str], str]] = [
+EMOTION_RULES: list[tuple[str, list[str], str]] = [
     (
         "angry",
         ["angry", "furious", "enraged", "mad", "annoyed"],
@@ -42,6 +40,7 @@ EMOTION_RULES: List[Tuple[str, List[str], str]] = [
 ]
 
 # Internal-thought verbs — sentences containing these are removed from visual_actions.
-_INTERNAL_THOUGHT_WORDS: List[str] = [
+_INTERNAL_THOUGHT_WORDS: list[str] = [
     "thought", "wondered", "realized", "remembered", "imagined", "believed",
+    "knew", "hoped",
 ]

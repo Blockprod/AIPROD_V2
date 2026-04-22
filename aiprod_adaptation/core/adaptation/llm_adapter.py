@@ -16,5 +16,5 @@ class NullLLMAdapter(LLMAdapter):
     The rule-based fallback in engine.py activates when scenes are empty.
     """
 
-    def generate_json(self, prompt: str) -> dict[str, Any]:
+    def generate_json(self, _prompt: str) -> dict[str, Any]:
         return {"scenes": []}

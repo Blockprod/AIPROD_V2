@@ -20,6 +20,20 @@ Chaque audit suit le même pipeline en **3 étapes** :
 > Toujours exécuter **A → B → C** dans l'ordre strict.
 > Ne jamais lancer B sans avoir l'audit A complet.
 
+Pour la **correction d'erreurs statiques** (mypy · ruff · type errors), un pipeline dédié en **5 passes** est disponible :
+
+| Passe | Prompt | Mode | Produit |
+|:---:|---|:---:|---|
+| **P1** | `P1_SCAN_prompt.md` | Agent | `fix_results/SCAN_result.md` |
+| **P2** | `P2_PLAN_prompt.md` | Agent | `fix_results/PLAN_result.md` |
+| **P3** | `P3_FIX_prompt.md` | Agent | `fix_results/BATCH_result.md` |
+| **P4** | `P4_VERIFY_prompt.md` | Agent | `fix_results/VERIFY_result.md` |
+| **P5** | `P5_FINAL_QA_prompt.md` | Agent | `fix_results/FINAL_QA_result.md` |
+
+> Toujours exécuter **P1 → P2 → P3 → P4 → P5** dans l'ordre strict.
+> P3 est répété pour chaque batch défini par P2. P4 valide sans modifier.
+> Ne jamais lancer P5 si P4 affiche VERDICT GLOBAL = FAIL.
+
 ---
 
 ## AUDITS DISPONIBLES
@@ -34,6 +48,7 @@ Chaque audit suit le même pipeline en **3 étapes** :
 | 6 | [Schémas & Validation](#6--schémas--validation) | Pydantic v2 · Contraintes · ValueError · AIPRODOutput · Episode · Scene · Shot | Ask |
 | 7 | [Master](#7--master) | Audit complet toutes dimensions | Agent |
 | 8 | [IR & Maturité Conceptuelle](#8--ir--maturité-conceptuelle) | Maturité IR · Gaps architecturaux · Qualité prompt vs vrai IR · Risques à l'échelle | Agent |
+| 9 | [Fix Errors](#9--fix-errors) | Scan mypy/ruff · Plan batches · Correction · Vérification · Final QA | Agent |
 
 ---
 
@@ -241,6 +256,45 @@ Génère le plan d'action depuis l'audit disponible.
 ```
 #file:tasks/corrections/execute_corrections_prompt.md
 Démarre l'exécution du plan d'action disponible.
+```
+
+---
+
+## `9 · FIX ERRORS`
+
+> Scan mypy · ruff · type errors · Correction par batches · Vérification · Final QA release
+
+**Dossier** : `tasks/audits/fix_errors/`  
+**Résultats** : `tasks/audits/fix_errors/fix_results/`
+
+**P1 — Scan complet**
+```
+#file:tasks/audits/fix_errors/P1_SCAN_prompt.md
+Lance le scan complet du workspace.
+```
+
+**P2 — Plan de correction**
+```
+#file:tasks/audits/fix_errors/P2_PLAN_prompt.md
+Génère le plan de correction par batches depuis le scan.
+```
+
+**P3 — Correction (répéter par batch)**
+```
+#file:tasks/audits/fix_errors/P3_FIX_prompt.md
+Applique les corrections du batch demandé.
+```
+
+**P4 — Vérification post-correction**
+```
+#file:tasks/audits/fix_errors/P4_VERIFY_prompt.md
+Valide les corrections appliquées. Ne modifie rien.
+```
+
+**P5 — Final QA (release readiness)**
+```
+#file:tasks/audits/fix_errors/P5_FINAL_QA_prompt.md
+Valide la readiness complète avant merge.
 ```
 
 ---

@@ -3,7 +3,7 @@ modele: sonnet-4.6
 mode: agent
 contexte: codebase
 produit: tasks/audits/resultats/audit_tests_aiprod.md
-derniere_revision: 2026-04-20
+derniere_revision: 2026-04-21
 creation: 2026-04-20 à 17:56
 ---
 
@@ -40,9 +40,20 @@ Si absent → démarrer directement :
 ─────────────────────────────────────────────
 PÉRIMÈTRE STRICT
 ─────────────────────────────────────────────
-Tu analyses UNIQUEMENT les fichiers de test :
-  aiprod_adaptation/tests/test_pipeline.py
-et la couverture du code source.
+Tu analyses TOUS les fichiers de test :
+
+  test_adaptation.py  (47 tests) — LLM adaptation, story extractor, budget, validator
+  test_backends.py     (9 tests) — CSV/JSON export
+  test_cli.py          (9 tests) — CLI commands pipeline/storyboard/schedule, adapter choices
+  test_continuity.py  (24 tests) — character registry, emotion arc, location, prop, prompt enricher
+  test_image_gen.py   (46 tests) — storyboard, character prepass, image registry, checkpoint
+  test_io.py           (6 tests) — save/load round-trip
+  test_pipeline.py    (55 tests) — pass1→pass4 IR pipeline complet
+  test_post_prod.py   (29 tests) — audio synchronizer, ffmpeg exporter, SSML, audio utils
+  test_scheduling.py  (21 tests) — episode scheduler, run metrics, cost report
+  test_video_gen.py   (32 tests) — video sequencer, smart router, runway/kling adapters
+
+Baseline : 278 tests, 0 failing (commit 42f99d7, 2026-04-21)
 
 ─────────────────────────────────────────────
 CONTRAINTES ABSOLUES
@@ -52,21 +63,37 @@ CONTRAINTES ABSOLUES
 - Sévérité : 🔴 critique · 🟠 majeure · 🟡 mineure
 
 ─────────────────────────────────────────────
-BLOC 1 — INVENTAIRE DES TESTS
+BLOC 1 — INVENTAIRE DES TESTS PAR FICHIER
 ─────────────────────────────────────────────
-Liste tous les tests par classe et méthode :
+Pour chaque fichier de test, liste toutes les classes et méthodes :
 - Classe · Méthode · Ce qui est testé
-- Total de tests trouvés dans le fichier
+- Total par fichier et total global (attendu: 278)
 - Tous passants selon la dernière exécution ?
 
+Fichiers à analyser dans l'ordre :
+  test_pipeline.py · test_adaptation.py · test_image_gen.py · test_video_gen.py
+  test_post_prod.py · test_scheduling.py · test_continuity.py
+  test_cli.py · test_backends.py · test_io.py
+
 ─────────────────────────────────────────────
-BLOC 2 — COUVERTURE
+BLOC 2 — COUVERTURE PAR MODULE
 ─────────────────────────────────────────────
-Pour chaque fichier source (pass1..pass4, engine, models/schema) :
+Pour chaque module source (pass1..pass4, engine, models/schema,
+story_extractor, llm_router, episode_scheduler, storyboard,
+character_prepass, video_sequencer, audio_synchronizer, cost_report,
+cli, continuity/*) :
 - Fonctions testées directement (liste)
 - Fonctions testées indirectement via pipeline complet
 - Fonctions non testées ou insuffisamment testées
 - Branches non couvertes (raise ValueError, cas None, liste vide)
+
+Points spécifiques à vérifier :
+- CharacterPrepass.run() avec adapter échouant (result.failed > 0) ?
+- LLMRouter : routage réel testé ou seulement isinstance(router, LLMAdapter) ?
+- SmartVideoRouter : seuil de durée pour basculer runway↔kling testé ?
+- CostReport.to_summary_str() testé ?
+- FFmpegExporter.export() : cmd concat testé avec mock subprocess ?
+- cli.py cmd_schedule() : tous les fichiers de sortie vérifiés ?
 
 ─────────────────────────────────────────────
 BLOC 3 — QUALITÉ DES FIXTURES
@@ -76,17 +103,41 @@ BLOC 3 — QUALITÉ DES FIXTURES
 - Les shots de test respectent-ils le format de sortie de Pass3 ?
 - Dépendances entre tests (état global partagé) ?
 - Fixtures de classe vs fixtures pytest.fixture : cohérence ?
+- Tests d'intégration scheduler : utilisent NullImageAdapter/NullVideoAdapter/NullAudioAdapter ?
+- Tests CharacterPrepass : que se passe-t-il si _unique_characters() retourne [] ?
+  (vérifier test_character_prepass_handles_adapter_failure_gracefully)
 
 ─────────────────────────────────────────────
 BLOC 4 — CAS LIMITES MANQUANTS
 ─────────────────────────────────────────────
 Quels cas limites ne sont pas testés ?
+
+Pipeline IR (test_pipeline.py) :
 - Texte d'entrée vide → segment()
 - Scène avec 0 visual_actions → simplify_shots()
 - titre vide → compile_episode()
 - Scène avec None dans la liste characters
 - Episode avec 0 scènes après filtrage
 - Caractères spéciaux dans le texte (guillemets, apostrophes)
+
+Couche LLM (test_adaptation.py) :
+- extract_all avec texte vide (0 chunks)
+- LLMRouter avec les deux adapters en échec
+- StoryValidator filtre toutes les scènes → liste vide
+- ProductionBudget.max_scenes=0 → comportement ?
+
+Pipeline production (test_scheduling.py / test_image_gen.py) :
+- EpisodeScheduler avec timeline vide (0 scènes)
+- CharacterPrepass avec AIPRODOutput sans personnages
+- AudioSynchronizer avec VideoOutput sans clips
+
+CLI (test_cli.py) :
+- cmd_schedule avec dossier de sortie inexistant (création automatique ?)
+- --image-adapter flux sans clé API → ImportError ou RuntimeError propre ?
+
+CostReport :
+- to_summary_str() format correct ?
+- merge() associée à un CostReport vide (élément neutre) ?
 
 ─────────────────────────────────────────────
 BLOC 5 — DÉTERMINISME BYTE-LEVEL
@@ -99,8 +150,8 @@ BLOC 5 — DÉTERMINISME BYTE-LEVEL
 FORMAT DE SORTIE
 ─────────────────────────────────────────────
 # AUDIT TESTS — AIPROD_V2 — [DATE]
-## Résumé exécutif
-## BLOC 1 — Inventaire des tests
+## Résumé exécutif (baseline: 278 tests, 0 failing)
+## BLOC 1 — Inventaire des tests par fichier
 ## BLOC 2 — Couverture par module
 ## BLOC 3 — Qualité des fixtures
 ## BLOC 4 — Cas limites manquants

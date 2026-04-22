@@ -3,7 +3,7 @@ modele: sonnet-4.6
 mode: ask
 contexte: codebase
 produit: tasks/audits/resultats/audit_structural_aiprod.md
-derniere_revision: 2026-04-20
+derniere_revision: 2026-04-21
 creation: 2026-04-20 à 17:56
 ---
 
@@ -40,9 +40,13 @@ Si absent → démarrer directement :
 ─────────────────────────────────────────────
 PÉRIMÈTRE STRICT
 ─────────────────────────────────────────────
-Tu analyses UNIQUEMENT la structure du repo :
+Tu analyses UNIQUEMENT la structure du repo (68 modules) :
 organisation des modules, couplage, SRP, interfaces,
 dette technique, formats de données inter-passes.
+
+Packages à couvrir :
+  core/ · core/adaptation/ · core/continuity/ · core/rules/ · core/scheduling/
+  image_gen/ · video_gen/ · post_prod/ · backends/ · models/ · cli.py
 
 Tu n'analyses PAS les tests, le déterminisme,
 les schémas Pydantic en détail, ou le CI/CD.
@@ -56,16 +60,30 @@ CONTRAINTES ABSOLUES
 - Sévérité : 🔴 critique · 🟠 majeure · 🟡 mineure
 
 ─────────────────────────────────────────────
-BLOC 1 — PIPELINE RÉEL
+BLOC 1 — PIPELINES RÉELS
 ─────────────────────────────────────────────
-Trace le chemin complet text → AIPRODOutput :
-  segment() → visual_rewrite() → simplify_shots() → compile_episode()
+Trace le chemin complet :
 
-Pour chaque passe :
+PIPELINE IR :
+  text → pass1_segment() → pass2_visual_rewrite() → pass3_simplify_shots() → pass4_compile() → AIPRODOutput
+
+PIPELINE LLM :
+  text → StoryExtractor.extract_all(llm, text, budget) → list[Scene] → pass4_compile → AIPRODOutput
+  engine.py appelle extract_all (pas extract) depuis le commit PC-08
+
+PIPELINE PRODUCTION :
+  AIPRODOutput → EpisodeScheduler.run()
+    → CharacterPrepass.run() → CharacterImageRegistry
+    → StoryboardGenerator.generate() → StoryboardOutput
+    → VideoSequencer.generate() → VideoOutput
+    → AudioSynchronizer.generate() → ProductionOutput
+    → SchedulerResult(storyboard, video, production, metrics)
+
+Pour chaque passe/module :
 - Fichier source et fonction principale
-- Type d'entrée exact (clés de dict attendues)
-- Type de sortie exact (clés de dict produites)
-- Vérification de cohérence entrée/sortie avec la passe suivante
+- Type d'entrée exact
+- Type de sortie exact
+- Cohérence avec l'étape suivante
 
 ─────────────────────────────────────────────
 BLOC 2 — SÉPARATION DES RESPONSABILITÉS
@@ -80,10 +98,12 @@ Identifie les violations SRP avec fichier:ligne :
 ─────────────────────────────────────────────
 BLOC 3 — COUPLAGE INTER-MODULES
 ─────────────────────────────────────────────
-- Imports top-level vs imports runtime dans engine.py
-- Dépendances circulaires potentielles
+- Imports top-level vs imports runtime dans engine.py et cli.py
+- Dépendances circulaires potentielles (ex: storyboard.py ↔ character_prepass.py)
+  NB : la solution adoptée = storyboard.py accepte CharacterImageRegistry, pas CharacterPrepassResult
 - Accès direct aux internals d'une autre passe
-- Alias backward-compat (compile_output, atomize_shots, transform_visuals) : justifiés ou dettes ?
+- Aliases backward-compat (compile_output, atomize_shots, transform_visuals) : justifiés ou dettes ?
+- Adapters prod (flux, replicate, runway, kling, elevenlabs) : import lazy dans cli.py ?
 
 ─────────────────────────────────────────────
 BLOC 4 — ARCHITECTURE GLOBALE
@@ -92,6 +112,15 @@ BLOC 4 — ARCHITECTURE GLOBALE
 - Fichiers présents mais non utilisés
 - Fichiers manquants attendus par la spec
 - Structure des packages (aiprod_adaptation/ vs racine)
+
+Nouveaux packages à évaluer depuis SO v1 :
+  core/continuity/ : character_registry, emotion_arc, location_registry, prop_registry, prompt_enricher
+  core/scheduling/ : episode_scheduler
+  image_gen/ : character_prepass, character_image_registry, character_sheet, checkpoint
+  video_gen/ : smart_video_router, kling_adapter, runway_adapter
+  post_prod/ : ffmpeg_exporter, audio_synchronizer, ssml_builder, audio_utils, elevenlabs_adapter, openai_tts_adapter
+  core/cost_report.py · core/run_metrics.py (champ cost ajouté)
+  cli.py : commandes pipeline | storyboard | schedule + adapter choices
 
 ─────────────────────────────────────────────
 FORMAT DE SORTIE

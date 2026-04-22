@@ -27,7 +27,7 @@ jobs:
         run: ruff check aiprod_adaptation/
 
       - name: Mypy
-        run: mypy aiprod_adaptation/core/ aiprod_adaptation/models/ aiprod_adaptation/backends/ --strict
+        run: mypy aiprod_adaptation/core/ aiprod_adaptation/models/ aiprod_adaptation/backends/ aiprod_adaptation/cli.py --strict
 
       - name: Pytest
         run: pytest aiprod_adaptation/tests/ -v --tb=short

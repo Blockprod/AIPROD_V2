@@ -3,14 +3,18 @@ modele: sonnet-4.6
 mode: agent
 contexte: codebase
 produit: tasks/audits/resultats/audit_pipeline_aiprod.md
-derniere_revision: 2026-04-20
+derniere_revision: 2026-04-21
 creation: 2026-04-20 à 17:56
 ---
 
 #codebase
 
 Tu es un ingénieur en traitement de données spécialisé en pipelines déterministes.
-Tu réalises un audit EXCLUSIVEMENT sur la cohérence du pipeline Pass1→Pass2→Pass3→Pass4 d'AIPROD_V2.
+Tu réalises un audit EXCLUSIVEMENT sur la cohérence des pipelines d'AIPROD_V2.
+
+Deux pipelines à auditer :
+  PIPELINE IR  : pass1_segment → pass2_visual → pass3_shots → pass4_compile → AIPRODOutput
+  PIPELINE PROD: CharacterPrepass → StoryboardGenerator → VideoSequencer → AudioSynchronizer
 
 ─────────────────────────────────────────────
 RAISONNEMENT
@@ -40,8 +44,21 @@ Si absent → démarrer directement :
 ─────────────────────────────────────────────
 PÉRIMÈTRE STRICT
 ─────────────────────────────────────────────
-Tu analyses UNIQUEMENT les 4 passes du pipeline :
-pass1_segment.py · pass2_visual.py · pass3_shots.py · pass4_compile.py · engine.py
+PIPELINE IR (représentation interne) :
+  pass1_segment.py · pass2_visual.py · pass3_shots.py · pass4_compile.py · engine.py
+
+COUCHE LLM (adaptation narrative) :
+  core/adaptation/story_extractor.py · llm_router.py · llm_adapter.py
+  classifier.py · normalizer.py · novel_pipe.py · script_parser.py · story_validator.py
+
+PIPELINE PRODUCTION (rendu) :
+  core/scheduling/episode_scheduler.py
+  image_gen/character_prepass.py · image_gen/storyboard.py
+  video_gen/video_sequencer.py · post_prod/audio_synchronizer.py
+
+CONTINUITÉ :
+  core/continuity/prompt_enricher.py · location_registry.py · prop_registry.py
+  image_gen/character_image_registry.py
 
 ─────────────────────────────────────────────
 CONTRAINTES ABSOLUES
@@ -51,7 +68,7 @@ CONTRAINTES ABSOLUES
 - Sévérité : 🔴 critique · 🟠 majeure · 🟡 mineure
 
 ─────────────────────────────────────────────
-BLOC 1 — CONTRATS INTER-PASSES
+BLOC 1 — CONTRATS INTER-PASSES (PIPELINE IR)
 ─────────────────────────────────────────────
 Pour chaque frontière entre deux passes :
 
@@ -71,7 +88,43 @@ Pour chaque frontière entre deux passes :
 - Clés manquantes / en trop : [diff]
 
 ─────────────────────────────────────────────
-BLOC 2 — GARDES ET GESTION D'ERREURS
+BLOC 1b — CONTRATS COUCHE LLM
+─────────────────────────────────────────────
+**engine.py → StoryExtractor.extract_all()**
+- Signature : (llm: LLMAdapter, text: str, budget: ProductionBudget) → list[Scene]
+- budget.max_chars_per_chunk utilisé pour chunker le texte ?
+- prior_summary transmis entre chunks successifs ?
+- Prompt contient "Maximum N scenes" quand max_scenes défini ?
+
+**LLMRouter**
+- Implémente LLMAdapter ?
+- Clé de routage : sur quoi se base-t-il (longueur, type, config) ?
+
+**StoryValidator**
+- Filtre quelles scènes ? (scenes vides ? mood non reconnu ?)
+- Modifie-t-il les données ou seulement filtre ?
+
+─────────────────────────────────────────────
+BLOC 1c — CONTRATS PIPELINE PRODUCTION
+─────────────────────────────────────────────
+**CharacterPrepass → StoryboardGenerator**
+- prepass_result.registry transmis comme prepass_registry ?
+- CharacterImageRegistry.get() retourne url ou None si absent ?
+
+**StoryboardGenerator → VideoSequencer**
+- StoryboardOutput.frames : liste de StoryboardFrame
+- VideoSequencer attend quelles clés de StoryboardFrame ?
+
+**VideoSequencer → AudioSynchronizer**
+- VideoOutput.clips : liste de VideoClip
+- AudioSynchronizer produit ProductionOutput.timeline : liste de TimelineClip
+- latency_ms alimenté sur TimelineClip depuis AudioResult.latency_ms ?
+
+**EpisodeScheduler.run() → SchedulerResult**
+- metrics.image_latency_ms = sum(f.latency_ms for f in storyboard.frames) ?
+- metrics.video_latency_ms = sum(c.latency_ms for c in video.clips) ?
+- metrics.audio_latency_ms = sum(c.latency_ms for c in production.timeline) ?
+- metrics.total_latency_ms = image + video + audio (sans double comptage) ?
 ─────────────────────────────────────────────
 Pour chaque passe :
 - Guard clause d'entrée vide ou None : présente/absente/correcte
@@ -119,7 +172,9 @@ FORMAT DE SORTIE
 ─────────────────────────────────────────────
 # AUDIT PIPELINE — AIPROD_V2 — [DATE]
 ## Résumé exécutif
-## BLOC 1 — Contrats inter-passes
+## BLOC 1 — Contrats inter-passes (IR)
+## BLOC 1b — Contrats couche LLM
+## BLOC 1c — Contrats pipeline production
 ## BLOC 2 — Gardes et gestion d'erreurs
 ## BLOC 3 — Logique de transformation
 ## BLOC 4 — Déterminisme

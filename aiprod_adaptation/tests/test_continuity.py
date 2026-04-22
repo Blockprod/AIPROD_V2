@@ -16,13 +16,13 @@ from aiprod_adaptation.core.continuity.character_registry import CharacterRegist
 from aiprod_adaptation.core.continuity.emotion_arc import EmotionArcTracker
 from aiprod_adaptation.core.continuity.prompt_enricher import PromptEnricher
 from aiprod_adaptation.core.engine import run_pipeline
-
+from aiprod_adaptation.models.schema import AIPRODOutput
 
 # ---------------------------------------------------------------------------
 # Helpers — minimal AIPRODOutput fixtures
 # ---------------------------------------------------------------------------
 
-def _make_output(characters_per_scene: list[list[str]], emotions: list[str]):
+def _make_output(characters_per_scene: list[list[str]], emotions: list[str]) -> AIPRODOutput:
     """Build a minimal AIPRODOutput for testing."""
     from aiprod_adaptation.models.schema import AIPRODOutput, Episode, Scene, Shot
 
@@ -275,8 +275,8 @@ class TestPromptEnricherWithLocationAndProp:
         assert any("LOCATION CONTEXT" in p for p in prompts)
 
     def test_prompt_enricher_injects_prop_hint(self) -> None:
-        from aiprod_adaptation.core.continuity.prop_registry import PropRegistry
         from aiprod_adaptation.core.continuity.prompt_enricher import PromptEnricher
+        from aiprod_adaptation.core.continuity.prop_registry import PropRegistry
         output = run_pipeline(_NOVEL, "T")
         prop_reg = PropRegistry()
         first_shot_id = output.episodes[0].shots[0].shot_id

@@ -9,6 +9,7 @@ Requires ffmpeg in PATH. Export steps:
 from __future__ import annotations
 
 import os
+import shutil
 import subprocess
 import tempfile
 from pathlib import Path
@@ -18,6 +19,11 @@ from aiprod_adaptation.post_prod.audio_request import ProductionOutput
 
 class FFmpegExporter:
     """Assembles a ProductionOutput timeline into a single MP4 file."""
+
+    @staticmethod
+    def is_available(ffmpeg_bin: str = "ffmpeg") -> bool:
+        """Return True if ffmpeg binary is found on PATH."""
+        return shutil.which(ffmpeg_bin) is not None
 
     def __init__(
         self,

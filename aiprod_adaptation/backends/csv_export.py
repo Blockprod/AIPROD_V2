@@ -15,7 +15,10 @@ import io
 from aiprod_adaptation.backends.base import BackendBase
 from aiprod_adaptation.models.schema import AIPRODOutput
 
-_COLUMNS = ("episode_id", "scene_id", "shot_id", "shot_type", "camera_movement", "prompt", "duration_sec", "emotion")
+_COLUMNS = (
+    "episode_id", "scene_id", "shot_id", "shot_type",
+    "camera_movement", "prompt", "duration_sec", "emotion",
+)
 
 
 class CsvExport(BackendBase):

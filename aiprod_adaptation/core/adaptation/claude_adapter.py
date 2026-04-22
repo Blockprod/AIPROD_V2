@@ -27,7 +27,7 @@ class ClaudeAdapter(LLMAdapter):
             raise ImportError(
                 "anthropic package required: pip install anthropic"
             ) from exc
-        self._client = anthropic.Anthropic(api_key=api_key)  # type: ignore[attr-defined]
+        self._client = anthropic.Anthropic(api_key=api_key)
 
     def generate_json(self, prompt: str) -> dict[str, Any]:
         message = self._client.messages.create(
@@ -35,7 +35,7 @@ class ClaudeAdapter(LLMAdapter):
             max_tokens=self.MAX_TOKENS,
             messages=[{"role": "user", "content": prompt}],
         )
-        content: str = message.content[0].text  # type: ignore[index,union-attr]
+        content: str = message.content[0].text
         start = content.find("{")
         end = content.rfind("}") + 1
         if start == -1 or end == 0:

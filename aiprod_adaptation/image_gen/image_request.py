@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import List, Optional
-
 from pydantic import BaseModel, field_validator
 
 
@@ -14,7 +12,7 @@ class ImageRequest(BaseModel):
     height: int = 576
     num_steps: int = 28
     guidance_scale: float = 7.5
-    seed: Optional[int] = None
+    seed: int | None = None
     reference_image_url: str = ""
 
     @field_validator("num_steps")
@@ -48,18 +46,18 @@ class ShotStoryboardFrame(BaseModel):
     model_used: str
     latency_ms: int
     prompt_used: str
-    seed_used: Optional[int] = None
+    seed_used: int | None = None
     shot_type: str = ""
     camera_movement: str = ""
     time_of_day_visual: str = "day"
     dominant_sound: str = "dialogue"
-    characters_in_frame: List[str] = []
+    characters_in_frame: list[str] = []
     reference_image_url: str = ""
 
 
 class StoryboardOutput(BaseModel):
     title: str
-    frames: List[ShotStoryboardFrame]
+    frames: list[ShotStoryboardFrame]
     style_token: str = ""
     total_shots: int
     generated: int

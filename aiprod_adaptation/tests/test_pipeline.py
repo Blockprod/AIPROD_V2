@@ -15,15 +15,17 @@ from __future__ import annotations
 
 import copy
 import pathlib
+from typing import cast
+
 import pytest
 
-from aiprod_adaptation.core.pass1_segment import segment
-from aiprod_adaptation.core.pass2_visual import transform_visuals
-from aiprod_adaptation.core.pass3_shots import atomize_shots
-from aiprod_adaptation.core.pass4_compile import compile_output
 from aiprod_adaptation.core.engine import run_pipeline
+from aiprod_adaptation.core.pass1_segment import segment
+from aiprod_adaptation.core.pass2_visual import visual_rewrite
+from aiprod_adaptation.core.pass3_shots import simplify_shots
+from aiprod_adaptation.core.pass4_compile import compile_episode
+from aiprod_adaptation.models.intermediate import RawScene, ShotDict, VisualScene
 from aiprod_adaptation.models.schema import AIPRODOutput, Shot
-
 
 # ---------------------------------------------------------------------------
 # 1. Empty input → ValueError
@@ -40,40 +42,63 @@ class TestEmptyInput:
 
     def test_pass2_empty_list(self) -> None:
         with pytest.raises(ValueError, match="PASS 2"):
-            transform_visuals([])
+            visual_rewrite([])
 
     def test_pass3_empty_list(self) -> None:
         with pytest.raises(ValueError, match="PASS 3"):
-            atomize_shots([])
+            simplify_shots([])
 
     def test_pass4_empty_scenes(self) -> None:
         with pytest.raises(ValueError, match="PASS 4"):
-            compile_output("title", [], [{"shot_id": "SH0001", "scene_id": "SC001",
-                                          "prompt": "x", "duration_sec": 3, "emotion": "neutral"}])
+            compile_episode([], [cast(ShotDict, {"shot_id": "SH0001", "scene_id": "SC001",
+                                     "prompt": "x", "duration_sec": 3, "emotion": "neutral"})],
+                            "title")
 
     def test_pass4_empty_shots(self) -> None:
-        scene = {
+        scene = cast(VisualScene, {
             "scene_id": "SC001", "characters": [], "location": "a place",
             "time_of_day": None, "visual_actions": ["someone walks"],
             "dialogues": [], "emotion": "neutral",
-        }
+        })
         with pytest.raises(ValueError, match="PASS 4"):
-            compile_output("title", [scene], [])
+            compile_episode([scene], [], "title")
 
     def test_pass4_empty_title(self) -> None:
-        scene = {
+        scene = cast(VisualScene, {
             "scene_id": "SC001", "characters": [], "location": "a place",
             "time_of_day": None, "visual_actions": ["someone walks"],
             "dialogues": [], "emotion": "neutral",
-        }
-        shot = {"shot_id": "SH0001", "scene_id": "SC001",
-                "prompt": "someone walks, in a place.", "duration_sec": 4, "emotion": "neutral"}
+        })
+        shot = cast(ShotDict, {"shot_id": "SH0001", "scene_id": "SC001",
+                "prompt": "someone walks, in a place.", "duration_sec": 4, "emotion": "neutral"})
         with pytest.raises(ValueError, match="PASS 4"):
-            compile_output("", [scene], [shot])
+            compile_episode([scene], [shot], "")
 
     def test_engine_empty_string(self) -> None:
         with pytest.raises(ValueError):
             run_pipeline("", "Title")
+
+    def test_pass3_scene_with_empty_visual_actions_raises(self) -> None:
+        scene = cast(VisualScene, {
+            "scene_id": "SC001", "characters": [], "location": "a room",
+            "time_of_day": None, "visual_actions": [], "dialogues": [], "emotion": "neutral",
+        })
+        with pytest.raises(ValueError, match="PASS 3"):
+            simplify_shots([scene])
+
+    def test_pass4_whitespace_only_title_raises(self) -> None:
+        scene = cast(VisualScene, {
+            "scene_id": "SC001", "characters": [], "location": "a place",
+            "time_of_day": None, "visual_actions": ["someone walks"],
+            "dialogues": [], "emotion": "neutral",
+        })
+        shot = cast(ShotDict, {
+            "shot_id": "SC001_SHOT_001", "scene_id": "SC001",
+            "prompt": "someone walks, in a place.", "duration_sec": 4,
+            "emotion": "neutral", "shot_type": "medium", "camera_movement": "static",
+        })
+        with pytest.raises(ValueError, match="PASS 4"):
+            compile_episode([scene], [shot], "   ")
 
 
 # ---------------------------------------------------------------------------
@@ -133,7 +158,7 @@ class TestTimeJump:
 # ---------------------------------------------------------------------------
 
 class TestInternalThoughts:
-    _THOUGHT_SCENE: dict = {
+    _THOUGHT_SCENE: RawScene = cast(RawScene, {
         "scene_id": "SC001",
         "characters": ["Emma"],
         "location": "the dark corridor",
@@ -143,10 +168,10 @@ class TestInternalThoughts:
             "She thought about the future. "
             "Emma walked to the door."
         ),
-    }
+    })
 
     def test_thought_replaced_by_physical_action(self) -> None:
-        result = transform_visuals([self._THOUGHT_SCENE])
+        result = visual_rewrite([self._THOUGHT_SCENE])
         actions = result[0]["visual_actions"]
         # Thought sentence must be replaced
         assert "thought" not in actions[0].lower()
@@ -154,20 +179,20 @@ class TestInternalThoughts:
         assert "fidgets" in actions[0] or "paces" in actions[0] or "bites" in actions[0]
 
     def test_non_thought_sentence_unchanged(self) -> None:
-        result = transform_visuals([self._THOUGHT_SCENE])
+        result = visual_rewrite([self._THOUGHT_SCENE])
         actions = result[0]["visual_actions"]
         assert actions[1] == "Emma walked to the door."
 
     def test_dialogues_unchanged(self) -> None:
         scene = copy.deepcopy(self._THOUGHT_SCENE)
         scene["raw_text"] = 'Emma felt nervous. "I will find a way," she said.'
-        result = transform_visuals([scene])
+        result = visual_rewrite([scene])
         assert result[0]["dialogues"] == ["I will find a way,"]
 
     def test_abstract_noun_replaced(self) -> None:
         scene = copy.deepcopy(self._THOUGHT_SCENE)
         scene["raw_text"] = "She was terrified of the darkness."
-        result = transform_visuals([scene])
+        result = visual_rewrite([scene])
         actions = result[0]["visual_actions"]
         assert "trembles" in actions[0] or "eyes widen" in actions[0]
 
@@ -206,7 +231,7 @@ class TestDeterminism:
 # ---------------------------------------------------------------------------
 
 class TestInvalidDuration:
-    _BASE_SCENE: dict = {
+    _BASE_SCENE: VisualScene = cast(VisualScene, {
         "scene_id": "SC001",
         "characters": [],
         "location": "a room",
@@ -214,65 +239,65 @@ class TestInvalidDuration:
         "visual_actions": ["someone stands"],
         "dialogues": [],
         "emotion": "neutral",
-    }
+    })
 
     def test_duration_too_low_raises(self) -> None:
-        shot = {
+        shot = cast(ShotDict, {
             "shot_id": "SH0001", "scene_id": "SC001",
             "prompt": "someone stands, in a room.",
             "duration_sec": 2,
             "emotion": "neutral",
-        }
+        })
         with pytest.raises(ValueError):
-            compile_output("title", [self._BASE_SCENE], [shot])
+            compile_episode([self._BASE_SCENE], [shot], "title")
 
     def test_duration_too_high_raises(self) -> None:
-        shot = {
+        shot = cast(ShotDict, {
             "shot_id": "SH0001", "scene_id": "SC001",
             "prompt": "someone stands, in a room.",
             "duration_sec": 9,
             "emotion": "neutral",
-        }
+        })
         with pytest.raises(ValueError):
-            compile_output("title", [self._BASE_SCENE], [shot])
+            compile_episode([self._BASE_SCENE], [shot], "title")
 
     def test_duration_boundary_low_valid(self) -> None:
-        shot = {
+        shot = cast(ShotDict, {
             "shot_id": "SH0001", "scene_id": "SC001",
             "prompt": "someone stands, in a room.",
             "duration_sec": 3,
             "emotion": "neutral",
-        }
-        result = compile_output("title", [self._BASE_SCENE], [shot])
+        })
+        result = compile_episode([self._BASE_SCENE], [shot], "title")
         assert result.episodes[0].shots[0].duration_sec == 3
 
     def test_duration_boundary_high_valid(self) -> None:
-        shot = {
+        shot = cast(ShotDict, {
             "shot_id": "SH0001", "scene_id": "SC001",
             "prompt": "someone stands, in a room.",
             "duration_sec": 8,
             "emotion": "neutral",
-        }
-        result = compile_output("title", [self._BASE_SCENE], [shot])
+        })
+        result = compile_episode([self._BASE_SCENE], [shot], "title")
         assert result.episodes[0].shots[0].duration_sec == 8
 
     def test_shot_model_rejects_invalid_duration_directly(self) -> None:
-        shot = {
+        shot = cast(ShotDict, {
             "shot_id": "SH0001", "scene_id": "SC001",
             "prompt": "x", "duration_sec": 0, "emotion": "neutral",
-        }
+        })
         with pytest.raises(ValueError):
-            compile_output("title", [self._BASE_SCENE], [shot])
+            compile_episode([self._BASE_SCENE], [shot], "title")
 
     def test_shot_references_unknown_scene_raises(self) -> None:
-        shot = {
+        shot = cast(ShotDict, {
             "shot_id": "SH0001", "scene_id": "SC999",
             "prompt": "someone stands, in a room.",
             "duration_sec": 4,
             "emotion": "neutral",
-        }
+        })
         with pytest.raises(ValueError, match="unknown scene_id"):
-            compile_output("title", [self._BASE_SCENE], [shot])
+            compile_episode([self._BASE_SCENE], [shot], "title")
 
 
 # ---------------------------------------------------------------------------
@@ -375,7 +400,7 @@ class TestShotStructure:
         "John finally entered the room and gave her a warm smile."
     )
 
-    def _get_shots(self) -> list:
+    def _get_shots(self) -> list[Shot]:
         result = run_pipeline(self._SAMPLE, "Structure Test")
         return result.episodes[0].shots
 
@@ -472,7 +497,7 @@ class TestProductionBudget:
 class TestVisualSceneEnrichment:
     from typing import Any
 
-    def _make_scene(self, **kwargs: "Any") -> "Any":
+    def _make_scene(self, **kwargs: Any) -> Any:
         from typing import cast
 
         from aiprod_adaptation.models.intermediate import VisualScene
@@ -572,9 +597,12 @@ class TestVisualSceneEnrichment:
 # Multi-épisode compilation (SO-07)
 # ---------------------------------------------------------------------------
 
-def _multi_episode_output() -> "AIPRODOutput":
+def _multi_episode_output() -> AIPRODOutput:
+    from typing import cast
+
     from aiprod_adaptation.core.pass3_shots import simplify_shots
     from aiprod_adaptation.core.pass4_compile import compile_episode
+    from aiprod_adaptation.models.intermediate import VisualScene
     from aiprod_adaptation.models.schema import AIPRODOutput
 
     scenes_a = [
@@ -608,10 +636,10 @@ def _multi_episode_output() -> "AIPRODOutput":
             "emotion": "sad",
         },
     ]
-    shots_a = simplify_shots(scenes_a)  # type: ignore[arg-type]
-    shots_b = simplify_shots(scenes_b)  # type: ignore[arg-type]
-    ep_a = compile_episode(scenes_a, shots_a, "Multi Title", "EP01")  # type: ignore[arg-type]
-    ep_b = compile_episode(scenes_b, shots_b, "Multi Title", "EP02")  # type: ignore[arg-type]
+    shots_a = simplify_shots([cast(VisualScene, s) for s in scenes_a])
+    shots_b = simplify_shots([cast(VisualScene, s) for s in scenes_b])
+    ep_a = compile_episode([cast(VisualScene, s) for s in scenes_a], shots_a, "Multi Title", "EP01")
+    ep_b = compile_episode([cast(VisualScene, s) for s in scenes_b], shots_b, "Multi Title", "EP02")
     return AIPRODOutput(
         title="Multi Title",
         episodes=ep_a.episodes + ep_b.episodes,

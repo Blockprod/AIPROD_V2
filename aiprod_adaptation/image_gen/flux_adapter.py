@@ -18,7 +18,7 @@ class FluxAdapter(ImageAdapter):
         self._url = api_url or os.environ.get("FLUX_API_URL", "http://localhost:7860")
 
     def generate(self, request: ImageRequest) -> ImageResult:
-        import requests  # type: ignore[import-untyped]
+        import requests
 
         t0 = time.monotonic()
         payload = {

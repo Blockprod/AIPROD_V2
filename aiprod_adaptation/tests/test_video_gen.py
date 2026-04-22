@@ -14,7 +14,10 @@ import json
 
 import pytest
 
+from aiprod_adaptation.core.engine import run_pipeline, run_pipeline_with_video
 from aiprod_adaptation.image_gen.image_adapter import NullImageAdapter
+from aiprod_adaptation.image_gen.image_request import StoryboardOutput
+from aiprod_adaptation.models.schema import AIPRODOutput
 from aiprod_adaptation.video_gen.video_adapter import NullVideoAdapter
 from aiprod_adaptation.video_gen.video_request import (
     VideoClipResult,
@@ -22,8 +25,6 @@ from aiprod_adaptation.video_gen.video_request import (
     VideoRequest,
 )
 from aiprod_adaptation.video_gen.video_sequencer import VideoSequencer
-from aiprod_adaptation.core.engine import run_pipeline, run_pipeline_with_video
-
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -44,7 +45,7 @@ _REQ = VideoRequest(
 )
 
 
-def _storyboard_and_output():
+def _storyboard_and_output() -> tuple[StoryboardOutput, AIPRODOutput]:
     from aiprod_adaptation.image_gen.storyboard import StoryboardGenerator
     output = run_pipeline(_NOVEL, "T")
     storyboard = StoryboardGenerator(
@@ -137,7 +138,7 @@ class TestVideoSequencer:
 
     def test_sequencer_error_does_not_crash(self) -> None:
         class BrokenAdapter(NullVideoAdapter):
-            def generate(self, request: VideoRequest) -> VideoClipResult:
+            def generate(self, _request: VideoRequest) -> VideoClipResult:
                 raise RuntimeError("API down")
 
         seq = VideoSequencer(adapter=BrokenAdapter(), base_seed=0)

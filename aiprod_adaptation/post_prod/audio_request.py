@@ -4,8 +4,6 @@ Post-production data models: AudioRequest, AudioResult, TimelineClip, Production
 
 from __future__ import annotations
 
-from typing import List
-
 from pydantic import BaseModel, field_validator
 
 
@@ -57,7 +55,7 @@ class ProductionOutput(BaseModel):
     """Final production timeline ready for export."""
 
     title: str
-    timeline: List[TimelineClip]
+    timeline: list[TimelineClip]
     total_duration_sec: int
     resolution: str = "3840x2160"
     fps: int = 24

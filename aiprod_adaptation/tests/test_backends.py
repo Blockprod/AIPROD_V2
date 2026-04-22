@@ -15,9 +15,12 @@ from __future__ import annotations
 import csv
 import io
 import json
+from typing import cast
+
 from aiprod_adaptation.backends.csv_export import CsvExport
 from aiprod_adaptation.backends.json_flat_export import JsonFlatExport
 from aiprod_adaptation.core.engine import run_pipeline
+from aiprod_adaptation.models.intermediate import VisualScene
 from aiprod_adaptation.models.schema import AIPRODOutput
 
 _SAMPLE = (
@@ -30,7 +33,7 @@ _SAMPLE = (
 )
 
 
-def _get_output():  # type: ignore[return]
+def _get_output() -> AIPRODOutput:
     return run_pipeline(_SAMPLE, "Test Title")
 
 
@@ -43,7 +46,10 @@ class TestCsvExport:
         result = CsvExport().export(_get_output())
         reader = csv.reader(io.StringIO(result))
         header = next(reader)
-        assert header == ["episode_id", "scene_id", "shot_id", "shot_type", "camera_movement", "prompt", "duration_sec", "emotion"]
+        assert header == [
+            "episode_id", "scene_id", "shot_id", "shot_type",
+            "camera_movement", "prompt", "duration_sec", "emotion",
+        ]
 
     def test_csv_export_row_count(self) -> None:
         output = _get_output()
@@ -108,10 +114,12 @@ def _multi_episode_output() -> AIPRODOutput:
             "dialogues": [], "emotion": "nervous",
         },
     ]
-    shots_a = simplify_shots(scenes_a)  # type: ignore[arg-type]
-    shots_b = simplify_shots(scenes_b)  # type: ignore[arg-type]
-    ep_a = compile_episode(scenes_a, shots_a, "T", "EP01")  # type: ignore[arg-type]
-    ep_b = compile_episode(scenes_b, shots_b, "T", "EP02")  # type: ignore[arg-type]
+    vs_a = [cast(VisualScene, s) for s in scenes_a]
+    vs_b = [cast(VisualScene, s) for s in scenes_b]
+    shots_a = simplify_shots(vs_a)
+    shots_b = simplify_shots(vs_b)
+    ep_a = compile_episode(vs_a, shots_a, "T", "EP01")
+    ep_b = compile_episode(vs_b, shots_b, "T", "EP02")
     return AIPRODOutput(title="T", episodes=ep_a.episodes + ep_b.episodes)
 
 

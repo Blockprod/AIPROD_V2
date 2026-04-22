@@ -44,7 +44,9 @@ class TestCLIPipeline:
             out_path = Path(tmp) / "output.json"
             in_path.write_text(novel, encoding="utf-8")
             parser = build_parser()
-            args = parser.parse_args(["pipeline", "--input", str(in_path), "--title", "T", "--output", str(out_path)])
+            args = parser.parse_args(
+                ["pipeline", "--input", str(in_path), "--title", "T", "--output", str(out_path)]
+            )
             rc = cmd_pipeline(args)
             assert rc == 0
             assert out_path.exists()
@@ -64,10 +66,14 @@ class TestCLIPipeline:
             in_path.write_text(novel, encoding="utf-8")
 
             parser = build_parser()
-            args_p = parser.parse_args(["pipeline", "--input", str(in_path), "--title", "T", "--output", str(pipeline_out)])
+            args_p = parser.parse_args(
+                ["pipeline", "--input", str(in_path), "--title", "T", "--output", str(pipeline_out)]
+            )
             cmd_pipeline(args_p)
 
-            args_s = parser.parse_args(["storyboard", "--input", str(pipeline_out), "--output", str(sb_out)])
+            args_s = parser.parse_args(
+                ["storyboard", "--input", str(pipeline_out), "--output", str(sb_out)]
+            )
             rc = cmd_storyboard(args_s)
             assert rc == 0
             assert sb_out.exists()
@@ -135,3 +141,83 @@ class TestCLIAdapters:
             assert "frames" in sb_data
             vid_data = json.loads((out_dir / "video.json").read_text(encoding="utf-8"))
             assert "clips" in vid_data
+
+
+# ---------------------------------------------------------------------------
+# TA01 — --output-format csv / json-flat + adapter loaders
+# ---------------------------------------------------------------------------
+
+_NOVEL_SHORT = (
+    "Alice walked into the old library and picked up a dusty book. "
+    "Later, in the garden, she read quietly while birds sang above."
+)
+
+
+class TestCLIPipelineFormats:
+    def _run_pipeline_with_format(self, fmt: str) -> tuple[int, str]:
+        with tempfile.TemporaryDirectory() as tmp:
+            in_path = Path(tmp) / "input.txt"
+            out_path = Path(tmp) / "output.out"
+            in_path.write_text(_NOVEL_SHORT, encoding="utf-8")
+            parser = build_parser()
+            args = parser.parse_args([
+                "pipeline", "--input", str(in_path), "--title", "T",
+                "--output", str(out_path), "--output-format", fmt,
+            ])
+            rc = cmd_pipeline(args)
+            content = out_path.read_text(encoding="utf-8") if out_path.exists() else ""
+            return rc, content
+
+    def test_output_format_csv_exits_zero(self) -> None:
+        rc, _ = self._run_pipeline_with_format("csv")
+        assert rc == 0
+
+    def test_output_format_csv_produces_non_empty_file(self) -> None:
+        _, content = self._run_pipeline_with_format("csv")
+        assert len(content) > 0
+
+    def test_output_format_json_flat_exits_zero(self) -> None:
+        rc, _ = self._run_pipeline_with_format("json-flat")
+        assert rc == 0
+
+    def test_output_format_json_flat_produces_valid_json(self) -> None:
+        _, content = self._run_pipeline_with_format("json-flat")
+        data = json.loads(content)
+        assert isinstance(data, (list, dict))
+
+
+class TestCLIAdapterLoaders:
+    def test_load_image_adapter_null_returns_null_adapter(self) -> None:
+        from aiprod_adaptation.cli import _load_image_adapter
+        from aiprod_adaptation.image_gen.image_adapter import NullImageAdapter
+        assert isinstance(_load_image_adapter("null"), NullImageAdapter)
+
+    def test_load_video_adapter_null_returns_null_adapter(self) -> None:
+        from aiprod_adaptation.cli import _load_video_adapter
+        from aiprod_adaptation.video_gen.video_adapter import NullVideoAdapter
+        assert isinstance(_load_video_adapter("null"), NullVideoAdapter)
+
+    def test_load_audio_adapter_null_returns_null_adapter(self) -> None:
+        from aiprod_adaptation.cli import _load_audio_adapter
+        from aiprod_adaptation.post_prod.audio_adapter import NullAudioAdapter
+        assert isinstance(_load_audio_adapter("null"), NullAudioAdapter)
+
+    def test_load_image_adapter_nonexistent_raises(self) -> None:
+        from unittest.mock import patch
+
+        import pytest
+
+        from aiprod_adaptation.cli import _load_image_adapter
+        with patch("importlib.import_module", side_effect=ModuleNotFoundError("no module")):
+            with pytest.raises(ModuleNotFoundError):
+                _load_image_adapter("flux")
+
+    def test_load_audio_adapter_nonexistent_raises(self) -> None:
+        from unittest.mock import patch
+
+        import pytest
+
+        from aiprod_adaptation.cli import _load_audio_adapter
+        with patch("importlib.import_module", side_effect=ModuleNotFoundError("no module")):
+            with pytest.raises(ModuleNotFoundError):
+                _load_audio_adapter("elevenlabs")

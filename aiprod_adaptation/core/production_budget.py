@@ -24,11 +24,11 @@ class ProductionBudget:
         return self.max_scenes * self.max_shots_per_scene
 
     @classmethod
-    def for_short(cls) -> "ProductionBudget":
+    def for_short(cls) -> ProductionBudget:
         return cls(target_duration_sec=180, max_scenes=12, max_characters=4)
 
     @classmethod
-    def for_episode_45(cls) -> "ProductionBudget":
+    def for_episode_45(cls) -> ProductionBudget:
         return cls(
             target_duration_sec=2700,
             max_scenes=135,

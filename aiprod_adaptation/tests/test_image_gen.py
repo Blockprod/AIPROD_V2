@@ -15,6 +15,7 @@ from pathlib import Path
 
 import pytest
 
+from aiprod_adaptation.core.engine import run_pipeline, run_pipeline_with_images
 from aiprod_adaptation.image_gen.image_adapter import NullImageAdapter
 from aiprod_adaptation.image_gen.image_request import (
     ImageRequest,
@@ -23,8 +24,7 @@ from aiprod_adaptation.image_gen.image_request import (
     StoryboardOutput,
 )
 from aiprod_adaptation.image_gen.storyboard import DEFAULT_STYLE_TOKEN, StoryboardGenerator
-from aiprod_adaptation.core.engine import run_pipeline, run_pipeline_with_images
-
+from aiprod_adaptation.models.schema import AIPRODOutput
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -101,41 +101,41 @@ class TestStoryboardGenerator:
         self.adapter = NullImageAdapter()
         self.gen = StoryboardGenerator(adapter=self.adapter, base_seed=42)
 
-    def _output(self) -> object:
+    def _output(self) -> AIPRODOutput:
         return run_pipeline(_NOVEL, "T")
 
     def test_storyboard_generates_one_result_per_shot(self) -> None:
         output = self._output()
-        sb = self.gen.generate(output)  # type: ignore[arg-type]
-        total = sum(len(ep.shots) for ep in output.episodes)  # type: ignore[union-attr]
+        sb = self.gen.generate(output)
+        total = sum(len(ep.shots) for ep in output.episodes)
         assert len(sb.frames) == total
 
     def test_storyboard_is_deterministic(self) -> None:
         output = self._output()
-        sb1 = self.gen.generate(output)  # type: ignore[arg-type]
-        sb2 = self.gen.generate(output)  # type: ignore[arg-type]
+        sb1 = self.gen.generate(output)
+        sb2 = self.gen.generate(output)
         assert json.dumps(sb1.model_dump(), sort_keys=False) == \
                json.dumps(sb2.model_dump(), sort_keys=False)
 
     def test_storyboard_title_preserved(self) -> None:
         output = self._output()
-        sb = self.gen.generate(output)  # type: ignore[arg-type]
+        sb = self.gen.generate(output)
         assert sb.title == "T"
 
     def test_storyboard_generated_count_correct(self) -> None:
         output = self._output()
-        sb = self.gen.generate(output)  # type: ignore[arg-type]
+        sb = self.gen.generate(output)
         assert sb.generated == sb.total_shots
 
     def test_storyboard_build_requests_count(self) -> None:
         output = self._output()
-        requests = self.gen.build_requests(output)  # type: ignore[arg-type]
-        total = sum(len(ep.shots) for ep in output.episodes)  # type: ignore[union-attr]
+        requests = self.gen.build_requests(output)
+        total = sum(len(ep.shots) for ep in output.episodes)
         assert len(requests) == total
 
     def test_storyboard_error_in_adapter_does_not_crash(self) -> None:
         class BrokenAdapter(NullImageAdapter):
-            def generate(self, request: ImageRequest) -> ImageResult:
+            def generate(self, _request: ImageRequest) -> ImageResult:
                 raise RuntimeError("API down")
 
         gen = StoryboardGenerator(adapter=BrokenAdapter(), base_seed=0)
@@ -331,6 +331,7 @@ class TestCharacterSheetRegistry:
 
     def test_prepass_generates_one_image_per_sheet(self) -> None:
         from unittest.mock import MagicMock
+
         from aiprod_adaptation.image_gen.character_sheet import (
             CharacterSheet,
             CharacterSheetRegistry,
@@ -347,6 +348,7 @@ class TestCharacterSheetRegistry:
 
     def test_prepass_idempotent(self) -> None:
         from unittest.mock import MagicMock
+
         from aiprod_adaptation.image_gen.character_sheet import (
             CharacterSheet,
             CharacterSheetRegistry,
@@ -365,14 +367,15 @@ class TestCharacterSheetRegistry:
         )
 
         class BrokenAdapter(NullImageAdapter):
-            def generate(self, request: ImageRequest) -> ImageResult:
+            def generate(self, _request: ImageRequest) -> ImageResult:
                 raise RuntimeError("API down")
 
         reg = CharacterSheetRegistry()
         reg.register(CharacterSheet(name="John", canonical_prompt="tall man"))
         StoryboardGenerator(adapter=BrokenAdapter()).prepass_character_sheets(reg)
-        assert reg.get("John") is not None
-        assert reg.get("John").image_url == ""  # type: ignore[union-attr]
+        john_sheet = reg.get("John")
+        assert john_sheet is not None
+        assert john_sheet.image_url == ""
 
 
 # ---------------------------------------------------------------------------
@@ -380,7 +383,7 @@ class TestCharacterSheetRegistry:
 # ---------------------------------------------------------------------------
 
 class TestShotStoryboardFrame:
-    def _gen(self) -> "StoryboardOutput":
+    def _gen(self) -> StoryboardOutput:
         output = run_pipeline(_NOVEL, "T")
         return StoryboardGenerator(adapter=NullImageAdapter(), base_seed=10).generate(output)
 
@@ -407,7 +410,7 @@ class TestShotStoryboardFrame:
 # ---------------------------------------------------------------------------
 
 class TestCheckpointStore:
-    def _frame(self, shot_id: str = "S1") -> "ShotStoryboardFrame":
+    def _frame(self, shot_id: str = "S1") -> ShotStoryboardFrame:
         return ShotStoryboardFrame(
             shot_id=shot_id,
             scene_id="SC001",
@@ -473,6 +476,7 @@ class TestCheckpointStore:
 
     def test_checkpoint_store_file_persists_and_reloads(self) -> None:
         import tempfile
+
         from aiprod_adaptation.image_gen.checkpoint import CheckpointStore
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "checkpoint.json"
@@ -511,14 +515,18 @@ class TestCharacterPrepass:
         )
 
         class FailingAdapter(NullImageAdapter):
-            def generate(self, request: ImageRequest) -> ImageResult:
+            def generate(self, _request: ImageRequest) -> ImageResult:
                 raise RuntimeError("adapter down")
 
         output = run_pipeline(_NOVEL, "T")
         chars = _unique_characters(output)
         if not chars:
             # Inject synthetic characters directly to test failure handling
-            scene = output.episodes[0].scenes[0] if output.episodes and output.episodes[0].scenes else None
+            scene = (
+                output.episodes[0].scenes[0]
+                if output.episodes and output.episodes[0].scenes
+                else None
+            )
             if scene is not None:
                 # Patch characters list for test
                 object.__setattr__(scene, "characters", ["Alice", "Bob"])
@@ -541,3 +549,16 @@ class TestCharacterPrepass:
             prepass_registry=prepass_result.registry,
         ).generate(output)
         assert len(sb.frames) == sb.total_shots
+
+    def test_character_prepass_handles_output_with_no_characters(self) -> None:
+        from unittest.mock import patch
+
+        from aiprod_adaptation.image_gen.character_prepass import CharacterPrepass
+        output = run_pipeline(_NOVEL, "T")
+        with patch(
+            "aiprod_adaptation.image_gen.character_prepass._unique_characters",
+            return_value=[],
+        ):
+            result = CharacterPrepass(adapter=NullImageAdapter(), base_seed=0).run(output)
+        assert result.generated == 0
+        assert result.failed == 0

@@ -30,21 +30,22 @@ camera_movement:
 from __future__ import annotations
 
 import re
-from typing import List
 
 from aiprod_adaptation.models.intermediate import ShotDict, VisualScene
+
+from .rules.cinematography_rules import (
+    CAMERA_MOVEMENT_INTERACTION_KEYWORDS,
+    CAMERA_MOVEMENT_MOTION_KEYWORDS,
+    SHOT_TYPE_DEFAULT,
+    SHOT_TYPE_RULES,
+)
+from .rules.verb_categories import INTERACTION_VERBS as _INTERACTION_VERBS
 
 # ---------------------------------------------------------------------------
 # Vocabulary
 # ---------------------------------------------------------------------------
-
-from .rules.verb_categories import MOTION_VERBS as _MOTION_VERBS, INTERACTION_VERBS as _INTERACTION_VERBS, PERCEPTION_VERBS as _PERCEPTION_VERBS
-from .rules.cinematography_rules import (
-    SHOT_TYPE_RULES,
-    SHOT_TYPE_DEFAULT,
-    CAMERA_MOVEMENT_MOTION_KEYWORDS,
-    CAMERA_MOVEMENT_INTERACTION_KEYWORDS,
-)
+from .rules.verb_categories import MOTION_VERBS as _MOTION_VERBS
+from .rules.verb_categories import PERCEPTION_VERBS as _PERCEPTION_VERBS
 
 _AMBIGUOUS_RE = re.compile(r"\b(seems?|appears?|perhaps|maybe)\b", re.IGNORECASE)
 
@@ -53,7 +54,7 @@ _AMBIGUOUS_RE = re.compile(r"\b(seems?|appears?|perhaps|maybe)\b", re.IGNORECASE
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _has_any(text_lower: str, verbs: List[str]) -> bool:
+def _has_any(text_lower: str, verbs: list[str]) -> bool:
     return any(re.search(r"\b" + re.escape(v) + r"\b", text_lower) for v in verbs)
 
 
@@ -96,7 +97,7 @@ def _build_prompt(action: str, location: str) -> str:
     return f"{clean}, in {location_str}."
 
 
-def _atomize_action(action: str) -> List[str]:
+def _atomize_action(action: str) -> list[str]:
     """Split a visual_action string into atomic parts."""
     if action.rstrip().endswith(('.', '!', '?')):
         return [action]
@@ -115,7 +116,7 @@ def _make_shot_id(scene_id: str, shot_num: int) -> str:
 # Public API
 # ---------------------------------------------------------------------------
 
-def simplify_shots(scenes: List[VisualScene]) -> List[ShotDict]:
+def simplify_shots(scenes: list[VisualScene]) -> list[ShotDict]:
     """
     Decompose visual scenes into atomic shots.
 
@@ -128,13 +129,16 @@ def simplify_shots(scenes: List[VisualScene]) -> List[ShotDict]:
     if not scenes:
         raise ValueError("PASS 3: scenes list must not be empty.")
 
-    shots: List[ShotDict] = []
+    shots: list[ShotDict] = []
 
     for scene in scenes:
         scene_id:       str       = scene["scene_id"]
         location:       str       = scene.get("location", "unknown location")
         emotion:        str       = scene.get("emotion", "neutral")
-        visual_actions: List[str] = scene.get("visual_actions", [])
+        visual_actions: list[str] = scene.get("visual_actions", [])
+        # NOTE: pacing/time_of_day_visual/dominant_sound are only populated on the LLM
+        # path (StoryExtractor via Normalizer). On the rule-based path (Pass1→Pass2),
+        # these fields always equal their defaults ("medium" / "day" / "dialogue").
         pacing:         str       = scene.get("pacing", "medium")
         tod_visual:     str       = scene.get("time_of_day_visual", "day")
         dom_sound:      str       = scene.get("dominant_sound", "dialogue")
@@ -179,4 +183,12 @@ def simplify_shots(scenes: List[VisualScene]) -> List[ShotDict]:
 
 
 # Deprecated — use simplify_shots. Kept for backward compatibility.
-atomize_shots = simplify_shots
+def atomize_shots(scenes: list[VisualScene]) -> list[ShotDict]:
+    """Deprecated. Use simplify_shots()."""
+    import warnings
+    warnings.warn(
+        "atomize_shots() is deprecated. Use simplify_shots().",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return simplify_shots(scenes)

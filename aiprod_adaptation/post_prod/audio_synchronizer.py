@@ -5,8 +5,6 @@ a fully ordered ProductionOutput (timeline with cumulative start_sec).
 
 from __future__ import annotations
 
-from typing import Dict, List
-
 from aiprod_adaptation.models.schema import AIPRODOutput, Scene, Shot
 from aiprod_adaptation.post_prod.audio_adapter import AudioAdapter
 from aiprod_adaptation.post_prod.audio_request import (
@@ -19,11 +17,11 @@ from aiprod_adaptation.post_prod.audio_utils import audio_duration_from_b64
 from aiprod_adaptation.video_gen.video_request import VideoClipResult, VideoOutput
 
 
-def _shot_map(output: AIPRODOutput) -> Dict[str, Shot]:
+def _shot_map(output: AIPRODOutput) -> dict[str, Shot]:
     return {shot.shot_id: shot for ep in output.episodes for shot in ep.shots}
 
 
-def _scene_map(output: AIPRODOutput) -> Dict[str, Scene]:
+def _scene_map(output: AIPRODOutput) -> dict[str, Scene]:
     return {scene.scene_id: scene for ep in output.episodes for scene in ep.scenes}
 
 
@@ -44,10 +42,10 @@ class AudioSynchronizer:
         self,
         video: VideoOutput,
         output: AIPRODOutput,
-    ) -> List[AudioRequest]:
+    ) -> list[AudioRequest]:
         shots = _shot_map(output)
         scenes = _scene_map(output)
-        requests: List[AudioRequest] = []
+        requests: list[AudioRequest] = []
         for clip in video.clips:
             shot = shots.get(clip.shot_id)
             scene = scenes.get(shot.scene_id) if shot is not None else None
@@ -74,9 +72,9 @@ class AudioSynchronizer:
         self,
         video: VideoOutput,
         output: AIPRODOutput,
-    ) -> tuple[List[AudioResult], ProductionOutput]:
+    ) -> tuple[list[AudioResult], ProductionOutput]:
         requests = self.build_requests(video, output)
-        audio_results: List[AudioResult] = []
+        audio_results: list[AudioResult] = []
 
         for request in requests:
             try:
@@ -92,9 +90,9 @@ class AudioSynchronizer:
             audio_results.append(result)
 
         # Build ordered timeline with cumulative start_sec
-        timeline: List[TimelineClip] = []
+        timeline: list[TimelineClip] = []
         start_sec = 0
-        clip_by_shot: Dict[str, VideoClipResult] = {c.shot_id: c for c in video.clips}
+        clip_by_shot: dict[str, VideoClipResult] = {c.shot_id: c for c in video.clips}
         shots_map = _shot_map(output)
 
         for audio in audio_results:

@@ -13,30 +13,31 @@ mypy full static visibility into every key used between passes.
 
 from __future__ import annotations
 
-from typing import Any, List, Optional
+from typing import Any, NotRequired
 
-from typing_extensions import NotRequired, TypedDict
+from typing_extensions import TypedDict
 
 
 class RawScene(TypedDict):
     """Output of Pass 1 (segment). Input to Pass 2 (visual_rewrite)."""
     scene_id:    str
-    characters:  List[str]
+    characters:  list[str]
     location:    str
-    time_of_day: Optional[str]
+    time_of_day: str | None
     raw_text:    str
 
 
 class VisualScene(TypedDict):
     """Output of Pass 2 (visual_rewrite). Input to Pass 3 (simplify_shots)."""
     scene_id:       str
-    characters:     List[str]
+    characters:     list[str]
     location:       str
-    time_of_day:    Optional[str]
-    visual_actions: List[str]  # Each entry: one declarative sentence in English, subject + verb + object.
-    #                            Example: "John walks toward the door."
-    #                            No dialogue, no stage directions, no internal thoughts.
-    dialogues:      List[str]
+    time_of_day:    str | None
+    visual_actions: list[str]
+    # Each entry: one declarative sentence in English, subject + verb + object.
+    # Example: "John walks toward the door."
+    # No dialogue, no stage directions, no internal thoughts.
+    dialogues:      list[str]
     emotion:        str
     # Optional enrichment fields (SE-04) — set by StoryExtractor when LLM provides them
     pacing:             NotRequired[str]   # "fast" | "medium" | "slow"

@@ -18,7 +18,7 @@ from typing import Any, cast
 from unittest.mock import MagicMock
 
 from aiprod_adaptation.core.adaptation.classifier import InputClassifier
-from aiprod_adaptation.core.adaptation.llm_adapter import NullLLMAdapter
+from aiprod_adaptation.core.adaptation.llm_adapter import LLMAdapter, NullLLMAdapter
 from aiprod_adaptation.core.adaptation.llm_router import LLMRouter
 from aiprod_adaptation.core.adaptation.script_parser import ScriptParser
 from aiprod_adaptation.core.adaptation.story_extractor import StoryExtractor, split_into_chunks
@@ -26,7 +26,6 @@ from aiprod_adaptation.core.adaptation.story_validator import StoryValidator
 from aiprod_adaptation.core.engine import run_pipeline
 from aiprod_adaptation.core.production_budget import ProductionBudget
 from aiprod_adaptation.models.intermediate import VisualScene
-
 
 # ---------------------------------------------------------------------------
 # 1. InputClassifier
@@ -121,12 +120,14 @@ class TestScriptParser:
 
 
 # ---------------------------------------------------------------------------
-# 4. StoryExtractor — remplace NovelPipe (déprécié)
+# 4. StoryExtractor — déterminisme (TestNovelPipe migré)
 # ---------------------------------------------------------------------------
 
-class TestNovelPipe:
+class TestStoryExtractorDeterminism:
     def test_novel_pipe_null_adapter_returns_list(self) -> None:
-        result = StoryExtractor().extract(NullLLMAdapter(), "John walked into the room.", ProductionBudget.for_short())
+        result = StoryExtractor().extract(
+            NullLLMAdapter(), "John walked into the room.", ProductionBudget.for_short()
+        )
         assert isinstance(result, list)
 
     def test_novel_pipe_null_adapter_deterministic(self) -> None:
@@ -378,7 +379,11 @@ class TestSplitIntoChunks:
                                     "mood": "neutral", "characters": []}]}
 
         # Force 3 chunks by setting a tiny max_chars_per_chunk
-        text = "First paragraph with content here.\n\nSecond paragraph with content.\n\nThird paragraph here."
+        text = (
+            "First paragraph with content here."
+            "\n\nSecond paragraph with content."
+            "\n\nThird paragraph here."
+        )
         budget = ProductionBudget(max_chars_per_chunk=40)
         StoryExtractor().extract_all(TrackingLLM(), text, budget)
         # From chunk 2 onwards, prompt should contain prior_summary context
@@ -410,8 +415,9 @@ class TestProductionBudgetChunk:
 
     def test_budget_frozen_dataclass_max_chars_immutable(self) -> None:
         budget = ProductionBudget()
+        mutable: Any = budget
         try:
-            budget.max_chars_per_chunk = 999  # type: ignore[misc]
+            mutable.max_chars_per_chunk = 999
             assert False, "Should have raised"
         except Exception:
             pass
@@ -430,10 +436,15 @@ class TestLLMRouterCompleteness:
         extract_called = [False]
 
         class TrackingExtractor(StoryExtractor):
-            def extract(self, llm, text, budget, prior_summary=""):  # type: ignore[override]
+            def extract(
+                self, llm: LLMAdapter, text: str, budget: ProductionBudget,
+                prior_summary: str = "",
+            ) -> list[VisualScene]:
                 extract_called[0] = True
                 return super().extract(llm, text, budget, prior_summary)
-            def extract_all(self, llm, text, budget):  # type: ignore[override]
+            def extract_all(
+                self, llm: LLMAdapter, text: str, budget: ProductionBudget,
+            ) -> list[VisualScene]:
                 extract_all_called[0] = True
                 return super().extract_all(llm, text, budget)
 
@@ -449,7 +460,10 @@ class TestLLMRouterCompleteness:
         received_budgets: list[object] = []
 
         class TrackingExtractor(StoryExtractor):
-            def extract_chunk(self, llm, text, budget, prior_summary=""):  # type: ignore[override]
+            def extract_chunk(
+                self, llm: LLMAdapter, text: str, budget: ProductionBudget,
+                prior_summary: str = "",
+            ) -> list[VisualScene]:
                 received_budgets.append(budget)
                 return super().extract_chunk(llm, text, budget, prior_summary)
 
@@ -471,3 +485,21 @@ class TestLLMRouterCompleteness:
         text = "Alice walked in the park. She sat on a bench."
         output = run_pipeline(text, "T", llm=NullLLMAdapter(), budget=ProductionBudget())
         assert output is not None
+
+
+# ---------------------------------------------------------------------------
+# TA04 — engine raises when StoryValidator filters all scenes
+# ---------------------------------------------------------------------------
+
+class TestEngineStoryValidatorAllFiltered:
+    def test_engine_raises_when_story_validator_filters_all_scenes(self) -> None:
+        from unittest.mock import patch
+
+        import pytest
+
+        with patch(
+            "aiprod_adaptation.core.adaptation.story_validator.StoryValidator.validate_all",
+            return_value=[],
+        ):
+            with pytest.raises(ValueError, match="StoryValidator produced no filmable scenes"):
+                run_pipeline("John walked into the room.", "T")

@@ -35,7 +35,7 @@ class OpenAITTSAdapter(AudioAdapter):
         self._model = model
 
     def generate(self, request: AudioRequest) -> AudioResult:
-        from openai import OpenAI  # type: ignore[import-untyped]
+        from openai import OpenAI
 
         client = OpenAI(api_key=self._api_key)
         voice = request.voice_id if request.voice_id != "default" else self._voice

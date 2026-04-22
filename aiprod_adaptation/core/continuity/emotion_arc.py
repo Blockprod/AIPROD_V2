@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import List
+from typing import NotRequired
 
-from typing_extensions import NotRequired, TypedDict
+from typing_extensions import TypedDict
 
 from aiprod_adaptation.models.schema import AIPRODOutput
 
@@ -25,8 +25,8 @@ class EmotionState(TypedDict):
 
 
 class EmotionArcTracker:
-    def track(self, output: AIPRODOutput) -> List[EmotionState]:
-        states: List[EmotionState] = []
+    def track(self, output: AIPRODOutput) -> list[EmotionState]:
+        states: list[EmotionState] = []
         previous_emotion: str | None = None
         for episode in output.episodes:
             for shot in episode.shots:
@@ -47,7 +47,7 @@ class EmotionArcTracker:
                 previous_emotion = shot.emotion
         return states
 
-    def get_warnings(self, states: List[EmotionState]) -> List[str]:
+    def get_warnings(self, states: list[EmotionState]) -> list[str]:
         return [
             f"Abrupt emotion transition at shot {s['shot_id']}: "
             f"{s.get('previous', '?')} \u2192 {s['emotion']}"

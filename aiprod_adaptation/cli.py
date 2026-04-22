@@ -2,11 +2,12 @@ from __future__ import annotations
 
 import argparse
 import sys
+import typing
 from pathlib import Path
 
 from aiprod_adaptation.image_gen.image_adapter import ImageAdapter, NullImageAdapter
-from aiprod_adaptation.video_gen.video_adapter import NullVideoAdapter, VideoAdapter
 from aiprod_adaptation.post_prod.audio_adapter import AudioAdapter, NullAudioAdapter
+from aiprod_adaptation.video_gen.video_adapter import NullVideoAdapter, VideoAdapter
 
 _IMAGE_ADAPTERS: dict[str, str] = {
     "null": "aiprod_adaptation.image_gen.image_adapter:NullImageAdapter",
@@ -32,7 +33,7 @@ def _load_image_adapter(name: str) -> ImageAdapter:
     import importlib
     module_path, class_name = _IMAGE_ADAPTERS[name].split(":")
     cls = getattr(importlib.import_module(module_path), class_name)
-    return cls()  # type: ignore[no-any-return]
+    return typing.cast(ImageAdapter, cls())
 
 
 def _load_video_adapter(name: str) -> VideoAdapter:
@@ -47,7 +48,7 @@ def _load_video_adapter(name: str) -> VideoAdapter:
     import importlib
     module_path, class_name = _VIDEO_ADAPTERS[name].split(":")
     cls = getattr(importlib.import_module(module_path), class_name)
-    return cls()  # type: ignore[no-any-return]
+    return typing.cast(VideoAdapter, cls())
 
 
 def _load_audio_adapter(name: str) -> AudioAdapter:
@@ -56,7 +57,7 @@ def _load_audio_adapter(name: str) -> AudioAdapter:
     import importlib
     module_path, class_name = _AUDIO_ADAPTERS[name].split(":")
     cls = getattr(importlib.import_module(module_path), class_name)
-    return cls()  # type: ignore[no-any-return]
+    return typing.cast(AudioAdapter, cls())
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -76,6 +77,13 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help="Force input format (auto-detected if omitted)",
     )
+    p_pipeline.add_argument(
+        "--output-format",
+        choices=["json", "csv", "json-flat"],
+        default="json",
+        dest="output_format",
+        help="Output format (default: json/Pydantic)",
+    )
 
     p_storyboard = sub.add_parser("storyboard", help="AIPRODOutput JSON → StoryboardOutput JSON")
     p_storyboard.add_argument("--input", required=True, help="Path to AIPRODOutput JSON")
@@ -88,9 +96,13 @@ def build_parser() -> argparse.ArgumentParser:
         help="Image generation adapter (default: null)",
     )
 
-    p_schedule = sub.add_parser("schedule", help="AIPRODOutput → full production (image+video+audio)")
+    p_schedule = sub.add_parser(
+        "schedule", help="AIPRODOutput → full production (image+video+audio)"
+    )
     p_schedule.add_argument("--input", required=True, help="Path to AIPRODOutput JSON")
-    p_schedule.add_argument("--output", required=True, help="Directory or JSON path for SchedulerResult")
+    p_schedule.add_argument(
+        "--output", required=True, help="Directory or JSON path for SchedulerResult"
+    )
     p_schedule.add_argument(
         "--image-adapter",
         choices=list(_IMAGE_ADAPTERS),
@@ -119,7 +131,14 @@ def cmd_pipeline(args: argparse.Namespace) -> int:
 
     text = Path(args.input).read_text(encoding="utf-8")
     output = run_pipeline(text, args.title)
-    save_output(output, args.output)
+    if args.output_format == "csv":
+        from aiprod_adaptation.backends.csv_export import CsvExport
+        Path(args.output).write_text(CsvExport().export(output), encoding="utf-8")
+    elif args.output_format == "json-flat":
+        from aiprod_adaptation.backends.json_flat_export import JsonFlatExport
+        Path(args.output).write_text(JsonFlatExport().export(output), encoding="utf-8")
+    else:
+        save_output(output, args.output)
     print(f"Pipeline complete: {args.output}", file=sys.stderr)
     return 0
 
@@ -139,7 +158,8 @@ def cmd_storyboard(args: argparse.Namespace) -> int:
 
 def cmd_schedule(args: argparse.Namespace) -> int:
     import json as _json
-    from aiprod_adaptation.core.io import load_output, save_storyboard, save_video, save_production
+
+    from aiprod_adaptation.core.io import load_output, save_production, save_storyboard, save_video
     from aiprod_adaptation.core.scheduling.episode_scheduler import EpisodeScheduler
 
     output = load_output(args.input)

@@ -12,27 +12,25 @@ Merging them would silently change duration calculations — kept separate by de
 
 from __future__ import annotations
 
-from typing import List
-
 # ---------------------------------------------------------------------------
 # Used by duration_rules.py — drives +1 second duration logic
 # ---------------------------------------------------------------------------
 
-MOTION_VERBS: List[str] = [
+MOTION_VERBS: list[str] = [
     "walk", "walks", "walked",
     "run", "runs", "ran",
     "move", "moves", "moved",
     "approach", "approaches", "approached",
 ]
 
-INTERACTION_VERBS: List[str] = [
+INTERACTION_VERBS: list[str] = [
     "touch", "touches", "touched",
     "grab", "grabs", "grabbed",
     "hold", "holds", "held",
     "open", "opens", "opened",
 ]
 
-PERCEPTION_VERBS: List[str] = [
+PERCEPTION_VERBS: list[str] = [
     "look", "looks", "looked",
     "watch", "watches", "watched",
     "observe", "observes", "observed",
@@ -44,7 +42,7 @@ PERCEPTION_VERBS: List[str] = [
 # Broader than MOTION_VERBS: includes entry/exit/travel verbs
 # ---------------------------------------------------------------------------
 
-CAMERA_MOTION_VERBS: List[str] = [
+CAMERA_MOTION_VERBS: list[str] = [
     "walk", "walks", "walked",
     "run", "runs", "ran",
     "move", "moves", "moved",
@@ -59,7 +57,7 @@ CAMERA_MOTION_VERBS: List[str] = [
     "step", "steps", "stepped",
 ]
 
-CAMERA_INTERACTION_VERBS: List[str] = [
+CAMERA_INTERACTION_VERBS: list[str] = [
     "touch", "touches", "touched",
     "grab", "grabs", "grabbed",
     "hold", "holds", "held",

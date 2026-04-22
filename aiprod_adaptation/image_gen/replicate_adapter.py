@@ -20,7 +20,7 @@ class ReplicateAdapter(ImageAdapter):
         self._token = api_token or os.environ.get("REPLICATE_API_TOKEN", "")
 
     def generate(self, request: ImageRequest) -> ImageResult:
-        import replicate as _replicate  # type: ignore[import-untyped]
+        import replicate as _replicate
 
         t0 = time.monotonic()
         input_data = {

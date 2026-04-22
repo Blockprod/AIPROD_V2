@@ -27,17 +27,17 @@ class KlingAdapter(VideoAdapter):
         self._api_secret = api_secret or os.environ.get("KLING_API_SECRET", "")
 
     def _jwt_token(self) -> str:
-        import jwt  # type: ignore[import-untyped]
+        import jwt
 
         payload = {
             "iss": self._api_key,
             "exp": int(time.time()) + 1800,
             "nbf": int(time.time()) - 5,
         }
-        return jwt.encode(payload, self._api_secret, algorithm="HS256")
+        return str(jwt.encode(payload, self._api_secret, algorithm="HS256"))
 
     def generate(self, request: VideoRequest) -> VideoClipResult:
-        import requests  # type: ignore[import-untyped]
+        import requests
 
         t0 = time.monotonic()
         headers = {

@@ -17,6 +17,7 @@ aiprod = "aiprod_adaptation.cli:main"
 [project.optional-dependencies]
 dev = [
     "pytest>=7.0",
+    "pytest-cov>=4.0",
     "mypy>=1.0",
     "ruff>=0.1",
 ]
@@ -28,16 +29,19 @@ include = ["aiprod_adaptation*"]
 [tool.mypy]
 python_version = "3.11"
 strict = true
-exclude = [
-    "aiprod_adaptation/core/adaptation/claude_adapter\\.py",
-    "aiprod_adaptation/image_gen/flux_adapter\\.py",
-    "aiprod_adaptation/image_gen/replicate_adapter\\.py",
-    "aiprod_adaptation/video_gen/runway_adapter\\.py",
-    "aiprod_adaptation/video_gen/kling_adapter\\.py",
-    "aiprod_adaptation/post_prod/elevenlabs_adapter\\.py",
-    "aiprod_adaptation/post_prod/openai_tts_adapter\\.py",
-    "aiprod_adaptation/core/adaptation/gemini_adapter\\.py",
+
+[[tool.mypy.overrides]]
+module = [
+    "anthropic.*",
+    "requests.*",
+    "replicate.*",
+    "runwayml.*",
+    "jwt.*",
+    "elevenlabs.*",
+    "openai.*",
+    "google.generativeai.*",
 ]
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["aiprod_adaptation/tests"]
@@ -45,3 +49,10 @@ addopts = "-m 'not integration'"
 
 [tool.pytest.ini_options.markers]
 integration = "marks tests as integration tests (excluded from CI, require external API keys)"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "N", "UP"]

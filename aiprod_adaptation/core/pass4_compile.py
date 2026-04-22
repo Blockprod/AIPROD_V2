@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Any, List, cast
+import warnings
+from typing import Any, cast
 
 from pydantic import ValidationError
 
@@ -12,7 +13,12 @@ _SCENE_KNOWN_KEYS: frozenset[str] = frozenset(
 )
 
 
-def compile_episode(scenes: List[VisualScene], shots: List[ShotDict], title: str, episode_id: str = "EP01") -> AIPRODOutput:
+def compile_episode(
+    scenes: list[VisualScene],
+    shots: list[ShotDict],
+    title: str,
+    episode_id: str = "EP01",
+) -> AIPRODOutput:
     """
     Assemble scenes and shots into a validated AIPRODOutput.
 
@@ -37,8 +43,10 @@ def compile_episode(scenes: List[VisualScene], shots: List[ShotDict], title: str
     known_scene_ids = {s["scene_id"] for s in scenes}
     for shot in shots:
         if shot.get("scene_id") not in known_scene_ids:
+            sid = shot.get('shot_id')
+            scid = shot.get('scene_id')
             raise ValueError(
-                f"PASS 4: shot '{shot.get('shot_id')}' references unknown scene_id '{shot.get('scene_id')}'"
+                f"PASS 4: shot '{sid}' references unknown scene_id '{scid}'"
             )
 
     try:
@@ -49,12 +57,13 @@ def compile_episode(scenes: List[VisualScene], shots: List[ShotDict], title: str
     except ValidationError as exc:
         raise ValueError(str(exc)) from exc
 
-    validated_shots: List[Shot] = []
+    validated_shots: list[Shot] = []
     for shot in shots:
         duration = shot.get("duration_sec")
         if not isinstance(duration, int) or not (3 <= duration <= 8):
+            sid = shot.get('shot_id')
             raise ValueError(
-                f"PASS 4: shot '{shot.get('shot_id')}' has invalid duration_sec={duration} (must be 3-8)"
+                f"PASS 4: shot '{sid}' has invalid duration_sec={duration} (must be 3-8)"
             )
         try:
             validated_shots.append(Shot(**shot))
@@ -73,5 +82,19 @@ def compile_episode(scenes: List[VisualScene], shots: List[ShotDict], title: str
 
 
 # Deprecated — use compile_episode. Kept for backward compatibility.
-def compile_output(title: str, scenes: List[VisualScene], shots: List[ShotDict], episode_id: str = "EP01") -> AIPRODOutput:
+def compile_output(
+    title: str,
+    scenes: list[VisualScene],
+    shots: list[ShotDict],
+    episode_id: str = "EP01",
+) -> AIPRODOutput:
+    """Deprecated. Use compile_episode(scenes, shots, title).
+    NOTE: argument order differs — compile_output takes (title, scenes, shots).
+    """
+    warnings.warn(
+        "compile_output() is deprecated. Use compile_episode(scenes, shots, title). "
+        "NOTE: argument order differs — compile_output takes (title, scenes, shots).",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     return compile_episode(scenes, shots, title, episode_id)

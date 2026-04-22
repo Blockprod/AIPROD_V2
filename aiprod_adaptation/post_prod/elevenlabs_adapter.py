@@ -36,7 +36,7 @@ class ElevenLabsAdapter(AudioAdapter):
     def generate(self, request: AudioRequest) -> AudioResult:
         import base64
 
-        from elevenlabs import ElevenLabs  # type: ignore[import-untyped]
+        from elevenlabs import ElevenLabs
 
         client = ElevenLabs(api_key=self._api_key)
         voice_id = request.voice_id if request.voice_id != "default" else self._voice_id

@@ -25,7 +25,7 @@ class LocationRegistry:
     def __init__(self) -> None:
         self._profiles: dict[str, LocationProfile] = {}
 
-    def build_from_output(self, output: AIPRODOutput) -> "LocationRegistry":
+    def build_from_output(self, output: AIPRODOutput) -> LocationRegistry:
         for ep in output.episodes:
             for scene in ep.scenes:
                 key = _normalize(scene.location)

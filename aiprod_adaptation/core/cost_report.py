@@ -25,7 +25,7 @@ class CostReport:
     def total_cost_usd(self) -> float:
         return self.llm_cost_usd + self.image_cost_usd + self.video_cost_usd + self.audio_cost_usd
 
-    def merge(self, other: "CostReport") -> "CostReport":
+    def merge(self, other: CostReport) -> CostReport:
         return CostReport(
             llm_tokens_input=self.llm_tokens_input + other.llm_tokens_input,
             llm_tokens_output=self.llm_tokens_output + other.llm_tokens_output,

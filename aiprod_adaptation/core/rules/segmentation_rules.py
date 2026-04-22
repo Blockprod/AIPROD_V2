@@ -7,9 +7,7 @@ TIME_PHRASES     : trigger phrases that signal a time shift (and thus a new scen
 
 from __future__ import annotations
 
-from typing import List
-
-LOCATION_PHRASES: List[str] = [
+LOCATION_PHRASES: list[str] = [
     "in the ",
     "inside the ",
     "at the ",
@@ -18,7 +16,7 @@ LOCATION_PHRASES: List[str] = [
     "moved to ",
 ]
 
-TIME_PHRASES: List[str] = [
+TIME_PHRASES: list[str] = [
     "the following morning",
     "the next day",
     "hours later",

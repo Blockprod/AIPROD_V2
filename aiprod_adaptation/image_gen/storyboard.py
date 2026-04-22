@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import List, Optional
-
 from aiprod_adaptation.image_gen.character_image_registry import CharacterImageRegistry
 from aiprod_adaptation.image_gen.character_sheet import CharacterSheetRegistry
 from aiprod_adaptation.image_gen.checkpoint import CheckpointStore
@@ -19,7 +17,7 @@ DEFAULT_STYLE_TOKEN = (
 )
 
 
-def _all_shots(output: AIPRODOutput) -> List[Shot]:
+def _all_shots(output: AIPRODOutput) -> list[Shot]:
     return [shot for ep in output.episodes for shot in ep.shots]
 
 
@@ -31,11 +29,11 @@ class StoryboardGenerator:
     def __init__(
         self,
         adapter: ImageAdapter,
-        base_seed: Optional[int] = None,
+        base_seed: int | None = None,
         style_token: str = DEFAULT_STYLE_TOKEN,
         character_prompts: dict[str, str] | None = None,
-        checkpoint: Optional[CheckpointStore] = None,
-        prepass_registry: Optional[CharacterImageRegistry] = None,
+        checkpoint: CheckpointStore | None = None,
+        prepass_registry: CharacterImageRegistry | None = None,
     ) -> None:
         self._adapter = adapter
         self._base_seed = base_seed
@@ -44,7 +42,7 @@ class StoryboardGenerator:
         self._checkpoint = checkpoint
         self._prepass_registry = prepass_registry
 
-    def build_requests(self, output: AIPRODOutput) -> List[ImageRequest]:
+    def build_requests(self, output: AIPRODOutput) -> list[ImageRequest]:
         """Build ImageRequests without generating — useful for inspection and tests."""
         return [
             ImageRequest(
@@ -59,7 +57,13 @@ class StoryboardGenerator:
     def prepass_character_sheets(
         self, registry: CharacterSheetRegistry
     ) -> CharacterSheetRegistry:
-        """Generate one canonical image per character sheet. Idempotent."""
+        """
+        Generate one canonical image per character sheet. Idempotent.
+
+        NOTE: This method is NOT called by the production pipeline (engine.py,
+        EpisodeScheduler, cli.py). It is provided for advanced use cases where
+        callers want to inject explicit character sheets before generate().
+        """
         for sheet in registry.all_sheets():
             if not sheet.image_url:
                 req = ImageRequest(
@@ -78,7 +82,7 @@ class StoryboardGenerator:
     def generate(self, output: AIPRODOutput) -> StoryboardOutput:
         shots = _all_shots(output)
         scenes = _scene_map(output)
-        frames: List[ShotStoryboardFrame] = []
+        frames: list[ShotStoryboardFrame] = []
         char_registry = CharacterImageRegistry()
 
         # If a prepass registry was provided, seed char_registry with its data
@@ -98,7 +102,7 @@ class StoryboardGenerator:
             seed = self._base_seed + i if self._base_seed is not None else None
             scene = scenes.get(shot.scene_id)
             primary_char = scene.characters[0] if scene and scene.characters else ""
-            characters_in_frame: List[str] = list(scene.characters) if scene else []
+            characters_in_frame: list[str] = list(scene.characters) if scene else []
             reference_url = char_registry.get_reference(primary_char) if primary_char else ""
             canonical = char_registry.get_canonical_prompt(primary_char) if primary_char else ""
             tod_visual: str = shot.metadata.get("time_of_day_visual", "day")

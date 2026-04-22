@@ -104,7 +104,7 @@ class StoryExtractor:
         self,
         llm: LLMAdapter,
         text: str,
-        budget: "ProductionBudget",
+        budget: ProductionBudget,
         prior_summary: str = "",
     ) -> list[VisualScene]:
         """
@@ -147,7 +147,7 @@ class StoryExtractor:
         self,
         llm: LLMAdapter,
         text: str,
-        budget: "ProductionBudget",
+        budget: ProductionBudget,
         prior_summary: str = "",
     ) -> list[VisualScene]:
         """P6-compatible alias for extract(). Identical behaviour when prior_summary=''."""
@@ -157,28 +157,22 @@ class StoryExtractor:
         self,
         llm: LLMAdapter,
         text: str,
-        budget: "ProductionBudget",
+        budget: ProductionBudget,
     ) -> list[VisualScene]:
         """
         Découpe text en chunks via split_into_chunks(budget.max_chars_per_chunk),
         appelle extract_chunk() sur chacun avec prior_summary cumulatif.
-        Déduplique les scènes résultantes par (location, first_character).
         """
         chunks = split_into_chunks(text, budget.max_chars_per_chunk)
         if not chunks:
             return []
         if len(chunks) == 1:
-            return self.extract_chunk(llm, chunks[0], budget)
+            return self.extract_chunk(llm, chunks[0], budget, prior_summary="")
         all_scenes: list[VisualScene] = []
-        seen: set[tuple[str, str]] = set()
         prior_summary = ""
         for chunk in chunks:
             scenes = self.extract_chunk(llm, chunk, budget, prior_summary)
-            for scene in scenes:
-                key = (scene["location"], (scene["characters"] or [""])[0])
-                if key not in seen:
-                    seen.add(key)
-                    all_scenes.append(scene)
+            all_scenes.extend(scenes)
             if scenes:
                 locations = ", ".join(s["location"] for s in scenes[-3:])
                 prior_summary = f"Last scenes: {locations}."

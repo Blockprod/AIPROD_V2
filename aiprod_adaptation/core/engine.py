@@ -26,13 +26,28 @@ structlog.configure(
 logger = structlog.get_logger()
 
 
+def _apply_continuity_enrichment(
+    output: AIPRODOutput,
+    character_descriptions: dict[str, str],
+) -> AIPRODOutput:
+    from aiprod_adaptation.core.continuity.character_registry import CharacterRegistry
+    from aiprod_adaptation.core.continuity.emotion_arc import EmotionArcTracker
+    from aiprod_adaptation.core.continuity.prompt_enricher import PromptEnricher
+
+    _cr = CharacterRegistry()
+    registry = _cr.build(output)
+    registry = _cr.enrich_from_text(registry, character_descriptions)
+    arc_states = EmotionArcTracker().track(output)
+    return PromptEnricher().enrich(output, registry, arc_states)
+
+
 def run_pipeline(
     text: str,
     title: str,
     episode_id: str = "EP01",
-    llm: "LLMAdapter | None" = None,
-    character_descriptions: "dict[str, str] | None" = None,
-    budget: "ProductionBudget | None" = None,
+    llm: LLMAdapter | None = None,
+    character_descriptions: dict[str, str] | None = None,
+    budget: ProductionBudget | None = None,
 ) -> AIPRODOutput:
     from aiprod_adaptation.core.adaptation.classifier import InputClassifier
     from aiprod_adaptation.core.adaptation.llm_adapter import NullLLMAdapter
@@ -71,7 +86,7 @@ def run_pipeline(
 
     scenes_pass2 = StoryValidator().validate_all(scenes_pass2, threshold=0.5)
     if not scenes_pass2:
-        raise ValueError("StoryValidator: no filmable scenes produced after validation.")
+        raise ValueError("PASS 2: StoryValidator produced no filmable scenes after validation.")
     logger.info("story_validator_complete", valid_scene_count=len(scenes_pass2))
 
     logger.debug("pass3_start")
@@ -83,15 +98,8 @@ def run_pipeline(
     logger.info("pipeline_complete", episode_count=len(output.episodes))
 
     if character_descriptions:
-        from aiprod_adaptation.core.continuity.character_registry import CharacterRegistry
-        from aiprod_adaptation.core.continuity.emotion_arc import EmotionArcTracker
-        from aiprod_adaptation.core.continuity.prompt_enricher import PromptEnricher
-
-        registry = CharacterRegistry().build(output)
-        registry = CharacterRegistry().enrich_from_text(registry, character_descriptions)
-        arc_states = EmotionArcTracker().track(output)
-        output = PromptEnricher().enrich(output, registry, arc_states)
-        logger.info("continuity_applied", characters=len(registry))
+        output = _apply_continuity_enrichment(output, character_descriptions)
+        logger.info("continuity_applied", characters=len(character_descriptions))
 
     return output
 
@@ -100,21 +108,28 @@ def run_pipeline_with_images(
     text: str,
     title: str,
     episode_id: str = "EP01",
-    llm: "LLMAdapter | None" = None,
-    character_descriptions: "dict[str, str] | None" = None,
-    image_adapter: "ImageAdapter | None" = None,
-    image_base_seed: "int | None" = None,
-    budget: "ProductionBudget | None" = None,
-) -> "tuple[AIPRODOutput, StoryboardOutput | None]":
+    llm: LLMAdapter | None = None,
+    character_descriptions: dict[str, str] | None = None,
+    image_adapter: ImageAdapter | None = None,
+    image_base_seed: int | None = None,
+    budget: ProductionBudget | None = None,
+) -> tuple[AIPRODOutput, StoryboardOutput | None]:
     output = run_pipeline(text, title, episode_id, llm, character_descriptions, budget)
-    storyboard: "StoryboardOutput | None" = None
+    storyboard: StoryboardOutput | None = None
     if image_adapter is not None:
         from aiprod_adaptation.image_gen.storyboard import StoryboardGenerator
         storyboard = StoryboardGenerator(
             adapter=image_adapter,
             base_seed=image_base_seed,
         ).generate(output)
-        logger.info("storyboard_complete", generated=storyboard.generated, total=storyboard.total_shots)
+        logger.info(
+            "storyboard_complete", generated=storyboard.generated, total=storyboard.total_shots
+        )
+        for frame in storyboard.frames:
+            if frame.image_url.startswith("error://"):
+                logger.warning(
+                    "storyboard_frame_failed", shot_id=frame.shot_id, url=frame.image_url
+                )
     return output, storyboard
 
 
@@ -122,18 +137,18 @@ def run_pipeline_with_video(
     text: str,
     title: str,
     episode_id: str = "EP01",
-    llm: "LLMAdapter | None" = None,
-    character_descriptions: "dict[str, str] | None" = None,
-    image_adapter: "ImageAdapter | None" = None,
-    image_base_seed: "int | None" = None,
-    video_adapter: "VideoAdapter | None" = None,
-    budget: "ProductionBudget | None" = None,
-) -> "tuple[AIPRODOutput, StoryboardOutput | None, VideoOutput | None]":
+    llm: LLMAdapter | None = None,
+    character_descriptions: dict[str, str] | None = None,
+    image_adapter: ImageAdapter | None = None,
+    image_base_seed: int | None = None,
+    video_adapter: VideoAdapter | None = None,
+    budget: ProductionBudget | None = None,
+) -> tuple[AIPRODOutput, StoryboardOutput | None, VideoOutput | None]:
     output, storyboard = run_pipeline_with_images(
         text, title, episode_id, llm, character_descriptions,
         image_adapter, image_base_seed, budget,
     )
-    video: "VideoOutput | None" = None
+    video: VideoOutput | None = None
     if video_adapter is not None and storyboard is not None:
         from aiprod_adaptation.video_gen.video_sequencer import VideoSequencer
         video = VideoSequencer(adapter=video_adapter).generate(storyboard, output)
@@ -145,19 +160,19 @@ def run_pipeline_full(
     text: str,
     title: str,
     episode_id: str = "EP01",
-    llm: "LLMAdapter | None" = None,
-    character_descriptions: "dict[str, str] | None" = None,
-    image_adapter: "ImageAdapter | None" = None,
-    image_base_seed: "int | None" = None,
-    video_adapter: "VideoAdapter | None" = None,
-    audio_adapter: "AudioAdapter | None" = None,
-    budget: "ProductionBudget | None" = None,
-) -> "tuple[AIPRODOutput, StoryboardOutput | None, VideoOutput | None, ProductionOutput | None]":
+    llm: LLMAdapter | None = None,
+    character_descriptions: dict[str, str] | None = None,
+    image_adapter: ImageAdapter | None = None,
+    image_base_seed: int | None = None,
+    video_adapter: VideoAdapter | None = None,
+    audio_adapter: AudioAdapter | None = None,
+    budget: ProductionBudget | None = None,
+) -> tuple[AIPRODOutput, StoryboardOutput | None, VideoOutput | None, ProductionOutput | None]:
     output, storyboard, video = run_pipeline_with_video(
         text, title, episode_id, llm, character_descriptions,
         image_adapter, image_base_seed, video_adapter, budget,
     )
-    production: "ProductionOutput | None" = None
+    production: ProductionOutput | None = None
     if audio_adapter is not None and video is not None:
         from aiprod_adaptation.post_prod.audio_synchronizer import AudioSynchronizer
         _, production = AudioSynchronizer(adapter=audio_adapter).generate(video, output)
