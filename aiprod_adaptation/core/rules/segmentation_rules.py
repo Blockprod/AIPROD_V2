@@ -13,7 +13,6 @@ LOCATION_PHRASES: list[str] = [
     "at the ",
     "entered the ",
     "arrived at ",
-    "moved to ",
 ]
 
 TIME_PHRASES: list[str] = [

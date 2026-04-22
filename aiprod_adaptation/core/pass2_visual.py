@@ -78,12 +78,19 @@ def _visual_action_for_emotion(emotion: str) -> str | None:
     return None
 
 
+_SPEECH_TAG_RE: re.Pattern[str] = re.compile(
+    r"^[A-Za-z]+ (said|asked|replied|whispered|shouted|exclaimed|told|called|answered)[.,]?$",
+    re.IGNORECASE,
+)
+
+
 def _transform_sentence(sentence: str) -> str | None:
     """
     Transform one sentence:
     - Internal thought  → None (discard)
     - Dialogue-only     → None (captured separately in dialogues list)
     - Contains dialogue → strip quoted content, keep surrounding action text
+    - Speech-tag only   → None (e.g. 'she said.', 'Marcus asked.')
     - Contains emotion keyword → replace with corresponding visual action
     - Otherwise → return unchanged
     """
@@ -92,8 +99,13 @@ def _transform_sentence(sentence: str) -> str | None:
     # Strip inline quoted dialogue; keep surrounding action text.
     if _DIALOGUE_RE.search(sentence):
         sentence = _DIALOGUE_RE.sub("", sentence).strip(" ,")
+        # Collapse multiple spaces left by adjacent quote removals
+        sentence = re.sub(r"\s{2,}", " ", sentence).strip(" ,")
         if not sentence:
             return None  # Pure dialogue — no surrounding action text
+        # Discard pure speech tags: "she said.", "Marcus asked.", etc.
+        if _SPEECH_TAG_RE.match(sentence.rstrip(".!?,;")):
+            return None
     lower = sentence.lower()
     for _, keywords, visual_action in EMOTION_RULES:
         for kw in keywords:
@@ -145,12 +157,24 @@ def visual_rewrite(scenes: list[RawScene]) -> list[VisualScene]:
         # Extract dialogues via regex.
         dialogues: list[str] = _extract_dialogues(raw_text)
 
-        # Build visual_actions: transform each sentence, discard None.
+        # Build visual_actions: transform each sentence, collect None separately.
         visual_actions: list[str] = []
+        speech_tags: list[str] = []
         for sentence in sentences:
             result = _transform_sentence(sentence)
             if result is not None:
                 visual_actions.append(result)
+            else:
+                # Preserve speech tags as fallback for pure-dialogue scenes.
+                stripped = _DIALOGUE_RE.sub("", sentence).strip(" ,")
+                stripped = re.sub(r"\s{2,}", " ", stripped).strip(" ,")
+                if stripped and _SPEECH_TAG_RE.match(stripped.rstrip(".!?,;")):
+                    speech_tags.append(stripped)
+
+        # Fallback: if all sentences were discarded (pure dialogue scene),
+        # use speech-tag lines rather than producing an empty visual_actions.
+        if not visual_actions and speech_tags:
+            visual_actions = speech_tags
 
         output.append(
             {
