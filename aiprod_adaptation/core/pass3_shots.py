@@ -102,8 +102,14 @@ def _compute_dominant_sound(action: str) -> str:
     if '"' in action or "\u201C" in action:
         return "dialogue"
     lower = action.lower()
-    if any(re.search(r"\b" + v + r"\b", lower) for v in _SPEECH_VERBS_SOUND):
-        return "dialogue"
+    # Only flag as dialogue when the speech verb is in an attribution context:
+    # at end-of-clause (followed by comma or end-of-string), NOT mid-sentence
+    # idioms like "said nothing" or "said goodbye".
+    for v in _SPEECH_VERBS_SOUND:
+        if re.search(r"\b" + v + r"\b\s*[,.]?\s*$", lower):
+            return "dialogue"
+        if re.search(r"\b" + v + r"\b\s*,", lower):
+            return "dialogue"
     return "ambient"
 
 

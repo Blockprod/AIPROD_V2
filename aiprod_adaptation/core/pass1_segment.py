@@ -73,6 +73,14 @@ _EXCLUDE_WORDS: frozenset[str] = frozenset({
     "Suddenly", "Then", "Now", "Here", "There",
 })
 
+# Single-word location names too generic to be useful in prompts.
+# _detect_location returns "Unknown" for these, which suppresses the
+# ", in room." / ", in door." suffix in shot prompts.
+_GENERIC_LOCATIONS: frozenset[str] = frozenset({
+    "room", "door", "table", "window", "wall", "floor",
+    "stairs", "hall", "hallway", "corridor",
+})
+
 
 
 
@@ -108,7 +116,10 @@ def _detect_location(sentence_lower: str) -> str | None:
                 for conj in (" and ", " but ", " or ", " then "):
                     if conj in raw:
                         raw = raw[: raw.index(conj)]
-                return raw.strip() or "Unknown"
+                raw = raw.strip()
+                if not raw or raw in _GENERIC_LOCATIONS:
+                    return "Unknown"
+                return raw
             return "Unknown"
     return None
 

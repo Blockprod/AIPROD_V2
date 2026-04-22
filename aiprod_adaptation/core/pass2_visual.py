@@ -83,6 +83,15 @@ _SPEECH_TAG_RE: re.Pattern[str] = re.compile(
     re.IGNORECASE,
 )
 
+# Strips speech-attribution prefix left after dialogue-quote removal:
+# "Clara said quietly, tracing..." → "tracing..."
+# "Thomas asked, his voice low." → "his voice low."
+# Requires a comma — bare "she said." is caught by _SPEECH_TAG_RE instead.
+_SPEECH_ATTR_PREFIX_RE: re.Pattern[str] = re.compile(
+    r"^[A-Za-z]+ (said|asked|replied|whispered|shouted|exclaimed|told|answered)\b[^,]*,\s*",
+    re.IGNORECASE,
+)
+
 
 def _transform_sentence(sentence: str) -> str | None:
     """
@@ -103,6 +112,13 @@ def _transform_sentence(sentence: str) -> str | None:
         sentence = re.sub(r"\s{2,}", " ", sentence).strip(" ,")
         if not sentence:
             return None  # Pure dialogue — no surrounding action text
+        # Strip speech-attribution prefix revealed after quote removal:
+        # "Clara said quietly, tracing a line" → "tracing a line"
+        sentence = _SPEECH_ATTR_PREFIX_RE.sub("", sentence).strip(" ,")
+        if not sentence:
+            return None
+        # Re-capitalize first letter (prefix strip may expose a lowercase continuation).
+        sentence = sentence[0].upper() + sentence[1:]
         # Discard pure speech tags: "she said.", "Marcus asked.", etc.
         if _SPEECH_TAG_RE.match(sentence.rstrip(".!?,;")):
             return None
@@ -157,24 +173,18 @@ def visual_rewrite(scenes: list[RawScene]) -> list[VisualScene]:
         # Extract dialogues via regex.
         dialogues: list[str] = _extract_dialogues(raw_text)
 
-        # Build visual_actions: transform each sentence, collect None separately.
+        # Build visual_actions: transform each sentence.
         visual_actions: list[str] = []
-        speech_tags: list[str] = []
         for sentence in sentences:
             result = _transform_sentence(sentence)
             if result is not None:
                 visual_actions.append(result)
-            else:
-                # Preserve speech tags as fallback for pure-dialogue scenes.
-                stripped = _DIALOGUE_RE.sub("", sentence).strip(" ,")
-                stripped = re.sub(r"\s{2,}", " ", stripped).strip(" ,")
-                if stripped and _SPEECH_TAG_RE.match(stripped.rstrip(".!?,;")):
-                    speech_tags.append(stripped)
 
-        # Fallback: if all sentences were discarded (pure dialogue scene),
-        # use speech-tag lines rather than producing an empty visual_actions.
-        if not visual_actions and speech_tags:
-            visual_actions = speech_tags
+        # Fallback: if all sentences were discarded (pure-dialogue scene),
+        # produce a minimal visual placeholder rather than an empty list.
+        if not visual_actions:
+            chars: list[str] = list(scene.get("characters", []))
+            visual_actions = [f"{chars[0]} speaks."] if chars else ["Dialogue scene."]
 
         output.append(
             {
