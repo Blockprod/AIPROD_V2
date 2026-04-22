@@ -615,6 +615,16 @@ class TestVisualSceneEnrichment:
         # base=3, no motion/interaction/perception, short text → 3 sec (medium, unclamped)
         assert shots[0]["duration_sec"] == 3
 
+    def test_single_shot_dialogue_scene_sets_dialogue_sound(self) -> None:
+        from aiprod_adaptation.core.pass3_shots import simplify_shots
+
+        scene = self._make_scene(
+            visual_actions=["Clara was tracing a line with her finger."],
+            dialogues=["I found the passage,"],
+        )
+        shots = simplify_shots([scene])
+        assert shots[0]["metadata"]["dominant_sound"] == "dialogue"
+
 
 # ---------------------------------------------------------------------------
 # Multi-épisode compilation (SO-07)

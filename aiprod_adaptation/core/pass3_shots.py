@@ -160,6 +160,7 @@ def simplify_shots(scenes: list[VisualScene]) -> list[ShotDict]:
         location:       str       = scene.get("location", "unknown location")
         emotion:        str       = scene.get("emotion", "neutral")
         visual_actions: list[str] = scene.get("visual_actions", [])
+        dialogues:      list[str] = scene.get("dialogues", [])
         # NOTE: pacing/time_of_day_visual are only populated on the LLM path.
         # dominant_sound is computed per-shot on the rules path (NotRequired field).
         pacing:             str       = scene.get("pacing", "medium")
@@ -169,11 +170,16 @@ def simplify_shots(scenes: list[VisualScene]) -> list[ShotDict]:
         if not visual_actions:
             raise ValueError(f"PASS 3: scene '{scene_id}' has empty visual_actions.")
 
+        action_parts: list[str] = [
+            part
+            for action in visual_actions
+            for part in _atomize_action(action)
+            if part.strip()
+        ]
+        single_shot_dialogue_scene = bool(dialogues) and len(action_parts) == 1
+
         shot_num = 1
-        for action in visual_actions:
-            for part in _atomize_action(action):
-                if not part.strip():
-                    continue
+        for part in action_parts:
                 stype    = _compute_shot_type(part)
                 movement = _compute_camera_movement(part)
                 prompt   = _build_prompt(part, location)
@@ -196,6 +202,8 @@ def simplify_shots(scenes: list[VisualScene]) -> list[ShotDict]:
                             "dominant_sound": (
                                 scene_dom_sound
                                 if scene_dom_sound is not None
+                                else "dialogue"
+                                if single_shot_dialogue_scene
                                 else _compute_dominant_sound(part)
                             ),
                         },
