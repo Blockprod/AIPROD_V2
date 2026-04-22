@@ -9,7 +9,7 @@ from aiprod_adaptation.core.adaptation.llm_adapter import LLMAdapter
 
 class GeminiAdapter(LLMAdapter):
     """
-    Google Gemini 2.5 Pro via google-generativeai SDK.
+    Google Gemini 2.5 Pro via google-genai SDK.
 
     Selected automatically by LLMRouter when input > 80K tokens.
     Excluded from mypy (prod adapter — external dependency).
@@ -18,18 +18,20 @@ class GeminiAdapter(LLMAdapter):
     MODEL = "gemini-2.5-pro"
 
     def __init__(self) -> None:
-        import google.generativeai as genai
+        from google import genai
 
         api_key = os.environ.get("GEMINI_API_KEY")
         if not api_key:
             raise ValueError("GEMINI_API_KEY not set")
-        genai.configure(api_key=api_key)
-        self._model = genai.GenerativeModel(self.MODEL)
+        self._client = genai.Client(api_key=api_key)
 
     def generate_json(self, prompt: str) -> dict[str, Any]:
         try:
-            response = self._model.generate_content(prompt)
-            content: str = response.text
+            response = self._client.models.generate_content(
+                model=self.MODEL,
+                contents=prompt,
+            )
+            content = response.text or ""
             start = content.find("{")
             end = content.rfind("}") + 1
             if start == -1 or end == 0:

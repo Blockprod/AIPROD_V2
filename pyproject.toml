@@ -23,7 +23,7 @@ dev = [
 ]
 llm = [
     "anthropic",
-    "google-generativeai",
+    "google-genai",
 ]
 image = [
     "replicate",

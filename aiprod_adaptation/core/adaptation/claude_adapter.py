@@ -2,9 +2,21 @@ from __future__ import annotations
 
 import json
 import os
-from typing import Any
+from typing import Any, Protocol, cast
 
 from aiprod_adaptation.core.adaptation.llm_adapter import LLMAdapter
+
+
+class _TextBlockLike(Protocol):
+    text: str
+
+
+def _extract_message_text(message: Any) -> str:
+    parts: list[str] = []
+    for block in message.content:
+        if getattr(block, "type", None) == "text":
+            parts.append(cast(_TextBlockLike, block).text)
+    return "".join(parts)
 
 
 class ClaudeAdapter(LLMAdapter):
@@ -35,7 +47,7 @@ class ClaudeAdapter(LLMAdapter):
             max_tokens=self.MAX_TOKENS,
             messages=[{"role": "user", "content": prompt}],
         )
-        content: str = message.content[0].text
+        content = _extract_message_text(message)
         start = content.find("{")
         end = content.rfind("}") + 1
         if start == -1 or end == 0:
