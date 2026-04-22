@@ -395,15 +395,45 @@ class TestRealText:
         pathlib.Path(__file__).parent.parent / "examples" / "chapter1.txt"
     )
 
+    def _run_chapter1(self) -> AIPRODOutput:
+        raw = self._CHAPTER1.read_text(encoding="utf-8")
+        return run_pipeline(raw, "Chapter 1")
+
     def test_real_text_no_crash(self) -> None:
         from aiprod_adaptation.models.schema import AIPRODOutput
-        raw = self._CHAPTER1.read_text(encoding="utf-8")
-        result = run_pipeline(raw, "Chapter 1")
+        result = self._run_chapter1()
         assert isinstance(result, AIPRODOutput)
         assert len(result.episodes[0].scenes) >= 3
         assert len(result.episodes[0].shots) >= 1
         for shot in result.episodes[0].shots:
             assert 3 <= shot.duration_sec <= 8
+
+    def test_chapter1_regression_counts(self) -> None:
+        result = self._run_chapter1()
+        ep = result.episodes[0]
+        assert len(ep.scenes) == 13
+        assert len(ep.shots) == 32
+
+    def test_chapter1_regression_visual_actions(self) -> None:
+        result = self._run_chapter1()
+        ep = result.episodes[0]
+        scenes = {scene.scene_id: scene for scene in ep.scenes}
+
+        assert scenes["SCN_003"].visual_actions == [
+            "Clara was tracing a line with her finger."
+        ]
+        assert scenes["SCN_008"].visual_actions == ["A woman speaks."]
+        assert scenes["SCN_013"].visual_actions == ["Marcus speaks."]
+
+    def test_chapter1_regression_dialogue_shots(self) -> None:
+        result = self._run_chapter1()
+        ep = result.episodes[0]
+        shots = {shot.shot_id: shot for shot in ep.shots}
+
+        assert shots["SCN_003_SHOT_001"].metadata["dominant_sound"] == "dialogue"
+        assert shots["SCN_005_SHOT_001"].metadata["dominant_sound"] == "dialogue"
+        assert shots["SCN_008_SHOT_001"].metadata["dominant_sound"] == "dialogue"
+        assert shots["SCN_013_SHOT_001"].metadata["dominant_sound"] == "dialogue"
 
 
 # ---------------------------------------------------------------------------
