@@ -237,7 +237,7 @@ def _score_lighting(l_channel: np.ndarray) -> float:
     Fraction of pixels in usable luminance zone [10, 90] L* mapped to [0, 1].
     Penalises blown highlights and crushed blacks.
     """
-    total = l_channel.size
+    total: int = int(l_channel.size)
     if total == 0:
         return 0.0
     usable = float(np.sum((l_channel >= 10) & (l_channel <= 90)))
@@ -249,7 +249,7 @@ def _score_subject(grey: np.ndarray, otsu_thresh: int) -> float:
     Otsu foreground ratio mapped to a bell-curve score peaked at 30–60% coverage.
     Too small a subject (< 5%) or too large (> 90%) both score lower.
     """
-    total = grey.size
+    total: int = int(grey.size)
     if total == 0:
         return 0.0
     fg_ratio = float(np.sum(grey <= otsu_thresh)) / total

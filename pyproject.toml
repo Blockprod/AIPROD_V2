@@ -61,6 +61,10 @@ module = [
     "elevenlabs.*",
     "openai.*",
     "google.*",
+    "numpy",
+    "numpy.*",
+    "PIL",
+    "PIL.*",
 ]
 ignore_missing_imports = true
 
