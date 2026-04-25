@@ -78,18 +78,18 @@ class ScriptParser:
         def _flush() -> None:
             if in_scene:
                 time_of_day = _scene_time_of_day(cur_location)
-                scenes.append(
-                    VisualScene(
-                        scene_id=f"SCN_{scene_counter:03d}",
-                        characters=list(cur_characters),
-                        location=cur_location,
-                        time_of_day=time_of_day,
-                        time_of_day_visual=time_of_day,
-                        visual_actions=list(cur_visual_actions),
-                        dialogues=list(cur_dialogues),
-                        emotion="neutral",
-                    )
+                scene = VisualScene(
+                    scene_id=f"SCN_{scene_counter:03d}",
+                    characters=list(cur_characters),
+                    location=cur_location,
+                    time_of_day=time_of_day,
+                    visual_actions=list(cur_visual_actions),
+                    dialogues=list(cur_dialogues),
+                    emotion="neutral",
                 )
+                if time_of_day is not None:
+                    scene["time_of_day_visual"] = time_of_day
+                scenes.append(scene)
 
         for raw_line in text.splitlines():
             line = raw_line.strip()

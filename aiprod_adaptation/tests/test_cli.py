@@ -451,7 +451,15 @@ class TestCLIPipeline:
             parser = build_parser()
             cmd_pipeline(
                 parser.parse_args(
-                    ["pipeline", "--input", str(in_path), "--title", "T", "--output", str(pipeline_out)]
+                    [
+                        "pipeline",
+                        "--input",
+                        str(in_path),
+                        "--title",
+                        "T",
+                        "--output",
+                        str(pipeline_out),
+                    ]
                 )
             )
             pipeline_payload = json.loads(pipeline_out.read_text(encoding="utf-8"))

@@ -36,8 +36,12 @@ class RunwayAdapter(VideoAdapter):
     DEFAULT_MODEL: str = "gen4_turbo"
 
     def __init__(self, api_token: str | None = None, model: str | None = None) -> None:
-        self._token = api_token if api_token is not None else os.environ.get("RUNWAY_API_TOKEN", "")
-        self._model = model if model is not None else os.environ.get("RUNWAY_VIDEO_MODEL", self.DEFAULT_MODEL)
+        self._token = (
+            api_token if api_token is not None else os.environ.get("RUNWAY_API_TOKEN", "")
+        )
+        self._model = (
+            model if model is not None else os.environ.get("RUNWAY_VIDEO_MODEL", self.DEFAULT_MODEL)
+        )
 
     def generate(self, request: VideoRequest) -> VideoClipResult:
         if not self._token:

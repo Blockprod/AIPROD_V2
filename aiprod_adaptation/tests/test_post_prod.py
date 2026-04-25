@@ -27,8 +27,8 @@ from aiprod_adaptation.post_prod.audio_request import (
     ProductionOutput,
     TimelineClip,
 )
-from aiprod_adaptation.post_prod.runway_tts_adapter import RunwayTTSAdapter
 from aiprod_adaptation.post_prod.audio_synchronizer import AudioSynchronizer
+from aiprod_adaptation.post_prod.runway_tts_adapter import RunwayTTSAdapter
 from aiprod_adaptation.video_gen.video_adapter import NullVideoAdapter
 from aiprod_adaptation.video_gen.video_request import VideoOutput
 

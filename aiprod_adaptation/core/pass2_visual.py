@@ -362,8 +362,9 @@ def visual_rewrite(scenes: list[RawScene]) -> list[VisualScene]:
                 ],
             }
         )
-        if scene.get("time_of_day") in {"dawn", "day", "dusk", "night", "interior"}:
-            output[-1]["time_of_day_visual"] = scene["time_of_day"]
+        time_of_day = scene.get("time_of_day")
+        if time_of_day in {"dawn", "day", "dusk", "night", "interior"}:
+            output[-1]["time_of_day_visual"] = time_of_day
 
     return output
 

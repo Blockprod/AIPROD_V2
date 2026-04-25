@@ -33,8 +33,12 @@ class RunwayImageAdapter(ImageAdapter):
         api_token: str | None = None,
         model: str | None = None,
     ) -> None:
-        self._token = api_token if api_token is not None else os.environ.get("RUNWAY_API_TOKEN", "")
-        self._model = model if model is not None else os.environ.get("RUNWAY_IMAGE_MODEL", DEFAULT_MODEL)
+        self._token = (
+            api_token if api_token is not None else os.environ.get("RUNWAY_API_TOKEN", "")
+        )
+        self._model = (
+            model if model is not None else os.environ.get("RUNWAY_IMAGE_MODEL", DEFAULT_MODEL)
+        )
 
     def generate(self, request: ImageRequest) -> ImageResult:
         if not self._token:

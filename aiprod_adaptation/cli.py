@@ -15,6 +15,7 @@ from aiprod_adaptation.core.adaptation.llm_adapter import (
 )
 from aiprod_adaptation.core.production_budget import ProductionBudget
 from aiprod_adaptation.image_gen.image_adapter import ImageAdapter, NullImageAdapter
+from aiprod_adaptation.models.schema import AIPRODOutput
 from aiprod_adaptation.post_prod.audio_adapter import AudioAdapter, NullAudioAdapter
 from aiprod_adaptation.video_gen.video_adapter import NullVideoAdapter, VideoAdapter
 

@@ -20,19 +20,19 @@ import pytest
 
 from aiprod_adaptation.core.engine import run_pipeline, run_pipeline_with_images
 from aiprod_adaptation.image_gen.image_adapter import NullImageAdapter
-from aiprod_adaptation.image_gen.openai_image_adapter import (
-    OpenAIImageAdapter,
-    _estimate_openai_image_cost,
-    _openai_image_size,
-)
-from aiprod_adaptation.image_gen.runway_image_adapter import RunwayImageAdapter, _runway_image_ratio
 from aiprod_adaptation.image_gen.image_request import (
     ImageRequest,
     ImageResult,
     ShotStoryboardFrame,
     StoryboardOutput,
 )
+from aiprod_adaptation.image_gen.openai_image_adapter import (
+    OpenAIImageAdapter,
+    _estimate_openai_image_cost,
+    _openai_image_size,
+)
 from aiprod_adaptation.image_gen.reference_pack import ReferencePack
+from aiprod_adaptation.image_gen.runway_image_adapter import RunwayImageAdapter, _runway_image_ratio
 from aiprod_adaptation.image_gen.storyboard import DEFAULT_STYLE_TOKEN, StoryboardGenerator
 from aiprod_adaptation.models.schema import AIPRODOutput
 
@@ -479,7 +479,10 @@ class TestReferencePack:
             {
                 "characters": {
                     chars[0]: {
-                        "prompt": "sharp cheekbones, dark tactical scarf, wet skin, wary expression",
+                        "prompt": (
+                            "sharp cheekbones, dark tactical scarf, wet skin, "
+                            "wary expression"
+                        ),
                         "reference_image_urls": ["ref://characters/hero.png"],
                     }
                 }

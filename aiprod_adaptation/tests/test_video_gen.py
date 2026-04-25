@@ -20,8 +20,7 @@ from aiprod_adaptation.core.engine import run_pipeline, run_pipeline_with_video
 from aiprod_adaptation.image_gen.image_adapter import NullImageAdapter
 from aiprod_adaptation.image_gen.image_request import StoryboardOutput
 from aiprod_adaptation.models.schema import AIPRODOutput
-from aiprod_adaptation.video_gen.runway_adapter import RunwayAdapter
-from aiprod_adaptation.video_gen.runway_adapter import _estimate_runway_video_cost
+from aiprod_adaptation.video_gen.runway_adapter import RunwayAdapter, _estimate_runway_video_cost
 from aiprod_adaptation.video_gen.video_adapter import NullVideoAdapter
 from aiprod_adaptation.video_gen.video_request import (
     VideoClipResult,

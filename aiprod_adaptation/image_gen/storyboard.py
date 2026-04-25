@@ -51,7 +51,9 @@ class StoryboardGenerator:
 
     def _location_key_for_shot(self, shot: Shot) -> str:
         if self._reference_pack is None:
-            return shot.action.location_id if shot.action is not None and shot.action.location_id else ""
+            if shot.action is not None and shot.action.location_id:
+                return shot.action.location_id
+            return ""
         if (
             shot.action is not None
             and shot.action.location_id
@@ -135,7 +137,9 @@ class StoryboardGenerator:
             seed = self._base_seed + i if self._base_seed is not None else None
             scene = scenes.get(shot.scene_id)
             shot_subject = shot.action.subject_id if shot.action is not None else ""
-            primary_char = shot_subject or (scene.characters[0] if scene and scene.characters else "")
+            primary_char = shot_subject or (
+                scene.characters[0] if scene and scene.characters else ""
+            )
             characters_in_frame: list[str] = list(scene.characters) if scene else []
             if shot_subject and shot_subject not in characters_in_frame:
                 characters_in_frame.append(shot_subject)
