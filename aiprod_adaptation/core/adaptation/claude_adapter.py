@@ -38,17 +38,23 @@ class ClaudeAdapter(LLMAdapter):
         api_key = os.environ.get("ANTHROPIC_API_KEY")
         if not api_key:
             raise ValueError("ANTHROPIC_API_KEY environment variable not set.")
-        try:
-            import anthropic
-        except ImportError as exc:
-            raise ImportError(
-                "anthropic package required: pip install anthropic"
-            ) from exc
-        self._client = anthropic.Anthropic(api_key=api_key)
+        self._api_key = api_key
+        self._client: Any | None = None
+
+    def _ensure_client(self) -> Any:
+        if self._client is None:
+            try:
+                self._client = _build_anthropic_client(self._api_key)
+            except ImportError as exc:
+                raise ImportError(
+                    "anthropic package required: pip install anthropic"
+                ) from exc
+        return self._client
 
     def generate_json(self, prompt: str) -> dict[str, Any]:
+        client = self._ensure_client()
         try:
-            message = self._client.messages.create(
+            message = client.messages.create(
                 model=self.MODEL,
                 max_tokens=self.MAX_TOKENS,
                 messages=[{"role": "user", "content": prompt}],
@@ -71,3 +77,9 @@ class ClaudeAdapter(LLMAdapter):
                 f"Claude response JSON decode failed: {exc}",
                 category=LLMFailureCategory.SCHEMA,
             ) from exc
+
+
+def _build_anthropic_client(api_key: str) -> Any:
+    import anthropic
+
+    return anthropic.Anthropic(api_key=api_key)

@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import json
 from types import SimpleNamespace
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -136,11 +136,17 @@ class TestRunwayVideoAdapter:
     def test_runway_adapter_sets_estimated_cost(self) -> None:
         task = SimpleNamespace(wait_for_task_output=lambda: SimpleNamespace(output=["https://video.example/test.mp4"]))
 
-        with patch("runwayml.RunwayML") as runway_cls:
-            runway_cls.return_value.image_to_video.create.return_value = task
+        runway_client = MagicMock()
+        runway_client.image_to_video.create.return_value = task
+
+        with patch(
+            "aiprod_adaptation.video_gen.runway_adapter._build_runway_client",
+            return_value=runway_client,
+        ) as build_client:
             adapter = RunwayAdapter(api_token="test-token", model="gen4_turbo")
             result = adapter.generate(_REQ)
 
+        build_client.assert_called_once_with("test-token")
         assert result.video_url == "https://video.example/test.mp4"
         assert result.cost_usd == 0.2
 

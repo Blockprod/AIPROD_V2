@@ -35,6 +35,12 @@ _OPENAI_IMAGE_COST_USD: dict[str, dict[str, dict[str, float]]] = {
 }
 
 
+def _build_openai_client(api_key: str) -> object:
+    from openai import OpenAI
+
+    return OpenAI(api_key=api_key)
+
+
 def _openai_image_size(width: int, height: int) -> str:
     if width > height:
         return "1536x1024"
@@ -86,9 +92,7 @@ class OpenAIImageAdapter(ImageAdapter):
         )
 
     def generate(self, request: ImageRequest) -> ImageResult:
-        from openai import OpenAI
-
-        client = OpenAI(api_key=self._api_key)
+        client = _build_openai_client(self._api_key)
         t0 = time.monotonic()
         size = _openai_image_size(request.width, request.height)
         response = client.images.generate(

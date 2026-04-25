@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import time
+from dataclasses import dataclass
 from typing import Any
 
 from aiprod_adaptation.core.adaptation.llm_adapter import (
@@ -33,12 +34,10 @@ class GeminiAdapter(LLMAdapter):
     DEFAULT_RETRY_DELAY_SEC = 1.0
 
     def __init__(self) -> None:
-        from google import genai
-        from google.genai import types
-
         api_key = os.environ.get("GEMINI_API_KEY")
         if not api_key:
             raise ValueError("GEMINI_API_KEY not set")
+        self._api_key = api_key
         self._model = os.environ.get("GEMINI_MODEL", self.DEFAULT_MODEL)
         fallback_models_raw = os.environ.get("GEMINI_FALLBACK_MODELS", "")
         if fallback_models_raw.strip():
@@ -51,22 +50,28 @@ class GeminiAdapter(LLMAdapter):
             self._fallback_models = tuple(
                 model for model in self.DEFAULT_FALLBACK_MODELS if model != self._model
             )
-        self._client = genai.Client(api_key=api_key)
+        self._client: Any | None = None
         self._max_attempts = self.DEFAULT_MAX_ATTEMPTS
         self._retry_delay_sec = self.DEFAULT_RETRY_DELAY_SEC
-        self._generation_config = types.GenerateContentConfig(
-            temperature=self.DEFAULT_TEMPERATURE,
-            candidate_count=1,
-            seed=self.DEFAULT_SEED,
-            response_mime_type="application/json",
-        )
+        self._generation_config = _build_generation_config()
+
+    def _ensure_client(self) -> Any:
+        if self._client is None:
+            try:
+                self._client = _build_gemini_client(self._api_key)
+            except ImportError as exc:
+                raise ImportError(
+                    "google-genai package required: pip install google-genai"
+                ) from exc
+        return self._client
 
     def _generate_with_model(self, model: str, prompt: str) -> dict[str, Any]:
         last_error: Exception | None = None
         last_category = LLMFailureCategory.UNKNOWN
+        client = self._ensure_client()
         for attempt in range(1, self._max_attempts + 1):
             try:
-                response = self._client.models.generate_content(
+                response = client.models.generate_content(
                     model=model,
                     contents=prompt,
                     config=self._generation_config,
@@ -119,3 +124,36 @@ class GeminiAdapter(LLMAdapter):
             category=failures[-1].category if failures else LLMFailureCategory.UNKNOWN,
             failures=tuple(failures),
         )
+
+
+@dataclass(frozen=True)
+class _FallbackGenerateContentConfig:
+    temperature: float
+    candidate_count: int
+    seed: int
+    response_mime_type: str
+
+
+def _build_generation_config() -> object:
+    try:
+        from google.genai import types
+    except ImportError:
+        return _FallbackGenerateContentConfig(
+            temperature=GeminiAdapter.DEFAULT_TEMPERATURE,
+            candidate_count=1,
+            seed=GeminiAdapter.DEFAULT_SEED,
+            response_mime_type="application/json",
+        )
+
+    return types.GenerateContentConfig(
+        temperature=GeminiAdapter.DEFAULT_TEMPERATURE,
+        candidate_count=1,
+        seed=GeminiAdapter.DEFAULT_SEED,
+        response_mime_type="application/json",
+    )
+
+
+def _build_gemini_client(api_key: str) -> Any:
+    from google import genai
+
+    return genai.Client(api_key=api_key)

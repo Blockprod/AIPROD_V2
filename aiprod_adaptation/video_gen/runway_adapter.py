@@ -18,6 +18,12 @@ _RUNWAY_VIDEO_CREDITS_PER_SECOND: dict[str, int] = {
 }
 
 
+def _build_runway_client(api_key: str) -> object:
+    import runwayml
+
+    return runwayml.RunwayML(api_key=api_key)
+
+
 def _estimate_runway_video_cost(model: str, duration_sec: int) -> float:
     credits_per_second = _RUNWAY_VIDEO_CREDITS_PER_SECOND.get(model)
     if credits_per_second is None:
@@ -47,10 +53,8 @@ class RunwayAdapter(VideoAdapter):
         if not self._token:
             raise ValueError("RUNWAY_API_TOKEN is required for Runway video generation.")
 
-        import runwayml
-
         t0 = time.monotonic()
-        client = runwayml.RunwayML(api_key=self._token)
+        client = _build_runway_client(self._token)
         create_kwargs: dict[str, object] = {
             "model": self._model,
             "prompt_image": request.image_url,

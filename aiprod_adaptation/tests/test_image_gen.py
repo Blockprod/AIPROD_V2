@@ -14,7 +14,7 @@ import json
 import os
 from pathlib import Path
 from types import SimpleNamespace
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -160,12 +160,18 @@ class TestOpenAIImageAdapterHelpers:
             data=[SimpleNamespace(b64_json="ZmFrZQ==", url="")],
         )
 
-        with patch("openai.OpenAI") as openai_cls:
-            openai_cls.return_value.images.generate.return_value = response
+        openai_client = MagicMock()
+        openai_client.images.generate.return_value = response
+
+        with patch(
+            "aiprod_adaptation.image_gen.openai_image_adapter._build_openai_client",
+            return_value=openai_client,
+        ) as build_client:
             adapter = OpenAIImageAdapter(api_key="test-key", quality="medium")
             result = adapter.generate(_REQ)
 
-        openai_cls.return_value.images.generate.assert_called_once_with(
+        build_client.assert_called_once_with("test-key")
+        openai_client.images.generate.assert_called_once_with(
             model="gpt-image-1-mini",
             prompt=_REQ.prompt,
             size="1536x1024",
