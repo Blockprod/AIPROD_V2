@@ -212,3 +212,11 @@ class ShotDict(TypedDict):
     camera_movement:  str   # "static" | "follow" | "pan"
     metadata:         NotRequired[dict[str, Any]]
     action:           NotRequired[ActionSpec]
+    shot_role:                 NotRequired[str]
+    composition_description:   NotRequired[str]
+    lighting_directives:       NotRequired[str | None]
+    framing_note:              NotRequired[str | None]
+    rhythm_purpose:            NotRequired[str]
+    visual_invariants_applied: NotRequired[list[str]]
+    feasibility_score:         NotRequired[float]
+    reference_anchor_strength: NotRequired[float]

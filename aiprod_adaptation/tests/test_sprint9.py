@@ -28,8 +28,6 @@ import pathlib
 import sys
 import tempfile
 
-import pytest
-
 from aiprod_adaptation.core.metrics import MetricsEngine
 from aiprod_adaptation.core.metrics.models import (
     NETFLIX_TARGET_CINEMATIC_RICHNESS,
@@ -44,7 +42,6 @@ from aiprod_adaptation.core.metrics.models import (
     ShotMetrics,
 )
 from aiprod_adaptation.core.postproduction import build_manifest_for_episode
-from aiprod_adaptation.core.postproduction._timecode import frames_to_timecode, timecode_to_frames
 from aiprod_adaptation.core.postproduction.audio_directives import AudioDirectivesBuilder
 from aiprod_adaptation.core.postproduction.continuity import ContinuityBuilder
 from aiprod_adaptation.core.postproduction.models import (
@@ -766,8 +763,9 @@ class TestSeasonReportExport:
 class TestCLIMetricsCommand:
 
     def _run_metrics_cli(self, output: AIPRODOutput) -> dict:
-        from aiprod_adaptation.cli import cmd_metrics, build_parser
         import argparse
+
+        from aiprod_adaptation.cli import cmd_metrics
         with tempfile.TemporaryDirectory() as tmpdir:
             ir_path = pathlib.Path(tmpdir) / "output.json"
             metrics_path = pathlib.Path(tmpdir) / "metrics.json"
@@ -784,8 +782,9 @@ class TestCLIMetricsCommand:
 
     def test_metrics_command_returns_zero(self):
         output = _make_output()
-        from aiprod_adaptation.cli import cmd_metrics, build_parser
         import argparse
+
+        from aiprod_adaptation.cli import cmd_metrics
         with tempfile.TemporaryDirectory() as tmpdir:
             ir_path = pathlib.Path(tmpdir) / "output.json"
             ir_path.write_text(output.model_dump_json(), encoding="utf-8")
@@ -819,8 +818,9 @@ class TestCLIMetricsCommand:
 class TestCLIExportCommand:
 
     def _run_export_cli(self, fmt: str, output: AIPRODOutput | None = None) -> str:
-        from aiprod_adaptation.cli import cmd_export
         import argparse
+
+        from aiprod_adaptation.cli import cmd_export
         _output = output or _make_output()
         with tempfile.TemporaryDirectory() as tmpdir:
             ir_path = pathlib.Path(tmpdir) / "output.json"

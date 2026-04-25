@@ -21,10 +21,10 @@ from typing import Any
 import pytest
 
 from aiprod_adaptation.core.feasibility.engine import (
-    FeasibilityEngine,
     _ARCHITECTURE_MOVEMENT_PENALTY,
     _HEIGHT_MOVEMENT_PENALTY,
     _SHOT_DEPTH_PENALTY,
+    FeasibilityEngine,
 )
 from aiprod_adaptation.core.rule_engine.builtin_rules import BUILTIN_RULES, make_default_evaluator
 from aiprod_adaptation.core.rule_engine.conflict_resolver import ConflictResolutionEngine

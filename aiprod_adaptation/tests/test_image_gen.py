@@ -620,7 +620,8 @@ class TestCharacterSheetRegistry:
 # Multi-shot input for tests that need >= 2 frames (> SILENT_SCENE_WORD_THRESHOLD=30 words)
 _NOVEL_MULTI_SHOT = (
     "John walked quickly through the busy city streets, feeling excited about the upcoming meeting. "
-    "He suddenly spotted Sarah waiting nervously at the corner, her expression completely unreadable in the fading afternoon light."
+    "He suddenly spotted Sarah waiting nervously at the corner,"
+    " her expression completely unreadable in the fading afternoon light."
 )
 
 

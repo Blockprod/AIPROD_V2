@@ -160,29 +160,37 @@ SCENE_TYPE_ACTION_MODIFIERS: dict[str, dict[str, str | None]] = {
 #: Each entry: (architecture_style, emotion, environmental_action_string)
 ENVIRONMENT_INTERACTION_RULES: list[tuple[str, str, str]] = [
     # Brutalist
-    ("brutalist", "angry",     "slams palm against concrete wall; the surface absorbs nothing — the impact returns"),
-    ("brutalist", "scared",    "back presses to cold concrete; the texture registers through fabric as the room closes in"),
+    ("brutalist", "angry",     "slams palm against concrete wall;"
+                               " the surface absorbs nothing — the impact returns"),
+    ("brutalist", "scared",    "back presses to cold concrete;"
+                               " the texture registers through fabric as the room closes in"),
     ("brutalist", "nervous",   "fingertip traces a crack in the concrete wall; repetitive, orienting"),
     ("brutalist", "trapped",   "eyes measure the slab geometry; no give anywhere in this architecture"),
     ("brutalist", "defiant",   "plants against the concrete; the building's mass behind the stand"),
     # Industrial
     ("industrial", "nervous",  "fingers trace conduit pipe along wall; metal is cold and indifferent under the hand"),
-    ("industrial", "determined","steps carry precise weight across steel grating; the sound announces arrival"),
+    ("industrial", "determined","steps carry precise weight across steel grating;"
+                               " the sound announces arrival"),
     ("industrial", "scared",   "grips overhead gantry strut; cold steel, solid — the only certainty in the space"),
     ("industrial", "angry",    "fist meets industrial shelving; metal rings; objects settle into new positions"),
     # Office / modern
-    ("office", "angry",        "hand descends flat on desk surface; papers register the force; objects shift position"),
+    ("office", "angry",        "hand descends flat on desk surface;"
+                               " papers register the force; objects shift position"),
     ("office", "nervous",      "pen clicked in a held rhythm; cap turned, replaced; hands need occupation"),
-    ("office", "suspicious",   "body angles to include doorway in peripheral vision; always faces the room, never the wall"),
+    ("office", "suspicious",   "body angles to include doorway in peripheral vision;"
+                               " always faces the room, never the wall"),
     ("office", "determined",   "closes the file deliberately; the click of it is the decision made"),
-    ("office", "resigned",     "gaze goes to the window; the city outside continues without acknowledgement"),
+    ("office", "resigned",     "gaze goes to the window;"
+                               " the city outside continues without acknowledgement"),
     # Domestic
-    ("domestic", "grief",      "hands close around a common object — a cup, a photograph, a piece of fabric — as if warmth might transfer"),
+    ("domestic", "grief",      "hands close around a common object — a cup, a photograph, a piece of fabric —"
+                               " as if warmth might transfer"),
     ("domestic", "relieved",   "collapses into the nearest chair or surface; the body finally releases its held shape"),
     ("domestic", "nervous",    "adjusts objects that don't need adjusting; the room rearranged by anxiety"),
     ("domestic", "sad",        "sits at the table but doesn't use it; hands on the surface; the room too familiar"),
     # Clinical / medical
-    ("clinical", "scared",     "backs against equipment; cold metal handle gripped for orientation in the sterile space"),
+    ("clinical", "scared",     "backs against equipment;"
+                               " cold metal handle gripped for orientation in the sterile space"),
     ("clinical", "determined", "moves through the space without touching anything; hygienic distance as control"),
     ("clinical", "disgusted",  "cannot touch the surfaces; gloves or jacket sleeve used as barrier"),
     ("clinical", "nervous",    "reads labels that have already been read; the chart reviewed again without need"),

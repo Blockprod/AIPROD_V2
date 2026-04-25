@@ -51,8 +51,14 @@ EMOTION_BODY_LANGUAGE: dict[str, dict[str, dict[str, str]]] = {
         "subtle": {
             "posture":          "weight shifts imperceptibly forward; spine rigid, feet rooted",
             "gesture":          "hands pressed flat on nearest surface, knuckles just beginning to whiten",
-            "gaze":             "eyes fix on single point, blink rate drops to near zero; jaw angle widens peripheral awareness",
-            "micro_expression": "jaw muscle pulses twice; lips compress to a thin line; forehead deliberately held still",
+            "gaze":             (
+                "eyes fix on single point, blink rate drops to near zero;"
+                " jaw angle widens peripheral awareness"
+            ),
+            "micro_expression": (
+                "jaw muscle pulses twice; lips compress to a thin line;"
+                " forehead deliberately held still"
+            ),
             "breath":           "breathing slows to controlled nasal rhythm, audible only in silence",
         },
         "mid": {
@@ -64,7 +70,10 @@ EMOTION_BODY_LANGUAGE: dict[str, dict[str, dict[str, str]]] = {
         },
         "explosive": {
             "posture":          "full-body lunge forward, centre of gravity drops; arms open, nothing held back",
-            "gesture":          "arm sweeps objects from surface or slams down; hands open then grip whatever is in reach",
+            "gesture":          (
+                "arm sweeps objects from surface or slams down;"
+                " hands open then grip whatever is in reach"
+            ),
             "gaze":             "locked on target, pupils constrict; whites of eyes visible all around",
             "micro_expression": "face fully contorts; temple veins visible; teeth exposed, jaw thrust forward",
             "breath":           "sharp forceful exhale through bared teeth; next inhale chest-heaving",

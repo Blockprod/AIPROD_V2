@@ -19,6 +19,11 @@ Returns:
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from aiprod_adaptation.core.visual_bible import VisualBible
+
 from aiprod_adaptation.core.rules.pass4_coherence_rules import (
     PROMPT_ENRICHMENT_SEPARATOR,
     PROMPT_LABEL_CHARACTER,
@@ -31,7 +36,7 @@ from aiprod_adaptation.models.schema import Shot
 
 def finalize_prompts(
     shots: list[Shot],
-    visual_bible: object | None = None,
+    visual_bible: VisualBible | None = None,
 ) -> tuple[list[Shot], int]:
     """
     Enrich shot prompts with cinematic directives.
@@ -74,12 +79,12 @@ def finalize_prompts(
         if visual_bible is not None and shot.action is not None:
             subject_id = shot.action.subject_id
             if subject_id:
-                for char_name in visual_bible.characters:  # type: ignore[union-attr]
+                for char_name in visual_bible.characters:
                     if (
                         char_name.lower() in subject_id.lower()
                         or subject_id.lower() in char_name.lower()
                     ):
-                        fragment = visual_bible.get_character_prompt_fragment(char_name)  # type: ignore[union-attr]
+                        fragment = visual_bible.get_character_prompt_fragment(char_name)
                         if fragment and fragment not in prompt:
                             additions.append(
                                 f"{PROMPT_LABEL_CHARACTER}: {fragment}"
@@ -92,7 +97,7 @@ def finalize_prompts(
         if visual_bible is not None and shot.action is not None:
             loc_id = shot.action.location_id
             if loc_id:
-                fragment = visual_bible.get_location_prompt_fragment(loc_id)  # type: ignore[union-attr]
+                fragment = visual_bible.get_location_prompt_fragment(loc_id)
                 if fragment and fragment not in prompt:
                     additions.append(
                         f"{PROMPT_LABEL_LOCATION}: {fragment}"

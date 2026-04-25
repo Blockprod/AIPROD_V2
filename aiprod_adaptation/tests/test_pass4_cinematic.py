@@ -15,7 +15,6 @@ All tests are deterministic / pure-Python. No LLM, no network, no filesystem I/O
 
 from __future__ import annotations
 
-import copy
 from typing import Any
 
 import pytest
@@ -25,15 +24,11 @@ from aiprod_adaptation.core.global_coherence.pacing_analyzer import analyze
 from aiprod_adaptation.core.global_coherence.prompt_finalizer import finalize_prompts
 from aiprod_adaptation.core.pass4_compile import compile_episode
 from aiprod_adaptation.core.rules.pass4_coherence_rules import (
-    ARC_FLAT_THRESHOLD,
-    COLOR_GRADE_MAX_DISTINCT,
-    CONSISTENCY_PENALTY_ARC_FLAT,
     CONSISTENCY_PENALTY_MOVEMENT_SIMPLIFICATION,
     CONSISTENCY_PENALTY_TONE_CONFLICT,
     FEASIBILITY_MOVEMENT_MINIMUM,
     PACING_LABEL_RULES,
     PROMPT_ENRICHMENT_SEPARATOR,
-    PROMPT_LABEL_CHARACTER,
     PROMPT_LABEL_COMPOSITION,
     PROMPT_LABEL_LIGHTING,
     TONE_COLOR_GRADE_DEFAULTS,
@@ -41,7 +36,6 @@ from aiprod_adaptation.core.rules.pass4_coherence_rules import (
 from aiprod_adaptation.models.schema import (
     ActionSpec,
     ConsistencyReport,
-    Episode,
     PacingProfile,
     Scene,
     Shot,

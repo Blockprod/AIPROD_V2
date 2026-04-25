@@ -8,6 +8,7 @@ PostProductionManifest is a Pydantic v2 model for JSON I/O.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -79,8 +80,8 @@ class PostProductionManifest(BaseModel):
     fps: float = 24.0
     total_duration_sec: float
     total_frames: int
-    timeline_clips: list[dict]      # serialized TimelineClip (dataclasses.asdict)
-    audio_cues: list[dict]          # serialized AudioCue
-    continuity_notes: list[dict]    # serialized ContinuityNote
+    timeline_clips: list[dict[str, Any]]     # serialized TimelineClip (dataclasses.asdict)
+    audio_cues: list[dict[str, Any]]          # serialized AudioCue
+    continuity_notes: list[dict[str, Any]]    # serialized ContinuityNote
     dominant_color_grade: str | None = None
     created_at: str                 # ISO 8601 datetime (UTC)

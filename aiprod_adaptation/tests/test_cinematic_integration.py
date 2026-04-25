@@ -19,7 +19,7 @@ from aiprod_adaptation.core.reference_constraints.extractor import (
     ReferenceConstraintsExtractor,
 )
 from aiprod_adaptation.core.reference_constraints.models import ReferenceConstraints
-from aiprod_adaptation.core.season.models import EpisodeCoherenceSummary, SeasonState
+from aiprod_adaptation.core.season.models import EpisodeCoherenceSummary
 from aiprod_adaptation.core.season.tracker import SeasonCoherenceTracker, _detect_palette_drift
 from aiprod_adaptation.models.schema import (
     AIPRODOutput,
@@ -56,8 +56,7 @@ _ref_models_required = pytest.mark.skipif(
 # Shared fixtures
 # ---------------------------------------------------------------------------
 
-def _make_color_swatch(rank: int = 1, variability: str = "invariant") -> "ColorSwatch":
-    hex_chars = "0123456789ABCDEF"
+def _make_color_swatch(rank: int = 1, variability: str = "invariant") -> ColorSwatch:
     # Generate a valid 6-char uppercase hex from rank: e.g. rank=1 → #AA1100
     hx = f"#{(0xAA):02X}{rank:02X}{(rank * 3 % 256):02X}"
     return ColorSwatch(
@@ -70,12 +69,12 @@ def _make_color_swatch(rank: int = 1, variability: str = "invariant") -> "ColorS
 
 
 def _make_visual_invariants(
-    camera_height_class: "CameraHeightClass | None" = None,
+    camera_height_class: CameraHeightClass | None = None,
     dominant_layer: str = "midground",
-    key_direction_h: "LightingDirectionH | None" = None,
-    key_direction_v: "LightingDirectionV | None" = None,
-    palette_swatches: "list[ColorSwatch] | None" = None,
-) -> "VisualInvariants":
+    key_direction_h: LightingDirectionH | None = None,
+    key_direction_v: LightingDirectionV | None = None,
+    palette_swatches: list[ColorSwatch] | None = None,
+) -> VisualInvariants:
     return VisualInvariants(
         source_path="/test/ref.jpg",
         width_px=1920,
@@ -105,7 +104,13 @@ def _make_visual_invariants(
 
 def _make_minimal_output(episode_id: str = "EP01", feasibility_score: int = 80) -> AIPRODOutput:
     """Build a minimal AIPRODOutput without running the full pipeline."""
-    from aiprod_adaptation.models.schema import ActionSpec, ConsistencyReport, PacingProfile, Scene, Shot
+    from aiprod_adaptation.models.schema import (
+        ActionSpec,
+        ConsistencyReport,
+        PacingProfile,
+        Scene,
+        Shot,
+    )
 
     action = ActionSpec(
         subject_id="char_a",
@@ -461,7 +466,6 @@ class TestPass4RuleEngineIntegration:
         ref_invariants: object | None = None,
     ) -> AIPRODOutput:
         from aiprod_adaptation.core.pass4_compile import compile_episode
-        from aiprod_adaptation.models.intermediate import ActionSpec as IR_ActionSpec
 
         scene: dict = {
             "scene_id": "SC01",
@@ -616,8 +620,9 @@ class TestProcessNarrativeWithReference:
         return _MockVB()
 
     def test_returns_aiprods_output(self):
-        from aiprod_adaptation.core.engine import process_narrative_with_reference
         import pathlib
+
+        from aiprod_adaptation.core.engine import process_narrative_with_reference
         text = pathlib.Path(
             "aiprod_adaptation/examples/chapter1.txt"
         ).read_text(encoding="utf-8")
@@ -629,8 +634,9 @@ class TestProcessNarrativeWithReference:
         assert isinstance(output, AIPRODOutput)
 
     def test_rule_engine_report_populated(self):
-        from aiprod_adaptation.core.engine import process_narrative_with_reference
         import pathlib
+
+        from aiprod_adaptation.core.engine import process_narrative_with_reference
         text = pathlib.Path(
             "aiprod_adaptation/examples/chapter1.txt"
         ).read_text(encoding="utf-8")
@@ -645,8 +651,9 @@ class TestProcessNarrativeWithReference:
     @_ref_models_required
     def test_with_ref_invariants_no_crash(self):
         """process_narrative_with_reference must not crash with real ref_invariants."""
-        from aiprod_adaptation.core.engine import process_narrative_with_reference
         import pathlib
+
+        from aiprod_adaptation.core.engine import process_narrative_with_reference
         text = pathlib.Path(
             "aiprod_adaptation/examples/chapter1.txt"
         ).read_text(encoding="utf-8")
@@ -662,8 +669,9 @@ class TestProcessNarrativeWithReference:
 
     def test_episode_index_passed_through(self):
         """episode_index param is accepted without error."""
-        from aiprod_adaptation.core.engine import process_narrative_with_reference
         import pathlib
+
+        from aiprod_adaptation.core.engine import process_narrative_with_reference
         text = pathlib.Path(
             "aiprod_adaptation/examples/chapter1.txt"
         ).read_text(encoding="utf-8")
@@ -677,8 +685,9 @@ class TestProcessNarrativeWithReference:
 
     def test_season_tracker_accepts_output(self):
         """SeasonCoherenceTracker can ingest the output of process_narrative_with_reference."""
-        from aiprod_adaptation.core.engine import process_narrative_with_reference
         import pathlib
+
+        from aiprod_adaptation.core.engine import process_narrative_with_reference
         text = pathlib.Path(
             "aiprod_adaptation/examples/chapter1.txt"
         ).read_text(encoding="utf-8")

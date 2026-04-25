@@ -54,7 +54,6 @@ from typing import Any
 
 from typing_extensions import TypedDict
 
-
 # ---------------------------------------------------------------------------
 # TypedDicts — serialisable contract
 # ---------------------------------------------------------------------------
@@ -197,7 +196,7 @@ class VisualBible:
     # ------------------------------------------------------------------
 
     @classmethod
-    def load(cls, path: str | Path) -> "VisualBible":
+    def load(cls, path: str | Path) -> VisualBible:
         """
         Deserialise a Visual Bible from a JSON file.
 
@@ -212,7 +211,7 @@ class VisualBible:
         return cls._from_dict(raw)
 
     @classmethod
-    def _from_dict(cls, raw: Any) -> "VisualBible":
+    def _from_dict(cls, raw: Any) -> VisualBible:
         if not isinstance(raw, dict):
             raise ValueError("Visual Bible JSON root must be an object.")
 
@@ -283,7 +282,7 @@ class VisualBible:
         return cls(data)
 
     @classmethod
-    def empty(cls) -> "VisualBible":
+    def empty(cls) -> VisualBible:
         """Return a no-op Visual Bible (all invariants absent → pipeline runs in v2 compat mode)."""
         return cls(VisualBibleData(
             series_title="",

@@ -105,7 +105,7 @@ class QualityGate:
     def check(
         self,
         output: AIPRODOutput,
-        visual_bible: "VisualBible | None" = None,
+        visual_bible: VisualBible | None = None,
     ) -> QualityReport:
         report = QualityReport()
         for episode in output.episodes:
@@ -120,7 +120,7 @@ class QualityGate:
         self,
         episode: Episode,
         report: QualityReport,
-        visual_bible: "VisualBible | None",
+        visual_bible: VisualBible | None,
     ) -> None:
         ep_id = episode.episode_id
 
@@ -237,7 +237,7 @@ class QualityGate:
         self,
         episode: Episode,
         report: QualityReport,
-        visual_bible: "VisualBible | None",
+        visual_bible: VisualBible | None,
     ) -> None:
         ep_id = episode.episode_id
         total = len(episode.shots)

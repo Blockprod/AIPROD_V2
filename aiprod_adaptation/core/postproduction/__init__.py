@@ -12,7 +12,7 @@ Public API
 from __future__ import annotations
 
 import dataclasses
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from aiprod_adaptation.core.postproduction.audio_directives import AudioDirectivesBuilder
 from aiprod_adaptation.core.postproduction.continuity import ContinuityBuilder
@@ -60,7 +60,7 @@ def build_manifest_for_episode(
             timeline_clips=[],
             audio_cues=[],
             continuity_notes=[],
-            created_at=datetime.now(timezone.utc).isoformat(),
+            created_at=datetime.now(UTC).isoformat(),
         )
 
     ep = output.episodes[0]
@@ -92,5 +92,5 @@ def build_manifest_for_episode(
         audio_cues=[dataclasses.asdict(c) for c in audio_cues],
         continuity_notes=[dataclasses.asdict(n) for n in cont_notes],
         dominant_color_grade=dominant_grade,
-        created_at=datetime.now(timezone.utc).isoformat(),
+        created_at=datetime.now(UTC).isoformat(),
     )

@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 import warnings
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from pydantic import ValidationError
+
+if TYPE_CHECKING:
+    from aiprod_adaptation.core.visual_bible import VisualBible
 
 from aiprod_adaptation.models.intermediate import ShotDict, VisualScene
 from aiprod_adaptation.models.schema import AIPRODOutput, Episode, Scene, Shot
@@ -74,7 +77,7 @@ def compile_episode(
     shots: list[ShotDict],
     title: str,
     episode_id: str = "EP01",
-    visual_bible: object | None = None,
+    visual_bible: VisualBible | None = None,
     ref_invariants: object | None = None,
     episode_index: int = 1,
 ) -> AIPRODOutput:
@@ -233,7 +236,7 @@ def compile_episode(
     bible_summary: dict[str, Any] = {}
     if visual_bible is not None:
         try:
-            vb_data = visual_bible.data  # type: ignore[union-attr]
+            vb_data = visual_bible.data
             bible_summary = {
                 "series_title": vb_data.get("series_title", ""),
                 "character_count": len(vb_data.get("characters", {})),

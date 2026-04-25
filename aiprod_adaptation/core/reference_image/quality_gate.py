@@ -33,10 +33,7 @@ OpenCV (cv2) is used when available; Pillow-only fallback is provided.
 
 from __future__ import annotations
 
-import hashlib
-import math
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 try:
     import numpy as np
@@ -80,7 +77,7 @@ W_COMPOSITION: float = 0.10
 # Internal pixel helpers (Pillow + numpy, no cv2 required)
 # ---------------------------------------------------------------------------
 
-def _to_grey_array(img_rgb: "np.ndarray") -> "np.ndarray":
+def _to_grey_array(img_rgb: np.ndarray) -> np.ndarray:
     """Convert RGB uint8 array to greyscale float32 via BT.601 luma."""
     return (
         0.299 * img_rgb[:, :, 0].astype("float32")
@@ -89,7 +86,7 @@ def _to_grey_array(img_rgb: "np.ndarray") -> "np.ndarray":
     )
 
 
-def _laplacian_variance(grey: "np.ndarray") -> float:
+def _laplacian_variance(grey: np.ndarray) -> float:
     """
     Compute the variance of the discrete Laplacian.
     Standard blur-detection estimator (Pech-Pacheco et al., 2000).
@@ -111,7 +108,7 @@ def _laplacian_variance(grey: "np.ndarray") -> float:
     return float(np.var(lap))
 
 
-def _rgb_to_lab_l(img_rgb: "np.ndarray") -> "np.ndarray":
+def _rgb_to_lab_l(img_rgb: np.ndarray) -> np.ndarray:
     """
     Convert RGB uint8 image to CIE L* channel (float32, range [0, 100]).
     Uses sRGB → linear → XYZ → L* conversion (deterministic, no cv2 needed).
@@ -130,13 +127,13 @@ def _rgb_to_lab_l(img_rgb: "np.ndarray") -> "np.ndarray":
     return l_star.astype("float32")
 
 
-def _shannon_entropy(hist: "np.ndarray") -> float:
+def _shannon_entropy(hist: np.ndarray) -> float:
     """Shannon entropy in bits from a normalised histogram array."""
     p = hist[hist > 0]
     return float(-np.sum(p * np.log2(p)))
 
 
-def _image_entropy(grey: "np.ndarray") -> float:
+def _image_entropy(grey: np.ndarray) -> float:
     """Global Shannon entropy of a greyscale image [0, 255]."""
     hist, _ = np.histogram(grey.ravel(), bins=256, range=(0, 256))
     total = hist.sum()
@@ -146,7 +143,7 @@ def _image_entropy(grey: "np.ndarray") -> float:
     return _shannon_entropy(p)
 
 
-def _sobel_magnitude(grey: "np.ndarray") -> "np.ndarray":
+def _sobel_magnitude(grey: np.ndarray) -> np.ndarray:
     """
     Compute Sobel gradient magnitude using numpy convolutions.
     Returns float32 array of same shape as grey.
@@ -162,10 +159,11 @@ def _sobel_magnitude(grey: "np.ndarray") -> "np.ndarray":
         for dx in range(3):
             gx += kx[dy, dx] * padded[dy:dy + h, dx:dx + w]
             gy += ky[dy, dx] * padded[dy:dy + h, dx:dx + w]
-    return np.sqrt(gx ** 2 + gy ** 2)
+    result: np.ndarray = np.sqrt(gx ** 2 + gy ** 2)
+    return result
 
 
-def _otsu_threshold(grey: "np.ndarray") -> int:
+def _otsu_threshold(grey: np.ndarray) -> int:
     """
     Compute Otsu binarisation threshold (deterministic, numpy-only implementation).
     Returns threshold value in [0, 255].
@@ -199,7 +197,7 @@ def _otsu_threshold(grey: "np.ndarray") -> int:
     return threshold
 
 
-def _thirds_entropy(grey: "np.ndarray") -> float:
+def _thirds_entropy(grey: np.ndarray) -> float:
     """
     Compute the mean Shannon entropy across the 9 cells of a rule-of-thirds grid.
     Higher values = more compositional information distributed across cells.
@@ -234,7 +232,7 @@ def _score_clarity(lap_var: float, max_lap: float = 2000.0) -> float:
     return min(1.0, lap_var / max_lap)
 
 
-def _score_lighting(l_channel: "np.ndarray") -> float:
+def _score_lighting(l_channel: np.ndarray) -> float:
     """
     Fraction of pixels in usable luminance zone [10, 90] L* mapped to [0, 1].
     Penalises blown highlights and crushed blacks.
@@ -246,7 +244,7 @@ def _score_lighting(l_channel: "np.ndarray") -> float:
     return usable / total
 
 
-def _score_subject(grey: "np.ndarray", otsu_thresh: int) -> float:
+def _score_subject(grey: np.ndarray, otsu_thresh: int) -> float:
     """
     Otsu foreground ratio mapped to a bell-curve score peaked at 30–60% coverage.
     Too small a subject (< 5%) or too large (> 90%) both score lower.
@@ -266,7 +264,7 @@ def _score_subject(grey: "np.ndarray", otsu_thresh: int) -> float:
     return 1.0 - (fg_ratio - 0.70) / (0.95 - 0.70) * 0.8
 
 
-def _score_depth(sobel_mag: "np.ndarray") -> float:
+def _score_depth(sobel_mag: np.ndarray) -> float:
     """
     Coefficient of variation (std/mean) of gradient magnitude — estimator for
     depth complexity. Normalised to [0, 1], soft-clamped at CV = 1.5.

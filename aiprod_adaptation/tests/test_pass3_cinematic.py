@@ -24,38 +24,21 @@ from aiprod_adaptation.core.pass3_shots import (
     _resolve_camera_movement,
     _resolve_composition,
     _resolve_duration,
-    _resolve_framing_note,
     _resolve_lighting_directive,
-    _resolve_rhythm_purpose,
-    _resolve_shot_role,
     _resolve_shot_sequence,
     atomize_shots,
     simplify_shots,
 )
 from aiprod_adaptation.core.rules.cinematography_rules_v3 import (
     COMPOSITION_DESCRIPTIONS,
-    CONTINUITY_FLAG_INJECTIONS,
-    DURATION_TABLE,
     FEASIBILITY_BASE_SCORES,
     FEASIBILITY_DEFAULT_SCORE,
     FEASIBILITY_EXPLOSIVE_PENALTY,
-    FEASIBILITY_STATIC_BONUS,
-    FRAMING_NOTES,
-    GAZE_DIRECTION_RULES,
-    INTENSITY_SHOT_SEQUENCES,
-    LIGHTING_DIRECTIVES,
-    NEUTRAL_CUT_CAMERA_MOVEMENT,
     NEUTRAL_CUT_DURATION,
     NEUTRAL_CUT_SHOT_ROLE,
     NEUTRAL_CUT_SHOT_TYPE,
-    OVER_SHOULDER_PAIR,
-    PHYSICAL_LAYER_SHOT_OVERRIDES,
-    SCENE_TYPE_CAMERA_OVERRIDES,
-    SHOT_ROLE_DEFAULT,
-    SHOT_ROLE_MAP,
     SHOT_SEQUENCE_DEFAULT_V3,
 )
-
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -701,7 +684,7 @@ class TestBackwardCompat:
         scene = _make_scene(visual_actions=["Marcus pauses."])
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
-            result = atomize_shots([scene])
+            _ = atomize_shots([scene])
             assert any(issubclass(warn.category, DeprecationWarning) for warn in w)
 
     def test_atomize_shots_returns_same_as_simplify(self) -> None:

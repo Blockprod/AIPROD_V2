@@ -21,7 +21,6 @@ Dependencies: Pillow (PIL), numpy
 from __future__ import annotations
 
 import hashlib
-import math
 from pathlib import Path
 
 try:
@@ -69,7 +68,7 @@ _SEMI_VARIABLE_RANK_MAX: int = 4   # ranks 3–4 → semi_variable
 # Deterministic k-means (LAB space, fixed spatial sampling, no sklearn)
 # ---------------------------------------------------------------------------
 
-def _spatial_sample(pixels: "np.ndarray", n: int) -> "np.ndarray":
+def _spatial_sample(pixels: np.ndarray, n: int) -> np.ndarray:
     """
     Draw n pixels from a (H*W, C) array using a spatially-regular grid stride.
     Deterministic: same input → same indices.
@@ -82,7 +81,7 @@ def _spatial_sample(pixels: "np.ndarray", n: int) -> "np.ndarray":
     return pixels[indices]
 
 
-def _kmeans_lloyd(points: "np.ndarray", k: int, n_iter: int) -> "np.ndarray":
+def _kmeans_lloyd(points: np.ndarray, k: int, n_iter: int) -> np.ndarray:
     """
     Deterministic Lloyd's algorithm.
     Initialises centroids by evenly-spaced indices in the sorted-by-L* sample.
@@ -115,7 +114,7 @@ def _kmeans_lloyd(points: "np.ndarray", k: int, n_iter: int) -> "np.ndarray":
     return centroids
 
 
-def _rgb_to_lab_pixels(img_rgb: "np.ndarray") -> "np.ndarray":
+def _rgb_to_lab_pixels(img_rgb: np.ndarray) -> np.ndarray:
     """
     Convert (H, W, 3) RGB uint8 image to (H*W, 3) LAB float32 pixels.
     Uses the same sRGB→XYZ→LAB pipeline as quality_gate._rgb_to_lab_l()
@@ -136,28 +135,28 @@ def _rgb_to_lab_pixels(img_rgb: "np.ndarray") -> "np.ndarray":
     xn, yn, zn = 0.95047, 1.00000, 1.08883
     xr, yr, zr = x / xn, y / yn, z / zn
 
-    def _f(t: "np.ndarray") -> "np.ndarray":
+    def _f(t: np.ndarray) -> np.ndarray:
         delta = 6.0 / 29.0
         return np.where(t > delta ** 3, np.cbrt(t), t / (3 * delta ** 2) + 4.0 / 29.0)
 
     fx, fy, fz = _f(xr), _f(yr), _f(zr)
 
-    L = 116.0 * fy - 16.0
-    A = 500.0 * (fx - fy)
-    B = 200.0 * (fy - fz)
+    lab_l = 116.0 * fy - 16.0
+    lab_a = 500.0 * (fx - fy)
+    lab_b = 200.0 * (fy - fz)
 
     h, w = img_rgb.shape[:2]
-    lab = np.stack([L, A, B], axis=2).reshape(-1, 3).astype("float32")
+    lab = np.stack([lab_l, lab_a, lab_b], axis=2).reshape(-1, 3).astype("float32")
     return lab
 
 
-def _lab_to_hex(lab_centroid: "np.ndarray") -> str:
+def _lab_to_hex(lab_centroid: np.ndarray) -> str:
     """Convert a [L, a, b] centroid back to sRGB hex string."""
-    L, A, B = float(lab_centroid[0]), float(lab_centroid[1]), float(lab_centroid[2])
+    lab_l, lab_a, lab_b = float(lab_centroid[0]), float(lab_centroid[1]), float(lab_centroid[2])
 
-    fy = (L + 16.0) / 116.0
-    fx = A / 500.0 + fy
-    fz = fy - B / 200.0
+    fy = (lab_l + 16.0) / 116.0
+    fx = lab_a / 500.0 + fy
+    fz = fy - lab_b / 200.0
 
     def _f_inv(t: float) -> float:
         delta = 6.0 / 29.0
@@ -189,7 +188,7 @@ def _lab_to_hex(lab_centroid: "np.ndarray") -> str:
 # Lighting helpers
 # ---------------------------------------------------------------------------
 
-def _estimate_key_direction(l_channel: "np.ndarray") -> tuple[LightingDirectionH, LightingDirectionV]:
+def _estimate_key_direction(l_channel: np.ndarray) -> tuple[LightingDirectionH, LightingDirectionV]:
     """
     Estimate the key-light direction by computing the centre of mass
     of the brightest 10% of pixels in L* channel.
@@ -225,7 +224,7 @@ def _estimate_key_direction(l_channel: "np.ndarray") -> tuple[LightingDirectionH
     return h_dir, v_dir
 
 
-def _estimate_color_temperature(img_rgb: "np.ndarray", l_channel: "np.ndarray") -> int:
+def _estimate_color_temperature(img_rgb: np.ndarray, l_channel: np.ndarray) -> int:
     """
     Estimate approximate colour temperature (Kelvin) from the R/B ratio
     in the highlight zone (L* > 80).
@@ -270,7 +269,7 @@ def _estimate_color_temperature(img_rgb: "np.ndarray", l_channel: "np.ndarray") 
 # Camera height estimation
 # ---------------------------------------------------------------------------
 
-def _estimate_camera_height(sobel_mag: "np.ndarray") -> CameraHeightClass:
+def _estimate_camera_height(sobel_mag: np.ndarray) -> CameraHeightClass:
     """
     Estimate camera height class from the vertical distribution of gradient energy.
 
@@ -306,7 +305,7 @@ def _estimate_camera_height(sobel_mag: "np.ndarray") -> CameraHeightClass:
 # Depth layer estimation
 # ---------------------------------------------------------------------------
 
-def _estimate_depth_layers(sobel_mag: "np.ndarray") -> DepthLayerEstimate:
+def _estimate_depth_layers(sobel_mag: np.ndarray) -> DepthLayerEstimate:
     """
     Estimate depth complexity per horizontal band (foreground=bottom, background=top).
     The layer with highest mean gradient is the likely focal plane.
@@ -340,7 +339,7 @@ def _estimate_depth_layers(sobel_mag: "np.ndarray") -> DepthLayerEstimate:
 def _format_aspect_ratio(width: int, height: int) -> str:
     """Return a human-readable aspect ratio string, e.g. '16:9' or '2.39:1'."""
     # Check common standard ratios first (exact match)
-    _STANDARD_RATIOS: list[tuple[float, str]] = [
+    standard_ratios: list[tuple[float, str]] = [
         (16.0 / 9.0,    "16:9"),
         (4.0  / 3.0,    "4:3"),
         (2.39,          "2.39:1"),
@@ -352,7 +351,7 @@ def _format_aspect_ratio(width: int, height: int) -> str:
         (9.0 / 16.0,    "9:16"),
     ]
     ratio = width / height
-    for ref_ratio, label in _STANDARD_RATIOS:
+    for ref_ratio, label in standard_ratios:
         if abs(ratio - ref_ratio) < 0.02:
             return label
     # Fallback: reduced fraction
@@ -368,7 +367,7 @@ def _format_aspect_ratio(width: int, height: int) -> str:
 # Luminance fingerprint
 # ---------------------------------------------------------------------------
 
-def _luminance_fingerprint(l_channel: "np.ndarray") -> str:
+def _luminance_fingerprint(l_channel: np.ndarray) -> str:
     """
     Compute an MD5 fingerprint of a 32×32 downsampled, quantised L* map.
     Deterministic: identical pixel content → identical hash.
@@ -378,7 +377,7 @@ def _luminance_fingerprint(l_channel: "np.ndarray") -> str:
     h, w = l_channel.shape
     # Round L* to 1 decimal place before hashing for fp stability
     l_uint8 = np.clip(l_channel, 0, 100).astype("uint8")
-    pil_l = _Image.fromarray(l_uint8, mode="L").resize((32, 32), resample=_Image.LANCZOS)
+    pil_l = _Image.fromarray(l_uint8, mode="L").resize((32, 32), resample=_Image.Resampling.LANCZOS)
     raw = bytes(pil_l.tobytes())
     return hashlib.md5(raw).hexdigest()
 
@@ -490,7 +489,7 @@ class VisualInvariantsExtractor:
     # Palette extraction
     # ------------------------------------------------------------------
 
-    def _extract_palette(self, img_rgb: "np.ndarray") -> list[ColorSwatch]:
+    def _extract_palette(self, img_rgb: np.ndarray) -> list[ColorSwatch]:
         """
         Extract up to `palette_k` dominant colours via deterministic LAB k-means.
 

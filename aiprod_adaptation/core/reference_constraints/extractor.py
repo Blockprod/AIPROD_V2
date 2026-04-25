@@ -133,8 +133,8 @@ class ReferenceConstraintsExtractor:
             return None, None
         h = getattr(lighting, "key_direction_h", None)
         v = getattr(lighting, "key_direction_v", None)
-        h_val = h.value if hasattr(h, "value") else (str(h) if h is not None else None)
-        v_val = v.value if hasattr(v, "value") else (str(v) if v is not None else None)
+        h_val = h.value if (h is not None and hasattr(h, "value")) else (str(h) if h is not None else None)
+        v_val = v.value if (v is not None and hasattr(v, "value")) else (str(v) if v is not None else None)
         return h_val, v_val
 
     @staticmethod

@@ -21,24 +21,23 @@ evaluation, never mutated.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from enum import Enum
-from typing import Any, Union
+from enum import StrEnum
+from typing import Any
 
 from pydantic import BaseModel, Field
-
 
 # ---------------------------------------------------------------------------
 # Enumerations
 # ---------------------------------------------------------------------------
 
 
-class ConflictType(str, Enum):
+class ConflictType(StrEnum):
     HARD = "HARD"   # mandatory resolution — invariant violated
     SOFT = "SOFT"   # try to resolve — tension between P-levels
     NONE = "NONE"   # no conflict — informational
 
 
-class ResolutionStrategy(str, Enum):
+class ResolutionStrategy(StrEnum):
     STRIP_AND_REPLACE   = "STRIP_AND_REPLACE"    # remove conflicting phrase, insert invariant
     DOWNGRADE_MOVEMENT  = "DOWNGRADE_MOVEMENT"   # reduce camera movement complexity one step
     ENFORCE_INVARIANT   = "ENFORCE_INVARIANT"    # append invariant fragment to prompt/directive
@@ -48,7 +47,7 @@ class ResolutionStrategy(str, Enum):
     NO_ACTION           = "NO_ACTION"            # nothing to do
 
 
-class FieldOperator(str, Enum):
+class FieldOperator(StrEnum):
     EXISTS        = "exists"
     NOT_EXISTS    = "not_exists"
     EQ            = "eq"
@@ -64,7 +63,7 @@ class FieldOperator(str, Enum):
     MATCHES_RE    = "matches_re"
 
 
-class ConditionOperator(str, Enum):
+class ConditionOperator(StrEnum):
     AND = "AND"
     OR  = "OR"
     NOT = "NOT"
@@ -98,7 +97,7 @@ class CompoundCondition(BaseModel):
       NOT      — first operand is negated (operands[0])
     """
     operator: ConditionOperator
-    operands: list[Union[LeafCondition, "CompoundCondition"]] = Field(
+    operands: list[LeafCondition | CompoundCondition] = Field(
         default_factory=list
     )
 
@@ -147,7 +146,7 @@ class RuleSpec(BaseModel):
     id: str
     priority: int                               # 1–5
     description: str = ""
-    condition: Union[LeafCondition, CompoundCondition]
+    condition: LeafCondition | CompoundCondition
     action: RuleAction
     conflict_type: ConflictType = ConflictType.SOFT
     rewrite_template: str | None = None         # optional human-readable template string

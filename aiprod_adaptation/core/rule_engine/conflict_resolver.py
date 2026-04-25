@@ -45,8 +45,6 @@ Camera movement downgrade chain (deterministic, no randomness)
 
 from __future__ import annotations
 
-from typing import Any
-
 from aiprod_adaptation.models.schema import Shot
 
 from .models import (

@@ -20,10 +20,13 @@ from __future__ import annotations
 
 import copy
 import unittest
+from typing import TYPE_CHECKING
 
 from aiprod_adaptation.core.pass2_visual import visual_rewrite
 from aiprod_adaptation.models.intermediate import RawScene
 
+if TYPE_CHECKING:
+    from aiprod_adaptation.models.intermediate import VisualScene
 
 # ---------------------------------------------------------------------------
 # Minimal valid RawScene builders
@@ -60,6 +63,12 @@ class _FakeVisualBible:
             "characters": characters or {},
             "locations":  locations  or {},
         }
+
+    def get_character(self, name: str):
+        return self._data["characters"].get(name)
+
+    def get_location(self, slug: str):
+        return self._data["locations"].get(slug.lower().replace(" ", "_"))
 
 
 # ===========================================================================
@@ -498,7 +507,6 @@ class TestBodyLanguageState(unittest.TestCase):
 class TestDeterminism(unittest.TestCase):
 
     def _run(self, scene: RawScene) -> list[VisualScene]:
-        from aiprod_adaptation.models.intermediate import VisualScene
         return visual_rewrite([copy.deepcopy(scene)])
 
     def test_identical_output_twice(self):

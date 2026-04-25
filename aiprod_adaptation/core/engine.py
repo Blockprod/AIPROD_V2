@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import sys
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Literal, cast
 
 import structlog
 
@@ -10,6 +10,7 @@ from aiprod_adaptation.models.schema import AIPRODOutput
 if TYPE_CHECKING:
     from aiprod_adaptation.core.adaptation.llm_adapter import LLMAdapter
     from aiprod_adaptation.core.production_budget import ProductionBudget
+    from aiprod_adaptation.core.visual_bible import VisualBible
     from aiprod_adaptation.image_gen.image_adapter import ImageAdapter
     from aiprod_adaptation.image_gen.image_request import StoryboardOutput
     from aiprod_adaptation.post_prod.audio_adapter import AudioAdapter
@@ -59,16 +60,17 @@ def run_pipeline(
     text: str,
     title: str,
     episode_id: str = "EP01",
-    llm: "LLMAdapter | None" = None,
+    llm: LLMAdapter | None = None,
     character_descriptions: dict[str, str] | None = None,
-    budget: "ProductionBudget | None" = None,
+    budget: ProductionBudget | None = None,
     require_llm: bool = False,
     pipeline_mode: PipelineMode = "auto",
-    visual_bible: object | None = None,
+    visual_bible: VisualBible | None = None,
     ref_invariants: object | None = None,
     episode_index: int = 1,
 ) -> AIPRODOutput:
     from aiprod_adaptation.core.adaptation.classifier import InputClassifier
+    from aiprod_adaptation.models.intermediate import RawScene
     from aiprod_adaptation.core.adaptation.llm_adapter import NullLLMAdapter
     from aiprod_adaptation.core.adaptation.script_parser import ScriptParser
     from aiprod_adaptation.core.adaptation.story_extractor import StoryExtractor
@@ -119,7 +121,7 @@ def run_pipeline(
             scenes_pass1 = segment(text)
             logger.info("pass1_complete", scene_count=len(scenes_pass1), path="novel_rules")
             logger.debug("pass2_start")
-            scenes_pass2 = visual_rewrite(scenes_pass1)
+            scenes_pass2 = visual_rewrite(cast("list[RawScene]", scenes_pass1))
             logger.info("pass2_complete", scene_count=len(scenes_pass2))
 
     scenes_pass2 = StoryValidator().validate_all(scenes_pass2, threshold=0.5)
@@ -261,11 +263,11 @@ def run_pipeline_full(
 def process_narrative_with_reference(
     text: str,
     title: str,
-    visual_bible: object,
+    visual_bible: VisualBible,
     ref_invariants: object | None = None,
     episode_id: str = "EP01",
     episode_index: int = 1,
-    llm: "LLMAdapter | None" = None,
+    llm: LLMAdapter | None = None,
     character_descriptions: dict[str, str] | None = None,
     pipeline_mode: PipelineMode = "auto",
 ) -> AIPRODOutput:

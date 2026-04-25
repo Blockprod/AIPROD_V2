@@ -34,33 +34,38 @@ via .get() with safe defaults. All mandatory VisualScene keys are unchanged.
 from __future__ import annotations
 
 import re
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from aiprod_adaptation.models.intermediate import (
     ActionSpec,
     BodyLanguageState,
+    CinematicScene,
     PhysicalAction,
     RawScene,
     VisualScene,
 )
 
 if TYPE_CHECKING:
-    from aiprod_adaptation.core.visual_bible import VisualBible
+    from aiprod_adaptation.core.visual_bible import (
+        CharacterInvariant,
+        LocationInvariant,
+        VisualBible,
+    )
 
 # ---------------------------------------------------------------------------
 # Rule tables
 # ---------------------------------------------------------------------------
-from .rules.cinematography_rules import (
-    CAMERA_MOVEMENT_INTERACTION_KEYWORDS,
-    CAMERA_MOVEMENT_MOTION_KEYWORDS,
-)
-from .rules.dop_style_rules import SCENE_TONE_KEYWORDS, SCENE_TONE_DEFAULT
-from .rules.emotion_rules import _INTERNAL_THOUGHT_WORDS, EMOTION_RULES
 from .rules.body_language_rules import (
     BODY_LANGUAGE_STATE_AFTER,
     EMOTION_BODY_LANGUAGE,
     PHYSICAL_ACTION_LAYERS,
 )
+from .rules.cinematography_rules import (
+    CAMERA_MOVEMENT_INTERACTION_KEYWORDS,
+    CAMERA_MOVEMENT_MOTION_KEYWORDS,
+)
+from .rules.dop_style_rules import SCENE_TONE_DEFAULT, SCENE_TONE_KEYWORDS
+from .rules.emotion_rules import _INTERNAL_THOUGHT_WORDS, EMOTION_RULES
 from .rules.visual_transformation_rules_v3 import (
     BEAT_TYPE_INTENSITY_FLOOR,
     BEAT_TYPE_INTENSITY_FLOOR_DEFAULT,
@@ -417,7 +422,7 @@ def _compose_visual_actions_from_layers(
 
 def _get_location_invariants(
     reference_location_id: str | None,
-    visual_bible: "VisualBible | None",
+    visual_bible: VisualBible | None,
 ) -> tuple[str, str]:
     """
     Return (lighting_condition, architecture_style) from VisualBible.
@@ -425,23 +430,23 @@ def _get_location_invariants(
     """
     if visual_bible is None or not reference_location_id:
         return "", ""
-    loc_data = visual_bible._data.get("locations", {}).get(reference_location_id, {})
-    lighting    = loc_data.get("lighting_condition", "")
-    arch_style  = loc_data.get("architecture_style",  "")
-    return lighting, arch_style
+    loc: LocationInvariant | None = visual_bible.get_location(reference_location_id)
+    if loc is None:
+        return "", ""
+    return loc.get("lighting_condition", ""), loc.get("architecture_style", "")
 
 
 def _get_character_invariant(
     character: str,
-    visual_bible: "VisualBible | None",
+    visual_bible: VisualBible | None,
 ) -> tuple[str, str]:
     """Return (wardrobe_fingerprint, lighting_affinity) for a character."""
     if visual_bible is None:
         return "", ""
-    char_data = visual_bible._data.get("characters", {}).get(character, {})
-    wardrobe = char_data.get("wardrobe_fingerprint", "")
-    lighting = char_data.get("lighting_affinity", "")
-    return wardrobe, lighting
+    char: CharacterInvariant | None = visual_bible.get_character(character)
+    if char is None:
+        return "", ""
+    return char.get("wardrobe_fingerprint", ""), char.get("lighting_affinity", "")
 
 
 def _get_environmental_interaction(
@@ -563,7 +568,7 @@ def _extract_primary_character_from_text(raw_text: str) -> str | None:
 
 def visual_rewrite(
     scenes: list[RawScene],
-    visual_bible: "VisualBible | None" = None,
+    visual_bible: VisualBible | None = None,
 ) -> list[VisualScene]:
     """
     PASS 2 — Convert abstract narration into cinematic visual actions.
@@ -595,7 +600,7 @@ def visual_rewrite(
     output: list[VisualScene] = []
 
     for scene in scenes:
-        raw_text: str = scene.get("raw_text", "")  # type: ignore[attr-defined]
+        raw_text: str = scene["raw_text"]
         if not raw_text.strip():
             raise ValueError(
                 f"PASS 2: scene '{scene.get('scene_id', '?')}' has empty raw_text."
@@ -605,8 +610,8 @@ def visual_rewrite(
         sentences  = _split_sentences(raw_text)
         dialogues  = _extract_dialogues(raw_text)
         emotion    = _detect_emotion_in_text(raw_text.lower())
-        characters = list(scene.get("characters", []))  # type: ignore[attr-defined]
-        location   = scene.get("location", "Unknown")   # type: ignore[attr-defined]
+        characters = list(scene["characters"])
+        location   = scene["location"]
 
         # Fallback: if Pass 1 returned no characters, try to extract from raw_text.
         # This handles very short inputs where Pass 1's regex-based extractor may miss names.
@@ -616,12 +621,13 @@ def visual_rewrite(
                 characters = [guess]
 
         # ----- Cinematic fields from Pass 1 (NotRequired, safe .get()) -----
-        scene_type: str   = scene.get("scene_type", "standard")          # type: ignore[attr-defined]
-        beat_type:  str   = scene.get("beat_type",  "exposition")         # type: ignore[attr-defined]
-        arc_index:  float = scene.get("emotional_arc_index", 0.5)         # type: ignore[attr-defined]
-        ref_loc_id: str | None = scene.get("reference_location_id")       # type: ignore[attr-defined]
-        act_pos:    str | None = scene.get("act_position")                 # type: ignore[attr-defined]
-        cont_flags: list[str]  = list(scene.get("continuity_flags", []))  # type: ignore[attr-defined]
+        cscene = cast(CinematicScene, scene)
+        scene_type: str   = cscene.get("scene_type", "standard")
+        beat_type:  str   = cscene.get("beat_type",  "exposition")
+        arc_index:  float = cscene.get("emotional_arc_index", 0.5)
+        ref_loc_id: str | None = cscene.get("reference_location_id")
+        act_pos:    str | None = cscene.get("act_position")
+        cont_flags: list[str]  = list(cscene.get("continuity_flags", []))
 
         # ----- Context window for intensity modifiers (±2-sentence window) -----
         context_text = " ".join(sentences[:4]) if len(sentences) >= 4 else raw_text
@@ -730,13 +736,13 @@ def visual_rewrite(
         vs: VisualScene = {
             "scene_id":       scene["scene_id"],
             "characters":     characters,
-            "location":       location,  # type: ignore[arg-type]
-            "time_of_day":    scene.get("time_of_day"),  # type: ignore[attr-defined]
+            "location":       location,
+            "time_of_day":    scene["time_of_day"],
             "visual_actions": visual_actions,
             "dialogues":      dialogues,
             "emotion":        emotion,
             "action_units": [
-                _build_action_unit(a, characters, location)  # type: ignore[arg-type]
+                _build_action_unit(a, characters, location)
                 for a in visual_actions
             ],
             # v3.0 cinematic fields
@@ -766,7 +772,7 @@ def visual_rewrite(
         if dialogues:
             vs["dominant_sound"] = "dialogue"
 
-        time_of_day = scene.get("time_of_day")  # type: ignore[attr-defined]
+        time_of_day = scene["time_of_day"]
         if time_of_day in {"dawn", "day", "dusk", "night", "interior"}:
             vs["time_of_day_visual"] = time_of_day
 

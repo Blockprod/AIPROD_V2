@@ -14,17 +14,15 @@ Priority hierarchy reflected in VisualInvariants:
 
 from __future__ import annotations
 
-from enum import Enum
-from typing import Any
+from enum import StrEnum
 
 from pydantic import BaseModel, Field, field_validator
-
 
 # ---------------------------------------------------------------------------
 # Enumerations
 # ---------------------------------------------------------------------------
 
-class RejectionReason(str, Enum):
+class RejectionReason(StrEnum):
     RESOLUTION_TOO_LOW    = "RESOLUTION_TOO_LOW"
     TOO_BLURRY            = "TOO_BLURRY"
     OVEREXPOSED           = "OVEREXPOSED"
@@ -34,20 +32,20 @@ class RejectionReason(str, Enum):
     LOAD_ERROR            = "LOAD_ERROR"
 
 
-class CameraHeightClass(str, Enum):
+class CameraHeightClass(StrEnum):
     EYE_LEVEL  = "eye_level"
     LOW_ANGLE  = "low_angle"
     HIGH_ANGLE = "high_angle"
     OVERHEAD   = "overhead"
 
 
-class LightingDirectionH(str, Enum):
+class LightingDirectionH(StrEnum):
     LEFT   = "left"
     CENTER = "center"
     RIGHT  = "right"
 
 
-class LightingDirectionV(str, Enum):
+class LightingDirectionV(StrEnum):
     TOP    = "top"
     MIDDLE = "middle"
     BOTTOM = "bottom"

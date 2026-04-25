@@ -46,7 +46,7 @@ class SeasonCoherenceTracker:
     # Public API
     # ------------------------------------------------------------------
 
-    def add_episode(self, output: "AIPRODOutput") -> None:
+    def add_episode(self, output: AIPRODOutput) -> None:
         """Append one episode's output to the accumulated state."""
         ep = output.episodes[0] if output.episodes else None
         if ep is None:
@@ -92,7 +92,7 @@ class SeasonCoherenceTracker:
                 output.visual_bible_summary.get("series_title", "")
             )
 
-    def compute_metrics(self) -> "SeasonCoherenceMetrics":
+    def compute_metrics(self) -> SeasonCoherenceMetrics:
         """Return a SeasonCoherenceMetrics Pydantic object from accumulated state."""
         from aiprod_adaptation.models.schema import SeasonCoherenceMetrics
 

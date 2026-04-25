@@ -41,8 +41,8 @@ class LocationRegistry:
     def build_from_output(
         self,
         output: AIPRODOutput,
-        visual_bible: "VisualBible | None" = None,
-    ) -> "LocationRegistry":
+        visual_bible: VisualBible | None = None,
+    ) -> LocationRegistry:
         for ep in output.episodes:
             for scene in ep.scenes:
                 key = _normalize(scene.location)

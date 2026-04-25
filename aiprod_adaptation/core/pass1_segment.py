@@ -33,7 +33,7 @@ from __future__ import annotations
 import re
 from typing import TYPE_CHECKING
 
-from aiprod_adaptation.models.intermediate import CinematicScene, RawScene
+from aiprod_adaptation.models.intermediate import CinematicScene
 
 if TYPE_CHECKING:
     from aiprod_adaptation.core.visual_bible import VisualBible
@@ -41,7 +41,7 @@ if TYPE_CHECKING:
 # ---------------------------------------------------------------------------
 # Rule tables (single source of truth)
 # ---------------------------------------------------------------------------
-from .rules.segmentation_rules import LOCATION_PHRASES, TIME_PHRASES  # v2 compat export
+from .rules.dop_style_rules import resolve_beat_type
 from .rules.segmentation_rules_v3 import (
     ACT_BREAK_MARKERS,
     BEAT_TYPE_WEIGHTS,
@@ -50,16 +50,19 @@ from .rules.segmentation_rules_v3 import (
     FLASHBACK_MIN_HITS,
     FLASHBACK_TRIGGERS,
     FLASHBACK_WINDOW,
-    LOCATION_PHRASES as LOCATION_PHRASES_V3,
     LOCATION_STOP_WORDS,
     MONTAGE_MARKERS,
     MONTAGE_MAX_SENTENCES,
     MONTAGE_MIN_SHORT_PARAS,
     SCENE_TYPE_WEIGHTS,
     SUBLOCATION_PHRASES,
+)
+from .rules.segmentation_rules_v3 import (
+    LOCATION_PHRASES as LOCATION_PHRASES_V3,
+)
+from .rules.segmentation_rules_v3 import (
     TIME_PHRASES as TIME_PHRASES_V3,
 )
-from .rules.dop_style_rules import BEAT_TYPE_KEYWORDS, resolve_beat_type
 
 # ---------------------------------------------------------------------------
 # Action-category verb tables (unchanged from v2 for R11)
@@ -287,7 +290,7 @@ def _normalise_location(raw: str) -> str:
 
 
 def _resolve_location_id(
-    location: str, visual_bible: "VisualBible | None"
+    location: str, visual_bible: VisualBible | None
 ) -> str | None:
     """
     Match a raw location string against the VisualBible location slugs.
@@ -361,7 +364,7 @@ def _build_cinematic_scene(
     confirmed:        frozenset[str],
     known_characters: set[str],
     known_locations:  set[str],
-    visual_bible:     "VisualBible | None",
+    visual_bible:     VisualBible | None,
     total_estimated:  int,
 ) -> CinematicScene:
     raw = " ".join(paragraphs)
@@ -424,7 +427,7 @@ def _build_cinematic_scene(
 
 def segment(
     raw_text: str,
-    visual_bible: "VisualBible | None" = None,
+    visual_bible: VisualBible | None = None,
 ) -> list[CinematicScene]:
     """
     PASS 1 — Segment raw_text into a list of CinematicScene dicts.
@@ -502,7 +505,7 @@ def segment(
         # Update world state
         known_characters.update(sc["characters"])
         if sc.get("reference_location_id"):
-            known_locations.add(sc["reference_location_id"])  # type: ignore[arg-type]
+            known_locations.add(sc["reference_location_id"])
         scene_index += 1
 
     pending_act_break: str | None = None  # carry act_position to next scene

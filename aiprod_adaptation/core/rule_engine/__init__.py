@@ -1,4 +1,6 @@
 """rule_engine — hierarchical, conflict-aware rule evaluation for AIPROD_Cinematic."""
+from aiprod_adaptation.core.rule_engine.conflict_resolver import ConflictResolutionEngine
+from aiprod_adaptation.core.rule_engine.evaluator import RuleEvaluator
 from aiprod_adaptation.core.rule_engine.models import (
     CompoundCondition,
     ConditionOperator,
@@ -13,8 +15,6 @@ from aiprod_adaptation.core.rule_engine.models import (
     RuleEvalResult,
     RuleSpec,
 )
-from aiprod_adaptation.core.rule_engine.evaluator import RuleEvaluator
-from aiprod_adaptation.core.rule_engine.conflict_resolver import ConflictResolutionEngine
 
 __all__ = [
     "CompoundCondition",

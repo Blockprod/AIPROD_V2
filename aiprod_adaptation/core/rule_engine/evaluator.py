@@ -34,16 +34,15 @@ from typing import Any
 
 from .models import (
     CompoundCondition,
+    ConditionOperator,
     ConflictRecord,
     ConflictType,
-    ConditionOperator,
     EvalContext,
     FieldOperator,
     LeafCondition,
     RuleEvalResult,
     RuleSpec,
 )
-
 
 # ---------------------------------------------------------------------------
 # Field resolution helpers
@@ -103,9 +102,9 @@ def _eval_leaf(cond: LeafCondition, ctx: EvalContext) -> bool:
     if op == FieldOperator.NOT_EXISTS:
         return value is None
     if op == FieldOperator.EQ:
-        return value == ref
+        return bool(value == ref)
     if op == FieldOperator.NEQ:
-        return value != ref
+        return bool(value != ref)
     if op == FieldOperator.LT:
         return value is not None and float(value) < float(ref)
     if op == FieldOperator.LTE:

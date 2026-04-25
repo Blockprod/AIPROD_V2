@@ -18,6 +18,11 @@ Pydantic objects.  The ConsistencyReport is a new Pydantic instance.
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from aiprod_adaptation.core.visual_bible import VisualBible
+
 from aiprod_adaptation.core.rules.pass4_coherence_rules import (
     ARC_FLAT_THRESHOLD,
     COLOR_GRADE_MAX_DISTINCT,
@@ -35,7 +40,7 @@ from aiprod_adaptation.models.schema import ConsistencyReport, Scene, Shot
 def check_and_enrich(
     scenes: list[Scene],
     shots: list[Shot],
-    visual_bible: object | None = None,
+    visual_bible: VisualBible | None = None,
 ) -> tuple[list[Shot], ConsistencyReport]:
     """
     Validate and (where required) mutate the compiled shot list.

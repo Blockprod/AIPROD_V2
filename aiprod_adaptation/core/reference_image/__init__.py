@@ -20,6 +20,7 @@ All operations are deterministic, pixel-level, and produce JSON-serialisable out
 No neural models, no randomness, no external API calls.
 """
 
+from aiprod_adaptation.core.reference_image.extractor import VisualInvariantsExtractor
 from aiprod_adaptation.core.reference_image.models import (
     ColorSwatch,
     DepthLayerEstimate,
@@ -29,7 +30,6 @@ from aiprod_adaptation.core.reference_image.models import (
     VisualInvariants,
 )
 from aiprod_adaptation.core.reference_image.quality_gate import ReferenceQualityGate
-from aiprod_adaptation.core.reference_image.extractor import VisualInvariantsExtractor
 
 __all__ = [
     "ColorSwatch",

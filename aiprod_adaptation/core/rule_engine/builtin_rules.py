@@ -15,6 +15,11 @@ Rule IDs follow the naming convention:
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from aiprod_adaptation.core.rule_engine.evaluator import RuleEvaluator
+
 from .models import (
     CompoundCondition,
     ConditionOperator,
@@ -328,7 +333,7 @@ BUILTIN_RULES: list[RuleSpec] = [
 # ---------------------------------------------------------------------------
 
 
-def make_default_evaluator() -> "RuleEvaluator":
+def make_default_evaluator() -> RuleEvaluator:
     """Return a RuleEvaluator pre-loaded with all BUILTIN_RULES."""
     from aiprod_adaptation.core.rule_engine.evaluator import RuleEvaluator
     return RuleEvaluator(BUILTIN_RULES)

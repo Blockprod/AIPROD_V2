@@ -8,8 +8,8 @@ Public API
     SeasonState             — full accumulated season state
 """
 
-from aiprod_adaptation.core.season.tracker import SeasonCoherenceTracker
 from aiprod_adaptation.core.season.models import EpisodeCoherenceSummary, SeasonState
+from aiprod_adaptation.core.season.tracker import SeasonCoherenceTracker
 
 __all__ = [
     "EpisodeCoherenceSummary",

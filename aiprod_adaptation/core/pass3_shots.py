@@ -35,8 +35,9 @@ Backward compatibility:
 from __future__ import annotations
 
 import re
+from typing import cast
 
-from aiprod_adaptation.models.intermediate import ActionSpec, PhysicalAction, ShotDict, VisualScene
+from aiprod_adaptation.models.intermediate import ActionSpec, BodyLanguageState, PhysicalAction, ShotDict, VisualScene
 
 from .rules.cinematography_rules_v3 import (
     CAMERA_MOVEMENT_DEFAULT_V3,
@@ -44,7 +45,6 @@ from .rules.cinematography_rules_v3 import (
     COMPOSITION_DEFAULT,
     COMPOSITION_DESCRIPTIONS,
     CONTINUITY_FLAG_INJECTIONS,
-    DURATION_DEFAULT,
     DURATION_TABLE,
     EMOTIONAL_LAYER_MODIFIERS,
     FEASIBILITY_BASE_SCORES,
@@ -72,9 +72,6 @@ from .rules.dop_style_rules import (
     resolve_dof,
     resolve_lens_mm,
 )
-from .rules.verb_categories import INTERACTION_VERBS as _INTERACTION_VERBS
-from .rules.verb_categories import MOTION_VERBS as _MOTION_VERBS
-from .rules.verb_categories import PERCEPTION_VERBS as _PERCEPTION_VERBS
 
 _AMBIGUOUS_RE = re.compile(r"\b(seems?|appears?|perhaps|maybe)\b", re.IGNORECASE)
 
@@ -430,9 +427,9 @@ def _apply_continuity_injections(
         spec = CONTINUITY_FLAG_INJECTIONS[flag_key]
 
         if spec.get("inject_before"):
-            sequence: list[str] = list(spec.get("sequence", [spec.get("shot_type", "wide")]))  # type: ignore[arg-type]
+            sequence: list[str] = list(cast(list[str], spec.get("sequence", [spec.get("shot_type", "wide")])))
             movement: str = str(spec.get("camera_movement", "static"))
-            duration_val: int = int(spec.get("duration", 6))
+            duration_val: int = int(cast(int, spec.get("duration", 6)))
             s_role: str = str(spec.get("shot_role", "establishing"))
             f_note = spec.get("framing_note")
             for stype in reversed(sequence):
@@ -448,7 +445,7 @@ def _apply_continuity_injections(
         if spec.get("inject_after"):
             stype = str(spec.get("shot_type", "extreme_close_up"))
             movement = str(spec.get("camera_movement", "dolly_in"))
-            duration_val = int(spec.get("duration", 4))
+            duration_val = int(cast(int, spec.get("duration", 4)))
             s_role = str(spec.get("shot_role", "reveal"))
             f_note = spec.get("framing_note")
             injected = {
@@ -497,15 +494,15 @@ def _build_scene_shot_plan(
     action_intensity: str | None,
     scene_type: str | None,
     emotional_layer: str | None,
-    body_language_states: list[dict[str, str]],
+    body_language_states: list[BodyLanguageState],
     scene_tone: str | None,
 ) -> list[dict[str, object]]:
     seq_types, seq_caps = _resolve_shot_sequence(beat_type, action_intensity)
 
     scene_override = SCENE_TYPE_CAMERA_OVERRIDES.get(scene_type or "", {})
     if "sequence_override" in scene_override:
-        override_seq = list(scene_override["sequence_override"])
-        override_dur = int(scene_override.get("duration_override", 3))
+        override_seq = list(cast(list[str], scene_override["sequence_override"]))
+        override_dur = int(cast(int, scene_override.get("duration_override", 3)))
         seq_types = override_seq
         seq_caps  = [override_dur] * len(override_seq)
 
@@ -572,29 +569,29 @@ def simplify_shots(scenes: list[VisualScene]) -> list[ShotDict]:
 
     for scene in scenes:
         scene_id:       str = scene["scene_id"]
-        location:       str = scene.get("location", "unknown location")     # type: ignore[attr-defined]
-        emotion:        str = scene.get("emotion", "neutral")               # type: ignore[attr-defined]
-        visual_actions: list[str] = scene.get("visual_actions", [])         # type: ignore[attr-defined]
-        action_units:   list[ActionSpec] = scene.get("action_units", [])    # type: ignore[attr-defined]
-        dialogues:      list[str] = scene.get("dialogues", [])              # type: ignore[attr-defined]
-        characters:     list[str] = list(scene.get("characters", []))       # type: ignore[attr-defined]
+        location:       str = scene["location"]
+        emotion:        str = scene["emotion"]
+        visual_actions: list[str] = scene.get("visual_actions", [])
+        action_units:   list[ActionSpec] = scene.get("action_units", [])
+        dialogues:      list[str] = scene.get("dialogues", [])
+        characters:     list[str] = list(scene["characters"])
 
-        pacing:             str       = scene.get("pacing", "medium")       # type: ignore[attr-defined]
-        tod_visual:         str       = scene.get("time_of_day_visual", "day")  # type: ignore[attr-defined]
-        scene_dom_sound:    str | None = scene.get("dominant_sound")        # type: ignore[attr-defined]
+        pacing:             str        = scene.get("pacing", "medium")
+        tod_visual:         str        = scene.get("time_of_day_visual", "day")
+        scene_dom_sound:    str | None = scene.get("dominant_sound")
 
-        beat_type:          str | None = scene.get("beat_type")             # type: ignore[attr-defined]
-        scene_tone:         str | None = scene.get("scene_tone")            # type: ignore[attr-defined]
-        emotional_beat_idx: float | None = scene.get("emotional_beat_index")  # type: ignore[attr-defined]
-        action_intensity:   str | None = scene.get("action_intensity")      # type: ignore[attr-defined]
-        emotional_layer:    str | None = scene.get("emotional_layer")       # type: ignore[attr-defined]
-        scene_type:         str | None = scene.get("scene_type")            # type: ignore[attr-defined]
-        continuity_flags:   list[str] = list(scene.get("continuity_flags", []))  # type: ignore[attr-defined]
-        physical_actions_raw = scene.get("physical_actions", [])            # type: ignore[attr-defined]
+        beat_type:          str | None   = scene.get("beat_type")
+        scene_tone:         str | None   = scene.get("scene_tone")
+        emotional_beat_idx: float | None = scene.get("emotional_beat_index")
+        action_intensity:   str | None   = scene.get("action_intensity")
+        emotional_layer:    str | None   = scene.get("emotional_layer")
+        scene_type:         str | None   = scene.get("scene_type")
+        continuity_flags:   list[str]    = list(scene.get("continuity_flags", []))
+        physical_actions_raw = scene.get("physical_actions", [])
         physical_actions:   list[PhysicalAction] = list(physical_actions_raw) if physical_actions_raw else []
-        body_language_states: list[dict[str, str]] = list(scene.get("body_language_states", []))  # type: ignore[attr-defined]
-        visual_invariants:  list[str] = list(scene.get("visual_invariants_applied", []))  # type: ignore[attr-defined]
-        reference_location_id: str | None = scene.get("reference_location_id")  # type: ignore[attr-defined]
+        body_language_states: list[BodyLanguageState] = list(scene.get("body_language_states", []))
+        visual_invariants:  list[str]    = list(scene.get("visual_invariants_applied", []))
+        reference_location_id: str | None = scene.get("reference_location_id")
 
         if not visual_actions:
             raise ValueError(f"PASS 3: scene '{scene_id}' has empty visual_actions.")
@@ -607,7 +604,7 @@ def simplify_shots(scenes: list[VisualScene]) -> list[ShotDict]:
         color_grade_override = scene_override.get("color_grade_override")
         if color_grade_override:
             color_grade = str(color_grade_override)
-        min_lens_mm = int(scene_override.get("min_lens_mm", 0))
+        min_lens_mm = int(cast(int, scene_override.get("min_lens_mm", 0)))
         if min_lens_mm > 0:
             lens_mm = max(lens_mm, min_lens_mm)
 
@@ -623,7 +620,7 @@ def simplify_shots(scenes: list[VisualScene]) -> list[ShotDict]:
             last = plan[-1]
             last["_sequence_type"]     = str(scene_override["last_shot_type"])
             last["_sequence_movement"] = str(scene_override.get("last_shot_movement", "dolly_in"))
-            last["_duration_cap"]      = int(scene_override.get("last_duration_override", 4))
+            last["_duration_cap"]      = int(cast(int, scene_override.get("last_duration_override", 4)))
             last["_framing_override"]  = scene_override.get("framing_note")
             last["_shot_role"]         = "reveal"
 
@@ -646,9 +643,9 @@ def simplify_shots(scenes: list[VisualScene]) -> list[ShotDict]:
             if is_injected:
                 stype    = str(plan_item["_inject_type"])
                 movement = str(plan_item["_inject_movement"])
-                dur_cap  = int(plan_item["_inject_duration"])
+                dur_cap  = int(cast(int, plan_item["_inject_duration"]))
                 s_role   = str(plan_item["_inject_role"])
-                f_note   = plan_item.get("_inject_framing")
+                f_note   = cast("str | None", plan_item.get("_inject_framing"))
                 if action_parts_flat:
                     part, seed_action = action_parts_flat[0]
                 else:
@@ -656,9 +653,9 @@ def simplify_shots(scenes: list[VisualScene]) -> list[ShotDict]:
             else:
                 stype    = str(plan_item["_sequence_type"])
                 movement = str(plan_item["_sequence_movement"])
-                dur_cap  = int(plan_item["_duration_cap"])
+                dur_cap  = int(cast(int, plan_item["_duration_cap"]))
                 s_role   = str(plan_item["_shot_role"])
-                f_note   = plan_item.get("_framing_override")
+                f_note   = cast("str | None", plan_item.get("_framing_override"))
                 if action_parts_flat:
                     part_idx = non_injected_count % len(action_parts_flat)
                     part, seed_action = action_parts_flat[part_idx]
@@ -668,7 +665,7 @@ def simplify_shots(scenes: list[VisualScene]) -> list[ShotDict]:
 
             duration = _resolve_duration(beat_type, action_intensity, stype, dur_cap, pacing)
             if scene_override.get("duration_override"):
-                duration = int(scene_override["duration_override"])
+                duration = int(cast(int, scene_override["duration_override"]))
 
             composition = _resolve_composition(stype)
 

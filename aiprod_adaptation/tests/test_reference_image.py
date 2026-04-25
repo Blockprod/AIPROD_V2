@@ -11,11 +11,7 @@ Dependencies: pytest, Pillow, numpy (installed via pip install -e ".[reference,d
 
 from __future__ import annotations
 
-import io
-import struct
-import zlib
 from pathlib import Path
-from typing import Any
 
 import pytest
 
@@ -138,8 +134,8 @@ class TestReferenceQualityGateInstantiation:
         gate = _gate()
         from aiprod_adaptation.core.reference_image.quality_gate import (
             DEFAULT_PASS_THRESHOLD,
-            WARNING_THRESHOLD,
             MIN_DIMENSION,
+            WARNING_THRESHOLD,
         )
         assert gate.pass_threshold == DEFAULT_PASS_THRESHOLD
         assert gate.warning_threshold == WARNING_THRESHOLD
@@ -239,7 +235,11 @@ class TestReferenceQualityGatePassing:
         gate = _gate()
         report = gate.check(path)
         from aiprod_adaptation.core.reference_image.quality_gate import (
-            W_CLARITY, W_LIGHTING, W_SUBJECT, W_DEPTH, W_COMPOSITION,
+            W_CLARITY,
+            W_COMPOSITION,
+            W_DEPTH,
+            W_LIGHTING,
+            W_SUBJECT,
         )
         cs = report.component_scores
         expected = (
@@ -408,7 +408,8 @@ class TestVisualInvariantsLighting:
 
     def test_lighting_direction_valid_enum(self, tmp_path: Path) -> None:
         from aiprod_adaptation.core.reference_image.models import (
-            LightingDirectionH, LightingDirectionV,
+            LightingDirectionH,
+            LightingDirectionV,
         )
         path = _make_image_file(tmp_path, width=512, height=512, pattern="warm_noise")
         inv = _extractor().extract(path)
