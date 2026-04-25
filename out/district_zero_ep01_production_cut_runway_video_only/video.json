@@ -1,0 +1,322 @@
+{
+  "title": "District Zero - Episode 1 - Production Cut",
+  "clips": [
+    {
+      "shot_id": "SCN_001_SHOT_001",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/bbfc1d01-4e91-4430-9ef1-0062a4c15e57.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiOWIwNzA1MjQwYjRhNzVjOSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzE5MDk0OH0.IBAMh75UPzInyj_tuKi4glK9Ik0FVulSTJfbwAfVFGI",
+      "duration_sec": 4,
+      "model_used": "gen4_turbo",
+      "latency_ms": 23577,
+      "cost_usd": 0.2,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_001_SHOT_002",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/c0f2dbb2-f2cc-4c4a-bc95-d4dd4c5358ff.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiODhjN2FhZWE1ZTdlMTg2ZCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzE2NDM5NH0.akS3CsncuE7hsAbPDxuHr8cL7A8ln9f9uDwRo4_JeZg",
+      "duration_sec": 3,
+      "model_used": "gen4_turbo",
+      "latency_ms": 23562,
+      "cost_usd": 0.15,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_002_SHOT_001",
+      "video_url": "error://generation-failed",
+      "duration_sec": 5,
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_002_SHOT_002",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/78060b36-2337-40ec-bb74-c4b3a6e1d177.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiN2FlNzk1NTU0NmUzZDY0MCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzEzNjU5N30.X5BIzQu7xX9xu8gjuxYVqmuui39PaMj9mzUeFmBbGOY",
+      "duration_sec": 4,
+      "model_used": "gen4_turbo",
+      "latency_ms": 25077,
+      "cost_usd": 0.2,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_002_SHOT_003",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/2e032b50-74d4-4189-a401-6479a5a58b3f.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMTY5ZTI5NDRkZTY0OGMxNSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzE1NjgwNH0.13p2EonVOJsaFOgRb1GAy3xHJaIRF-OighbC1opoyGc",
+      "duration_sec": 3,
+      "model_used": "gen4_turbo",
+      "latency_ms": 22204,
+      "cost_usd": 0.15,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_003_SHOT_001",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/5a757796-f4c3-44fd-bf52-ee33225a4ea8.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMjhhOTg1NGMwN2MwZGJkZiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzE0NTU0OH0.KfsEByqCx09_hz4i1rSUBEU3H-ED55J4GAmWGu-sj3g",
+      "duration_sec": 4,
+      "model_used": "gen4_turbo",
+      "latency_ms": 21359,
+      "cost_usd": 0.2,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_003_SHOT_002",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/230b5fc7-f329-4d1a-9bc2-eb3e847a81ce.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMDNmYjFkNTQxMmZlN2E5NCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzE2MzA5Mn0.igNhcAcC9NE234KW3r54g8n3MgTcwUIc4TmvOMGyprI",
+      "duration_sec": 3,
+      "model_used": "gen4_turbo",
+      "latency_ms": 20608,
+      "cost_usd": 0.15,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_003_SHOT_003",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/fd8ba748-4441-439c-b99d-250e1794c912.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYzc4ZmFiZmM1MzMyMWNiOCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzE1Njg2MH0.9O9iGU8Qp15QylknLxwowXni-EyarMFy4YhNdTzrM5E",
+      "duration_sec": 5,
+      "model_used": "gen4_turbo",
+      "latency_ms": 34250,
+      "cost_usd": 0.25,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_004_SHOT_001",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/716c04ba-095b-43ea-88d0-828bccb38774.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYzY5NDIyOGI4ZDI0YzY3YyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzE3NDUzOX0.4Eo2wppob0gzsJxj5wt0qEdOJdJYlCMqbU9QTh8zI8U",
+      "duration_sec": 4,
+      "model_used": "gen4_turbo",
+      "latency_ms": 48859,
+      "cost_usd": 0.2,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_004_SHOT_002",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/f3d8e453-561c-45ed-af6e-ebe2a7daf8e3.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZDNmNDUyMjBkMzljMzg4MyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzIwMTE4NH0.ARl8hw0WFgbel3VmpeH0sLtwUGuURkZg10OAKu0-93Q",
+      "duration_sec": 3,
+      "model_used": "gen4_turbo",
+      "latency_ms": 26577,
+      "cost_usd": 0.15,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_005_SHOT_001",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/1f53402c-2f42-4c8c-878d-cef3af7b627b.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZGI1ZTBjZDgxMzUzNGY2YyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzE1NDc3Nn0.9TRcXErpFZp9EFseB3_XZWRsKB-Uib75rRcBnPE9aZA",
+      "duration_sec": 5,
+      "model_used": "gen4_turbo",
+      "latency_ms": 27015,
+      "cost_usd": 0.25,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_005_SHOT_002",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/39dd6f69-6ed6-4397-a8b6-3c48136e5c35.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiODVkNTI5M2E5YWYxNWQ2MSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzEzNzg1MH0.o5LH_iiSqO3Yuvsosx5VVMEAHU4QwKRAfSzkE3XmzMk",
+      "duration_sec": 5,
+      "model_used": "gen4_turbo",
+      "latency_ms": 47813,
+      "cost_usd": 0.25,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_006_SHOT_001",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/dc14a13c-749c-41f1-8715-1f786ddfe3fe.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMzBmYmFhMmMyYjljOGQ5YyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzIxMDY2OH0.3gae0eN26Vgs8Yu6GfJo1UbsGiEMQ7r6OCdHyEAzJNk",
+      "duration_sec": 4,
+      "model_used": "gen4_turbo",
+      "latency_ms": 24171,
+      "cost_usd": 0.2,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_006_SHOT_002",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/50346546-f57e-489d-bda6-9201d8edca00.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiM2FjNzdhYjdlMDMyMWI1NiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzE0MzYwN30.IVl-fXxldKefBHvoLwH06BW5941Mx7fcrbitP2a49mw",
+      "duration_sec": 3,
+      "model_used": "gen4_turbo",
+      "latency_ms": 21515,
+      "cost_usd": 0.15,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_007_SHOT_001",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/74f6ae80-6d9d-4e5b-9949-731f2b59282a.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZWNkOGFmNzg3ZTM5NGRhOCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzE2Mjg3Mn0.izqsUGzXl5Xax_U6L2Rps-lTQ_9y2qM_XaVsDDhXFc0",
+      "duration_sec": 4,
+      "model_used": "gen4_turbo",
+      "latency_ms": 27844,
+      "cost_usd": 0.2,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_007_SHOT_002",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/ca4ba262-0b03-43d8-bb0d-0ac94b240202.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYmI3MzMyYmZkOWIxODY3YSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzE3NzAyM30.bvCtBwiO9UXndhBRZIKqnYOeHAb6IJqmN9cnO4wWyw4",
+      "duration_sec": 5,
+      "model_used": "gen4_turbo",
+      "latency_ms": 27859,
+      "cost_usd": 0.25,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_008_SHOT_001",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/72323ba9-8fe1-4c5e-810e-6466e093c29f.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiN2M5ODk2YjBhNjlmMWQ3MCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzE3NDgzMn0.XtqSneEKc37lo9eYz2yTFlc97sVvfMenko4-rrIa8dc",
+      "duration_sec": 4,
+      "model_used": "gen4_turbo",
+      "latency_ms": 22125,
+      "cost_usd": 0.2,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_008_SHOT_002",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/e20b5475-7962-447d-81f6-cb2328035fe8.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNGFmOTFhMDE2MjkwZmI3NCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzE4OTUwNX0.oo1d_mJ8buSWtZcCfm5H_AB07MCnWE3oOXoXXlFyuJw",
+      "duration_sec": 5,
+      "model_used": "gen4_turbo",
+      "latency_ms": 27920,
+      "cost_usd": 0.25,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_008_SHOT_003",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/6b83fe22-ec19-474c-b6b9-1838f2602325.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYjA2NzQ1MjM2YTllMGNmOSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzE3MzkyM30.DHqMaV259DDr1GWbQ-aAuL4IrCreaEdq3Wp1swfaWxI",
+      "duration_sec": 3,
+      "model_used": "gen4_turbo",
+      "latency_ms": 19422,
+      "cost_usd": 0.15,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_008_SHOT_004",
+      "video_url": "error://generation-failed",
+      "duration_sec": 3,
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_009_SHOT_001",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/f9f9a1e9-e416-432a-9d6b-2efb1be9ae98.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNjg5ZGNjMTM0ODhlN2Q1YSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzIwMzg1OX0.ZPs7oz1W9QW2-bGpbBb6cTQOF6_QqKT11ZUhD7rybp8",
+      "duration_sec": 5,
+      "model_used": "gen4_turbo",
+      "latency_ms": 28422,
+      "cost_usd": 0.25,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_009_SHOT_002",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/71a15916-376b-4ea0-bebb-7140b90353f2.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMWM5NmZlY2JiMGJhMDU1MyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzIxMjg3NX0.LkIK8gm8bOhx74HSHxj5AlkPOdPMSoM1Bozb-W-yfDo",
+      "duration_sec": 3,
+      "model_used": "gen4_turbo",
+      "latency_ms": 21312,
+      "cost_usd": 0.15,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_009_SHOT_003",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/ce351438-849f-4d8b-bd93-b5ddd41434fc.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiODZmMjFmMDRlZDczN2ZkYSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzE1MDU5Nn0.rFSnXnrNmF8Q1xQIFtglZ7fL4LjbDRfSpUvsdl3XUTc",
+      "duration_sec": 4,
+      "model_used": "gen4_turbo",
+      "latency_ms": 28390,
+      "cost_usd": 0.2,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_009_SHOT_004",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/31bacb94-5d9f-4a9f-b6f3-fa0956992f81.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNWFkZjMwY2U3YWUwZDMxZiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzIxMDA2Mn0.wN8XkhgUX_jINQnuVkCO4d4DQQ-H93h3e6j6IyWjMWQ",
+      "duration_sec": 3,
+      "model_used": "gen4_turbo",
+      "latency_ms": 21156,
+      "cost_usd": 0.15,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_010_SHOT_001",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/117d0c34-3464-4c4a-840a-20a040d5f3a3.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMmU1ZDlhNjBjMDcxYTA5NyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzE4ODcwNH0.rQR7_VYGLzwsdbt1_dycbJobq1e_DSqy-2qJvAEP_vg",
+      "duration_sec": 4,
+      "model_used": "gen4_turbo",
+      "latency_ms": 23077,
+      "cost_usd": 0.2,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_010_SHOT_002",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/68bdbf77-57ca-4b1a-abba-04951ee4b075.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZDUzMjcyZWM4ODYxYmY1YSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzE0MTIyOH0.rcpwrJLiGWik22mPnMFm-WWrx1XeKFV8cNNwQD9S98I",
+      "duration_sec": 3,
+      "model_used": "gen4_turbo",
+      "latency_ms": 23108,
+      "cost_usd": 0.15,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_010_SHOT_003",
+      "video_url": "error://generation-failed",
+      "duration_sec": 4,
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_010_SHOT_004",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/ae725fb6-ac65-4750-b64b-0a4744128f00.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYjg3ZDdlZWFmMzQ5ODUzYyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzIwMDIzNH0.Z_3evj21DJ_icNOpLICzruIdJZENLwdWqE4ia9RJRDI",
+      "duration_sec": 4,
+      "model_used": "gen4_turbo",
+      "latency_ms": 24531,
+      "cost_usd": 0.2,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_001",
+      "video_url": "error://generation-failed",
+      "duration_sec": 3,
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_002",
+      "video_url": "error://generation-failed",
+      "duration_sec": 3,
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_003",
+      "video_url": "error://generation-failed",
+      "duration_sec": 3,
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_004",
+      "video_url": "error://generation-failed",
+      "duration_sec": 3,
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_005",
+      "video_url": "error://generation-failed",
+      "duration_sec": 3,
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_006",
+      "video_url": "error://generation-failed",
+      "duration_sec": 3,
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_007",
+      "video_url": "error://generation-failed",
+      "duration_sec": 3,
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    }
+  ],
+  "total_shots": 35,
+  "generated": 25
+}

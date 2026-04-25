@@ -11,18 +11,28 @@ Covers:
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
 
 import pytest
 
 from aiprod_adaptation.core.engine import run_pipeline, run_pipeline_with_images
 from aiprod_adaptation.image_gen.image_adapter import NullImageAdapter
+from aiprod_adaptation.image_gen.openai_image_adapter import (
+    OpenAIImageAdapter,
+    _estimate_openai_image_cost,
+    _openai_image_size,
+)
+from aiprod_adaptation.image_gen.runway_image_adapter import RunwayImageAdapter, _runway_image_ratio
 from aiprod_adaptation.image_gen.image_request import (
     ImageRequest,
     ImageResult,
     ShotStoryboardFrame,
     StoryboardOutput,
 )
+from aiprod_adaptation.image_gen.reference_pack import ReferencePack
 from aiprod_adaptation.image_gen.storyboard import DEFAULT_STYLE_TOKEN, StoryboardGenerator
 from aiprod_adaptation.models.schema import AIPRODOutput
 
@@ -50,6 +60,24 @@ class TestImageRequest:
         assert req.height == 576
         assert req.num_steps == 28
         assert req.guidance_scale == 7.5
+
+    def test_image_request_accepts_structured_action(self) -> None:
+        req = ImageRequest(
+            shot_id="S1",
+            scene_id="SC001",
+            prompt="test",
+            action={
+                "subject_id": "john",
+                "action_type": "walked",
+                "target": "door",
+                "modifiers": ["quickly"],
+                "location_id": "hallway",
+                "camera_intent": "follow",
+                "source_text": "John walked quickly to the door.",
+            },
+        )
+        assert req.action is not None
+        assert req.action.action_type == "walked"
 
     def test_image_request_invalid_steps_raises(self) -> None:
         with pytest.raises(Exception):
@@ -90,6 +118,84 @@ class TestNullImageAdapter:
     def test_null_adapter_shot_id_preserved(self) -> None:
         result = self.adapter.generate(_REQ)
         assert result.shot_id == _REQ.shot_id
+
+
+class TestOpenAIImageAdapterHelpers:
+    def test_openai_image_size_uses_landscape_variant(self) -> None:
+        assert _openai_image_size(1024, 576) == "1536x1024"
+
+    def test_openai_image_size_uses_portrait_variant(self) -> None:
+        assert _openai_image_size(576, 1024) == "1024x1536"
+
+    def test_openai_image_size_uses_square_variant(self) -> None:
+        assert _openai_image_size(1024, 1024) == "1024x1024"
+
+    def test_openai_image_cost_estimate_for_default_low_cost_profile(self) -> None:
+        assert _estimate_openai_image_cost("gpt-image-1-mini", "1536x1024", "low") == 0.006
+
+    def test_openai_image_cost_estimate_returns_zero_for_auto_quality(self) -> None:
+        assert _estimate_openai_image_cost("gpt-image-1-mini", "1536x1024", "auto") == 0.0
+
+    def test_openai_adapter_defaults_to_low_cost_profile(self) -> None:
+        adapter = OpenAIImageAdapter(api_key="test-key")
+        assert adapter._model == "gpt-image-1-mini"
+        assert adapter._quality == "low"
+
+    def test_openai_adapter_accepts_env_overrides(self) -> None:
+        with patch.dict(
+            os.environ,
+            {
+                "OPENAI_IMAGE_MODEL": "gpt-image-1",
+                "OPENAI_IMAGE_QUALITY": "high",
+            },
+            clear=False,
+        ):
+            adapter = OpenAIImageAdapter(api_key="test-key")
+
+        assert adapter._model == "gpt-image-1"
+        assert adapter._quality == "high"
+
+    def test_openai_adapter_passes_quality_to_generate(self) -> None:
+        response = SimpleNamespace(
+            data=[SimpleNamespace(b64_json="ZmFrZQ==", url="")],
+        )
+
+        with patch("openai.OpenAI") as openai_cls:
+            openai_cls.return_value.images.generate.return_value = response
+            adapter = OpenAIImageAdapter(api_key="test-key", quality="medium")
+            result = adapter.generate(_REQ)
+
+        openai_cls.return_value.images.generate.assert_called_once_with(
+            model="gpt-image-1-mini",
+            prompt=_REQ.prompt,
+            size="1536x1024",
+            quality="medium",
+        )
+        assert result.image_b64 == "ZmFrZQ=="
+        assert result.cost_usd == 0.015
+
+
+class TestRunwayImageAdapterHelpers:
+    def test_runway_image_ratio_uses_landscape_variant(self) -> None:
+        assert _runway_image_ratio(1024, 576) == "1280:720"
+
+    def test_runway_image_ratio_uses_portrait_variant(self) -> None:
+        assert _runway_image_ratio(576, 1024) == "720:1280"
+
+    def test_runway_image_ratio_uses_square_variant(self) -> None:
+        assert _runway_image_ratio(1024, 1024) == "1024:1024"
+
+    def test_runway_image_ratio_uses_gemini_landscape_variant(self) -> None:
+        assert _runway_image_ratio(1024, 576, "gemini_2.5_flash") == "1536:672"
+
+    def test_runway_image_ratio_uses_gemini_portrait_variant(self) -> None:
+        assert _runway_image_ratio(576, 1024, "gemini_2.5_flash") == "832:1248"
+
+    def test_runway_image_adapter_requires_token(self) -> None:
+        adapter = RunwayImageAdapter(api_token="")
+
+        with pytest.raises(ValueError, match="RUNWAY_API_TOKEN"):
+            adapter.generate(_REQ)
 
 
 # ---------------------------------------------------------------------------
@@ -133,6 +239,19 @@ class TestStoryboardGenerator:
         total = sum(len(ep.shots) for ep in output.episodes)
         assert len(requests) == total
 
+    def test_storyboard_build_requests_include_structured_action(self) -> None:
+        output = self._output()
+        requests = self.gen.build_requests(output)
+        assert requests[0].action is not None
+        assert requests[0].action.source_text == output.episodes[0].shots[0].action.source_text
+
+    def test_storyboard_build_requests_propagates_structured_action(self) -> None:
+        output = run_pipeline("Emma walked quickly to the door.", "T")
+        requests = self.gen.build_requests(output)
+        assert requests[0].action is not None
+        assert requests[0].action.subject_id == "emma"
+        assert requests[0].action.action_type == "walked"
+
     def test_storyboard_error_in_adapter_does_not_crash(self) -> None:
         class BrokenAdapter(NullImageAdapter):
             def generate(self, _request: ImageRequest) -> ImageResult:
@@ -143,6 +262,21 @@ class TestStoryboardGenerator:
         sb = gen.generate(output)
         assert all(r.model_used == "error" for r in sb.frames)
         assert sb.generated == 0
+
+    def test_storyboard_error_logs_warning(self) -> None:
+        from unittest.mock import MagicMock, patch
+
+        class BrokenAdapter(NullImageAdapter):
+            def generate(self, _request: ImageRequest) -> ImageResult:
+                raise RuntimeError("API down")
+
+        output = run_pipeline(_NOVEL, "T")
+        logger = MagicMock()
+        with patch("aiprod_adaptation.image_gen.storyboard.logger", logger):
+            sb = StoryboardGenerator(adapter=BrokenAdapter(), base_seed=0).generate(output)
+
+        assert all(r.model_used == "error" for r in sb.frames)
+        logger.warning.assert_called()
 
 
 # ---------------------------------------------------------------------------
@@ -294,6 +428,98 @@ class TestStyleToken:
         output = run_pipeline(_NOVEL, "T")
         sb = StoryboardGenerator(adapter=NullImageAdapter(), style_token="").generate(output)
         assert len(sb.frames) > 0
+
+
+class TestReferencePack:
+    def test_storyboard_injects_location_prompt_and_reference_from_pack(self) -> None:
+        received_prompts: list[str] = []
+        received_refs: list[str] = []
+
+        class TrackingAdapter(NullImageAdapter):
+            def generate(self, request: ImageRequest) -> ImageResult:
+                received_prompts.append(request.prompt)
+                received_refs.append(request.reference_image_url)
+                return NullImageAdapter().generate(request)
+
+        output = run_pipeline(_NOVEL, "T")
+        scene_id = output.episodes[0].shots[0].scene_id
+        pack = ReferencePack.model_validate(
+            {
+                "scene_locations": {scene_id: "old_library"},
+                "locations": {
+                    "old_library": {
+                        "prompt": "dusty wood stacks, amber practical lamps, floating dust motes",
+                        "reference_image_urls": ["ref://locations/old_library.png"],
+                    }
+                },
+            }
+        )
+
+        StoryboardGenerator(adapter=TrackingAdapter(), reference_pack=pack).generate(output)
+
+        assert any("dusty wood stacks" in prompt for prompt in received_prompts)
+        assert received_refs[0] == "ref://locations/old_library.png"
+
+    def test_storyboard_prefers_character_reference_from_pack(self) -> None:
+        received_prompts: list[str] = []
+        received_refs: list[str] = []
+
+        class TrackingAdapter(NullImageAdapter):
+            def generate(self, request: ImageRequest) -> ImageResult:
+                received_prompts.append(request.prompt)
+                received_refs.append(request.reference_image_url)
+                return NullImageAdapter().generate(request)
+
+        output = run_pipeline(_NOVEL, "T")
+        chars = [c for ep in output.episodes for sc in ep.scenes for c in sc.characters]
+        if not chars:
+            pytest.skip("pipeline produced no characters")
+
+        pack = ReferencePack.model_validate(
+            {
+                "characters": {
+                    chars[0]: {
+                        "prompt": "sharp cheekbones, dark tactical scarf, wet skin, wary expression",
+                        "reference_image_urls": ["ref://characters/hero.png"],
+                    }
+                }
+            }
+        )
+
+        StoryboardGenerator(adapter=TrackingAdapter(), reference_pack=pack).generate(output)
+
+        assert any("dark tactical scarf" in prompt for prompt in received_prompts)
+        assert received_refs[0] == "ref://characters/hero.png"
+
+    def test_storyboard_matches_short_character_key_to_full_name(self) -> None:
+        received_prompts: list[str] = []
+        received_refs: list[str] = []
+
+        class TrackingAdapter(NullImageAdapter):
+            def generate(self, request: ImageRequest) -> ImageResult:
+                received_prompts.append(request.prompt)
+                received_refs.append(request.reference_image_url)
+                return NullImageAdapter().generate(request)
+
+        output = run_pipeline(
+            "Nara runs through a corridor. Nara stops at the door.",
+            "T",
+        )
+        pack = ReferencePack.model_validate(
+            {
+                "characters": {
+                    "Nara": {
+                        "prompt": "dark tactical scarf, grounded cinematic realism",
+                        "reference_image_urls": ["ref://characters/nara.png"],
+                    }
+                }
+            }
+        )
+
+        StoryboardGenerator(adapter=TrackingAdapter(), reference_pack=pack).generate(output)
+
+        assert any("dark tactical scarf" in prompt for prompt in received_prompts)
+        assert "ref://characters/nara.png" in received_refs
 
 
 # ---------------------------------------------------------------------------
@@ -486,6 +712,23 @@ class TestCheckpointStore:
             assert store2.has("S1")
             assert store2.get("S1") is not None
 
+    def test_checkpoint_store_logs_invalid_cache_file(self) -> None:
+        import tempfile
+        from unittest.mock import MagicMock, patch
+
+        from aiprod_adaptation.image_gen.checkpoint import CheckpointStore
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "checkpoint.json"
+            path.write_text("{not json}", encoding="utf-8")
+            logger = MagicMock()
+
+            with patch("aiprod_adaptation.image_gen.checkpoint.logger", logger):
+                store = CheckpointStore(path=path)
+
+            assert store.all_cached() == []
+            logger.warning.assert_called_once()
+
 
 # ---------------------------------------------------------------------------
 # 11. CharacterPrepass (PC-02)
@@ -538,6 +781,50 @@ class TestCharacterPrepass:
             assert result.generated == 0
         else:
             assert result.failed == 0
+
+    def test_character_prepass_logs_adapter_failure(self) -> None:
+        from unittest.mock import MagicMock, patch
+
+        from aiprod_adaptation.image_gen.character_prepass import CharacterPrepass
+
+        class FailingAdapter(NullImageAdapter):
+            def generate(self, _request: ImageRequest) -> ImageResult:
+                raise RuntimeError("adapter down")
+
+        output = run_pipeline(_NOVEL, "T")
+        logger = MagicMock()
+        with patch(
+            "aiprod_adaptation.image_gen.character_prepass._unique_characters",
+            return_value=["Alice"],
+        ):
+            with patch("aiprod_adaptation.image_gen.character_prepass.logger", logger):
+                result = CharacterPrepass(adapter=FailingAdapter(), base_seed=0).run(output)
+
+        assert result.generated == 0
+        logger.warning.assert_called()
+
+    def test_storyboard_character_sheet_prepass_logs_failure(self) -> None:
+        from unittest.mock import MagicMock, patch
+
+        from aiprod_adaptation.image_gen.character_sheet import (
+            CharacterSheet,
+            CharacterSheetRegistry,
+        )
+
+        class BrokenAdapter(NullImageAdapter):
+            def generate(self, _request: ImageRequest) -> ImageResult:
+                raise RuntimeError("API down")
+
+        reg = CharacterSheetRegistry()
+        reg.register(CharacterSheet(name="John", canonical_prompt="tall man"))
+        logger = MagicMock()
+        with patch("aiprod_adaptation.image_gen.storyboard.logger", logger):
+            StoryboardGenerator(adapter=BrokenAdapter()).prepass_character_sheets(reg)
+
+        john_sheet = reg.get("John")
+        assert john_sheet is not None
+        assert john_sheet.image_url == ""
+        logger.warning.assert_called_once()
 
     def test_storyboard_generator_uses_prepass_registry(self) -> None:
         from aiprod_adaptation.image_gen.character_prepass import CharacterPrepass

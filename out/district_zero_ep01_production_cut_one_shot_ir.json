@@ -1,0 +1,62 @@
+{
+    "title":  "District Zero - Episode 1 - Production Cut",
+    "episodes":  [
+                     {
+                         "episode_id":  "EP01",
+                         "scenes":  [
+                                        {
+                                            "scene_id":  "SCN_001",
+                                            "characters":  [
+
+                                                           ],
+                                            "character_ids":  [
+
+                                                              ],
+                                            "location":  "EXT. DISTRICT ZERO OUTER WALL - NIGHT",
+                                            "location_id":  "ext_district_zero_outer_wall_night",
+                                            "time_of_day":  "night",
+                                            "visual_actions":  [
+                                                                   "Black water slams against the illuminated seawall while the drowned city rots beyond it.",
+                                                                   "Search beams sweep the waves like prison lights."
+                                                               ],
+                                            "dialogues":  [
+
+                                                          ],
+                                            "emotion":  "neutral",
+                                            "action_units":  [
+
+                                                             ],
+                                            "shot_ids":  [
+                                                             "SCN_001_SHOT_001"
+                                                         ]
+                                        }
+                                    ],
+                         "shots":  [
+                                       {
+                                           "shot_id":  "SCN_001_SHOT_001",
+                                           "scene_id":  "SCN_001",
+                                           "prompt":  "Black water slams against the illuminated seawall while the drowned city rots beyond it, in EXT. DISTRICT ZERO OUTER WALL - NIGHT.",
+                                           "duration_sec":  4,
+                                           "emotion":  "neutral",
+                                           "shot_type":  "medium",
+                                           "camera_movement":  "static",
+                                           "action":  {
+                                                          "subject_id":  "black",
+                                                          "action_type":  "water",
+                                                          "target":  null,
+                                                          "modifiers":  [
+
+                                                                        ],
+                                                          "location_id":  "ext_district_zero_outer_wall_night",
+                                                          "camera_intent":  "static",
+                                                          "source_text":  "Black water slams against the illuminated seawall while the drowned city rots beyond it."
+                                                      },
+                                           "metadata":  {
+                                                            "time_of_day_visual":  "night",
+                                                            "dominant_sound":  "ambient"
+                                                        }
+                                       }
+                                   ]
+                     }
+                 ]
+}

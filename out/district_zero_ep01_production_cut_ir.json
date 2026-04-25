@@ -1,0 +1,1108 @@
+{
+  "title": "District Zero - Episode 1 - Production Cut",
+  "episodes": [
+    {
+      "episode_id": "EP01",
+      "scenes": [
+        {
+          "scene_id": "SCN_001",
+          "characters": [],
+          "character_ids": [],
+          "location": "EXT. DISTRICT ZERO OUTER WALL - NIGHT",
+          "location_id": "ext_district_zero_outer_wall_night",
+          "time_of_day": "night",
+          "visual_actions": [
+            "Black water slams against the illuminated seawall while the drowned city rots beyond it.",
+            "Search beams sweep the waves like prison lights."
+          ],
+          "dialogues": [],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_001_SHOT_001",
+            "SCN_001_SHOT_002"
+          ]
+        },
+        {
+          "scene_id": "SCN_002",
+          "characters": [
+            "NARA"
+          ],
+          "character_ids": [
+            "nara"
+          ],
+          "location": "INT. LOWER TRANSIT STACK - SERVICE CORRIDOR - NIGHT",
+          "location_id": "int_lower_transit_stack_service_corridor_night",
+          "time_of_day": "night",
+          "visual_actions": [
+            "Nara Voss runs through a leaking maintenance corridor as her wrist display flashes a pressure alert.",
+            "On the map, a sealed route appears for a second and vanishes.",
+            "She captures the image and keeps moving."
+          ],
+          "dialogues": [
+            "That route was deleted."
+          ],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_002_SHOT_001",
+            "SCN_002_SHOT_002",
+            "SCN_002_SHOT_003"
+          ]
+        },
+        {
+          "scene_id": "SCN_003",
+          "characters": [
+            "WORKER",
+            "NARA"
+          ],
+          "character_ids": [
+            "worker",
+            "nara"
+          ],
+          "location": "INT. PRESSURE VALVE CHAMBER - NIGHT",
+          "location_id": "int_pressure_valve_chamber_night",
+          "time_of_day": "night",
+          "visual_actions": [
+            "Nara stabilizes a failing valve while exhausted workers keep their distance.",
+            "The alarm dies and the chamber returns to white light.",
+            "Nara looks at the hidden route on her wrist and understands that something is wrong."
+          ],
+          "dialogues": [
+            "You just saved half the block.",
+            "Who signed the last maintenance map update?",
+            "Central Authority. Same as always."
+          ],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_003_SHOT_001",
+            "SCN_003_SHOT_002",
+            "SCN_003_SHOT_003"
+          ]
+        },
+        {
+          "scene_id": "SCN_004",
+          "characters": [
+            "NARA",
+            "ELIAN"
+          ],
+          "character_ids": [
+            "nara",
+            "elian"
+          ],
+          "location": "INT. VOSS APARTMENT - LOWER STACK - LATE NIGHT",
+          "location_id": "int_voss_apartment_lower_stack_late_night",
+          "time_of_day": "night",
+          "visual_actions": [
+            "In their cramped apartment, Nara shows the captured route to her father, Elian.",
+            "He freezes when he sees the unlisted access spine."
+          ],
+          "dialogues": [
+            "This showed up inside a live stack map and then vanished.",
+            "Forget it.",
+            "Then why are you scared of a corridor?",
+            "Because in this city, hidden doors are never just doors."
+          ],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_004_SHOT_001",
+            "SCN_004_SHOT_002"
+          ]
+        },
+        {
+          "scene_id": "SCN_005",
+          "characters": [
+            "VALE",
+            "AIDE"
+          ],
+          "character_ids": [
+            "vale",
+            "aide"
+          ],
+          "location": "INT. CIVIC ATRIUM - DISTRICT ZERO CENTRAL CORE - MORNING",
+          "location_id": "int_civic_atrium_district_zero_central_core_morning",
+          "time_of_day": "interior",
+          "visual_actions": [
+            "Director Halden Rook addresses the district from giant public screens while citizens move through an immaculate civic atrium.",
+            "Above them, Commander Sarin Vale watches from a glass balcony as an aide hands him a security alert tied to Nara."
+          ],
+          "dialogues": [
+            "Put her under passive watch.",
+            "Detain?",
+            "No. If she found one door, I want to know whether she can find the next."
+          ],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_005_SHOT_001",
+            "SCN_005_SHOT_002"
+          ]
+        },
+        {
+          "scene_id": "SCN_006",
+          "characters": [
+            "LOW LIGHT",
+            "MIRA",
+            "NARA"
+          ],
+          "character_ids": [
+            "low_light",
+            "mira",
+            "nara"
+          ],
+          "location": "INT. BLACK MARKET EXCHANGE - VENTILATION SUBLEVEL - DAY",
+          "location_id": "int_black_market_exchange_ventilation_sublevel_day",
+          "time_of_day": "day",
+          "visual_actions": [
+            "Mira Sol studies Nara's stolen map and overlays it with archived infrastructure.",
+            "A new route appears, leading toward the outer wall."
+          ],
+          "dialogues": [
+            "An illegal signal market hums beneath the transit network.",
+            "This isn't erased infrastructure. It's masked infrastructure.",
+            "Can you open it?",
+            "Probably. The better question is whether you survive after I do."
+          ],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_006_SHOT_001",
+            "SCN_006_SHOT_002"
+          ]
+        },
+        {
+          "scene_id": "SCN_007",
+          "characters": [
+            "VALE"
+          ],
+          "character_ids": [
+            "vale"
+          ],
+          "location": "INT. SECURITY OPERATIONS CENTER - DAY",
+          "location_id": "int_security_operations_center_day",
+          "time_of_day": "day",
+          "visual_actions": [
+            "Analysts track Nara's movement across a live schematic of the city.",
+            "Vale watches her path converge on the outer sectors and chooses not to stop her."
+          ],
+          "dialogues": [
+            "If she reaches the gate, I want to know what she thinks she saw."
+          ],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_007_SHOT_001",
+            "SCN_007_SHOT_002"
+          ]
+        },
+        {
+          "scene_id": "SCN_008",
+          "characters": [
+            "NARA"
+          ],
+          "character_ids": [
+            "nara"
+          ],
+          "location": "INT. SEALED SERVICE SPINE - NIGHT",
+          "location_id": "int_sealed_service_spine_night",
+          "time_of_day": "night",
+          "visual_actions": [
+            "Nara and Mira descend into an old service corridor buried in the skeleton of the city.",
+            "Mira powers up a buried control panel while Nara watches the dark passage behind them.",
+            "The system identifies an external containment access route.",
+            "Mira unlocks the gate."
+          ],
+          "dialogues": [
+            "Containment from what?"
+          ],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_008_SHOT_001",
+            "SCN_008_SHOT_002",
+            "SCN_008_SHOT_003",
+            "SCN_008_SHOT_004"
+          ]
+        },
+        {
+          "scene_id": "SCN_009",
+          "characters": [
+            "NARA",
+            "MIRA"
+          ],
+          "character_ids": [
+            "nara",
+            "mira"
+          ],
+          "location": "INT. EXTERNAL OBSERVATION CHAMBER - CONTINUOUS",
+          "location_id": "int_external_observation_chamber_continuous",
+          "time_of_day": "interior",
+          "visual_actions": [
+            "Ancient shutters peel open and reveal organized lights far beyond the wall.",
+            "Nara realizes District Zero lied about the outside world.",
+            "Then she sees industrial pumps hidden in the wall structure dumping poison into the lower sectors.",
+            "A silent alarm floods the chamber red."
+          ],
+          "dialogues": [
+            "They lied.",
+            "We need to go. Now."
+          ],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_009_SHOT_001",
+            "SCN_009_SHOT_002",
+            "SCN_009_SHOT_003",
+            "SCN_009_SHOT_004"
+          ]
+        },
+        {
+          "scene_id": "SCN_010",
+          "characters": [
+            "HANDHELD FAST"
+          ],
+          "character_ids": [
+            "handheld_fast"
+          ],
+          "location": "INT. SERVICE SPINE - CONTINUOUS",
+          "location_id": "int_service_spine_continuous",
+          "time_of_day": "interior",
+          "visual_actions": [
+            "At the far end, armed units pour into the shaft entrance.",
+            "VALE (V.O. OVER COMMS)",
+            "Nara Voss. Stop running. The truth is not what you think it is.",
+            "Mira disappears into a side duct and Nara escapes behind a closing blast door."
+          ],
+          "dialogues": [
+            "Security shutters slam down the corridor as Nara and Mira sprint through narrowing gaps."
+          ],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_010_SHOT_001",
+            "SCN_010_SHOT_002",
+            "SCN_010_SHOT_003",
+            "SCN_010_SHOT_004"
+          ]
+        },
+        {
+          "scene_id": "SCN_011",
+          "characters": [
+            "NARA",
+            "ELIAN",
+            "END OF EPISODE 1"
+          ],
+          "character_ids": [
+            "nara",
+            "elian",
+            "end_of_episode_1"
+          ],
+          "location": "INT. VOSS APARTMENT - PRE-DAWN",
+          "location_id": "int_voss_apartment_pre_dawn",
+          "time_of_day": "dawn",
+          "visual_actions": [
+            "Nara returns home soaked and shaken.",
+            "Elian sees her face and knows the secret is gone.",
+            "Nara recoils as the truth lands between them.",
+            "He gives her an encrypted drive.",
+            "Heavy boots pound outside the apartment door.",
+            "The door detonates inward.",
+            "SMASH CUT TO BLACK."
+          ],
+          "dialogues": [
+            "There are people outside the wall. And they're dumping poison into the lower sectors.",
+            "I helped design part of the flow control system.",
+            "If they take me, this is the only thing that proves the system was built this way.",
+            "Go to the freight tunnels. Find the relay called Lantern. Ask for Mira Sol.",
+            "Open the city."
+          ],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_011_SHOT_001",
+            "SCN_011_SHOT_002",
+            "SCN_011_SHOT_003",
+            "SCN_011_SHOT_004",
+            "SCN_011_SHOT_005",
+            "SCN_011_SHOT_006",
+            "SCN_011_SHOT_007"
+          ]
+        }
+      ],
+      "shots": [
+        {
+          "shot_id": "SCN_001_SHOT_001",
+          "scene_id": "SCN_001",
+          "prompt": "Black water slams against the illuminated seawall while the drowned city rots beyond it, in EXT. DISTRICT ZERO OUTER WALL - NIGHT.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "black",
+            "action_type": "water",
+            "target": null,
+            "modifiers": [],
+            "location_id": "ext_district_zero_outer_wall_night",
+            "camera_intent": "static",
+            "source_text": "Black water slams against the illuminated seawall while the drowned city rots beyond it."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_001_SHOT_002",
+          "scene_id": "SCN_001",
+          "prompt": "Search beams sweep the waves like prison lights, in EXT. DISTRICT ZERO OUTER WALL - NIGHT.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "search",
+            "action_type": "beams",
+            "target": null,
+            "modifiers": [],
+            "location_id": "ext_district_zero_outer_wall_night",
+            "camera_intent": "static",
+            "source_text": "Search beams sweep the waves like prison lights."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_002_SHOT_001",
+          "scene_id": "SCN_002",
+          "prompt": "Nara Voss runs through a leaking maintenance corridor as her wrist display flashes a pressure alert, in INT. LOWER TRANSIT STACK - SERVICE CORRIDOR - NIGHT.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "follow",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "voss",
+            "target": "leaking maintenance corridor as her wrist display flashes pressure alert",
+            "modifiers": [],
+            "location_id": "int_lower_transit_stack_service_corridor_night",
+            "camera_intent": "follow",
+            "source_text": "Nara Voss runs through a leaking maintenance corridor as her wrist display flashes a pressure alert."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_002_SHOT_002",
+          "scene_id": "SCN_002",
+          "prompt": "On the map, a sealed route for a second and vanishes, in INT. LOWER TRANSIT STACK - SERVICE CORRIDOR - NIGHT.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "on",
+            "action_type": "the",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_lower_transit_stack_service_corridor_night",
+            "camera_intent": "static",
+            "source_text": "On the map, a sealed route appears for a second and vanishes."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_002_SHOT_003",
+          "scene_id": "SCN_002",
+          "prompt": "She captures the image and keeps moving, in INT. LOWER TRANSIT STACK - SERVICE CORRIDOR - NIGHT.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "she",
+            "action_type": "captures",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_lower_transit_stack_service_corridor_night",
+            "camera_intent": "static",
+            "source_text": "She captures the image and keeps moving."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_003_SHOT_001",
+          "scene_id": "SCN_003",
+          "prompt": "Nara stabilizes a failing valve while exhausted workers keep their distance, in INT. PRESSURE VALVE CHAMBER - NIGHT.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "worker",
+            "action_type": "stabilizes",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_pressure_valve_chamber_night",
+            "camera_intent": "static",
+            "source_text": "Nara stabilizes a failing valve while exhausted workers keep their distance."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_003_SHOT_002",
+          "scene_id": "SCN_003",
+          "prompt": "The alarm dies and the chamber returns to white light, in INT. PRESSURE VALVE CHAMBER - NIGHT.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "alarm",
+            "action_type": "dies",
+            "target": "white light",
+            "modifiers": [],
+            "location_id": "int_pressure_valve_chamber_night",
+            "camera_intent": "static",
+            "source_text": "The alarm dies and the chamber returns to white light."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_003_SHOT_003",
+          "scene_id": "SCN_003",
+          "prompt": "Nara looks at the hidden route on her wrist and understands that something is wrong, in INT. PRESSURE VALVE CHAMBER - NIGHT.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "looks",
+            "target": "hidden route on her wrist and understands that something is wrong",
+            "modifiers": [],
+            "location_id": "int_pressure_valve_chamber_night",
+            "camera_intent": "static",
+            "source_text": "Nara looks at the hidden route on her wrist and understands that something is wrong."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_004_SHOT_001",
+          "scene_id": "SCN_004",
+          "prompt": "In their cramped apartment, Nara shows the captured route to her father, Elian, in INT. VOSS APARTMENT - LOWER STACK - LATE NIGHT.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "their",
+            "target": "her father elian",
+            "modifiers": [],
+            "location_id": "int_voss_apartment_lower_stack_late_night",
+            "camera_intent": "static",
+            "source_text": "In their cramped apartment, Nara shows the captured route to her father, Elian."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_004_SHOT_002",
+          "scene_id": "SCN_004",
+          "prompt": "He freezes when he sees the unlisted access spine, in INT. VOSS APARTMENT - LOWER STACK - LATE NIGHT.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "he",
+            "action_type": "freezes",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_voss_apartment_lower_stack_late_night",
+            "camera_intent": "static",
+            "source_text": "He freezes when he sees the unlisted access spine."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_005_SHOT_001",
+          "scene_id": "SCN_005",
+          "prompt": "Director Halden Rook addresses the district from giant public screens while citizens move through an immaculate civic atrium, in INT. CIVIC ATRIUM - DISTRICT ZERO CENTRAL CORE - MORNING.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "follow",
+          "action": {
+            "subject_id": "director",
+            "action_type": "halden",
+            "target": "immaculate civic atrium",
+            "modifiers": [],
+            "location_id": "int_civic_atrium_district_zero_central_core_morning",
+            "camera_intent": "follow",
+            "source_text": "Director Halden Rook addresses the district from giant public screens while citizens move through an immaculate civic atrium."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_005_SHOT_002",
+          "scene_id": "SCN_005",
+          "prompt": "Above them, Commander Sarin Vale watches from a glass balcony as an aide hands him a security alert tied to Nara, in INT. CIVIC ATRIUM - DISTRICT ZERO CENTRAL CORE - MORNING.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "pan",
+          "action": {
+            "subject_id": "vale",
+            "action_type": "them",
+            "target": "nara",
+            "modifiers": [],
+            "location_id": "int_civic_atrium_district_zero_central_core_morning",
+            "camera_intent": "pan",
+            "source_text": "Above them, Commander Sarin Vale watches from a glass balcony as an aide hands him a security alert tied to Nara."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_006_SHOT_001",
+          "scene_id": "SCN_006",
+          "prompt": "Mira Sol studies Nara's stolen map and overlays it with archived infrastructure, in INT. BLACK MARKET EXCHANGE - VENTILATION SUBLEVEL - DAY.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "mira",
+            "action_type": "sol",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_black_market_exchange_ventilation_sublevel_day",
+            "camera_intent": "static",
+            "source_text": "Mira Sol studies Nara's stolen map and overlays it with archived infrastructure."
+          },
+          "metadata": {
+            "time_of_day_visual": "day",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_006_SHOT_002",
+          "scene_id": "SCN_006",
+          "prompt": "A new route , leading toward the outer wall, in INT. BLACK MARKET EXCHANGE - VENTILATION SUBLEVEL - DAY.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "new",
+            "action_type": "route",
+            "target": "outer wall",
+            "modifiers": [],
+            "location_id": "int_black_market_exchange_ventilation_sublevel_day",
+            "camera_intent": "static",
+            "source_text": "A new route appears, leading toward the outer wall."
+          },
+          "metadata": {
+            "time_of_day_visual": "day",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_007_SHOT_001",
+          "scene_id": "SCN_007",
+          "prompt": "Analysts track Nara's movement across a live schematic of the city, in INT. SECURITY OPERATIONS CENTER - DAY.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "analysts",
+            "action_type": "track",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_security_operations_center_day",
+            "camera_intent": "static",
+            "source_text": "Analysts track Nara's movement across a live schematic of the city."
+          },
+          "metadata": {
+            "time_of_day_visual": "day",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_007_SHOT_002",
+          "scene_id": "SCN_007",
+          "prompt": "Vale watches her path converge on the outer sectors and chooses not to stop her, in INT. SECURITY OPERATIONS CENTER - DAY.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "vale",
+            "action_type": "watches",
+            "target": "outer sectors and chooses not to stop her",
+            "modifiers": [],
+            "location_id": "int_security_operations_center_day",
+            "camera_intent": "static",
+            "source_text": "Vale watches her path converge on the outer sectors and chooses not to stop her."
+          },
+          "metadata": {
+            "time_of_day_visual": "day",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_008_SHOT_001",
+          "scene_id": "SCN_008",
+          "prompt": "Nara and Mira descend into an old service corridor buried in the skeleton of the city, in INT. SEALED SERVICE SPINE - NIGHT.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "and",
+            "target": "old service corridor buried in skeleton of city",
+            "modifiers": [],
+            "location_id": "int_sealed_service_spine_night",
+            "camera_intent": "static",
+            "source_text": "Nara and Mira descend into an old service corridor buried in the skeleton of the city."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_008_SHOT_002",
+          "scene_id": "SCN_008",
+          "prompt": "Mira powers up a buried control panel while Nara watches the dark passage behind them, in INT. SEALED SERVICE SPINE - NIGHT.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "powers",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_sealed_service_spine_night",
+            "camera_intent": "static",
+            "source_text": "Mira powers up a buried control panel while Nara watches the dark passage behind them."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_008_SHOT_003",
+          "scene_id": "SCN_008",
+          "prompt": "The system identifies an external containment access route, in INT. SEALED SERVICE SPINE - NIGHT.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "system",
+            "action_type": "identifies",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_sealed_service_spine_night",
+            "camera_intent": "static",
+            "source_text": "The system identifies an external containment access route."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_008_SHOT_004",
+          "scene_id": "SCN_008",
+          "prompt": "Mira unlocks the gate, in INT. SEALED SERVICE SPINE - NIGHT.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "mira",
+            "action_type": "unlocks",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_sealed_service_spine_night",
+            "camera_intent": "static",
+            "source_text": "Mira unlocks the gate."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_009_SHOT_001",
+          "scene_id": "SCN_009",
+          "prompt": "Ancient shutters peel open and reveal organized lights far beyond the wall, in INT. EXTERNAL OBSERVATION CHAMBER - CONTINUOUS.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "pan",
+          "action": {
+            "subject_id": "ancient",
+            "action_type": "shutters",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_external_observation_chamber_continuous",
+            "camera_intent": "pan",
+            "source_text": "Ancient shutters peel open and reveal organized lights far beyond the wall."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_009_SHOT_002",
+          "scene_id": "SCN_009",
+          "prompt": "Nara realizes District Zero lied about the outside world, in INT. EXTERNAL OBSERVATION CHAMBER - CONTINUOUS.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "realizes",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_external_observation_chamber_continuous",
+            "camera_intent": "static",
+            "source_text": "Nara realizes District Zero lied about the outside world."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_009_SHOT_003",
+          "scene_id": "SCN_009",
+          "prompt": "Then she sees industrial pumps hidden in the wall structure dumping poison into the lower sectors, in INT. EXTERNAL OBSERVATION CHAMBER - CONTINUOUS.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "then",
+            "action_type": "she",
+            "target": "wall structure dumping poison into lower sectors",
+            "modifiers": [],
+            "location_id": "int_external_observation_chamber_continuous",
+            "camera_intent": "static",
+            "source_text": "Then she sees industrial pumps hidden in the wall structure dumping poison into the lower sectors."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_009_SHOT_004",
+          "scene_id": "SCN_009",
+          "prompt": "A silent alarm floods the chamber red, in INT. EXTERNAL OBSERVATION CHAMBER - CONTINUOUS.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "silent",
+            "action_type": "alarm",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_external_observation_chamber_continuous",
+            "camera_intent": "static",
+            "source_text": "A silent alarm floods the chamber red."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_010_SHOT_001",
+          "scene_id": "SCN_010",
+          "prompt": "At the far end, armed units pour into the shaft entrance, in INT. SERVICE SPINE - CONTINUOUS.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "at",
+            "action_type": "the",
+            "target": "shaft entrance",
+            "modifiers": [],
+            "location_id": "int_service_spine_continuous",
+            "camera_intent": "static",
+            "source_text": "At the far end, armed units pour into the shaft entrance."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_010_SHOT_002",
+          "scene_id": "SCN_010",
+          "prompt": "VALE (V.O. OVER COMMS), in INT. SERVICE SPINE - CONTINUOUS.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "vale",
+            "action_type": "v",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_service_spine_continuous",
+            "camera_intent": "static",
+            "source_text": "VALE (V.O. OVER COMMS)"
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_010_SHOT_003",
+          "scene_id": "SCN_010",
+          "prompt": "Nara Voss. Stop running. The truth is not what you think it is, in INT. SERVICE SPINE - CONTINUOUS.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "voss",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_service_spine_continuous",
+            "camera_intent": "static",
+            "source_text": "Nara Voss. Stop running. The truth is not what you think it is."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_010_SHOT_004",
+          "scene_id": "SCN_010",
+          "prompt": "Mira disappears into a side duct and Nara escapes behind a closing blast door, in INT. SERVICE SPINE - CONTINUOUS.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "mira",
+            "action_type": "disappears",
+            "target": "side duct and nara escapes behind closing blast door",
+            "modifiers": [],
+            "location_id": "int_service_spine_continuous",
+            "camera_intent": "static",
+            "source_text": "Mira disappears into a side duct and Nara escapes behind a closing blast door."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_011_SHOT_001",
+          "scene_id": "SCN_011",
+          "prompt": "Nara returns home soaked and shaken, in INT. VOSS APARTMENT - PRE-DAWN.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "returns",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "static",
+            "source_text": "Nara returns home soaked and shaken."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_011_SHOT_002",
+          "scene_id": "SCN_011",
+          "prompt": "Elian sees her face and knows the secret is gone, in INT. VOSS APARTMENT - PRE-DAWN.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "elian",
+            "action_type": "sees",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "static",
+            "source_text": "Elian sees her face and knows the secret is gone."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_011_SHOT_003",
+          "scene_id": "SCN_011",
+          "prompt": "Nara recoils as the truth lands between them, in INT. VOSS APARTMENT - PRE-DAWN.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "recoils",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "static",
+            "source_text": "Nara recoils as the truth lands between them."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_011_SHOT_004",
+          "scene_id": "SCN_011",
+          "prompt": "He gives her an encrypted drive, in INT. VOSS APARTMENT - PRE-DAWN.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "pan",
+          "action": {
+            "subject_id": "he",
+            "action_type": "gives",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "pan",
+            "source_text": "He gives her an encrypted drive."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_011_SHOT_005",
+          "scene_id": "SCN_011",
+          "prompt": "Heavy boots pound outside the apartment door, in INT. VOSS APARTMENT - PRE-DAWN.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "heavy",
+            "action_type": "boots",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "static",
+            "source_text": "Heavy boots pound outside the apartment door."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_011_SHOT_006",
+          "scene_id": "SCN_011",
+          "prompt": "The door detonates inward, in INT. VOSS APARTMENT - PRE-DAWN.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "door",
+            "action_type": "detonates",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "static",
+            "source_text": "The door detonates inward."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_011_SHOT_007",
+          "scene_id": "SCN_011",
+          "prompt": "SMASH CUT TO BLACK, in INT. VOSS APARTMENT - PRE-DAWN.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "smash",
+            "action_type": "cut",
+            "target": "black",
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "static",
+            "source_text": "SMASH CUT TO BLACK."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient"
+          }
+        }
+      ]
+    }
+  ]
+}

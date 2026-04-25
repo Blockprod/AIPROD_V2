@@ -1,0 +1,408 @@
+TITLE: District Zero - Episode 1 - The Girl Who Opened the Gate
+GENRE: Premium dystopian sci-fi thriller
+TONE: Tense, cinematic, political, intimate, high-stakes
+LOGLINE: In the last protected district of a collapsing megacity, a gifted maintenance runner discovers that the walls keeping millions alive may actually be part of the machine killing them.
+
+SERIES PREMISE:
+District Zero is the final habitable zone of a drowned and fragmented coastal megacity. It presents itself as the safest place on earth: clean water, stable power, armed security, and strict social order. In reality, the district survives by controlling information, movement, and population. Every citizen lives inside a system that promises protection while quietly feeding on fear. The series follows the people who discover that the wall around them is not only a defense. It is a weapon.
+
+EPISODE PREMISE:
+Nara Voss, a brilliant young maintenance runner from the lower transit stacks, discovers a sealed service gate that should not exist. When she opens it during a power anomaly, she catches proof that District Zero is lying about what lies outside its walls. By the end of the episode, Nara has become both a threat to the regime and the one person who may know how to break it.
+
+MAIN CHARACTERS IN THIS EPISODE:
+- NARA VOSS, 19, fast, observant, emotionally contained, lower-district maintenance runner.
+- ELIAN VOSS, 44, Nara's father, former systems engineer, now quiet and compromised by the regime.
+- COMMANDER SARIN VALE, 40s, public security chief of District Zero, calm, surgical, dangerous.
+- MIRA SOL, 20s, underground courier and black-market signal broker.
+- DIRECTOR HALDEN ROOK, 50s, civilian administrator of District Zero, polished face of the system.
+
+VISUAL WORLD:
+- clean vertical city over flooded ruins
+- pressure doors, wet steel corridors, controlled light, biometric checkpoints
+- upper levels bright and curated, lower levels mechanical and exhausted
+- atmosphere of safety built on surveillance
+
+START WRITING BELOW:
+
+EXT. DISTRICT ZERO OUTER WALL - NIGHT
+
+WIDE SHOT
+
+Black seawater slams against a colossal seawall wrapped in defensive lights. Beyond it, the drowned skeleton of the old megacity disappears into storm and darkness.
+
+The wall hums with power. Search beams sweep across the waves like prison lights.
+
+CUT TO:
+
+INT. LOWER TRANSIT STACK - SERVICE CORRIDOR - NIGHT
+
+TRACKING SHOT
+
+Nara Voss runs through a narrow maintenance corridor with a toolkit strapped across her back. Emergency lights pulse red over wet metal grates.
+
+Her wrist display flashes: PRESSURE DROP - SECTOR C-19.
+
+She moves with the reflexes of someone who has spent her life inside failing machinery.
+
+INSERT SHOT - WRIST DISPLAY
+
+The map of the lower stack flickers. One sealed maintenance route appears for a fraction of a second, then disappears.
+
+Nara stops.
+
+CLOSE ON
+
+Her eyes narrow.
+
+NARA
+That route was deleted.
+
+She screenshots the flicker before the display resets.
+
+CUT TO:
+
+INT. PRESSURE VALVE CHAMBER - NIGHT
+
+WIDE SHOT
+
+Steam hisses from a cracked pipe assembly. Two exhausted workers wait at the far end of the chamber, afraid to get too close.
+
+Nara kneels beside the main valve, opens a manual bypass, and stabilizes the pressure line with practiced speed.
+
+The red alarm dies. White light returns.
+
+WORKER
+You just saved half the block.
+
+Nara barely reacts. Her attention stays on the hidden route image still glowing on her wrist.
+
+NARA
+Who signed the last maintenance map update?
+
+WORKER
+Central Authority. Same as always.
+
+That answer lands badly with her.
+
+CUT TO:
+
+INT. VOSS APARTMENT - LOWER STACK - LATE NIGHT
+
+MEDIUM SHOT
+
+A tiny apartment built into old structural concrete. Pipes run along the ceiling. Filtered city light leaks through a narrow slit window.
+
+Elian Voss sits at the kitchen table, repairing an obsolete circuit board with shaking hands.
+
+Nara drops her toolkit and places her wrist display in front of him.
+
+INSERT SHOT - SCREEN CAPTURE
+
+The deleted route. Sector C-19. Access spine attached to an unlisted gate.
+
+NARA
+This showed up inside a live stack map and then vanished.
+
+Elian freezes before he can hide it.
+
+ELIAN
+Forget it.
+
+NARA
+You know what it is.
+
+ELIAN
+I know what happens to people who ask.
+
+Silence.
+
+Nara studies him. This is not fear in the abstract. This is memory.
+
+NARA
+You worked upper infrastructure before they reassigned you.
+
+ELIAN
+That part of my life is over.
+
+NARA
+Then why are you scared of a corridor?
+
+Elian lowers his voice.
+
+ELIAN
+Because in this city, hidden doors are never just doors.
+
+CUT TO:
+
+INT. CIVIC ATRIUM - DISTRICT ZERO CENTRAL CORE - MORNING
+
+WIDE SHOT
+
+Clean marble surfaces. Vertical gardens. Public screens. Citizens in neutral uniforms pass through controlled light like a commercial for civilization.
+
+On a giant screen, Director Halden Rook addresses the district with reassuring authority.
+
+ROOK (ON SCREEN)
+District Zero remains secure. The wall is holding. Supplies are stable. Order protects us all.
+
+Commander Sarin Vale watches from a glass balcony above the crowd. Still. Analytical. He does not watch the speech. He watches reactions.
+
+An aide steps beside him and hands him a tablet.
+
+INSERT SHOT - SECURITY TABLET
+
+Unauthorized map capture detected. User ID: NARA VOSS. Sector C-19.
+
+Vale reads it once.
+
+VALE
+Put her under passive watch.
+
+AIDE
+Detain?
+
+VALE
+No. If she found one door, I want to know whether she can find the next.
+
+CUT TO:
+
+INT. BLACK MARKET EXCHANGE - VENTILATION SUBLEVEL - DAY
+
+LOW LIGHT, HANDHELD FEEL
+
+An illegal signal market lives inside an abandoned ventilation chamber beneath the transit network. Smugglers trade in batteries, access codes, raw medicine, and forbidden data.
+
+Mira Sol leans behind a makeshift counter of cracked screens and signal relays.
+
+Nara shows her the captured route.
+
+MIRA
+You did not bring me that because you wanted directions.
+
+NARA
+I want to know what was erased.
+
+Mira scans the image, then looks up sharply.
+
+MIRA
+This isn't erased infrastructure. It's masked infrastructure.
+
+NARA
+Meaning?
+
+MIRA
+Meaning the system still knows it's there. It just isn't supposed to exist for people like us.
+
+Mira overlays stolen archive fragments onto Nara's map.
+
+A new geometry appears: a sealed service spine leading toward the outer wall.
+
+MIRA
+If this is real, it predates the current district grid.
+
+NARA
+Can you open it?
+
+MIRA
+Probably. The better question is whether you survive after I do.
+
+CUT TO:
+
+INT. SECURITY OPERATIONS CENTER - DAY
+
+WIDE SHOT
+
+Rows of analysts monitor citizen movement, utility flow, and predictive risk models across the district.
+
+Vale stands before an enormous live city schematic.
+
+Nara's movement history blooms across the display.
+
+ANALYST
+Subject contacted an unregistered broker in the ventilation sublevel.
+
+Vale watches the projected path converge toward the outer sectors.
+
+VALE
+Do not close the net.
+
+ANALYST
+Sir?
+
+VALE
+If she reaches the gate, I want to know what she thinks she saw.
+
+CUT TO:
+
+INT. SEALED SERVICE SPINE - NIGHT
+
+TRACKING SHOT
+
+Nara and Mira descend through an unmarked shaft and enter a long corridor buried in the skeleton of the old city. The air is colder here. The metal is older. No civic branding. No surveillance stickers. No official color codes.
+
+Only old warning paint and layers of dust.
+
+Mira works on a buried control panel while Nara keeps watch.
+
+MIRA
+This line shouldn't have power.
+
+NARA
+Does it?
+
+MIRA
+Enough to hide itself.
+
+The panel comes alive.
+
+INSERT SHOT - CONTROL PANEL
+
+AUTHORIZED ROUTE: EXTERNAL CONTAINMENT ACCESS.
+
+Nara feels the floor vibrate beneath her boots.
+
+Somewhere beyond the wall, a deep machine wakes up.
+
+CLOSE ON
+
+Nara stares at the words.
+
+NARA
+Containment from what?
+
+Mira does not answer. She hits the final sequence.
+
+The gate unlocks.
+
+CUT TO:
+
+INT. EXTERNAL OBSERVATION CHAMBER - CONTINUOUS
+
+WIDE SHOT
+
+Massive shutters peel open with the force of an ancient mechanism.
+
+Beyond the glass: not wasteland. Not total ruin.
+
+In the distance, across black water and broken towers, there are lights. Organized lights. Moving traffic. Life.
+
+Nara steps forward, unable to breathe for a second.
+
+NARA
+They lied.
+
+Then she sees something worse.
+
+Below the chamber, hidden behind the wall structure, industrial pumps drain dark water and chemical waste directly into the lower sectors beneath District Zero.
+
+Her sector.
+
+The district is poisoning its own people to preserve the upper city.
+
+MIRA
+We need to go. Now.
+
+A silent alarm ignites red across the chamber.
+
+CUT TO:
+
+INT. SERVICE SPINE - CONTINUOUS
+
+HANDHELD, FAST
+
+Security shutters begin to slam down one by one along the corridor.
+
+Nara and Mira sprint through narrowing gaps as white tactical lights flare behind them.
+
+At the far end, black-armored units pour into the shaft entrance.
+
+VALE (V.O. OVER COMMS)
+Nara Voss. Stop running. The truth is not what you think it is.
+
+She keeps moving.
+
+Mira veers off through a side maintenance duct and vanishes.
+
+Nara barely escapes as a blast door crashes between her and the security team.
+
+CUT TO:
+
+INT. VOSS APARTMENT - PRE-DAWN
+
+MEDIUM SHOT
+
+Nara enters, soaked, breathless, shaken to the core.
+
+Elian is awake. Waiting. He sees her face and knows immediately that the secret is gone.
+
+NARA
+There are people outside the wall.
+
+Elian closes his eyes.
+
+NARA
+And they're dumping poison into the lower sectors.
+
+He cannot deny it anymore.
+
+ELIAN
+I helped design part of the flow control system.
+
+Nara recoils as if he hit her.
+
+ELIAN
+I thought it was temporary. I thought it was the cost of survival until they stabilized the city.
+
+NARA
+How long?
+
+ELIAN
+Long enough that temporary became policy.
+
+Nara backs away from him, devastated.
+
+NARA
+How many people know?
+
+ELIAN
+The people who matter.
+
+They hear drones outside the building.
+
+Blue-white search light spills through the slit window.
+
+Elian moves fast for the first time in years. He opens a hidden panel beneath the table and removes an old encrypted drive.
+
+ELIAN
+If they take me, this is the only thing that proves the system was built this way.
+
+He presses it into her hand.
+
+ELIAN
+Go to the freight tunnels. Find the relay called Lantern. Ask for Mira Sol.
+
+NARA
+Come with me.
+
+ELIAN
+If I run, they confirm everything.
+
+He looks at her with a terrible clarity.
+
+ELIAN
+If you run, they still have a chance of losing you.
+
+Heavy boots pound outside the apartment door.
+
+CLOSE ON
+
+Nara grips the drive so hard her hand trembles.
+
+ELIAN
+Open the city.
+
+The door detonates inward.
+
+SMASH CUT TO BLACK.
+
+END OF EPISODE 1

@@ -11,6 +11,8 @@ Covers:
 from __future__ import annotations
 
 import json
+from types import SimpleNamespace
+from unittest.mock import patch
 
 import pytest
 
@@ -18,6 +20,8 @@ from aiprod_adaptation.core.engine import run_pipeline, run_pipeline_with_video
 from aiprod_adaptation.image_gen.image_adapter import NullImageAdapter
 from aiprod_adaptation.image_gen.image_request import StoryboardOutput
 from aiprod_adaptation.models.schema import AIPRODOutput
+from aiprod_adaptation.video_gen.runway_adapter import RunwayAdapter
+from aiprod_adaptation.video_gen.runway_adapter import _estimate_runway_video_cost
 from aiprod_adaptation.video_gen.video_adapter import NullVideoAdapter
 from aiprod_adaptation.video_gen.video_request import (
     VideoClipResult,
@@ -77,6 +81,26 @@ class TestVideoRequest:
                 duration_sec=4, motion_score=0.5,
             )
 
+    def test_video_request_accepts_structured_action(self) -> None:
+        req = VideoRequest(
+            shot_id="S1",
+            scene_id="SC001",
+            image_url="http://x.png",
+            prompt="test",
+            duration_sec=4,
+            action={
+                "subject_id": "john",
+                "action_type": "walked",
+                "target": "door",
+                "modifiers": ["quickly"],
+                "location_id": "hallway",
+                "camera_intent": "follow",
+                "source_text": "John walked quickly to the door.",
+            },
+        )
+        assert req.action is not None
+        assert req.action.camera_intent == "follow"
+
 
 # ---------------------------------------------------------------------------
 # 2. NullVideoAdapter
@@ -98,6 +122,28 @@ class TestNullVideoAdapter:
     def test_null_adapter_shot_id_preserved(self) -> None:
         result = self.adapter.generate(_REQ)
         assert result.shot_id == _REQ.shot_id
+
+
+class TestRunwayVideoAdapter:
+    def test_runway_cost_estimate_uses_model_rate(self) -> None:
+        assert _estimate_runway_video_cost("gen4_turbo", 4) == 0.2
+
+    def test_runway_adapter_requires_token(self) -> None:
+        adapter = RunwayAdapter(api_token="")
+
+        with pytest.raises(ValueError, match="RUNWAY_API_TOKEN"):
+            adapter.generate(_REQ)
+
+    def test_runway_adapter_sets_estimated_cost(self) -> None:
+        task = SimpleNamespace(wait_for_task_output=lambda: SimpleNamespace(output=["https://video.example/test.mp4"]))
+
+        with patch("runwayml.RunwayML") as runway_cls:
+            runway_cls.return_value.image_to_video.create.return_value = task
+            adapter = RunwayAdapter(api_token="test-token", model="gen4_turbo")
+            result = adapter.generate(_REQ)
+
+        assert result.video_url == "https://video.example/test.mp4"
+        assert result.cost_usd == 0.2
 
 
 # ---------------------------------------------------------------------------
@@ -136,16 +182,53 @@ class TestVideoSequencer:
         reqs = self.seq.build_requests(storyboard, output)
         assert len(reqs) == storyboard.total_shots
 
+    def test_sequencer_build_requests_include_structured_action(self) -> None:
+        storyboard, output = _storyboard_and_output()
+        requests = self.seq.build_requests(storyboard, output)
+        assert requests[0].action is not None
+        assert requests[0].action.source_text == output.episodes[0].shots[0].action.source_text
+
+    def test_sequencer_build_requests_propagates_structured_action(self) -> None:
+        output = run_pipeline("Emma walked quickly to the door.", "T")
+        from aiprod_adaptation.image_gen.storyboard import StoryboardGenerator
+
+        storyboard = StoryboardGenerator(adapter=NullImageAdapter(), base_seed=0).generate(output)
+        reqs = self.seq.build_requests(storyboard, output)
+        assert reqs[0].action is not None
+        assert reqs[0].action.subject_id == "emma"
+        assert reqs[0].action.action_type == "walked"
+
+    def test_sequencer_raises_on_unknown_storyboard_shot_id(self) -> None:
+        storyboard, output = _storyboard_and_output()
+        broken_storyboard = storyboard.model_copy(
+            update={
+                "frames": [
+                    storyboard.frames[0].model_copy(update={"shot_id": "SHOT_MISSING"})
+                ]
+            }
+        )
+
+        with pytest.raises(
+            ValueError,
+            match="Storyboard frame references unknown shot_id: SHOT_MISSING",
+        ):
+            self.seq.build_requests(broken_storyboard, output)
+
     def test_sequencer_error_does_not_crash(self) -> None:
+        from unittest.mock import MagicMock, patch
+
         class BrokenAdapter(NullVideoAdapter):
             def generate(self, _request: VideoRequest) -> VideoClipResult:
                 raise RuntimeError("API down")
 
         seq = VideoSequencer(adapter=BrokenAdapter(), base_seed=0)
         storyboard, output = _storyboard_and_output()
-        video = seq.generate(storyboard, output)
+        logger = MagicMock()
+        with patch("aiprod_adaptation.video_gen.video_sequencer.logger", logger):
+            video = seq.generate(storyboard, output)
         assert all(c.model_used == "error" for c in video.clips)
         assert video.generated == 0
+        logger.warning.assert_called()
 
 
 # ---------------------------------------------------------------------------
@@ -322,6 +405,17 @@ class TestStoryboardToVideoIntegration:
         seq = VideoSequencer(adapter=NullVideoAdapter(), base_seed=0)
         requests = seq.build_requests(storyboard, output)
         assert len(requests) == len(storyboard.frames)
+
+    def test_sequencer_uses_data_uri_when_storyboard_has_only_b64(self) -> None:
+        storyboard, output = _storyboard_and_output()
+        storyboard.frames[0] = storyboard.frames[0].model_copy(
+            update={"image_url": "", "image_b64": "ZmFrZS1wbmc="}
+        )
+
+        seq = VideoSequencer(adapter=NullVideoAdapter(), base_seed=0)
+        requests = seq.build_requests(storyboard, output)
+
+        assert requests[0].image_url == "data:image/png;base64,ZmFrZS1wbmc="
 
 
 # ---------------------------------------------------------------------------

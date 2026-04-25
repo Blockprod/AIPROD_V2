@@ -1,0 +1,20 @@
+{
+  "title": "District Zero - Episode 1 - Production Cut",
+  "timeline": [
+    {
+      "shot_id": "SCN_001_SHOT_001",
+      "scene_id": "SCN_001",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/952daa4e-8ad2-4984-b68c-6ca9f4ecf284.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYjZlYWJmNmQ2NjE0MTRjZCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzE1Nzc0MX0.B-CX0LTJ_5jHwXA3h7J6rICLW2gdMw4Z_bg6Q2g-CuQ",
+      "audio_url": "null://audio/SCN_001_SHOT_001.mp3",
+      "duration_sec": 4,
+      "start_sec": 0,
+      "audio_duration_sec": 4,
+      "silence_padding_sec": 0,
+      "latency_ms": 0,
+      "cost_usd": 0.0
+    }
+  ],
+  "total_duration_sec": 4,
+  "resolution": "3840x2160",
+  "fps": 24
+}

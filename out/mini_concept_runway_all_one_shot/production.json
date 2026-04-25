@@ -1,0 +1,20 @@
+{
+  "title": "MiniConcept",
+  "timeline": [
+    {
+      "shot_id": "SCN_001_SHOT_001",
+      "scene_id": "SCN_001",
+      "video_url": "error://generation-failed",
+      "audio_url": "https://dnznrvs05pmza.cloudfront.net/ad97e87f-d785-4d72-9829-a38c11ad3c98.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMTBhZDgxZjdlMDQ3M2Y0ZSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzExODQ1NX0.etQ-19613y3vE2nubAvtNqGg3kpZMyfaDSIy09reybA",
+      "duration_sec": 5,
+      "start_sec": 0,
+      "audio_duration_sec": 5,
+      "silence_padding_sec": 0,
+      "latency_ms": 5156,
+      "cost_usd": 0.0
+    }
+  ],
+  "total_duration_sec": 5,
+  "resolution": "3840x2160",
+  "fps": 24
+}

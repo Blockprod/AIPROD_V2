@@ -4,7 +4,12 @@ import json
 import os
 from typing import Any, Protocol, cast
 
-from aiprod_adaptation.core.adaptation.llm_adapter import LLMAdapter
+from aiprod_adaptation.core.adaptation.llm_adapter import (
+    LLMAdapter,
+    LLMFailureCategory,
+    LLMProviderError,
+    classify_llm_failure,
+)
 
 
 class _TextBlockLike(Protocol):
@@ -42,14 +47,27 @@ class ClaudeAdapter(LLMAdapter):
         self._client = anthropic.Anthropic(api_key=api_key)
 
     def generate_json(self, prompt: str) -> dict[str, Any]:
-        message = self._client.messages.create(
-            model=self.MODEL,
-            max_tokens=self.MAX_TOKENS,
-            messages=[{"role": "user", "content": prompt}],
-        )
+        try:
+            message = self._client.messages.create(
+                model=self.MODEL,
+                max_tokens=self.MAX_TOKENS,
+                messages=[{"role": "user", "content": prompt}],
+            )
+        except Exception as exc:
+            raise LLMProviderError(
+                f"Claude request failed: {exc}",
+                category=classify_llm_failure(str(exc)),
+            ) from exc
+
         content = _extract_message_text(message)
         start = content.find("{")
         end = content.rfind("}") + 1
         if start == -1 or end == 0:
             return {"scenes": []}
-        return dict(json.loads(content[start:end]))
+        try:
+            return dict(json.loads(content[start:end]))
+        except json.JSONDecodeError as exc:
+            raise LLMProviderError(
+                f"Claude response JSON decode failed: {exc}",
+                category=LLMFailureCategory.SCHEMA,
+            ) from exc

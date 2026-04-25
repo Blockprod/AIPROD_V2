@@ -1,0 +1,440 @@
+{
+  "title": "EnvSmoke",
+  "episodes": [
+    {
+      "episode_id": "EP01",
+      "scenes": [
+        {
+          "scene_id": "SCN_001",
+          "characters": [
+            "John"
+          ],
+          "character_ids": [
+            "john"
+          ],
+          "location": "Busy city street",
+          "location_id": "busy_city_street",
+          "time_of_day": null,
+          "visual_actions": [
+            "John strides purposefully through a bustling crowd.",
+            "He glances at his watch, a slight smile playing on his lips."
+          ],
+          "dialogues": [],
+          "emotion": "happy",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_001_SHOT_001",
+            "SCN_001_SHOT_002"
+          ]
+        },
+        {
+          "scene_id": "SCN_002",
+          "characters": [
+            "John"
+          ],
+          "character_ids": [
+            "john"
+          ],
+          "location": "Busy city street",
+          "location_id": "busy_city_street",
+          "time_of_day": null,
+          "visual_actions": [
+            "John looks up, his smile fading slightly.",
+            "Dark clouds rapidly gather overhead, turning the sky ominous.",
+            "Raindrops begin to fall, quickly intensifying into a downpour.",
+            "John quickens his pace, shielding his head with his arm."
+          ],
+          "dialogues": [],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_002_SHOT_001",
+            "SCN_002_SHOT_002",
+            "SCN_002_SHOT_003",
+            "SCN_002_SHOT_004"
+          ]
+        },
+        {
+          "scene_id": "SCN_003",
+          "characters": [
+            "Sarah"
+          ],
+          "character_ids": [
+            "sarah"
+          ],
+          "location": "Old wooden house interior",
+          "location_id": "old_wooden_house_interior",
+          "time_of_day": null,
+          "visual_actions": [
+            "Sarah sits on an old, worn armchair, her hands clasped tightly in her lap.",
+            "She glances anxiously towards the closed door.",
+            "Her eyes flick to a ticking grandfather clock in the corner.",
+            "She bites her lip, a nervous habit."
+          ],
+          "dialogues": [],
+          "emotion": "nervous",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_003_SHOT_001",
+            "SCN_003_SHOT_002",
+            "SCN_003_SHOT_003",
+            "SCN_003_SHOT_004"
+          ]
+        },
+        {
+          "scene_id": "SCN_004",
+          "characters": [
+            "John",
+            "Sarah"
+          ],
+          "character_ids": [
+            "john",
+            "sarah"
+          ],
+          "location": "Old wooden house interior",
+          "location_id": "old_wooden_house_interior",
+          "time_of_day": null,
+          "visual_actions": [
+            "The front door creaks open slowly.",
+            "John steps inside, shaking water from his coat.",
+            "He spots Sarah across the room, her gaze fixed on him.",
+            "John offers her a warm, reassuring smile."
+          ],
+          "dialogues": [],
+          "emotion": "happy",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_004_SHOT_001",
+            "SCN_004_SHOT_002",
+            "SCN_004_SHOT_003",
+            "SCN_004_SHOT_004"
+          ]
+        }
+      ],
+      "shots": [
+        {
+          "shot_id": "SCN_001_SHOT_001",
+          "scene_id": "SCN_001",
+          "prompt": "John strides purposefully through a bustling crowd, in Busy city street.",
+          "duration_sec": 3,
+          "emotion": "happy",
+          "shot_type": "wide",
+          "camera_movement": "follow",
+          "action": {
+            "subject_id": "john",
+            "action_type": "strides",
+            "target": "bustling crowd",
+            "modifiers": [
+              "purposefully"
+            ],
+            "location_id": "busy_city_street",
+            "camera_intent": "follow",
+            "source_text": "John strides purposefully through a bustling crowd."
+          },
+          "metadata": {
+            "time_of_day_visual": "day",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_001_SHOT_002",
+          "scene_id": "SCN_001",
+          "prompt": "He glances at his watch, a slight smile playing on his lips, in Busy city street.",
+          "duration_sec": 5,
+          "emotion": "happy",
+          "shot_type": "close_up",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "he",
+            "action_type": "glances",
+            "target": "his watch slight smile playing on his lips",
+            "modifiers": [],
+            "location_id": "busy_city_street",
+            "camera_intent": "static",
+            "source_text": "He glances at his watch, a slight smile playing on his lips."
+          },
+          "metadata": {
+            "time_of_day_visual": "day",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_002_SHOT_001",
+          "scene_id": "SCN_002",
+          "prompt": "John looks up, his smile fading slightly, in Busy city street.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "close_up",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "john",
+            "action_type": "looks",
+            "target": null,
+            "modifiers": [
+              "slightly"
+            ],
+            "location_id": "busy_city_street",
+            "camera_intent": "static",
+            "source_text": "John looks up, his smile fading slightly."
+          },
+          "metadata": {
+            "time_of_day_visual": "day",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_002_SHOT_002",
+          "scene_id": "SCN_002",
+          "prompt": "Dark clouds rapidly gather overhead, turning the sky ominous, in Busy city street.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "dark",
+            "action_type": "clouds",
+            "target": null,
+            "modifiers": [
+              "rapidly"
+            ],
+            "location_id": "busy_city_street",
+            "camera_intent": "static",
+            "source_text": "Dark clouds rapidly gather overhead, turning the sky ominous."
+          },
+          "metadata": {
+            "time_of_day_visual": "day",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_002_SHOT_003",
+          "scene_id": "SCN_002",
+          "prompt": "Raindrops begin to fall, quickly intensifying into a downpour, in Busy city street.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "raindrops",
+            "action_type": "begin",
+            "target": "fall quickly intensifying into downpour",
+            "modifiers": [
+              "quickly"
+            ],
+            "location_id": "busy_city_street",
+            "camera_intent": "static",
+            "source_text": "Raindrops begin to fall, quickly intensifying into a downpour."
+          },
+          "metadata": {
+            "time_of_day_visual": "day",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_002_SHOT_004",
+          "scene_id": "SCN_002",
+          "prompt": "John quickens his pace, shielding his head with his arm, in Busy city street.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "john",
+            "action_type": "quickens",
+            "target": null,
+            "modifiers": [],
+            "location_id": "busy_city_street",
+            "camera_intent": "static",
+            "source_text": "John quickens his pace, shielding his head with his arm."
+          },
+          "metadata": {
+            "time_of_day_visual": "day",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_003_SHOT_001",
+          "scene_id": "SCN_003",
+          "prompt": "Sarah sits on an old, worn armchair, her hands clasped tightly in her lap, in Old wooden house interior.",
+          "duration_sec": 5,
+          "emotion": "nervous",
+          "shot_type": "medium",
+          "camera_movement": "pan",
+          "action": {
+            "subject_id": "sarah",
+            "action_type": "sits",
+            "target": "old worn armchair her hands clasped tightly in her lap",
+            "modifiers": [
+              "tightly"
+            ],
+            "location_id": "old_wooden_house_interior",
+            "camera_intent": "pan",
+            "source_text": "Sarah sits on an old, worn armchair, her hands clasped tightly in her lap."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_003_SHOT_002",
+          "scene_id": "SCN_003",
+          "prompt": "She glances anxiously towards the closed door, in Old wooden house interior.",
+          "duration_sec": 5,
+          "emotion": "nervous",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "she",
+            "action_type": "glances",
+            "target": "closed door",
+            "modifiers": [
+              "anxiously"
+            ],
+            "location_id": "old_wooden_house_interior",
+            "camera_intent": "static",
+            "source_text": "She glances anxiously towards the closed door."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_003_SHOT_003",
+          "scene_id": "SCN_003",
+          "prompt": "Her eyes flick to a ticking grandfather clock in the corner, in Old wooden house interior.",
+          "duration_sec": 5,
+          "emotion": "nervous",
+          "shot_type": "close_up",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "her",
+            "action_type": "eyes",
+            "target": "ticking grandfather clock in corner",
+            "modifiers": [],
+            "location_id": "old_wooden_house_interior",
+            "camera_intent": "static",
+            "source_text": "Her eyes flick to a ticking grandfather clock in the corner."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_003_SHOT_004",
+          "scene_id": "SCN_003",
+          "prompt": "She bites her lip, a nervous habit, in Old wooden house interior.",
+          "duration_sec": 5,
+          "emotion": "nervous",
+          "shot_type": "close_up",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "she",
+            "action_type": "bites",
+            "target": null,
+            "modifiers": [],
+            "location_id": "old_wooden_house_interior",
+            "camera_intent": "static",
+            "source_text": "She bites her lip, a nervous habit."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_004_SHOT_001",
+          "scene_id": "SCN_004",
+          "prompt": "The front door creaks open slowly, in Old wooden house interior.",
+          "duration_sec": 4,
+          "emotion": "happy",
+          "shot_type": "medium",
+          "camera_movement": "pan",
+          "action": {
+            "subject_id": "front",
+            "action_type": "door",
+            "target": null,
+            "modifiers": [
+              "slowly"
+            ],
+            "location_id": "old_wooden_house_interior",
+            "camera_intent": "pan",
+            "source_text": "The front door creaks open slowly."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "silence"
+          }
+        },
+        {
+          "shot_id": "SCN_004_SHOT_002",
+          "scene_id": "SCN_004",
+          "prompt": "John steps inside, shaking water from his coat, in Old wooden house interior.",
+          "duration_sec": 3,
+          "emotion": "happy",
+          "shot_type": "medium",
+          "camera_movement": "follow",
+          "action": {
+            "subject_id": "john",
+            "action_type": "steps",
+            "target": "shaking water from his coat",
+            "modifiers": [],
+            "location_id": "old_wooden_house_interior",
+            "camera_intent": "follow",
+            "source_text": "John steps inside, shaking water from his coat."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "silence"
+          }
+        },
+        {
+          "shot_id": "SCN_004_SHOT_003",
+          "scene_id": "SCN_004",
+          "prompt": "He spots Sarah across the room, her gaze fixed on him, in Old wooden house interior.",
+          "duration_sec": 4,
+          "emotion": "happy",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "sarah",
+            "action_type": "spots",
+            "target": "him",
+            "modifiers": [],
+            "location_id": "old_wooden_house_interior",
+            "camera_intent": "static",
+            "source_text": "He spots Sarah across the room, her gaze fixed on him."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "silence"
+          }
+        },
+        {
+          "shot_id": "SCN_004_SHOT_004",
+          "scene_id": "SCN_004",
+          "prompt": "John offers her a warm, reassuring smile, in Old wooden house interior.",
+          "duration_sec": 3,
+          "emotion": "happy",
+          "shot_type": "close_up",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "john",
+            "action_type": "offers",
+            "target": null,
+            "modifiers": [],
+            "location_id": "old_wooden_house_interior",
+            "camera_intent": "static",
+            "source_text": "John offers her a warm, reassuring smile."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "silence"
+          }
+        }
+      ]
+    }
+  ]
+}

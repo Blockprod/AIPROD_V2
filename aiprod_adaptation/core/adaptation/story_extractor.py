@@ -11,6 +11,61 @@ if TYPE_CHECKING:
     from aiprod_adaptation.core.production_budget import ProductionBudget
 
 
+def _append_unique(values: list[str], candidate: str) -> None:
+    cleaned = candidate.strip()
+    if cleaned and cleaned not in values:
+        values.append(cleaned)
+
+
+def _build_continuity_snapshot(scenes: list[VisualScene]) -> dict[str, object]:
+    recent_scenes = scenes[-3:]
+    active_characters: list[str] = []
+    active_locations: list[str] = []
+    snapshot_scenes: list[dict[str, object]] = []
+
+    for scene in recent_scenes:
+        location = scene.get("location", "Unknown")
+        if location != "Unknown":
+            _append_unique(active_locations, location)
+        for character in scene.get("characters", []):
+            _append_unique(active_characters, character)
+        snapshot_scenes.append(
+            {
+                "scene_id": scene["scene_id"],
+                "location": location,
+                "characters": list(scene.get("characters", [])),
+                "emotion": scene.get("emotion", "neutral"),
+                "actions": list(scene.get("visual_actions", []))[:2],
+            }
+        )
+
+    return {
+        "recent_scenes": snapshot_scenes,
+        "active_characters": active_characters,
+        "active_locations": active_locations,
+    }
+
+
+def _serialize_continuity_snapshot(snapshot: dict[str, object]) -> str:
+    return "CONTINUITY_SNAPSHOT_JSON:\n" + json.dumps(snapshot, ensure_ascii=False)
+
+
+def _parse_prior_summary_snapshot(prior_summary: str) -> dict[str, Any] | None:
+    prefix = "CONTINUITY_SNAPSHOT_JSON:\n"
+    if not prior_summary.startswith(prefix):
+        return None
+    payload = prior_summary[len(prefix):].strip()
+    if not payload:
+        return None
+    try:
+        parsed = json.loads(payload)
+    except json.JSONDecodeError:
+        return None
+    if not isinstance(parsed, dict):
+        return None
+    return parsed
+
+
 def split_into_chunks(text: str, max_chars: int = 8_000) -> list[str]:
     """
     Découpe text aux frontières de paragraphes (double newline).
@@ -118,6 +173,7 @@ class StoryExtractor:
             if prior_summary
             else ""
         )
+        continuity_snapshot = _parse_prior_summary_snapshot(prior_summary)
         schema_str = json.dumps(self.PRODUCTION_SCHEMA, ensure_ascii=False)
         prompt = (
             "You are a professional screenwriter adapting text into a filmable screenplay.\n\n"
@@ -141,7 +197,10 @@ class StoryExtractor:
         raw_scenes: list[dict[str, Any]] = result.get("scenes", [])
         if not isinstance(raw_scenes, list):
             raw_scenes = []
-        return Normalizer().normalize(raw_scenes)
+        return Normalizer().normalize(
+            raw_scenes,
+            continuity_snapshot=continuity_snapshot,
+        )
 
     def extract_chunk(
         self,
@@ -174,6 +233,7 @@ class StoryExtractor:
             scenes = self.extract_chunk(llm, chunk, budget, prior_summary)
             all_scenes.extend(scenes)
             if scenes:
-                locations = ", ".join(s["location"] for s in scenes[-3:])
-                prior_summary = f"Last scenes: {locations}."
+                prior_summary = _serialize_continuity_snapshot(
+                    _build_continuity_snapshot(all_scenes)
+                )
         return all_scenes

@@ -1,0 +1,122 @@
+{
+  "title": "MiniConcept",
+  "frames": [
+    {
+      "shot_id": "SCN_001_SHOT_001",
+      "scene_id": "SCN_001",
+      "image_url": "error://generation-failed",
+      "image_b64": "",
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Marcus pushes open a heavy wooden door, stepping inside, in abandoned chapel interior. interior lighting. cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 42,
+      "shot_type": "medium",
+      "camera_movement": "pan",
+      "time_of_day_visual": "interior",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "Marcus"
+      ],
+      "reference_image_url": ""
+    },
+    {
+      "shot_id": "SCN_001_SHOT_002",
+      "scene_id": "SCN_001",
+      "image_url": "error://generation-failed",
+      "image_b64": "",
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "He raises a flickering lantern, casting long shadows, in abandoned chapel interior. interior lighting. cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 43,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "interior",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "Marcus"
+      ],
+      "reference_image_url": ""
+    },
+    {
+      "shot_id": "SCN_001_SHOT_003",
+      "scene_id": "SCN_001",
+      "image_url": "error://generation-failed",
+      "image_b64": "",
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Marcus walks slowly towards the center of the room, in abandoned chapel interior. interior lighting. cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 44,
+      "shot_type": "wide",
+      "camera_movement": "follow",
+      "time_of_day_visual": "interior",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "Marcus"
+      ],
+      "reference_image_url": ""
+    },
+    {
+      "shot_id": "SCN_001_SHOT_004",
+      "scene_id": "SCN_001",
+      "image_url": "error://generation-failed",
+      "image_b64": "",
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "He stops and looks down at a cracked stone altar, in abandoned chapel interior. interior lighting. cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 45,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "interior",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "Marcus"
+      ],
+      "reference_image_url": ""
+    },
+    {
+      "shot_id": "SCN_001_SHOT_005",
+      "scene_id": "SCN_001",
+      "image_url": "error://generation-failed",
+      "image_b64": "",
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Marcus runs a hand over the rough surface of the altar, in abandoned chapel interior. interior lighting. cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 46,
+      "shot_type": "wide",
+      "camera_movement": "follow",
+      "time_of_day_visual": "interior",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "Marcus"
+      ],
+      "reference_image_url": ""
+    },
+    {
+      "shot_id": "SCN_001_SHOT_006",
+      "scene_id": "SCN_001",
+      "image_url": "error://generation-failed",
+      "image_b64": "",
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "He looks around the dusty chapel, in abandoned chapel interior. interior lighting. cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 47,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "interior",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "Marcus"
+      ],
+      "reference_image_url": ""
+    }
+  ],
+  "style_token": "cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+  "total_shots": 6,
+  "generated": 0
+}

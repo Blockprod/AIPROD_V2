@@ -1,0 +1,177 @@
+{
+  "title": "MiniConcept",
+  "episodes": [
+    {
+      "episode_id": "EP01",
+      "scenes": [
+        {
+          "scene_id": "SCN_001",
+          "characters": [
+            "Marcus"
+          ],
+          "character_ids": [
+            "marcus"
+          ],
+          "location": "abandoned chapel interior",
+          "location_id": "abandoned_chapel_interior",
+          "time_of_day": null,
+          "visual_actions": [
+            "Marcus pushes open a heavy wooden door, stepping inside.",
+            "He raises a flickering lantern, casting long shadows.",
+            "Marcus walks slowly towards the center of the room.",
+            "He stops and looks down at a cracked stone altar.",
+            "Marcus runs a hand over the rough surface of the altar.",
+            "He looks around the dusty chapel."
+          ],
+          "dialogues": [],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_001_SHOT_001",
+            "SCN_001_SHOT_002",
+            "SCN_001_SHOT_003",
+            "SCN_001_SHOT_004",
+            "SCN_001_SHOT_005",
+            "SCN_001_SHOT_006"
+          ]
+        }
+      ],
+      "shots": [
+        {
+          "shot_id": "SCN_001_SHOT_001",
+          "scene_id": "SCN_001",
+          "prompt": "Marcus pushes open a heavy wooden door, stepping inside, in abandoned chapel interior.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "pan",
+          "action": {
+            "subject_id": "marcus",
+            "action_type": "pushes",
+            "target": null,
+            "modifiers": [],
+            "location_id": "abandoned_chapel_interior",
+            "camera_intent": "pan",
+            "source_text": "Marcus pushes open a heavy wooden door, stepping inside."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_001_SHOT_002",
+          "scene_id": "SCN_001",
+          "prompt": "He raises a flickering lantern, casting long shadows, in abandoned chapel interior.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "he",
+            "action_type": "raises",
+            "target": null,
+            "modifiers": [],
+            "location_id": "abandoned_chapel_interior",
+            "camera_intent": "static",
+            "source_text": "He raises a flickering lantern, casting long shadows."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_001_SHOT_003",
+          "scene_id": "SCN_001",
+          "prompt": "Marcus walks slowly towards the center of the room, in abandoned chapel interior.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "follow",
+          "action": {
+            "subject_id": "marcus",
+            "action_type": "walks",
+            "target": "center of room",
+            "modifiers": [
+              "slowly"
+            ],
+            "location_id": "abandoned_chapel_interior",
+            "camera_intent": "follow",
+            "source_text": "Marcus walks slowly towards the center of the room."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_001_SHOT_004",
+          "scene_id": "SCN_001",
+          "prompt": "He stops and looks down at a cracked stone altar, in abandoned chapel interior.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "he",
+            "action_type": "stops",
+            "target": "cracked stone altar",
+            "modifiers": [],
+            "location_id": "abandoned_chapel_interior",
+            "camera_intent": "static",
+            "source_text": "He stops and looks down at a cracked stone altar."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_001_SHOT_005",
+          "scene_id": "SCN_001",
+          "prompt": "Marcus runs a hand over the rough surface of the altar, in abandoned chapel interior.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "follow",
+          "action": {
+            "subject_id": "marcus",
+            "action_type": "runs",
+            "target": null,
+            "modifiers": [],
+            "location_id": "abandoned_chapel_interior",
+            "camera_intent": "follow",
+            "source_text": "Marcus runs a hand over the rough surface of the altar."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_001_SHOT_006",
+          "scene_id": "SCN_001",
+          "prompt": "He looks around the dusty chapel, in abandoned chapel interior.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "he",
+            "action_type": "looks",
+            "target": null,
+            "modifiers": [],
+            "location_id": "abandoned_chapel_interior",
+            "camera_intent": "static",
+            "source_text": "He looks around the dusty chapel."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        }
+      ]
+    }
+  ]
+}

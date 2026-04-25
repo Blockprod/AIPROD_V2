@@ -1,0 +1,43 @@
+{
+  "title": "District Zero - Episode 1 - Production Cut",
+  "clips": [
+    {
+      "shot_id": "SCN_008_SHOT_004",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/3f6b748f-b1a4-4e57-9f43-99e7a923baeb.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMTJkZTM1NzI5MmE1MGRiMCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzE0NDU2Mn0.JTkupkJHIdrF-lITjcaLfN9Ksqm-2CclII04GlKn6SA",
+      "duration_sec": 3,
+      "model_used": "gen4_turbo",
+      "latency_ms": 27141,
+      "cost_usd": 0.15,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_001",
+      "video_url": "error://generation-failed",
+      "duration_sec": 3,
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_002",
+      "video_url": "error://generation-failed",
+      "duration_sec": 3,
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_003",
+      "video_url": "error://generation-failed",
+      "duration_sec": 3,
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    }
+  ],
+  "total_shots": 4,
+  "generated": 1
+}

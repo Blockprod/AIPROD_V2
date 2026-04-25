@@ -1,0 +1,77 @@
+{
+  "title": "District Zero EP01 Premium Critical Shots v1",
+  "input_ir": "out/district_zero_ep01_production_cut_ir.json",
+  "reference_pack": "preproduction/district_zero/reference_pack.json",
+  "objective": "Validate premium storyboard quality on a tiny Nara-centered subset before any wider paid run.",
+  "shots": [
+    {
+      "shot_id": "SCN_002_SHOT_001",
+      "scene_id": "SCN_002",
+      "label": "Nara corridor introduction",
+      "why": "Best first identity lock test for Nara under motion inside the lower transit corridor.",
+      "focus": [
+        "character consistency",
+        "industrial location quality",
+        "motion-ready framing"
+      ],
+      "prompt": "Nara Voss runs through a leaking maintenance corridor as her wrist display flashes a pressure alert, in INT. LOWER TRANSIT STACK - SERVICE CORRIDOR - NIGHT."
+    },
+    {
+      "shot_id": "SCN_003_SHOT_001",
+      "scene_id": "SCN_003",
+      "label": "Nara valve chamber",
+      "why": "Tests Nara in a harder industrial set with machinery scale, vapor, and worker separation.",
+      "focus": [
+        "hero clarity under pressure",
+        "set scale",
+        "background extras"
+      ],
+      "prompt": "Nara stabilizes a failing valve while exhausted workers keep their distance, in INT. PRESSURE VALVE CHAMBER - NIGHT."
+    },
+    {
+      "shot_id": "SCN_008_SHOT_001",
+      "scene_id": "SCN_008",
+      "label": "Nara and Mira in service spine",
+      "why": "Best cheap test of a two-character frame and the buried service-spine location depth.",
+      "focus": [
+        "duo composition",
+        "location continuity",
+        "depth and atmosphere"
+      ],
+      "prompt": "Nara and Mira descend into an old service corridor buried in the skeleton of the city, in INT. SEALED SERVICE SPINE - NIGHT."
+    },
+    {
+      "shot_id": "SCN_009_SHOT_001",
+      "scene_id": "SCN_009",
+      "label": "Outside world reveal",
+      "why": "Highest-value environment reveal for premium world scale and cinematic spectacle.",
+      "focus": [
+        "location grandeur",
+        "forbidden world reveal",
+        "alarm-era lighting"
+      ],
+      "prompt": "Ancient shutters peel open and reveal organized lights far beyond the wall, in INT. EXTERNAL OBSERVATION CHAMBER - CONTINUOUS."
+    },
+    {
+      "shot_id": "SCN_011_SHOT_001",
+      "scene_id": "SCN_011",
+      "label": "Nara returns home",
+      "why": "Best low-cost emotional shot for testing acting, wet costume continuity, and pre-dawn apartment mood.",
+      "focus": [
+        "emotional realism",
+        "costume continuity",
+        "interior mood"
+      ],
+      "prompt": "Nara returns home soaked and shaken, in INT. VOSS APARTMENT - PRE-DAWN."
+    }
+  ],
+  "recommended_paid_storyboard_output": "out/district_zero_ep01_premium_critical_storyboard_v1.json",
+  "recommended_null_probe_output": "out/district_zero_ep01_premium_critical_probe_null.json",
+  "selection_mode": "repeat --shot-id once per selected shot",
+  "notes": [
+    "This set stays mostly Nara-anchored because Nara is the only character already locked with a real hero reference image.",
+    "SCN_008_SHOT_001 intentionally stresses a two-character frame so Mira can be evaluated before a larger paid batch.",
+    "Storyboard CLI output should be an explicit JSON file path, not a directory path.",
+    "Use storyboard-only first; pay for video only after at least 4 of 5 frames feel premium enough to keep."
+  ]
+}

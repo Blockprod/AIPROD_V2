@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import copy
 import pathlib
+import warnings
 from typing import cast
 
 import pytest
@@ -22,8 +23,8 @@ import pytest
 from aiprod_adaptation.core.engine import run_pipeline
 from aiprod_adaptation.core.pass1_segment import segment
 from aiprod_adaptation.core.pass2_visual import visual_rewrite
-from aiprod_adaptation.core.pass3_shots import simplify_shots
-from aiprod_adaptation.core.pass4_compile import compile_episode
+from aiprod_adaptation.core.pass3_shots import atomize_shots, simplify_shots
+from aiprod_adaptation.core.pass4_compile import compile_episode, compile_output
 from aiprod_adaptation.models.intermediate import RawScene, ShotDict, VisualScene
 from aiprod_adaptation.models.schema import AIPRODOutput, Shot
 
@@ -99,6 +100,42 @@ class TestEmptyInput:
         })
         with pytest.raises(ValueError, match="PASS 4"):
             compile_episode([scene], [shot], "   ")
+
+
+class TestBackwardCompatAliases:
+    _SCENE = cast(VisualScene, {
+        "scene_id": "SC001",
+        "characters": ["John"],
+        "location": "a place",
+        "time_of_day": None,
+        "visual_actions": ["John walks toward the door."],
+        "dialogues": [],
+        "emotion": "neutral",
+    })
+
+    def test_atomize_shots_warns_and_forwards(self) -> None:
+        with warnings.catch_warnings(record=True) as captured:
+            warnings.simplefilter("always")
+            aliased = atomize_shots([self._SCENE])
+
+        direct = simplify_shots([self._SCENE])
+        assert len(captured) == 1
+        assert issubclass(captured[0].category, DeprecationWarning)
+        assert "simplify_shots" in str(captured[0].message)
+        assert aliased == direct
+
+    def test_compile_output_warns_and_forwards(self) -> None:
+        shots = simplify_shots([self._SCENE])
+
+        with warnings.catch_warnings(record=True) as captured:
+            warnings.simplefilter("always")
+            aliased = compile_output("Title", [self._SCENE], shots, "EP01")
+
+        direct = compile_episode([self._SCENE], shots, "Title", "EP01")
+        assert len(captured) == 1
+        assert issubclass(captured[0].category, DeprecationWarning)
+        assert "compile_episode" in str(captured[0].message)
+        assert aliased.model_dump() == direct.model_dump()
 
 
 # ---------------------------------------------------------------------------
@@ -218,6 +255,17 @@ class TestInternalThoughts:
         scene["raw_text"] = '"The captain waited," she said.'
         result = visual_rewrite([scene])
         assert result[0]["visual_actions"] == ["A woman speaks."]
+
+    def test_visual_rewrite_emits_structured_action_units(self) -> None:
+        scene = copy.deepcopy(self._THOUGHT_SCENE)
+        scene["raw_text"] = "Emma walked quickly to the door."
+        result = visual_rewrite([scene])
+        action_units = result[0]["action_units"]
+        assert len(action_units) == 1
+        assert action_units[0]["subject_id"] == "emma"
+        assert action_units[0]["action_type"] == "walked"
+        assert action_units[0]["target"] == "door"
+        assert action_units[0]["modifiers"] == ["quickly"]
 
 
 # ---------------------------------------------------------------------------
@@ -361,6 +409,19 @@ class TestFullPipeline:
         for shot in ep.shots:
             assert shot.scene_id in known
 
+    def test_scenes_expose_explicit_shot_graph(self) -> None:
+        result = run_pipeline(self._SAMPLE, "Sample Title")
+        ep = result.episodes[0]
+        scenes = {scene.scene_id: scene for scene in ep.scenes}
+        for shot in ep.shots:
+            assert shot.shot_id in scenes[shot.scene_id].shot_ids
+
+    def test_scenes_expose_stable_entity_ids(self) -> None:
+        result = run_pipeline("Emma walked to the wooden house.", "Entity IDs")
+        scene = result.episodes[0].scenes[0]
+        assert "emma" in scene.character_ids
+        assert scene.location_id is not None
+
     def test_title_preserved(self) -> None:
         result = run_pipeline(self._SAMPLE, "My Epic Title")
         assert result.title == "My Epic Title"
@@ -384,6 +445,22 @@ class TestFullPipeline:
                     f"Scene {scene.scene_id} has internal-thought word in visual_actions: "
                     f"{overlap!r} — action: {action!r}"
                 )
+
+    def test_pipeline_propagates_structured_actions_to_scenes_and_shots(self) -> None:
+        result = run_pipeline("Emma walked quickly to the door.", "Structured Action")
+        scene = result.episodes[0].scenes[0]
+        shot = result.episodes[0].shots[0]
+
+        assert len(scene.action_units) == 1
+        assert scene.action_units[0].subject_id == "emma"
+        assert scene.action_units[0].action_type == "walked"
+        assert scene.action_units[0].target == "door"
+
+        assert shot.action is not None
+        assert shot.action.subject_id == "emma"
+        assert shot.action.action_type == "walked"
+        assert shot.action.target == "door"
+        assert shot.prompt == "Emma walked quickly to the door."
 
 
 # ---------------------------------------------------------------------------
@@ -611,6 +688,31 @@ class TestVisualSceneEnrichment:
                 )
 
         StoryboardGenerator(TrackingAdapter()).generate(output)
+        assert received
+        assert "night lighting" in received[0].prompt.lower()
+
+    def test_script_input_propagates_night_lighting_to_storyboard_prompt(self) -> None:
+        from aiprod_adaptation.image_gen.image_adapter import ImageAdapter
+        from aiprod_adaptation.image_gen.image_request import ImageRequest, ImageResult
+        from aiprod_adaptation.image_gen.storyboard import StoryboardGenerator
+
+        received: list[ImageRequest] = []
+
+        class TrackingAdapter(ImageAdapter):
+            def generate(self, req: ImageRequest) -> ImageResult:
+                received.append(req)
+                return ImageResult(
+                    shot_id=req.shot_id,
+                    image_url="u://x",
+                    image_b64="",
+                    model_used="test",
+                    latency_ms=0,
+                )
+
+        output = run_pipeline("EXT. STREET - NIGHT\nJohn runs.\n", "T")
+
+        StoryboardGenerator(TrackingAdapter()).generate(output)
+
         assert received
         assert "night" in received[0].prompt.lower()
 

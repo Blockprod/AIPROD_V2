@@ -77,7 +77,80 @@ python main.py --input chapter.txt --output output.json --format json-flat
 
 # Full help
 python main.py --help
+
+# Compare rules vs LLM on the same input via the packaged CLI
+aiprod compare --input aiprod_adaptation/examples/chapter1.txt --title "Chapter 1"
+
+# Also persist the rules and LLM JSON outputs used by the comparison
+aiprod compare --input aiprod_adaptation/examples/chapter1.txt --title "Chapter 1" --output compare.txt --rules-output rules.json --llm-output llm.json
+
+# Emit the comparison summary itself as structured JSON
+aiprod compare --input aiprod_adaptation/examples/chapter1.txt --title "Chapter 1" --output compare.json --output-format json
+
+# Force router to prefer Gemini on short prompts for one invocation
+aiprod pipeline --input aiprod_adaptation/examples/chapter1.txt --title "Chapter 1" --output output.json --llm-adapter router --router-short-provider gemini --require-llm
+
+# Persist the router decision trace alongside the pipeline output
+aiprod pipeline --input aiprod_adaptation/examples/chapter1.txt --title "Chapter 1" --output output.json --llm-adapter router --router-trace-output router-trace.json --require-llm
+
+# Force a real multi-chunk router run on chapter1 and persist the full trace history
+aiprod compare --input aiprod_adaptation/examples/chapter1.txt --title "Chapter 1" --llm-adapter router --output compare.json --output-format json --rules-output rules.json --llm-output llm.json --router-trace-output router-trace.json --max-chars-per-chunk 500
+
+# Same override on the direct entry point
+python main.py --input aiprod_adaptation/examples/chapter1.txt --output output.json --llm-adapter router --router-short-provider gemini --require-llm
+
+# Same trace export on the direct entry point
+python main.py --input aiprod_adaptation/examples/chapter1.txt --output output.json --llm-adapter router --router-trace-output router-trace.json --require-llm
+
+# Same forced multi-chunk validation on the direct entry point
+python main.py --input aiprod_adaptation/examples/chapter1.txt --output output.json --llm-adapter router --router-trace-output router-trace.json --max-chars-per-chunk 500 --require-llm
 ```
+
+## Story Workflow
+
+To choose a different story, change the text file passed to `--input`.
+
+Recommended workflow:
+
+```bash
+# 1. Start from the reusable template
+copy stories/story_template.txt stories/my_new_story.txt
+
+# 2. Edit stories/my_new_story.txt with your own synopsis, script, or chapter
+
+# 3. Compile the story into AIPROD IR
+aiprod pipeline --input stories/my_new_story.txt --title "My New Story" --output out/my_new_story_ir.json --llm-adapter router --pipeline-mode generative --require-llm
+
+# 4. Generate media from that compiled story
+aiprod schedule --input out/my_new_story_ir.json --output out/my_new_story_run --image-adapter runway --video-adapter runway --audio-adapter runway
+```
+
+Template file:
+- `stories/story_template.txt`
+
+Practical rule:
+- one file per story
+- change `--input`, `--title`, and `--output` for each new video project
+
+Optional LLM environment knobs:
+- `GEMINI_MODEL` overrides the primary Gemini model, default `gemini-2.5-flash`
+- `GEMINI_FALLBACK_MODELS` defines comma-separated Gemini fallback models tried on transient provider failures
+- `LLM_ROUTER_SHORT_PROVIDER` selects the preferred short-text provider for `router` (`claude` by default, `gemini` also supported)
+- `LLM_ROUTER_PROVIDER_COOLDOWN_SEC` controls how long the router avoids retrying a provider that just failed within the same process (default: `300` seconds)
+- `LLM_ROUTER_PROVIDER_MAX_COOLDOWN_SEC` caps the adaptive router backoff after repeated provider failures in the same process (default: `2400` seconds)
+- `LLM_ROUTER_AUTH_QUARANTINE_SEC` overrides the longer router quarantine used for authentication failures
+- `LLM_ROUTER_QUOTA_QUARANTINE_SEC` overrides the longer router quarantine used for quota and billing failures
+
+Optional router CLI knob:
+- `--router-short-provider claude|gemini` overrides the short-text router preference for the current `pipeline`, `compare`, or `main.py` invocation only
+- `--router-trace-output PATH` writes the router decision trace JSON for `pipeline`, `compare`, or `main.py` when the router adapter is used
+- `--max-chars-per-chunk N` overrides the StoryExtractor chunk size for the current invocation and is useful to force a real multi-chunk router validation on shorter inputs like `chapter1.txt`
+- `aiprod compare --output-format json` writes the comparison summary as structured JSON instead of plain text
+
+Router behaviour notes:
+- prompts containing `CONTEXT FROM PREVIOUS SCENES:` are treated as continuity-heavy and are routed to Gemini first, even when they are short
+- router failures are now classified (`transient`, `rate_limit`, `auth`, `quota`, `schema`, `unknown`) so cooldown and quarantine behavior can differ by failure type
+- when router trace export is enabled, the JSON contains `trace_history` for the run and `last_trace` for quick inspection
 
 Output format:
 - `json` (default) — pretty-printed `AIPRODOutput` with nested episodes/scenes/shots

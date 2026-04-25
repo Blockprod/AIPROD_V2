@@ -7,6 +7,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
+import structlog
+
 from aiprod_adaptation.image_gen.character_image_registry import CharacterImageRegistry
 from aiprod_adaptation.image_gen.character_sheet import CharacterSheetRegistry
 from aiprod_adaptation.image_gen.image_adapter import ImageAdapter
@@ -16,6 +18,8 @@ from aiprod_adaptation.models.schema import AIPRODOutput
 _DEFAULT_STYLE_TOKEN = (
     "cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded"
 )
+
+logger = structlog.get_logger(__name__)
 
 
 def _unique_characters(output: AIPRODOutput) -> list[str]:
@@ -72,7 +76,13 @@ class CharacterPrepass:
                 registry.register(name, result.image_url)
                 registry.register_prompt(name, canonical)
                 generated += 1
-            except Exception:
+            except Exception as exc:
+                logger.warning(
+                    "character_prepass_failed",
+                    character_name=name,
+                    shot_id=req.shot_id,
+                    error=str(exc),
+                )
                 failed += 1
 
         return CharacterPrepassResult(

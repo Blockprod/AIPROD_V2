@@ -1,0 +1,2202 @@
+{
+  "title": "District Zero - Episode 1",
+  "episodes": [
+    {
+      "episode_id": "EP01",
+      "scenes": [
+        {
+          "scene_id": "SCN_001",
+          "characters": [],
+          "character_ids": [],
+          "location": "EXT. DISTRICT ZERO OUTER WALL - NIGHT",
+          "location_id": "ext_district_zero_outer_wall_night",
+          "time_of_day": "night",
+          "visual_actions": [
+            "Black seawater slams against a colossal seawall wrapped in defensive lights. Beyond it, the drowned skeleton of the old megacity disappears into storm and darkness.",
+            "The wall hums with power. Search beams sweep across the waves like prison lights."
+          ],
+          "dialogues": [],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_001_SHOT_001",
+            "SCN_001_SHOT_002"
+          ]
+        },
+        {
+          "scene_id": "SCN_002",
+          "characters": [
+            "NARA"
+          ],
+          "character_ids": [
+            "nara"
+          ],
+          "location": "INT. LOWER TRANSIT STACK - SERVICE CORRIDOR - NIGHT",
+          "location_id": "int_lower_transit_stack_service_corridor_night",
+          "time_of_day": "night",
+          "visual_actions": [
+            "Nara Voss runs through a narrow maintenance corridor with a toolkit strapped across her back. Emergency lights pulse red over wet metal grates.",
+            "Her wrist display flashes: PRESSURE DROP - SECTOR C-19.",
+            "She moves with the reflexes of someone who has spent her life inside failing machinery.",
+            "The map of the lower stack flickers. One sealed maintenance route appears for a fraction of a second, then disappears.",
+            "Nara stops.",
+            "Her eyes narrow.",
+            "She screenshots the flicker before the display resets."
+          ],
+          "dialogues": [
+            "That route was deleted."
+          ],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_002_SHOT_001",
+            "SCN_002_SHOT_002",
+            "SCN_002_SHOT_003",
+            "SCN_002_SHOT_004",
+            "SCN_002_SHOT_005",
+            "SCN_002_SHOT_006",
+            "SCN_002_SHOT_007"
+          ]
+        },
+        {
+          "scene_id": "SCN_003",
+          "characters": [
+            "WORKER",
+            "NARA"
+          ],
+          "character_ids": [
+            "worker",
+            "nara"
+          ],
+          "location": "INT. PRESSURE VALVE CHAMBER - NIGHT",
+          "location_id": "int_pressure_valve_chamber_night",
+          "time_of_day": "night",
+          "visual_actions": [
+            "Steam hisses from a cracked pipe assembly. Two exhausted workers wait at the far end of the chamber, afraid to get too close.",
+            "Nara kneels beside the main valve, opens a manual bypass, and stabilizes the pressure line with practiced speed.",
+            "The red alarm dies. White light returns.",
+            "Nara barely reacts. Her attention stays on the hidden route image still glowing on her wrist.",
+            "That answer lands badly with her."
+          ],
+          "dialogues": [
+            "You just saved half the block.",
+            "Who signed the last maintenance map update?",
+            "Central Authority. Same as always."
+          ],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_003_SHOT_001",
+            "SCN_003_SHOT_002",
+            "SCN_003_SHOT_003",
+            "SCN_003_SHOT_004",
+            "SCN_003_SHOT_005"
+          ]
+        },
+        {
+          "scene_id": "SCN_004",
+          "characters": [
+            "NARA",
+            "ELIAN"
+          ],
+          "character_ids": [
+            "nara",
+            "elian"
+          ],
+          "location": "INT. VOSS APARTMENT - LOWER STACK - LATE NIGHT",
+          "location_id": "int_voss_apartment_lower_stack_late_night",
+          "time_of_day": "night",
+          "visual_actions": [
+            "A tiny apartment built into old structural concrete. Pipes run along the ceiling. Filtered city light leaks through a narrow slit window.",
+            "Elian Voss sits at the kitchen table, repairing an obsolete circuit board with shaking hands.",
+            "Nara drops her toolkit and places her wrist display in front of him.",
+            "The deleted route. Sector C-19. Access spine attached to an unlisted gate.",
+            "Elian freezes before he can hide it.",
+            "Silence.",
+            "Nara studies him. This is not fear in the abstract. This is memory.",
+            "Elian lowers his voice."
+          ],
+          "dialogues": [
+            "This showed up inside a live stack map and then vanished.",
+            "Forget it.",
+            "You know what it is.",
+            "I know what happens to people who ask.",
+            "You worked upper infrastructure before they reassigned you.",
+            "That part of my life is over.",
+            "Then why are you scared of a corridor?",
+            "Because in this city, hidden doors are never just doors."
+          ],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_004_SHOT_001",
+            "SCN_004_SHOT_002",
+            "SCN_004_SHOT_003",
+            "SCN_004_SHOT_004",
+            "SCN_004_SHOT_005",
+            "SCN_004_SHOT_006",
+            "SCN_004_SHOT_007",
+            "SCN_004_SHOT_008"
+          ]
+        },
+        {
+          "scene_id": "SCN_005",
+          "characters": [
+            "ROOK (ON SCREEN)",
+            "VALE",
+            "AIDE"
+          ],
+          "character_ids": [
+            "rook_on_screen",
+            "vale",
+            "aide"
+          ],
+          "location": "INT. CIVIC ATRIUM - DISTRICT ZERO CENTRAL CORE - MORNING",
+          "location_id": "int_civic_atrium_district_zero_central_core_morning",
+          "time_of_day": "interior",
+          "visual_actions": [
+            "Clean marble surfaces. Vertical gardens. Public screens. Citizens in neutral uniforms pass through controlled light like a commercial for civilization.",
+            "On a giant screen, Director Halden Rook addresses the district with reassuring authority.",
+            "Commander Sarin Vale watches from a glass balcony above the crowd. Still. Analytical. He does not watch the speech. He watches reactions.",
+            "An aide steps beside him and hands him a tablet.",
+            "Unauthorized map capture detected. User ID: NARA VOSS. Sector C-19.",
+            "Vale reads it once."
+          ],
+          "dialogues": [
+            "District Zero remains secure. The wall is holding. Supplies are stable. Order protects us all.",
+            "Put her under passive watch.",
+            "Detain?",
+            "No. If she found one door, I want to know whether she can find the next."
+          ],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_005_SHOT_001",
+            "SCN_005_SHOT_002",
+            "SCN_005_SHOT_003",
+            "SCN_005_SHOT_004",
+            "SCN_005_SHOT_005",
+            "SCN_005_SHOT_006"
+          ]
+        },
+        {
+          "scene_id": "SCN_006",
+          "characters": [
+            "MIRA",
+            "NARA"
+          ],
+          "character_ids": [
+            "mira",
+            "nara"
+          ],
+          "location": "INT. BLACK MARKET EXCHANGE - VENTILATION SUBLEVEL - DAY",
+          "location_id": "int_black_market_exchange_ventilation_sublevel_day",
+          "time_of_day": "day",
+          "visual_actions": [
+            "An illegal signal market lives inside an abandoned ventilation chamber beneath the transit network. Smugglers trade in batteries, access codes, raw medicine, and forbidden data.",
+            "Mira Sol leans behind a makeshift counter of cracked screens and signal relays.",
+            "Nara shows her the captured route.",
+            "Mira scans the image, then looks up sharply.",
+            "Mira overlays stolen archive fragments onto Nara's map.",
+            "A new geometry appears: a sealed service spine leading toward the outer wall."
+          ],
+          "dialogues": [
+            "You did not bring me that because you wanted directions.",
+            "I want to know what was erased.",
+            "This isn't erased infrastructure. It's masked infrastructure.",
+            "Meaning?",
+            "Meaning the system still knows it's there. It just isn't supposed to exist for people like us.",
+            "If this is real, it predates the current district grid.",
+            "Can you open it?",
+            "Probably. The better question is whether you survive after I do."
+          ],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_006_SHOT_001",
+            "SCN_006_SHOT_002",
+            "SCN_006_SHOT_003",
+            "SCN_006_SHOT_004",
+            "SCN_006_SHOT_005",
+            "SCN_006_SHOT_006"
+          ]
+        },
+        {
+          "scene_id": "SCN_007",
+          "characters": [
+            "ANALYST",
+            "VALE"
+          ],
+          "character_ids": [
+            "analyst",
+            "vale"
+          ],
+          "location": "INT. SECURITY OPERATIONS CENTER - DAY",
+          "location_id": "int_security_operations_center_day",
+          "time_of_day": "day",
+          "visual_actions": [
+            "Rows of analysts monitor citizen movement, utility flow, and predictive risk models across the district.",
+            "Vale stands before an enormous live city schematic.",
+            "Nara's movement history blooms across the display.",
+            "Vale watches the projected path converge toward the outer sectors."
+          ],
+          "dialogues": [
+            "Subject contacted an unregistered broker in the ventilation sublevel.",
+            "Do not close the net.",
+            "Sir?",
+            "If she reaches the gate, I want to know what she thinks she saw."
+          ],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_007_SHOT_001",
+            "SCN_007_SHOT_002",
+            "SCN_007_SHOT_003",
+            "SCN_007_SHOT_004"
+          ]
+        },
+        {
+          "scene_id": "SCN_008",
+          "characters": [
+            "MIRA",
+            "NARA"
+          ],
+          "character_ids": [
+            "mira",
+            "nara"
+          ],
+          "location": "INT. SEALED SERVICE SPINE - NIGHT",
+          "location_id": "int_sealed_service_spine_night",
+          "time_of_day": "night",
+          "visual_actions": [
+            "Nara and Mira descend through an unmarked shaft and enter a long corridor buried in the skeleton of the old city. The air is colder here. The metal is older. No civic branding. No surveillance stickers. No official color codes.",
+            "Only old warning paint and layers of dust.",
+            "Mira works on a buried control panel while Nara keeps watch.",
+            "The panel comes alive.",
+            "Nara feels the floor vibrate beneath her boots.",
+            "Somewhere beyond the wall, a deep machine wakes up.",
+            "Nara stares at the words.",
+            "Mira does not answer. She hits the final sequence.",
+            "The gate unlocks."
+          ],
+          "dialogues": [
+            "This line shouldn't have power.",
+            "Does it?",
+            "Enough to hide itself.",
+            "Containment from what?"
+          ],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_008_SHOT_001",
+            "SCN_008_SHOT_002",
+            "SCN_008_SHOT_003",
+            "SCN_008_SHOT_004",
+            "SCN_008_SHOT_005",
+            "SCN_008_SHOT_006",
+            "SCN_008_SHOT_007",
+            "SCN_008_SHOT_008",
+            "SCN_008_SHOT_009"
+          ]
+        },
+        {
+          "scene_id": "SCN_009",
+          "characters": [
+            "NARA",
+            "MIRA"
+          ],
+          "character_ids": [
+            "nara",
+            "mira"
+          ],
+          "location": "INT. EXTERNAL OBSERVATION CHAMBER - CONTINUOUS",
+          "location_id": "int_external_observation_chamber_continuous",
+          "time_of_day": "interior",
+          "visual_actions": [
+            "Massive shutters peel open with the force of an ancient mechanism.",
+            "Beyond the glass: not wasteland. Not total ruin.",
+            "In the distance, across black water and broken towers, there are lights. Organized lights. Moving traffic. Life.",
+            "Nara steps forward, unable to breathe for a second.",
+            "Then she sees something worse.",
+            "Below the chamber, hidden behind the wall structure, industrial pumps drain dark water and chemical waste directly into the lower sectors beneath District Zero.",
+            "Her sector.",
+            "The district is poisoning its own people to preserve the upper city.",
+            "A silent alarm ignites red across the chamber."
+          ],
+          "dialogues": [
+            "They lied.",
+            "We need to go. Now."
+          ],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_009_SHOT_001",
+            "SCN_009_SHOT_002",
+            "SCN_009_SHOT_003",
+            "SCN_009_SHOT_004",
+            "SCN_009_SHOT_005",
+            "SCN_009_SHOT_006",
+            "SCN_009_SHOT_007",
+            "SCN_009_SHOT_008",
+            "SCN_009_SHOT_009"
+          ]
+        },
+        {
+          "scene_id": "SCN_010",
+          "characters": [],
+          "character_ids": [],
+          "location": "INT. SERVICE SPINE - CONTINUOUS",
+          "location_id": "int_service_spine_continuous",
+          "time_of_day": "interior",
+          "visual_actions": [
+            "Security shutters begin to slam down one by one along the corridor.",
+            "Nara and Mira sprint through narrowing gaps as white tactical lights flare behind them.",
+            "At the far end, black-armored units pour into the shaft entrance.",
+            "VALE (V.O. OVER COMMS)",
+            "Nara Voss. Stop running. The truth is not what you think it is.",
+            "She keeps moving.",
+            "Mira veers off through a side maintenance duct and vanishes.",
+            "Nara barely escapes as a blast door crashes between her and the security team."
+          ],
+          "dialogues": [],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_010_SHOT_001",
+            "SCN_010_SHOT_002",
+            "SCN_010_SHOT_003",
+            "SCN_010_SHOT_004",
+            "SCN_010_SHOT_005",
+            "SCN_010_SHOT_006",
+            "SCN_010_SHOT_007",
+            "SCN_010_SHOT_008"
+          ]
+        },
+        {
+          "scene_id": "SCN_011",
+          "characters": [
+            "NARA",
+            "ELIAN",
+            "END OF EPISODE 1"
+          ],
+          "character_ids": [
+            "nara",
+            "elian",
+            "end_of_episode_1"
+          ],
+          "location": "INT. VOSS APARTMENT - PRE-DAWN",
+          "location_id": "int_voss_apartment_pre_dawn",
+          "time_of_day": "dawn",
+          "visual_actions": [
+            "Nara enters, soaked, breathless, shaken to the core.",
+            "Elian is awake. Waiting. He sees her face and knows immediately that the secret is gone.",
+            "Elian closes his eyes.",
+            "He cannot deny it anymore.",
+            "Nara recoils as if he hit her.",
+            "Nara backs away from him, devastated.",
+            "They hear drones outside the building.",
+            "Blue-white search light spills through the slit window.",
+            "Elian moves fast for the first time in years. He opens a hidden panel beneath the table and removes an old encrypted drive.",
+            "He presses it into her hand.",
+            "He looks at her with a terrible clarity.",
+            "Heavy boots pound outside the apartment door.",
+            "Nara grips the drive so hard her hand trembles.",
+            "The door detonates inward.",
+            "SMASH CUT TO BLACK."
+          ],
+          "dialogues": [
+            "There are people outside the wall.",
+            "And they're dumping poison into the lower sectors.",
+            "I helped design part of the flow control system.",
+            "I thought it was temporary. I thought it was the cost of survival until they stabilized the city.",
+            "How long?",
+            "Long enough that temporary became policy.",
+            "How many people know?",
+            "The people who matter.",
+            "If they take me, this is the only thing that proves the system was built this way.",
+            "Go to the freight tunnels. Find the relay called Lantern. Ask for Mira Sol.",
+            "Come with me.",
+            "If I run, they confirm everything.",
+            "If you run, they still have a chance of losing you.",
+            "Open the city."
+          ],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_011_SHOT_001",
+            "SCN_011_SHOT_002",
+            "SCN_011_SHOT_003",
+            "SCN_011_SHOT_004",
+            "SCN_011_SHOT_005",
+            "SCN_011_SHOT_006",
+            "SCN_011_SHOT_007",
+            "SCN_011_SHOT_008",
+            "SCN_011_SHOT_009",
+            "SCN_011_SHOT_010",
+            "SCN_011_SHOT_011",
+            "SCN_011_SHOT_012",
+            "SCN_011_SHOT_013",
+            "SCN_011_SHOT_014",
+            "SCN_011_SHOT_015"
+          ]
+        }
+      ],
+      "shots": [
+        {
+          "shot_id": "SCN_001_SHOT_001",
+          "scene_id": "SCN_001",
+          "prompt": "Black seawater slams against a colossal seawall wrapped in defensive lights. Beyond it, the drowned skeleton of the old megacity disappears into storm and darkness, in EXT. DISTRICT ZERO OUTER WALL - NIGHT.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "black",
+            "action_type": "seawater",
+            "target": "defensive lights beyond it drowned skeleton of old megacity disappears into storm and darkness",
+            "modifiers": [],
+            "location_id": "ext_district_zero_outer_wall_night",
+            "camera_intent": "static",
+            "source_text": "Black seawater slams against a colossal seawall wrapped in defensive lights. Beyond it, the drowned skeleton of the old megacity disappears into storm and darkness."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_001_SHOT_002",
+          "scene_id": "SCN_001",
+          "prompt": "The wall hums with power. Search beams sweep across the waves like prison lights, in EXT. DISTRICT ZERO OUTER WALL - NIGHT.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "wall",
+            "action_type": "hums",
+            "target": null,
+            "modifiers": [],
+            "location_id": "ext_district_zero_outer_wall_night",
+            "camera_intent": "static",
+            "source_text": "The wall hums with power. Search beams sweep across the waves like prison lights."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_002_SHOT_001",
+          "scene_id": "SCN_002",
+          "prompt": "Nara Voss runs through a narrow maintenance corridor with a toolkit strapped across her back. Emergency lights pulse red over wet metal grates, in INT. LOWER TRANSIT STACK - SERVICE CORRIDOR - NIGHT.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "follow",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "voss",
+            "target": "narrow maintenance corridor with toolkit strapped across her back emergency lights pulse red over wet metal grates",
+            "modifiers": [],
+            "location_id": "int_lower_transit_stack_service_corridor_night",
+            "camera_intent": "follow",
+            "source_text": "Nara Voss runs through a narrow maintenance corridor with a toolkit strapped across her back. Emergency lights pulse red over wet metal grates."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_002_SHOT_002",
+          "scene_id": "SCN_002",
+          "prompt": "Her wrist display flashes: PRESSURE DROP - SECTOR C-19, in INT. LOWER TRANSIT STACK - SERVICE CORRIDOR - NIGHT.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "her",
+            "action_type": "wrist",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_lower_transit_stack_service_corridor_night",
+            "camera_intent": "static",
+            "source_text": "Her wrist display flashes: PRESSURE DROP - SECTOR C-19."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_002_SHOT_003",
+          "scene_id": "SCN_002",
+          "prompt": "She moves with the reflexes of someone who has spent her life inside failing machinery, in INT. LOWER TRANSIT STACK - SERVICE CORRIDOR - NIGHT.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "follow",
+          "action": {
+            "subject_id": "she",
+            "action_type": "moves",
+            "target": "failing machinery",
+            "modifiers": [],
+            "location_id": "int_lower_transit_stack_service_corridor_night",
+            "camera_intent": "follow",
+            "source_text": "She moves with the reflexes of someone who has spent her life inside failing machinery."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_002_SHOT_004",
+          "scene_id": "SCN_002",
+          "prompt": "The map of the lower stack flickers. One sealed maintenance route for a fraction of a second, then disappears, in INT. LOWER TRANSIT STACK - SERVICE CORRIDOR - NIGHT.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "map",
+            "action_type": "of",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_lower_transit_stack_service_corridor_night",
+            "camera_intent": "static",
+            "source_text": "The map of the lower stack flickers. One sealed maintenance route appears for a fraction of a second, then disappears."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_002_SHOT_005",
+          "scene_id": "SCN_002",
+          "prompt": "Nara stops, in INT. LOWER TRANSIT STACK - SERVICE CORRIDOR - NIGHT.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "stops",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_lower_transit_stack_service_corridor_night",
+            "camera_intent": "static",
+            "source_text": "Nara stops."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_002_SHOT_006",
+          "scene_id": "SCN_002",
+          "prompt": "Her eyes narrow, in INT. LOWER TRANSIT STACK - SERVICE CORRIDOR - NIGHT.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "close_up",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "her",
+            "action_type": "eyes",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_lower_transit_stack_service_corridor_night",
+            "camera_intent": "static",
+            "source_text": "Her eyes narrow."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_002_SHOT_007",
+          "scene_id": "SCN_002",
+          "prompt": "She screenshots the flicker before the display resets, in INT. LOWER TRANSIT STACK - SERVICE CORRIDOR - NIGHT.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "she",
+            "action_type": "screenshots",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_lower_transit_stack_service_corridor_night",
+            "camera_intent": "static",
+            "source_text": "She screenshots the flicker before the display resets."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_003_SHOT_001",
+          "scene_id": "SCN_003",
+          "prompt": "Steam hisses from a cracked pipe assembly. Two exhausted workers wait at the far end of the chamber, afraid to get too close, in INT. PRESSURE VALVE CHAMBER - NIGHT.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "worker",
+            "action_type": "hisses",
+            "target": "far end of chamber afraid to get too close",
+            "modifiers": [
+              "assembly"
+            ],
+            "location_id": "int_pressure_valve_chamber_night",
+            "camera_intent": "static",
+            "source_text": "Steam hisses from a cracked pipe assembly. Two exhausted workers wait at the far end of the chamber, afraid to get too close."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_003_SHOT_002",
+          "scene_id": "SCN_003",
+          "prompt": "Nara kneels beside the main valve, opens a manual bypass, and stabilizes the pressure line with practiced speed, in INT. PRESSURE VALVE CHAMBER - NIGHT.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "pan",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "kneels",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_pressure_valve_chamber_night",
+            "camera_intent": "pan",
+            "source_text": "Nara kneels beside the main valve, opens a manual bypass, and stabilizes the pressure line with practiced speed."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_003_SHOT_003",
+          "scene_id": "SCN_003",
+          "prompt": "The red alarm dies. White light returns, in INT. PRESSURE VALVE CHAMBER - NIGHT.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "red",
+            "action_type": "alarm",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_pressure_valve_chamber_night",
+            "camera_intent": "static",
+            "source_text": "The red alarm dies. White light returns."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_003_SHOT_004",
+          "scene_id": "SCN_003",
+          "prompt": "Nara barely reacts. Her attention stays on the hidden route image still glowing on her wrist, in INT. PRESSURE VALVE CHAMBER - NIGHT.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "barely",
+            "target": "hidden route image still glowing on her wrist",
+            "modifiers": [
+              "barely"
+            ],
+            "location_id": "int_pressure_valve_chamber_night",
+            "camera_intent": "static",
+            "source_text": "Nara barely reacts. Her attention stays on the hidden route image still glowing on her wrist."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_003_SHOT_005",
+          "scene_id": "SCN_003",
+          "prompt": "That answer lands badly with her, in INT. PRESSURE VALVE CHAMBER - NIGHT.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "that",
+            "action_type": "answer",
+            "target": null,
+            "modifiers": [
+              "badly"
+            ],
+            "location_id": "int_pressure_valve_chamber_night",
+            "camera_intent": "static",
+            "source_text": "That answer lands badly with her."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_004_SHOT_001",
+          "scene_id": "SCN_004",
+          "prompt": "A tiny apartment built into old structural concrete. Pipes run along the ceiling. Filtered city light leaks through a narrow slit window, in INT. VOSS APARTMENT - LOWER STACK - LATE NIGHT.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "follow",
+          "action": {
+            "subject_id": "tiny",
+            "action_type": "apartment",
+            "target": "old structural concrete pipes run along ceiling filtered city light leaks through narrow slit window",
+            "modifiers": [],
+            "location_id": "int_voss_apartment_lower_stack_late_night",
+            "camera_intent": "follow",
+            "source_text": "A tiny apartment built into old structural concrete. Pipes run along the ceiling. Filtered city light leaks through a narrow slit window."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_004_SHOT_002",
+          "scene_id": "SCN_004",
+          "prompt": "Elian Voss sits at the kitchen table, repairing an obsolete circuit board with shaking hands, in INT. VOSS APARTMENT - LOWER STACK - LATE NIGHT.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "pan",
+          "action": {
+            "subject_id": "elian",
+            "action_type": "voss",
+            "target": "kitchen table repairing obsolete circuit board with shaking hands",
+            "modifiers": [],
+            "location_id": "int_voss_apartment_lower_stack_late_night",
+            "camera_intent": "pan",
+            "source_text": "Elian Voss sits at the kitchen table, repairing an obsolete circuit board with shaking hands."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_004_SHOT_003",
+          "scene_id": "SCN_004",
+          "prompt": "Nara drops her toolkit and places her wrist display in front of him, in INT. VOSS APARTMENT - LOWER STACK - LATE NIGHT.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "drops",
+            "target": "front of him",
+            "modifiers": [],
+            "location_id": "int_voss_apartment_lower_stack_late_night",
+            "camera_intent": "static",
+            "source_text": "Nara drops her toolkit and places her wrist display in front of him."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_004_SHOT_004",
+          "scene_id": "SCN_004",
+          "prompt": "The deleted route. Sector C-19. Access spine attached to an unlisted gate, in INT. VOSS APARTMENT - LOWER STACK - LATE NIGHT.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "deleted",
+            "action_type": "route",
+            "target": "unlisted gate",
+            "modifiers": [],
+            "location_id": "int_voss_apartment_lower_stack_late_night",
+            "camera_intent": "static",
+            "source_text": "The deleted route. Sector C-19. Access spine attached to an unlisted gate."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_004_SHOT_005",
+          "scene_id": "SCN_004",
+          "prompt": "Elian freezes before he can hide it, in INT. VOSS APARTMENT - LOWER STACK - LATE NIGHT.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "elian",
+            "action_type": "freezes",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_voss_apartment_lower_stack_late_night",
+            "camera_intent": "static",
+            "source_text": "Elian freezes before he can hide it."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_004_SHOT_006",
+          "scene_id": "SCN_004",
+          "prompt": "Silence, in INT. VOSS APARTMENT - LOWER STACK - LATE NIGHT.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "silence",
+            "action_type": "silence",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_voss_apartment_lower_stack_late_night",
+            "camera_intent": "static",
+            "source_text": "Silence."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_004_SHOT_007",
+          "scene_id": "SCN_004",
+          "prompt": "Nara studies him. This is not fear in the abstract. This is memory, in INT. VOSS APARTMENT - LOWER STACK - LATE NIGHT.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "studies",
+            "target": "abstract this is memory",
+            "modifiers": [],
+            "location_id": "int_voss_apartment_lower_stack_late_night",
+            "camera_intent": "static",
+            "source_text": "Nara studies him. This is not fear in the abstract. This is memory."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_004_SHOT_008",
+          "scene_id": "SCN_004",
+          "prompt": "Elian lowers his voice, in INT. VOSS APARTMENT - LOWER STACK - LATE NIGHT.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "elian",
+            "action_type": "lowers",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_voss_apartment_lower_stack_late_night",
+            "camera_intent": "static",
+            "source_text": "Elian lowers his voice."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_005_SHOT_001",
+          "scene_id": "SCN_005",
+          "prompt": "Clean marble surfaces. Vertical gardens. Public screens. Citizens in neutral uniforms pass through controlled light like a commercial for civilization, in INT. CIVIC ATRIUM - DISTRICT ZERO CENTRAL CORE - MORNING.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "clean",
+            "action_type": "marble",
+            "target": "neutral uniforms pass through controlled light like commercial for civilization",
+            "modifiers": [],
+            "location_id": "int_civic_atrium_district_zero_central_core_morning",
+            "camera_intent": "static",
+            "source_text": "Clean marble surfaces. Vertical gardens. Public screens. Citizens in neutral uniforms pass through controlled light like a commercial for civilization."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_005_SHOT_002",
+          "scene_id": "SCN_005",
+          "prompt": "On a giant screen, Director Halden Rook addresses the district with reassuring authority, in INT. CIVIC ATRIUM - DISTRICT ZERO CENTRAL CORE - MORNING.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "on",
+            "action_type": "a",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_civic_atrium_district_zero_central_core_morning",
+            "camera_intent": "static",
+            "source_text": "On a giant screen, Director Halden Rook addresses the district with reassuring authority."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_005_SHOT_003",
+          "scene_id": "SCN_005",
+          "prompt": "Commander Sarin Vale watches from a glass balcony above the crowd. Still. Analytical. He does not watch the speech. He watches reactions, in INT. CIVIC ATRIUM - DISTRICT ZERO CENTRAL CORE - MORNING.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "vale",
+            "action_type": "sarin",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_civic_atrium_district_zero_central_core_morning",
+            "camera_intent": "static",
+            "source_text": "Commander Sarin Vale watches from a glass balcony above the crowd. Still. Analytical. He does not watch the speech. He watches reactions."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_005_SHOT_004",
+          "scene_id": "SCN_005",
+          "prompt": "An aide steps beside him and hands him a tablet, in INT. CIVIC ATRIUM - DISTRICT ZERO CENTRAL CORE - MORNING.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "follow",
+          "action": {
+            "subject_id": "aide",
+            "action_type": "steps",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_civic_atrium_district_zero_central_core_morning",
+            "camera_intent": "follow",
+            "source_text": "An aide steps beside him and hands him a tablet."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_005_SHOT_005",
+          "scene_id": "SCN_005",
+          "prompt": "Unauthorized map capture detected. User ID: NARA VOSS. Sector C-19, in INT. CIVIC ATRIUM - DISTRICT ZERO CENTRAL CORE - MORNING.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "unauthorized",
+            "action_type": "map",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_civic_atrium_district_zero_central_core_morning",
+            "camera_intent": "static",
+            "source_text": "Unauthorized map capture detected. User ID: NARA VOSS. Sector C-19."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_005_SHOT_006",
+          "scene_id": "SCN_005",
+          "prompt": "Vale reads it once, in INT. CIVIC ATRIUM - DISTRICT ZERO CENTRAL CORE - MORNING.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "vale",
+            "action_type": "reads",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_civic_atrium_district_zero_central_core_morning",
+            "camera_intent": "static",
+            "source_text": "Vale reads it once."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_006_SHOT_001",
+          "scene_id": "SCN_006",
+          "prompt": "An illegal signal market lives inside an abandoned ventilation chamber beneath the transit network. Smugglers trade in batteries, access codes, raw medicine, and forbidden data, in INT. BLACK MARKET EXCHANGE - VENTILATION SUBLEVEL - DAY.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "illegal",
+            "action_type": "signal",
+            "target": "abandoned ventilation chamber beneath transit network smugglers trade in batteries access codes raw medicine and forbidden data",
+            "modifiers": [],
+            "location_id": "int_black_market_exchange_ventilation_sublevel_day",
+            "camera_intent": "static",
+            "source_text": "An illegal signal market lives inside an abandoned ventilation chamber beneath the transit network. Smugglers trade in batteries, access codes, raw medicine, and forbidden data."
+          },
+          "metadata": {
+            "time_of_day_visual": "day",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_006_SHOT_002",
+          "scene_id": "SCN_006",
+          "prompt": "Mira Sol leans behind a makeshift counter of cracked screens and signal relays, in INT. BLACK MARKET EXCHANGE - VENTILATION SUBLEVEL - DAY.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "mira",
+            "action_type": "sol",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_black_market_exchange_ventilation_sublevel_day",
+            "camera_intent": "static",
+            "source_text": "Mira Sol leans behind a makeshift counter of cracked screens and signal relays."
+          },
+          "metadata": {
+            "time_of_day_visual": "day",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_006_SHOT_003",
+          "scene_id": "SCN_006",
+          "prompt": "Nara shows her the captured route, in INT. BLACK MARKET EXCHANGE - VENTILATION SUBLEVEL - DAY.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "shows",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_black_market_exchange_ventilation_sublevel_day",
+            "camera_intent": "static",
+            "source_text": "Nara shows her the captured route."
+          },
+          "metadata": {
+            "time_of_day_visual": "day",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_006_SHOT_004",
+          "scene_id": "SCN_006",
+          "prompt": "Mira scans the image, then looks up sharply, in INT. BLACK MARKET EXCHANGE - VENTILATION SUBLEVEL - DAY.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "mira",
+            "action_type": "scans",
+            "target": null,
+            "modifiers": [
+              "sharply"
+            ],
+            "location_id": "int_black_market_exchange_ventilation_sublevel_day",
+            "camera_intent": "static",
+            "source_text": "Mira scans the image, then looks up sharply."
+          },
+          "metadata": {
+            "time_of_day_visual": "day",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_006_SHOT_005",
+          "scene_id": "SCN_006",
+          "prompt": "Mira overlays stolen archive fragments onto Nara's map, in INT. BLACK MARKET EXCHANGE - VENTILATION SUBLEVEL - DAY.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "mira",
+            "action_type": "overlays",
+            "target": "nara's map",
+            "modifiers": [],
+            "location_id": "int_black_market_exchange_ventilation_sublevel_day",
+            "camera_intent": "static",
+            "source_text": "Mira overlays stolen archive fragments onto Nara's map."
+          },
+          "metadata": {
+            "time_of_day_visual": "day",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_006_SHOT_006",
+          "scene_id": "SCN_006",
+          "prompt": "A new geometry : a sealed service spine leading toward the outer wall, in INT. BLACK MARKET EXCHANGE - VENTILATION SUBLEVEL - DAY.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "new",
+            "action_type": "geometry",
+            "target": "outer wall",
+            "modifiers": [],
+            "location_id": "int_black_market_exchange_ventilation_sublevel_day",
+            "camera_intent": "static",
+            "source_text": "A new geometry appears: a sealed service spine leading toward the outer wall."
+          },
+          "metadata": {
+            "time_of_day_visual": "day",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_007_SHOT_001",
+          "scene_id": "SCN_007",
+          "prompt": "Rows of analysts monitor citizen movement, utility flow, and predictive risk models across the district, in INT. SECURITY OPERATIONS CENTER - DAY.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "analyst",
+            "action_type": "of",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_security_operations_center_day",
+            "camera_intent": "static",
+            "source_text": "Rows of analysts monitor citizen movement, utility flow, and predictive risk models across the district."
+          },
+          "metadata": {
+            "time_of_day_visual": "day",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_007_SHOT_002",
+          "scene_id": "SCN_007",
+          "prompt": "Vale stands before an enormous live city schematic, in INT. SECURITY OPERATIONS CENTER - DAY.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "vale",
+            "action_type": "stands",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_security_operations_center_day",
+            "camera_intent": "static",
+            "source_text": "Vale stands before an enormous live city schematic."
+          },
+          "metadata": {
+            "time_of_day_visual": "day",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_007_SHOT_003",
+          "scene_id": "SCN_007",
+          "prompt": "Nara's movement history blooms across the display, in INT. SECURITY OPERATIONS CENTER - DAY.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara_s",
+            "action_type": "movement",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_security_operations_center_day",
+            "camera_intent": "static",
+            "source_text": "Nara's movement history blooms across the display."
+          },
+          "metadata": {
+            "time_of_day_visual": "day",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_007_SHOT_004",
+          "scene_id": "SCN_007",
+          "prompt": "Vale watches the projected path converge toward the outer sectors, in INT. SECURITY OPERATIONS CENTER - DAY.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "vale",
+            "action_type": "watches",
+            "target": "outer sectors",
+            "modifiers": [],
+            "location_id": "int_security_operations_center_day",
+            "camera_intent": "static",
+            "source_text": "Vale watches the projected path converge toward the outer sectors."
+          },
+          "metadata": {
+            "time_of_day_visual": "day",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_008_SHOT_001",
+          "scene_id": "SCN_008",
+          "prompt": "Nara and Mira descend through an unmarked shaft and enter a long corridor buried in the skeleton of the old city. The air is colder here. The metal is older. No civic branding. No surveillance stickers. No official color codes, in INT. SEALED SERVICE SPINE - NIGHT.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "follow",
+          "action": {
+            "subject_id": "mira",
+            "action_type": "and",
+            "target": "unmarked shaft and enter long corridor buried in skeleton of old city air is colder here metal is older no civic branding no surveillance stickers no official color codes",
+            "modifiers": [],
+            "location_id": "int_sealed_service_spine_night",
+            "camera_intent": "follow",
+            "source_text": "Nara and Mira descend through an unmarked shaft and enter a long corridor buried in the skeleton of the old city. The air is colder here. The metal is older. No civic branding. No surveillance stickers. No official color codes."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_008_SHOT_002",
+          "scene_id": "SCN_008",
+          "prompt": "Only old warning paint and layers of dust, in INT. SEALED SERVICE SPINE - NIGHT.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "only",
+            "action_type": "warning",
+            "target": null,
+            "modifiers": [
+              "only"
+            ],
+            "location_id": "int_sealed_service_spine_night",
+            "camera_intent": "static",
+            "source_text": "Only old warning paint and layers of dust."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_008_SHOT_003",
+          "scene_id": "SCN_008",
+          "prompt": "Mira works on a buried control panel while Nara keeps watch, in INT. SEALED SERVICE SPINE - NIGHT.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "mira",
+            "action_type": "works",
+            "target": "buried control panel while nara keeps watch",
+            "modifiers": [],
+            "location_id": "int_sealed_service_spine_night",
+            "camera_intent": "static",
+            "source_text": "Mira works on a buried control panel while Nara keeps watch."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_008_SHOT_004",
+          "scene_id": "SCN_008",
+          "prompt": "The panel comes alive, in INT. SEALED SERVICE SPINE - NIGHT.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "panel",
+            "action_type": "comes",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_sealed_service_spine_night",
+            "camera_intent": "static",
+            "source_text": "The panel comes alive."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_008_SHOT_005",
+          "scene_id": "SCN_008",
+          "prompt": "Nara feels the floor vibrate beneath her boots, in INT. SEALED SERVICE SPINE - NIGHT.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "feels",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_sealed_service_spine_night",
+            "camera_intent": "static",
+            "source_text": "Nara feels the floor vibrate beneath her boots."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_008_SHOT_006",
+          "scene_id": "SCN_008",
+          "prompt": "Somewhere beyond the wall, a deep machine wakes up, in INT. SEALED SERVICE SPINE - NIGHT.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "somewhere",
+            "action_type": "beyond",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_sealed_service_spine_night",
+            "camera_intent": "static",
+            "source_text": "Somewhere beyond the wall, a deep machine wakes up."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_008_SHOT_007",
+          "scene_id": "SCN_008",
+          "prompt": "Nara stares at the words, in INT. SEALED SERVICE SPINE - NIGHT.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "close_up",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "stares",
+            "target": "words",
+            "modifiers": [],
+            "location_id": "int_sealed_service_spine_night",
+            "camera_intent": "static",
+            "source_text": "Nara stares at the words."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_008_SHOT_008",
+          "scene_id": "SCN_008",
+          "prompt": "Mira does not answer. She hits the final sequence, in INT. SEALED SERVICE SPINE - NIGHT.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "mira",
+            "action_type": "not",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_sealed_service_spine_night",
+            "camera_intent": "static",
+            "source_text": "Mira does not answer. She hits the final sequence."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_008_SHOT_009",
+          "scene_id": "SCN_008",
+          "prompt": "The gate unlocks, in INT. SEALED SERVICE SPINE - NIGHT.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "gate",
+            "action_type": "unlocks",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_sealed_service_spine_night",
+            "camera_intent": "static",
+            "source_text": "The gate unlocks."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_009_SHOT_001",
+          "scene_id": "SCN_009",
+          "prompt": "Massive shutters peel open with the force of an ancient mechanism, in INT. EXTERNAL OBSERVATION CHAMBER - CONTINUOUS.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "pan",
+          "action": {
+            "subject_id": "massive",
+            "action_type": "shutters",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_external_observation_chamber_continuous",
+            "camera_intent": "pan",
+            "source_text": "Massive shutters peel open with the force of an ancient mechanism."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_009_SHOT_002",
+          "scene_id": "SCN_009",
+          "prompt": "Beyond the glass: not wasteland. Not total ruin, in INT. EXTERNAL OBSERVATION CHAMBER - CONTINUOUS.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "beyond",
+            "action_type": "the",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_external_observation_chamber_continuous",
+            "camera_intent": "static",
+            "source_text": "Beyond the glass: not wasteland. Not total ruin."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_009_SHOT_003",
+          "scene_id": "SCN_009",
+          "prompt": "In the distance, across black water and broken towers, there are lights. Organized lights. Moving traffic. Life, in INT. EXTERNAL OBSERVATION CHAMBER - CONTINUOUS.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "in",
+            "action_type": "the",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_external_observation_chamber_continuous",
+            "camera_intent": "static",
+            "source_text": "In the distance, across black water and broken towers, there are lights. Organized lights. Moving traffic. Life."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_009_SHOT_004",
+          "scene_id": "SCN_009",
+          "prompt": "Nara steps forward, unable to breathe for a second, in INT. EXTERNAL OBSERVATION CHAMBER - CONTINUOUS.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "follow",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "steps",
+            "target": "breathe for second",
+            "modifiers": [],
+            "location_id": "int_external_observation_chamber_continuous",
+            "camera_intent": "follow",
+            "source_text": "Nara steps forward, unable to breathe for a second."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_009_SHOT_005",
+          "scene_id": "SCN_009",
+          "prompt": "Then she sees something worse, in INT. EXTERNAL OBSERVATION CHAMBER - CONTINUOUS.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "then",
+            "action_type": "she",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_external_observation_chamber_continuous",
+            "camera_intent": "static",
+            "source_text": "Then she sees something worse."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_009_SHOT_006",
+          "scene_id": "SCN_009",
+          "prompt": "Below the chamber, hidden behind the wall structure, industrial pumps drain dark water and chemical waste directly into the lower sectors beneath District Zero, in INT. EXTERNAL OBSERVATION CHAMBER - CONTINUOUS.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "below",
+            "action_type": "the",
+            "target": "lower sectors beneath district zero",
+            "modifiers": [
+              "directly"
+            ],
+            "location_id": "int_external_observation_chamber_continuous",
+            "camera_intent": "static",
+            "source_text": "Below the chamber, hidden behind the wall structure, industrial pumps drain dark water and chemical waste directly into the lower sectors beneath District Zero."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_009_SHOT_007",
+          "scene_id": "SCN_009",
+          "prompt": "Her sector, in INT. EXTERNAL OBSERVATION CHAMBER - CONTINUOUS.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "her",
+            "action_type": "sector",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_external_observation_chamber_continuous",
+            "camera_intent": "static",
+            "source_text": "Her sector."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_009_SHOT_008",
+          "scene_id": "SCN_009",
+          "prompt": "The district is poisoning its own people to preserve the upper city, in INT. EXTERNAL OBSERVATION CHAMBER - CONTINUOUS.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "district",
+            "action_type": "poisoning",
+            "target": "preserve upper city",
+            "modifiers": [],
+            "location_id": "int_external_observation_chamber_continuous",
+            "camera_intent": "static",
+            "source_text": "The district is poisoning its own people to preserve the upper city."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_009_SHOT_009",
+          "scene_id": "SCN_009",
+          "prompt": "A silent alarm ignites red across the chamber, in INT. EXTERNAL OBSERVATION CHAMBER - CONTINUOUS.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "silent",
+            "action_type": "alarm",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_external_observation_chamber_continuous",
+            "camera_intent": "static",
+            "source_text": "A silent alarm ignites red across the chamber."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_010_SHOT_001",
+          "scene_id": "SCN_010",
+          "prompt": "Security shutters begin to slam down one by one along the corridor, in INT. SERVICE SPINE - CONTINUOUS.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "security",
+            "action_type": "shutters",
+            "target": "slam down one by one along corridor",
+            "modifiers": [],
+            "location_id": "int_service_spine_continuous",
+            "camera_intent": "static",
+            "source_text": "Security shutters begin to slam down one by one along the corridor."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_010_SHOT_002",
+          "scene_id": "SCN_010",
+          "prompt": "Nara and Mira sprint through narrowing gaps as white tactical lights flare behind them, in INT. SERVICE SPINE - CONTINUOUS.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "and",
+            "target": "narrowing gaps as white tactical lights flare behind them",
+            "modifiers": [],
+            "location_id": "int_service_spine_continuous",
+            "camera_intent": "static",
+            "source_text": "Nara and Mira sprint through narrowing gaps as white tactical lights flare behind them."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_010_SHOT_003",
+          "scene_id": "SCN_010",
+          "prompt": "At the far end, black-armored units pour into the shaft entrance, in INT. SERVICE SPINE - CONTINUOUS.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "at",
+            "action_type": "the",
+            "target": "shaft entrance",
+            "modifiers": [],
+            "location_id": "int_service_spine_continuous",
+            "camera_intent": "static",
+            "source_text": "At the far end, black-armored units pour into the shaft entrance."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_010_SHOT_004",
+          "scene_id": "SCN_010",
+          "prompt": "VALE (V.O. OVER COMMS), in INT. SERVICE SPINE - CONTINUOUS.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "vale",
+            "action_type": "v",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_service_spine_continuous",
+            "camera_intent": "static",
+            "source_text": "VALE (V.O. OVER COMMS)"
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_010_SHOT_005",
+          "scene_id": "SCN_010",
+          "prompt": "Nara Voss. Stop running. The truth is not what you think it is, in INT. SERVICE SPINE - CONTINUOUS.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "voss",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_service_spine_continuous",
+            "camera_intent": "static",
+            "source_text": "Nara Voss. Stop running. The truth is not what you think it is."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_010_SHOT_006",
+          "scene_id": "SCN_010",
+          "prompt": "She keeps moving, in INT. SERVICE SPINE - CONTINUOUS.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "she",
+            "action_type": "keeps",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_service_spine_continuous",
+            "camera_intent": "static",
+            "source_text": "She keeps moving."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_010_SHOT_007",
+          "scene_id": "SCN_010",
+          "prompt": "Mira veers off through a side maintenance duct and vanishes, in INT. SERVICE SPINE - CONTINUOUS.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "mira",
+            "action_type": "veers",
+            "target": "side maintenance duct and vanishes",
+            "modifiers": [],
+            "location_id": "int_service_spine_continuous",
+            "camera_intent": "static",
+            "source_text": "Mira veers off through a side maintenance duct and vanishes."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_010_SHOT_008",
+          "scene_id": "SCN_010",
+          "prompt": "Nara barely escapes as a blast door crashes between her and the security team, in INT. SERVICE SPINE - CONTINUOUS.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "barely",
+            "target": null,
+            "modifiers": [
+              "barely"
+            ],
+            "location_id": "int_service_spine_continuous",
+            "camera_intent": "static",
+            "source_text": "Nara barely escapes as a blast door crashes between her and the security team."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_011_SHOT_001",
+          "scene_id": "SCN_011",
+          "prompt": "Nara enters, soaked, breathless, shaken to the core, in INT. VOSS APARTMENT - PRE-DAWN.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "follow",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "enters",
+            "target": "core",
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "follow",
+            "source_text": "Nara enters, soaked, breathless, shaken to the core."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_011_SHOT_002",
+          "scene_id": "SCN_011",
+          "prompt": "Elian is awake. Waiting. He sees her face and knows immediately that the secret is gone, in INT. VOSS APARTMENT - PRE-DAWN.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "elian",
+            "action_type": "awake",
+            "target": null,
+            "modifiers": [
+              "immediately"
+            ],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "static",
+            "source_text": "Elian is awake. Waiting. He sees her face and knows immediately that the secret is gone."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_011_SHOT_003",
+          "scene_id": "SCN_011",
+          "prompt": "Elian closes his eyes, in INT. VOSS APARTMENT - PRE-DAWN.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "close_up",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "elian",
+            "action_type": "closes",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "static",
+            "source_text": "Elian closes his eyes."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_011_SHOT_004",
+          "scene_id": "SCN_011",
+          "prompt": "He cannot deny it anymore, in INT. VOSS APARTMENT - PRE-DAWN.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "he",
+            "action_type": "cannot",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "static",
+            "source_text": "He cannot deny it anymore."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_011_SHOT_005",
+          "scene_id": "SCN_011",
+          "prompt": "Nara recoils as if he hit her, in INT. VOSS APARTMENT - PRE-DAWN.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "recoils",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "static",
+            "source_text": "Nara recoils as if he hit her."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_011_SHOT_006",
+          "scene_id": "SCN_011",
+          "prompt": "Nara backs away from him, devastated, in INT. VOSS APARTMENT - PRE-DAWN.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "backs",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "static",
+            "source_text": "Nara backs away from him, devastated."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_011_SHOT_007",
+          "scene_id": "SCN_011",
+          "prompt": "They hear drones outside the building, in INT. VOSS APARTMENT - PRE-DAWN.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "they",
+            "action_type": "hear",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "static",
+            "source_text": "They hear drones outside the building."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_011_SHOT_008",
+          "scene_id": "SCN_011",
+          "prompt": "Blue-white search light spills through the slit window, in INT. VOSS APARTMENT - PRE-DAWN.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "blue",
+            "action_type": "white",
+            "target": "slit window",
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "static",
+            "source_text": "Blue-white search light spills through the slit window."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_011_SHOT_009",
+          "scene_id": "SCN_011",
+          "prompt": "Elian moves fast for the first time in years. He opens a hidden panel beneath the table and removes an old encrypted drive, in INT. VOSS APARTMENT - PRE-DAWN.",
+          "duration_sec": 6,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "follow",
+          "action": {
+            "subject_id": "elian",
+            "action_type": "moves",
+            "target": "years he opens hidden panel beneath table and removes old encrypted drive",
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "follow",
+            "source_text": "Elian moves fast for the first time in years. He opens a hidden panel beneath the table and removes an old encrypted drive."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_011_SHOT_010",
+          "scene_id": "SCN_011",
+          "prompt": "He presses it into her hand, in INT. VOSS APARTMENT - PRE-DAWN.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "pan",
+          "action": {
+            "subject_id": "he",
+            "action_type": "presses",
+            "target": "her hand",
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "pan",
+            "source_text": "He presses it into her hand."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_011_SHOT_011",
+          "scene_id": "SCN_011",
+          "prompt": "He looks at her with a terrible clarity, in INT. VOSS APARTMENT - PRE-DAWN.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "he",
+            "action_type": "looks",
+            "target": "her with terrible clarity",
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "static",
+            "source_text": "He looks at her with a terrible clarity."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_011_SHOT_012",
+          "scene_id": "SCN_011",
+          "prompt": "Heavy boots pound outside the apartment door, in INT. VOSS APARTMENT - PRE-DAWN.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "heavy",
+            "action_type": "boots",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "static",
+            "source_text": "Heavy boots pound outside the apartment door."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_011_SHOT_013",
+          "scene_id": "SCN_011",
+          "prompt": "Nara grips the drive so hard her hand trembles, in INT. VOSS APARTMENT - PRE-DAWN.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "pan",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "grips",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "pan",
+            "source_text": "Nara grips the drive so hard her hand trembles."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_011_SHOT_014",
+          "scene_id": "SCN_011",
+          "prompt": "The door detonates inward, in INT. VOSS APARTMENT - PRE-DAWN.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "door",
+            "action_type": "detonates",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "static",
+            "source_text": "The door detonates inward."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient"
+          }
+        },
+        {
+          "shot_id": "SCN_011_SHOT_015",
+          "scene_id": "SCN_011",
+          "prompt": "SMASH CUT TO BLACK, in INT. VOSS APARTMENT - PRE-DAWN.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "smash",
+            "action_type": "cut",
+            "target": "black",
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "static",
+            "source_text": "SMASH CUT TO BLACK."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient"
+          }
+        }
+      ]
+    }
+  ]
+}

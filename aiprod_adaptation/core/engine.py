@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import sys
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 import structlog
 
@@ -24,6 +24,20 @@ structlog.configure(
 )
 
 logger = structlog.get_logger()
+
+PipelineMode = Literal["auto", "deterministic", "generative"]
+
+
+def _validate_pipeline_mode(pipeline_mode: str) -> PipelineMode:
+    if pipeline_mode == "auto":
+        return "auto"
+    if pipeline_mode == "deterministic":
+        return "deterministic"
+    if pipeline_mode == "generative":
+        return "generative"
+    raise ValueError(
+        "pipeline_mode must be one of 'auto', 'deterministic', or 'generative'."
+    )
 
 
 def _apply_continuity_enrichment(
@@ -48,6 +62,8 @@ def run_pipeline(
     llm: LLMAdapter | None = None,
     character_descriptions: dict[str, str] | None = None,
     budget: ProductionBudget | None = None,
+    require_llm: bool = False,
+    pipeline_mode: PipelineMode = "auto",
 ) -> AIPRODOutput:
     from aiprod_adaptation.core.adaptation.classifier import InputClassifier
     from aiprod_adaptation.core.adaptation.llm_adapter import NullLLMAdapter
@@ -65,6 +81,17 @@ def run_pipeline(
     effective_llm = llm if llm is not None else NullLLMAdapter()
     _budget = budget if budget is not None else ProductionBudget.for_short()
     input_type = InputClassifier().classify(text)
+    resolved_mode = _validate_pipeline_mode(pipeline_mode)
+    logger.info("pipeline_mode_selected", pipeline_mode=resolved_mode, input_type=input_type)
+
+    if (
+        resolved_mode == "generative"
+        and input_type != "script"
+        and isinstance(effective_llm, NullLLMAdapter)
+    ):
+        raise ValueError(
+            "Generative mode requires a non-null LLM adapter for novel extraction."
+        )
 
     if input_type == "script":
         logger.debug("pass1_start", path="script")
@@ -72,11 +99,19 @@ def run_pipeline(
         logger.info("pass1_complete", scene_count=len(scenes_pass2), path="script")
     else:
         logger.debug("pass1_start", path="novel")
-        scenes_llm = StoryExtractor().extract_all(effective_llm, text, _budget)
+        use_llm_path = resolved_mode != "deterministic"
+        if use_llm_path:
+            scenes_llm = StoryExtractor().extract_all(effective_llm, text, _budget)
+        else:
+            scenes_llm = []
         if scenes_llm:
             scenes_pass2 = scenes_llm
             logger.info("pass1_complete", scene_count=len(scenes_pass2), path="novel_llm")
         else:
+            if require_llm or resolved_mode == "generative":
+                raise ValueError(
+                    "LLM extraction produced no scenes; rule-based fallback is disabled."
+                )
             # Fallback: rule-based pipeline (NullLLMAdapter path / CI)
             scenes_pass1 = segment(text)
             logger.info("pass1_complete", scene_count=len(scenes_pass1), path="novel_rules")
@@ -113,8 +148,19 @@ def run_pipeline_with_images(
     image_adapter: ImageAdapter | None = None,
     image_base_seed: int | None = None,
     budget: ProductionBudget | None = None,
+    require_llm: bool = False,
+    pipeline_mode: PipelineMode = "auto",
 ) -> tuple[AIPRODOutput, StoryboardOutput | None]:
-    output = run_pipeline(text, title, episode_id, llm, character_descriptions, budget)
+    output = run_pipeline(
+        text,
+        title,
+        episode_id,
+        llm,
+        character_descriptions,
+        budget,
+        require_llm=require_llm,
+        pipeline_mode=pipeline_mode,
+    )
     storyboard: StoryboardOutput | None = None
     if image_adapter is not None:
         from aiprod_adaptation.image_gen.storyboard import StoryboardGenerator
@@ -143,10 +189,20 @@ def run_pipeline_with_video(
     image_base_seed: int | None = None,
     video_adapter: VideoAdapter | None = None,
     budget: ProductionBudget | None = None,
+    require_llm: bool = False,
+    pipeline_mode: PipelineMode = "auto",
 ) -> tuple[AIPRODOutput, StoryboardOutput | None, VideoOutput | None]:
     output, storyboard = run_pipeline_with_images(
-        text, title, episode_id, llm, character_descriptions,
-        image_adapter, image_base_seed, budget,
+        text,
+        title,
+        episode_id,
+        llm,
+        character_descriptions,
+        image_adapter,
+        image_base_seed,
+        budget,
+        require_llm=require_llm,
+        pipeline_mode=pipeline_mode,
     )
     video: VideoOutput | None = None
     if video_adapter is not None and storyboard is not None:
@@ -167,10 +223,21 @@ def run_pipeline_full(
     video_adapter: VideoAdapter | None = None,
     audio_adapter: AudioAdapter | None = None,
     budget: ProductionBudget | None = None,
+    require_llm: bool = False,
+    pipeline_mode: PipelineMode = "auto",
 ) -> tuple[AIPRODOutput, StoryboardOutput | None, VideoOutput | None, ProductionOutput | None]:
     output, storyboard, video = run_pipeline_with_video(
-        text, title, episode_id, llm, character_descriptions,
-        image_adapter, image_base_seed, video_adapter, budget,
+        text,
+        title,
+        episode_id,
+        llm,
+        character_descriptions,
+        image_adapter,
+        image_base_seed,
+        video_adapter,
+        budget,
+        require_llm=require_llm,
+        pipeline_mode=pipeline_mode,
     )
     production: ProductionOutput | None = None
     if audio_adapter is not None and video is not None:

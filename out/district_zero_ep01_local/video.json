@@ -1,0 +1,718 @@
+{
+  "title": "District Zero - Episode 1",
+  "clips": [
+    {
+      "shot_id": "SCN_001_SHOT_001",
+      "video_url": "null://clips/SCN_001_SHOT_001.mp4",
+      "duration_sec": 4,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_001_SHOT_002",
+      "video_url": "null://clips/SCN_001_SHOT_002.mp4",
+      "duration_sec": 4,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_002_SHOT_001",
+      "video_url": "null://clips/SCN_002_SHOT_001.mp4",
+      "duration_sec": 5,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_002_SHOT_002",
+      "video_url": "null://clips/SCN_002_SHOT_002.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_002_SHOT_003",
+      "video_url": "null://clips/SCN_002_SHOT_003.mp4",
+      "duration_sec": 5,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_002_SHOT_004",
+      "video_url": "null://clips/SCN_002_SHOT_004.mp4",
+      "duration_sec": 4,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_002_SHOT_005",
+      "video_url": "null://clips/SCN_002_SHOT_005.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_002_SHOT_006",
+      "video_url": "null://clips/SCN_002_SHOT_006.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_002_SHOT_007",
+      "video_url": "null://clips/SCN_002_SHOT_007.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_003_SHOT_001",
+      "video_url": "null://clips/SCN_003_SHOT_001.mp4",
+      "duration_sec": 4,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_003_SHOT_002",
+      "video_url": "null://clips/SCN_003_SHOT_002.mp4",
+      "duration_sec": 5,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_003_SHOT_003",
+      "video_url": "null://clips/SCN_003_SHOT_003.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_003_SHOT_004",
+      "video_url": "null://clips/SCN_003_SHOT_004.mp4",
+      "duration_sec": 4,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_003_SHOT_005",
+      "video_url": "null://clips/SCN_003_SHOT_005.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_004_SHOT_001",
+      "video_url": "null://clips/SCN_004_SHOT_001.mp4",
+      "duration_sec": 5,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_004_SHOT_002",
+      "video_url": "null://clips/SCN_004_SHOT_002.mp4",
+      "duration_sec": 4,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_004_SHOT_003",
+      "video_url": "null://clips/SCN_004_SHOT_003.mp4",
+      "duration_sec": 4,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_004_SHOT_004",
+      "video_url": "null://clips/SCN_004_SHOT_004.mp4",
+      "duration_sec": 4,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_004_SHOT_005",
+      "video_url": "null://clips/SCN_004_SHOT_005.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_004_SHOT_006",
+      "video_url": "null://clips/SCN_004_SHOT_006.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_004_SHOT_007",
+      "video_url": "null://clips/SCN_004_SHOT_007.mp4",
+      "duration_sec": 4,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_004_SHOT_008",
+      "video_url": "null://clips/SCN_004_SHOT_008.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_005_SHOT_001",
+      "video_url": "null://clips/SCN_005_SHOT_001.mp4",
+      "duration_sec": 4,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_005_SHOT_002",
+      "video_url": "null://clips/SCN_005_SHOT_002.mp4",
+      "duration_sec": 4,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_005_SHOT_003",
+      "video_url": "null://clips/SCN_005_SHOT_003.mp4",
+      "duration_sec": 5,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_005_SHOT_004",
+      "video_url": "null://clips/SCN_005_SHOT_004.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_005_SHOT_005",
+      "video_url": "null://clips/SCN_005_SHOT_005.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_005_SHOT_006",
+      "video_url": "null://clips/SCN_005_SHOT_006.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_006_SHOT_001",
+      "video_url": "null://clips/SCN_006_SHOT_001.mp4",
+      "duration_sec": 4,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_006_SHOT_002",
+      "video_url": "null://clips/SCN_006_SHOT_002.mp4",
+      "duration_sec": 4,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_006_SHOT_003",
+      "video_url": "null://clips/SCN_006_SHOT_003.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_006_SHOT_004",
+      "video_url": "null://clips/SCN_006_SHOT_004.mp4",
+      "duration_sec": 4,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_006_SHOT_005",
+      "video_url": "null://clips/SCN_006_SHOT_005.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_006_SHOT_006",
+      "video_url": "null://clips/SCN_006_SHOT_006.mp4",
+      "duration_sec": 4,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_007_SHOT_001",
+      "video_url": "null://clips/SCN_007_SHOT_001.mp4",
+      "duration_sec": 4,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_007_SHOT_002",
+      "video_url": "null://clips/SCN_007_SHOT_002.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_007_SHOT_003",
+      "video_url": "null://clips/SCN_007_SHOT_003.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_007_SHOT_004",
+      "video_url": "null://clips/SCN_007_SHOT_004.mp4",
+      "duration_sec": 4,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_008_SHOT_001",
+      "video_url": "null://clips/SCN_008_SHOT_001.mp4",
+      "duration_sec": 4,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_008_SHOT_002",
+      "video_url": "null://clips/SCN_008_SHOT_002.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_008_SHOT_003",
+      "video_url": "null://clips/SCN_008_SHOT_003.mp4",
+      "duration_sec": 5,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_008_SHOT_004",
+      "video_url": "null://clips/SCN_008_SHOT_004.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_008_SHOT_005",
+      "video_url": "null://clips/SCN_008_SHOT_005.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_008_SHOT_006",
+      "video_url": "null://clips/SCN_008_SHOT_006.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_008_SHOT_007",
+      "video_url": "null://clips/SCN_008_SHOT_007.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_008_SHOT_008",
+      "video_url": "null://clips/SCN_008_SHOT_008.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_008_SHOT_009",
+      "video_url": "null://clips/SCN_008_SHOT_009.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_009_SHOT_001",
+      "video_url": "null://clips/SCN_009_SHOT_001.mp4",
+      "duration_sec": 5,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_009_SHOT_002",
+      "video_url": "null://clips/SCN_009_SHOT_002.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_009_SHOT_003",
+      "video_url": "null://clips/SCN_009_SHOT_003.mp4",
+      "duration_sec": 4,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_009_SHOT_004",
+      "video_url": "null://clips/SCN_009_SHOT_004.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_009_SHOT_005",
+      "video_url": "null://clips/SCN_009_SHOT_005.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_009_SHOT_006",
+      "video_url": "null://clips/SCN_009_SHOT_006.mp4",
+      "duration_sec": 4,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_009_SHOT_007",
+      "video_url": "null://clips/SCN_009_SHOT_007.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_009_SHOT_008",
+      "video_url": "null://clips/SCN_009_SHOT_008.mp4",
+      "duration_sec": 4,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_009_SHOT_009",
+      "video_url": "null://clips/SCN_009_SHOT_009.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_010_SHOT_001",
+      "video_url": "null://clips/SCN_010_SHOT_001.mp4",
+      "duration_sec": 4,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_010_SHOT_002",
+      "video_url": "null://clips/SCN_010_SHOT_002.mp4",
+      "duration_sec": 4,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_010_SHOT_003",
+      "video_url": "null://clips/SCN_010_SHOT_003.mp4",
+      "duration_sec": 4,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_010_SHOT_004",
+      "video_url": "null://clips/SCN_010_SHOT_004.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_010_SHOT_005",
+      "video_url": "null://clips/SCN_010_SHOT_005.mp4",
+      "duration_sec": 4,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_010_SHOT_006",
+      "video_url": "null://clips/SCN_010_SHOT_006.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_010_SHOT_007",
+      "video_url": "null://clips/SCN_010_SHOT_007.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_010_SHOT_008",
+      "video_url": "null://clips/SCN_010_SHOT_008.mp4",
+      "duration_sec": 4,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_001",
+      "video_url": "null://clips/SCN_011_SHOT_001.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_002",
+      "video_url": "null://clips/SCN_011_SHOT_002.mp4",
+      "duration_sec": 4,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_003",
+      "video_url": "null://clips/SCN_011_SHOT_003.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_004",
+      "video_url": "null://clips/SCN_011_SHOT_004.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_005",
+      "video_url": "null://clips/SCN_011_SHOT_005.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_006",
+      "video_url": "null://clips/SCN_011_SHOT_006.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_007",
+      "video_url": "null://clips/SCN_011_SHOT_007.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_008",
+      "video_url": "null://clips/SCN_011_SHOT_008.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_009",
+      "video_url": "null://clips/SCN_011_SHOT_009.mp4",
+      "duration_sec": 6,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_010",
+      "video_url": "null://clips/SCN_011_SHOT_010.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_011",
+      "video_url": "null://clips/SCN_011_SHOT_011.mp4",
+      "duration_sec": 4,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_012",
+      "video_url": "null://clips/SCN_011_SHOT_012.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_013",
+      "video_url": "null://clips/SCN_011_SHOT_013.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_014",
+      "video_url": "null://clips/SCN_011_SHOT_014.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_015",
+      "video_url": "null://clips/SCN_011_SHOT_015.mp4",
+      "duration_sec": 3,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    }
+  ],
+  "total_shots": 79,
+  "generated": 79
+}

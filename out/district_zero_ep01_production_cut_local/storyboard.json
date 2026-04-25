@@ -1,0 +1,698 @@
+{
+  "title": "District Zero - Episode 1 - Production Cut",
+  "frames": [
+    {
+      "shot_id": "SCN_001_SHOT_001",
+      "scene_id": "SCN_001",
+      "image_url": "null://storyboard/SCN_001_SHOT_001.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Black water slams against the illuminated seawall while the drowned city rots beyond it, in EXT. DISTRICT ZERO OUTER WALL - NIGHT. night lighting. cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 42,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "night",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [],
+      "reference_image_url": ""
+    },
+    {
+      "shot_id": "SCN_001_SHOT_002",
+      "scene_id": "SCN_001",
+      "image_url": "null://storyboard/SCN_001_SHOT_002.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Search beams sweep the waves like prison lights, in EXT. DISTRICT ZERO OUTER WALL - NIGHT. night lighting. cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 43,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "night",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [],
+      "reference_image_url": ""
+    },
+    {
+      "shot_id": "SCN_002_SHOT_001",
+      "scene_id": "SCN_002",
+      "image_url": "null://storyboard/SCN_002_SHOT_001.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Nara Voss runs through a leaking maintenance corridor as her wrist display flashes a pressure alert, in INT. LOWER TRANSIT STACK - SERVICE CORRIDOR - NIGHT. night lighting. NARA cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 44,
+      "shot_type": "wide",
+      "camera_movement": "follow",
+      "time_of_day_visual": "night",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_NARA.png"
+    },
+    {
+      "shot_id": "SCN_002_SHOT_002",
+      "scene_id": "SCN_002",
+      "image_url": "null://storyboard/SCN_002_SHOT_002.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "On the map, a sealed route for a second and vanishes, in INT. LOWER TRANSIT STACK - SERVICE CORRIDOR - NIGHT. night lighting. NARA cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 45,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "night",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_NARA.png"
+    },
+    {
+      "shot_id": "SCN_002_SHOT_003",
+      "scene_id": "SCN_002",
+      "image_url": "null://storyboard/SCN_002_SHOT_003.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "She captures the image and keeps moving, in INT. LOWER TRANSIT STACK - SERVICE CORRIDOR - NIGHT. night lighting. NARA cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 46,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "night",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_NARA.png"
+    },
+    {
+      "shot_id": "SCN_003_SHOT_001",
+      "scene_id": "SCN_003",
+      "image_url": "null://storyboard/SCN_003_SHOT_001.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Nara stabilizes a failing valve while exhausted workers keep their distance, in INT. PRESSURE VALVE CHAMBER - NIGHT. night lighting. WORKER cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 47,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "night",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "WORKER",
+        "NARA"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_WORKER.png"
+    },
+    {
+      "shot_id": "SCN_003_SHOT_002",
+      "scene_id": "SCN_003",
+      "image_url": "null://storyboard/SCN_003_SHOT_002.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "The alarm dies and the chamber returns to white light, in INT. PRESSURE VALVE CHAMBER - NIGHT. night lighting. WORKER cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 48,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "night",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "WORKER",
+        "NARA"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_WORKER.png"
+    },
+    {
+      "shot_id": "SCN_003_SHOT_003",
+      "scene_id": "SCN_003",
+      "image_url": "null://storyboard/SCN_003_SHOT_003.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Nara looks at the hidden route on her wrist and understands that something is wrong, in INT. PRESSURE VALVE CHAMBER - NIGHT. night lighting. WORKER cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 49,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "night",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "WORKER",
+        "NARA"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_WORKER.png"
+    },
+    {
+      "shot_id": "SCN_004_SHOT_001",
+      "scene_id": "SCN_004",
+      "image_url": "null://storyboard/SCN_004_SHOT_001.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "In their cramped apartment, Nara shows the captured route to her father, Elian, in INT. VOSS APARTMENT - LOWER STACK - LATE NIGHT. night lighting. NARA cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 50,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "night",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA",
+        "ELIAN"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_NARA.png"
+    },
+    {
+      "shot_id": "SCN_004_SHOT_002",
+      "scene_id": "SCN_004",
+      "image_url": "null://storyboard/SCN_004_SHOT_002.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "He freezes when he sees the unlisted access spine, in INT. VOSS APARTMENT - LOWER STACK - LATE NIGHT. night lighting. NARA cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 51,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "night",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA",
+        "ELIAN"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_NARA.png"
+    },
+    {
+      "shot_id": "SCN_005_SHOT_001",
+      "scene_id": "SCN_005",
+      "image_url": "null://storyboard/SCN_005_SHOT_001.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Director Halden Rook addresses the district from giant public screens while citizens move through an immaculate civic atrium, in INT. CIVIC ATRIUM - DISTRICT ZERO CENTRAL CORE - MORNING. interior lighting. VALE cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 52,
+      "shot_type": "wide",
+      "camera_movement": "follow",
+      "time_of_day_visual": "interior",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "VALE",
+        "AIDE"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_VALE.png"
+    },
+    {
+      "shot_id": "SCN_005_SHOT_002",
+      "scene_id": "SCN_005",
+      "image_url": "null://storyboard/SCN_005_SHOT_002.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Above them, Commander Sarin Vale watches from a glass balcony as an aide hands him a security alert tied to Nara, in INT. CIVIC ATRIUM - DISTRICT ZERO CENTRAL CORE - MORNING. interior lighting. VALE cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 53,
+      "shot_type": "medium",
+      "camera_movement": "pan",
+      "time_of_day_visual": "interior",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "VALE",
+        "AIDE"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_VALE.png"
+    },
+    {
+      "shot_id": "SCN_006_SHOT_001",
+      "scene_id": "SCN_006",
+      "image_url": "null://storyboard/SCN_006_SHOT_001.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Mira Sol studies Nara's stolen map and overlays it with archived infrastructure, in INT. BLACK MARKET EXCHANGE - VENTILATION SUBLEVEL - DAY. day lighting. LOW LIGHT cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 54,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "day",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "LOW LIGHT",
+        "MIRA",
+        "NARA"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_LOW LIGHT.png"
+    },
+    {
+      "shot_id": "SCN_006_SHOT_002",
+      "scene_id": "SCN_006",
+      "image_url": "null://storyboard/SCN_006_SHOT_002.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "A new route , leading toward the outer wall, in INT. BLACK MARKET EXCHANGE - VENTILATION SUBLEVEL - DAY. day lighting. LOW LIGHT cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 55,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "day",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "LOW LIGHT",
+        "MIRA",
+        "NARA"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_LOW LIGHT.png"
+    },
+    {
+      "shot_id": "SCN_007_SHOT_001",
+      "scene_id": "SCN_007",
+      "image_url": "null://storyboard/SCN_007_SHOT_001.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Analysts track Nara's movement across a live schematic of the city, in INT. SECURITY OPERATIONS CENTER - DAY. day lighting. VALE cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 56,
+      "shot_type": "wide",
+      "camera_movement": "static",
+      "time_of_day_visual": "day",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "VALE"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_VALE.png"
+    },
+    {
+      "shot_id": "SCN_007_SHOT_002",
+      "scene_id": "SCN_007",
+      "image_url": "null://storyboard/SCN_007_SHOT_002.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Vale watches her path converge on the outer sectors and chooses not to stop her, in INT. SECURITY OPERATIONS CENTER - DAY. day lighting. VALE cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 57,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "day",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "VALE"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_VALE.png"
+    },
+    {
+      "shot_id": "SCN_008_SHOT_001",
+      "scene_id": "SCN_008",
+      "image_url": "null://storyboard/SCN_008_SHOT_001.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Nara and Mira descend into an old service corridor buried in the skeleton of the city, in INT. SEALED SERVICE SPINE - NIGHT. night lighting. NARA cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 58,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "night",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_NARA.png"
+    },
+    {
+      "shot_id": "SCN_008_SHOT_002",
+      "scene_id": "SCN_008",
+      "image_url": "null://storyboard/SCN_008_SHOT_002.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Mira powers up a buried control panel while Nara watches the dark passage behind them, in INT. SEALED SERVICE SPINE - NIGHT. night lighting. NARA cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 59,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "night",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_NARA.png"
+    },
+    {
+      "shot_id": "SCN_008_SHOT_003",
+      "scene_id": "SCN_008",
+      "image_url": "null://storyboard/SCN_008_SHOT_003.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "The system identifies an external containment access route, in INT. SEALED SERVICE SPINE - NIGHT. night lighting. NARA cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 60,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "night",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_NARA.png"
+    },
+    {
+      "shot_id": "SCN_008_SHOT_004",
+      "scene_id": "SCN_008",
+      "image_url": "null://storyboard/SCN_008_SHOT_004.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Mira unlocks the gate, in INT. SEALED SERVICE SPINE - NIGHT. night lighting. NARA cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 61,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "night",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_NARA.png"
+    },
+    {
+      "shot_id": "SCN_009_SHOT_001",
+      "scene_id": "SCN_009",
+      "image_url": "null://storyboard/SCN_009_SHOT_001.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Ancient shutters peel open and reveal organized lights far beyond the wall, in INT. EXTERNAL OBSERVATION CHAMBER - CONTINUOUS. interior lighting. NARA cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 62,
+      "shot_type": "medium",
+      "camera_movement": "pan",
+      "time_of_day_visual": "interior",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA",
+        "MIRA"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_NARA.png"
+    },
+    {
+      "shot_id": "SCN_009_SHOT_002",
+      "scene_id": "SCN_009",
+      "image_url": "null://storyboard/SCN_009_SHOT_002.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Nara realizes District Zero lied about the outside world, in INT. EXTERNAL OBSERVATION CHAMBER - CONTINUOUS. interior lighting. NARA cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 63,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "interior",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA",
+        "MIRA"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_NARA.png"
+    },
+    {
+      "shot_id": "SCN_009_SHOT_003",
+      "scene_id": "SCN_009",
+      "image_url": "null://storyboard/SCN_009_SHOT_003.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Then she sees industrial pumps hidden in the wall structure dumping poison into the lower sectors, in INT. EXTERNAL OBSERVATION CHAMBER - CONTINUOUS. interior lighting. NARA cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 64,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "interior",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA",
+        "MIRA"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_NARA.png"
+    },
+    {
+      "shot_id": "SCN_009_SHOT_004",
+      "scene_id": "SCN_009",
+      "image_url": "null://storyboard/SCN_009_SHOT_004.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "A silent alarm floods the chamber red, in INT. EXTERNAL OBSERVATION CHAMBER - CONTINUOUS. interior lighting. NARA cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 65,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "interior",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA",
+        "MIRA"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_NARA.png"
+    },
+    {
+      "shot_id": "SCN_010_SHOT_001",
+      "scene_id": "SCN_010",
+      "image_url": "null://storyboard/SCN_010_SHOT_001.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "At the far end, armed units pour into the shaft entrance, in INT. SERVICE SPINE - CONTINUOUS. interior lighting. HANDHELD FAST cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 66,
+      "shot_type": "wide",
+      "camera_movement": "static",
+      "time_of_day_visual": "interior",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "HANDHELD FAST"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_HANDHELD FAST.png"
+    },
+    {
+      "shot_id": "SCN_010_SHOT_002",
+      "scene_id": "SCN_010",
+      "image_url": "null://storyboard/SCN_010_SHOT_002.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "VALE (V.O. OVER COMMS), in INT. SERVICE SPINE - CONTINUOUS. interior lighting. HANDHELD FAST cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 67,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "interior",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "HANDHELD FAST"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_HANDHELD FAST.png"
+    },
+    {
+      "shot_id": "SCN_010_SHOT_003",
+      "scene_id": "SCN_010",
+      "image_url": "null://storyboard/SCN_010_SHOT_003.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Nara Voss. Stop running. The truth is not what you think it is, in INT. SERVICE SPINE - CONTINUOUS. interior lighting. HANDHELD FAST cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 68,
+      "shot_type": "wide",
+      "camera_movement": "static",
+      "time_of_day_visual": "interior",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "HANDHELD FAST"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_HANDHELD FAST.png"
+    },
+    {
+      "shot_id": "SCN_010_SHOT_004",
+      "scene_id": "SCN_010",
+      "image_url": "null://storyboard/SCN_010_SHOT_004.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Mira disappears into a side duct and Nara escapes behind a closing blast door, in INT. SERVICE SPINE - CONTINUOUS. interior lighting. HANDHELD FAST cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 69,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "interior",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "HANDHELD FAST"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_HANDHELD FAST.png"
+    },
+    {
+      "shot_id": "SCN_011_SHOT_001",
+      "scene_id": "SCN_011",
+      "image_url": "null://storyboard/SCN_011_SHOT_001.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Nara returns home soaked and shaken, in INT. VOSS APARTMENT - PRE-DAWN. dawn lighting. NARA cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 70,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "dawn",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA",
+        "ELIAN",
+        "END OF EPISODE 1"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_NARA.png"
+    },
+    {
+      "shot_id": "SCN_011_SHOT_002",
+      "scene_id": "SCN_011",
+      "image_url": "null://storyboard/SCN_011_SHOT_002.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Elian sees her face and knows the secret is gone, in INT. VOSS APARTMENT - PRE-DAWN. dawn lighting. NARA cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 71,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "dawn",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA",
+        "ELIAN",
+        "END OF EPISODE 1"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_NARA.png"
+    },
+    {
+      "shot_id": "SCN_011_SHOT_003",
+      "scene_id": "SCN_011",
+      "image_url": "null://storyboard/SCN_011_SHOT_003.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Nara recoils as the truth lands between them, in INT. VOSS APARTMENT - PRE-DAWN. dawn lighting. NARA cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 72,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "dawn",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA",
+        "ELIAN",
+        "END OF EPISODE 1"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_NARA.png"
+    },
+    {
+      "shot_id": "SCN_011_SHOT_004",
+      "scene_id": "SCN_011",
+      "image_url": "null://storyboard/SCN_011_SHOT_004.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "He gives her an encrypted drive, in INT. VOSS APARTMENT - PRE-DAWN. dawn lighting. NARA cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 73,
+      "shot_type": "medium",
+      "camera_movement": "pan",
+      "time_of_day_visual": "dawn",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA",
+        "ELIAN",
+        "END OF EPISODE 1"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_NARA.png"
+    },
+    {
+      "shot_id": "SCN_011_SHOT_005",
+      "scene_id": "SCN_011",
+      "image_url": "null://storyboard/SCN_011_SHOT_005.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Heavy boots pound outside the apartment door, in INT. VOSS APARTMENT - PRE-DAWN. dawn lighting. NARA cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 74,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "dawn",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA",
+        "ELIAN",
+        "END OF EPISODE 1"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_NARA.png"
+    },
+    {
+      "shot_id": "SCN_011_SHOT_006",
+      "scene_id": "SCN_011",
+      "image_url": "null://storyboard/SCN_011_SHOT_006.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "The door detonates inward, in INT. VOSS APARTMENT - PRE-DAWN. dawn lighting. NARA cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 75,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "dawn",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA",
+        "ELIAN",
+        "END OF EPISODE 1"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_NARA.png"
+    },
+    {
+      "shot_id": "SCN_011_SHOT_007",
+      "scene_id": "SCN_011",
+      "image_url": "null://storyboard/SCN_011_SHOT_007.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "SMASH CUT TO BLACK, in INT. VOSS APARTMENT - PRE-DAWN. dawn lighting. NARA cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 76,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "dawn",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA",
+        "ELIAN",
+        "END OF EPISODE 1"
+      ],
+      "reference_image_url": "null://storyboard/PREPASS_NARA.png"
+    }
+  ],
+  "style_token": "cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+  "total_shots": 35,
+  "generated": 35
+}

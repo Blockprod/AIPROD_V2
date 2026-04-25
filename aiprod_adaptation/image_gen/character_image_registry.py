@@ -13,23 +13,34 @@ class CharacterImageRegistry:
         self._registry: dict[str, str] = {}
         self._prompts: dict[str, str] = {}
 
-    def register(self, character: str, image_url: str) -> None:
+    @staticmethod
+    def _key(character: str) -> str:
+        return " ".join(character.lower().replace("_", " ").split())
+
+    def register(self, character: str, image_url: str, overwrite: bool = False) -> None:
         """Store image_url for character only if not already registered."""
-        if character not in self._registry:
-            self._registry[character] = image_url
+        key = self._key(character)
+        if overwrite or key not in self._registry:
+            self._registry[key] = image_url
 
     def get_reference(self, character: str) -> str:
         """Return image_url for character, or empty string if unknown."""
-        return self._registry.get(character, "")
+        return self._registry.get(self._key(character), "")
 
-    def register_prompt(self, character: str, canonical_prompt: str) -> None:
+    def register_prompt(
+        self,
+        character: str,
+        canonical_prompt: str,
+        overwrite: bool = False,
+    ) -> None:
         """Store canonical_prompt for character only if not already registered."""
-        if character not in self._prompts:
-            self._prompts[character] = canonical_prompt
+        key = self._key(character)
+        if overwrite or key not in self._prompts:
+            self._prompts[key] = canonical_prompt
 
     def get_canonical_prompt(self, character: str) -> str:
         """Return canonical_prompt for character, or empty string if unknown."""
-        return self._prompts.get(character, "")
+        return self._prompts.get(self._key(character), "")
 
     def known_characters(self) -> list[str]:
         return list(self._registry.keys())

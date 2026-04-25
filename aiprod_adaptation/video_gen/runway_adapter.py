@@ -6,47 +6,63 @@ import time
 from aiprod_adaptation.video_gen.video_adapter import VideoAdapter
 from aiprod_adaptation.video_gen.video_request import VideoClipResult, VideoRequest
 
+_RUNWAY_VIDEO_CREDITS_PER_SECOND: dict[str, int] = {
+    "gen4.5": 12,
+    "gen4_turbo": 5,
+    "gen4_aleph": 15,
+    "gen3a_turbo": 5,
+    "act_two": 5,
+    "veo3": 40,
+    "veo3.1": 40,
+    "veo3.1_fast": 15,
+}
+
+
+def _estimate_runway_video_cost(model: str, duration_sec: int) -> float:
+    credits_per_second = _RUNWAY_VIDEO_CREDITS_PER_SECOND.get(model)
+    if credits_per_second is None:
+        return 0.0
+    return credits_per_second * duration_sec * 0.01
+
 
 class RunwayAdapter(VideoAdapter):
-    """Runway Gen-3 Alpha Turbo image-to-video adapter.
+    """Runway image-to-video adapter.
 
     Requires: RUNWAY_API_TOKEN env var
     Excluded from mypy and CI — integration only.
     Docs: https://docs.dev.runwayml.com/
     """
 
-    MODEL: str = "gen3a_turbo"
+    DEFAULT_MODEL: str = "gen4_turbo"
 
-    def __init__(self, api_token: str | None = None) -> None:
+    def __init__(self, api_token: str | None = None, model: str | None = None) -> None:
         self._token = api_token or os.environ.get("RUNWAY_API_TOKEN", "")
+        self._model = model or os.environ.get("RUNWAY_VIDEO_MODEL", self.DEFAULT_MODEL)
 
     def generate(self, request: VideoRequest) -> VideoClipResult:
+        if not self._token:
+            raise ValueError("RUNWAY_API_TOKEN is required for Runway video generation.")
+
         import runwayml
 
         t0 = time.monotonic()
         client = runwayml.RunwayML(api_key=self._token)
         task = client.image_to_video.create(
-            model=self.MODEL,
+            model=self._model,
             prompt_image=request.image_url,
             prompt_text=request.prompt,
             duration=request.duration_sec,
-            ratio="1280:768",
+            ratio="1280:720",
             seed=request.seed,
         )
-        # Poll until complete
-        import time as _time
-        while task.status not in ("SUCCEEDED", "FAILED"):
-            _time.sleep(2)
-            task = client.tasks.retrieve(task.id)
-
-        if task.status == "FAILED":
-            raise RuntimeError(f"Runway task {task.id} failed")
+        result = task.wait_for_task_output()
 
         latency = int((time.monotonic() - t0) * 1000)
         return VideoClipResult(
             shot_id=request.shot_id,
-            video_url=task.output[0],
+            video_url=result.output[0],
             duration_sec=request.duration_sec,
-            model_used=self.MODEL,
+            model_used=self._model,
             latency_ms=latency,
+            cost_usd=_estimate_runway_video_cost(self._model, request.duration_sec),
         )

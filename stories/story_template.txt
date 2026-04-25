@@ -1,0 +1,64 @@
+TITLE: Replace with your project title
+GENRE: Replace with genre
+TONE: Replace with tone
+LOGLINE: One-sentence summary of the video
+
+USE THIS TEMPLATE LIKE A SCREENPLAY:
+- write scene by scene
+- use clear INT./EXT. headers
+- keep paragraphs short and visual
+- use shot cues only when useful: WIDE SHOT, CLOSE ON, INSERT SHOT, TRACKING SHOT
+- keep dialogue short and purposeful
+- favor what can be seen or heard on screen
+- one beat, image, or action change per paragraph
+
+QUICK GUIDE:
+- Who is on screen?
+- Where are they?
+- What does the camera clearly see happening?
+- What changes from one beat to the next?
+- What line of dialogue, if any, must be heard?
+
+OPTIONAL SCREENPLAY TOKENS:
+- WIDE SHOT
+- MEDIUM SHOT
+- CLOSE ON
+- INSERT SHOT
+- TRACKING SHOT
+- OVER THE SHOULDER
+- CUT TO:
+- SMASH CUT TO:
+- INTERCUT WITH:
+
+START WRITING BELOW:
+
+INT. ABANDONED CHAPEL - NIGHT
+
+WIDE SHOT
+
+Marcus pushes open the heavy chapel door and steps into the dark interior.
+
+TRACKING SHOT
+
+He raises a flickering lantern. Long shadows crawl across cracked stone walls and broken wooden pews.
+
+Marcus walks slowly toward the altar at the center of the room.
+
+CLOSE ON
+
+He stops when he notices strange marks carved into the stone.
+
+MARCUS
+Something happened here.
+
+He runs his hand over the surface of the altar and listens to the silence around him.
+
+INSERT SHOT - ALTAR STONE
+
+Fresh dust slides into the carved symbols as the lantern light trembles.
+
+CUT TO:
+
+EXT. CHAPEL COURTYARD - CONTINUOUS
+
+Wind moves through dead grass outside while the chapel door remains half open in the darkness.

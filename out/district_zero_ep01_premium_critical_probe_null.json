@@ -1,0 +1,112 @@
+{
+  "title": "District Zero - Episode 1 - Production Cut",
+  "frames": [
+    {
+      "shot_id": "SCN_002_SHOT_001",
+      "scene_id": "SCN_002",
+      "image_url": "null://storyboard/SCN_002_SHOT_001.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Nara Voss runs through a leaking maintenance corridor as her wrist display flashes a pressure alert, in INT. LOWER TRANSIT STACK - SERVICE CORRIDOR - NIGHT. night lighting. leaking maintenance corridor, dense pipes and cable trays, wet steel surfaces, emergency blue-white practicals, claustrophobic industrial depth, premium dystopian realism female maintenance runner, late 20s, olive skin with natural texture, sharp cheekbones, intense grey-green eyes, dark brown hair loosely tied back with wet stray strands, dark tactical scarf wrapped at the neck, weathered charcoal utility jacket, lean athletic build, grounded cinematic realism, cold industrial lighting, restrained but dangerous focus cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": null,
+      "shot_type": "wide",
+      "camera_movement": "follow",
+      "time_of_day_visual": "night",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA",
+        "nara"
+      ],
+      "reference_image_url": "C:/Users/averr/AIPROD_V2/preproduction/district_zero/characters/nara_voss/nara_hero_ref_01.png"
+    },
+    {
+      "shot_id": "SCN_003_SHOT_001",
+      "scene_id": "SCN_003",
+      "image_url": "null://storyboard/SCN_003_SHOT_001.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Nara stabilizes a failing valve while exhausted workers keep their distance, in INT. PRESSURE VALVE CHAMBER - NIGHT. night lighting. industrial pressure chamber, massive valves, white diagnostic light, vapor haze, exhausted workers at distance, brutalist machinery cathedral cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": null,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "night",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "WORKER",
+        "NARA",
+        "worker"
+      ],
+      "reference_image_url": ""
+    },
+    {
+      "shot_id": "SCN_008_SHOT_001",
+      "scene_id": "SCN_008",
+      "image_url": "null://storyboard/SCN_008_SHOT_001.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Nara and Mira descend into an old service corridor buried in the skeleton of the city, in INT. SEALED SERVICE SPINE - NIGHT. night lighting. buried service corridor inside the skeleton of the city, ancient sealed infrastructure, deep vanishing lines, rusted steel, sparse emergency light, dread and discovery female maintenance runner, late 20s, olive skin with natural texture, sharp cheekbones, intense grey-green eyes, dark brown hair loosely tied back with wet stray strands, dark tactical scarf wrapped at the neck, weathered charcoal utility jacket, lean athletic build, grounded cinematic realism, cold industrial lighting, restrained but dangerous focus cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": null,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "night",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA",
+        "nara"
+      ],
+      "reference_image_url": "C:/Users/averr/AIPROD_V2/preproduction/district_zero/characters/nara_voss/nara_hero_ref_01.png"
+    },
+    {
+      "shot_id": "SCN_009_SHOT_001",
+      "scene_id": "SCN_009",
+      "image_url": "null://storyboard/SCN_009_SHOT_001.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Ancient shutters peel open and reveal organized lights far beyond the wall, in INT. EXTERNAL OBSERVATION CHAMBER - CONTINUOUS. interior lighting. ancient observation chamber opening onto forbidden lights beyond the wall, hidden industrial pumps, red alarm wash, revelation at massive scale cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": null,
+      "shot_type": "medium",
+      "camera_movement": "pan",
+      "time_of_day_visual": "interior",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA",
+        "MIRA",
+        "ancient"
+      ],
+      "reference_image_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_001",
+      "scene_id": "SCN_011",
+      "image_url": "null://storyboard/SCN_011_SHOT_001.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Nara returns home soaked and shaken, in INT. VOSS APARTMENT - PRE-DAWN. dawn lighting. pre-dawn apartment interior, cold blue dawn spill mixing with dim warm practicals, emotional intimacy under siege, tense domestic realism female maintenance runner, late 20s, olive skin with natural texture, sharp cheekbones, intense grey-green eyes, dark brown hair loosely tied back with wet stray strands, dark tactical scarf wrapped at the neck, weathered charcoal utility jacket, lean athletic build, grounded cinematic realism, cold industrial lighting, restrained but dangerous focus cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": null,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "dawn",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA",
+        "ELIAN",
+        "END OF EPISODE 1",
+        "nara"
+      ],
+      "reference_image_url": "C:/Users/averr/AIPROD_V2/preproduction/district_zero/characters/nara_voss/nara_hero_ref_01.png"
+    }
+  ],
+  "style_token": "cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+  "total_shots": 5,
+  "generated": 5
+}

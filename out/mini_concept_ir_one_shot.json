@@ -1,0 +1,60 @@
+{
+  "title": "MiniConcept",
+  "episodes": [
+    {
+      "episode_id": "EP01",
+      "scenes": [
+        {
+          "scene_id": "SCN_001",
+          "characters": [
+            "Marcus"
+          ],
+          "character_ids": [
+            "marcus"
+          ],
+          "location": "abandoned chapel interior",
+          "location_id": "abandoned_chapel_interior",
+          "time_of_day": null,
+          "visual_actions": [
+            "Marcus pushes open a heavy wooden door, stepping inside.",
+            "He raises a flickering lantern, casting long shadows.",
+            "Marcus walks slowly towards the center of the room.",
+            "He stops and looks down at a cracked stone altar.",
+            "Marcus runs a hand over the rough surface of the altar.",
+            "He looks around the dusty chapel."
+          ],
+          "dialogues": [],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_001_SHOT_001"
+          ]
+        }
+      ],
+      "shots": [
+        {
+          "shot_id": "SCN_001_SHOT_001",
+          "scene_id": "SCN_001",
+          "prompt": "Marcus pushes open a heavy wooden door, stepping inside, in abandoned chapel interior.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "pan",
+          "action": {
+            "subject_id": "marcus",
+            "action_type": "pushes",
+            "target": null,
+            "modifiers": [],
+            "location_id": "abandoned_chapel_interior",
+            "camera_intent": "pan",
+            "source_text": "Marcus pushes open a heavy wooden door, stepping inside."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient"
+          }
+        }
+      ]
+    }
+  ]
+}

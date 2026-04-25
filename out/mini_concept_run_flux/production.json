@@ -1,0 +1,80 @@
+{
+  "title": "MiniConcept",
+  "timeline": [
+    {
+      "shot_id": "SCN_001_SHOT_001",
+      "scene_id": "SCN_001",
+      "video_url": "error://generation-failed",
+      "audio_url": "error://generation-failed",
+      "duration_sec": 5,
+      "start_sec": 0,
+      "audio_duration_sec": 5,
+      "silence_padding_sec": 0,
+      "latency_ms": 0,
+      "cost_usd": 0.0
+    },
+    {
+      "shot_id": "SCN_001_SHOT_002",
+      "scene_id": "SCN_001",
+      "video_url": "error://generation-failed",
+      "audio_url": "error://generation-failed",
+      "duration_sec": 5,
+      "start_sec": 5,
+      "audio_duration_sec": 5,
+      "silence_padding_sec": 0,
+      "latency_ms": 0,
+      "cost_usd": 0.0
+    },
+    {
+      "shot_id": "SCN_001_SHOT_003",
+      "scene_id": "SCN_001",
+      "video_url": "error://generation-failed",
+      "audio_url": "error://generation-failed",
+      "duration_sec": 5,
+      "start_sec": 10,
+      "audio_duration_sec": 5,
+      "silence_padding_sec": 0,
+      "latency_ms": 0,
+      "cost_usd": 0.0
+    },
+    {
+      "shot_id": "SCN_001_SHOT_004",
+      "scene_id": "SCN_001",
+      "video_url": "error://generation-failed",
+      "audio_url": "error://generation-failed",
+      "duration_sec": 5,
+      "start_sec": 15,
+      "audio_duration_sec": 5,
+      "silence_padding_sec": 0,
+      "latency_ms": 0,
+      "cost_usd": 0.0
+    },
+    {
+      "shot_id": "SCN_001_SHOT_005",
+      "scene_id": "SCN_001",
+      "video_url": "error://generation-failed",
+      "audio_url": "error://generation-failed",
+      "duration_sec": 5,
+      "start_sec": 20,
+      "audio_duration_sec": 5,
+      "silence_padding_sec": 0,
+      "latency_ms": 0,
+      "cost_usd": 0.0
+    },
+    {
+      "shot_id": "SCN_001_SHOT_006",
+      "scene_id": "SCN_001",
+      "video_url": "error://generation-failed",
+      "audio_url": "error://generation-failed",
+      "duration_sec": 5,
+      "start_sec": 25,
+      "audio_duration_sec": 5,
+      "silence_padding_sec": 0,
+      "latency_ms": 0,
+      "cost_usd": 0.0
+    }
+  ],
+  "total_duration_sec": 30,
+  "resolution": "3840x2160",
+  "fps": 24
+}

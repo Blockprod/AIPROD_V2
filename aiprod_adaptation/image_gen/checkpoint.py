@@ -3,7 +3,11 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import structlog
+
 from aiprod_adaptation.image_gen.image_request import ShotStoryboardFrame
+
+logger = structlog.get_logger(__name__)
 
 
 class CheckpointStore:
@@ -16,8 +20,12 @@ class CheckpointStore:
                 data: dict[str, object] = json.loads(raw)
                 for shot_id, frame_dict in data.items():
                     self._cache[shot_id] = ShotStoryboardFrame.model_validate(frame_dict)
-            except Exception:
-                pass
+            except Exception as exc:
+                logger.warning(
+                    "checkpoint_load_failed",
+                    checkpoint_path=str(path),
+                    error=str(exc),
+                )
 
     def has(self, shot_id: str) -> bool:
         return shot_id in self._cache

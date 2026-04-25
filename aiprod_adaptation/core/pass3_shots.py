@@ -31,7 +31,7 @@ from __future__ import annotations
 
 import re
 
-from aiprod_adaptation.models.intermediate import ShotDict, VisualScene
+from aiprod_adaptation.models.intermediate import ActionSpec, ShotDict, VisualScene
 
 from .rules.cinematography_rules import (
     CAMERA_MOVEMENT_INTERACTION_KEYWORDS,
@@ -56,6 +56,102 @@ _AMBIGUOUS_RE = re.compile(r"\b(seems?|appears?|perhaps|maybe)\b", re.IGNORECASE
 
 def _has_any(text_lower: str, verbs: list[str]) -> bool:
     return any(re.search(r"\b" + re.escape(v) + r"\b", text_lower) for v in verbs)
+
+
+def _slugify_identifier(text: str) -> str:
+    slug = re.sub(r"[^a-z0-9]+", "_", text.lower()).strip("_")
+    return slug or "unknown"
+
+
+def _extract_subject_id(action: str, characters: list[str], fallback: str | None) -> str:
+    lower = action.lower()
+    for character in characters:
+        if character.lower() in lower:
+            return _slugify_identifier(character)
+    if fallback:
+        return fallback
+
+    tokens = re.findall(r"[A-Za-z']+", action)
+    if not tokens:
+        return "unknown_subject"
+    first = tokens[0].lower()
+    if first in {"a", "an", "the"} and len(tokens) > 1:
+        return _slugify_identifier(tokens[1])
+    return _slugify_identifier(tokens[0])
+
+
+def _extract_action_type_and_target(action: str) -> tuple[str, str | None, list[str]]:
+    tokens = re.findall(r"[A-Za-z']+", action)
+    lower_tokens = [token.lower() for token in tokens]
+    if not lower_tokens:
+        return "observe", None, []
+
+    modifiers = [token for token in lower_tokens if token.endswith("ly")]
+    index = 0
+    while index < len(lower_tokens) and lower_tokens[index].endswith("ly"):
+        index += 1
+
+    if index < len(lower_tokens) and lower_tokens[index] in {"a", "an", "the"}:
+        index += 2
+    else:
+        index += 1
+
+    while index < len(lower_tokens) and lower_tokens[index] in {
+        "am", "is", "are", "was", "were", "be", "been", "being",
+        "has", "have", "had", "do", "does", "did",
+    }:
+        index += 1
+
+    if index >= len(lower_tokens):
+        action_type = lower_tokens[-1]
+    else:
+        action_type = lower_tokens[index]
+
+    target: str | None = None
+    target_markers = {
+        "to", "toward", "towards", "into", "in",
+        "at", "through", "inside", "onto", "on",
+    }
+    for target_index in range(index + 1, len(lower_tokens)):
+        if lower_tokens[target_index] in target_markers:
+            remainder = [
+                token
+                for token in lower_tokens[target_index + 1:]
+                if token not in {"a", "an", "the"}
+            ]
+            if remainder:
+                target = " ".join(remainder)
+            break
+
+    return action_type, target, modifiers
+
+
+def _build_action_payload(
+    action: str,
+    characters: list[str],
+    location: str,
+    camera_movement: str,
+    fallback: ActionSpec | None,
+) -> ActionSpec:
+    action_type, target, modifiers = _extract_action_type_and_target(action)
+    fallback_location = fallback.get("location_id") if fallback is not None else None
+    return {
+        "subject_id": _extract_subject_id(
+            action,
+            characters,
+            fallback.get("subject_id") if fallback is not None else None,
+        ),
+        "action_type": action_type,
+        "target": target,
+        "modifiers": modifiers,
+        "location_id": (
+            fallback_location
+            if fallback_location is not None
+            else None if location.lower() == "unknown location" else _slugify_identifier(location)
+        ),
+        "camera_intent": camera_movement,
+        "source_text": action,
+    }
 
 
 def _compute_shot_type(action: str) -> str:
@@ -122,7 +218,19 @@ def _build_prompt(action: str, location: str) -> str:
 
 
 def _atomize_action(action: str) -> list[str]:
-    """Split a visual_action string into atomic parts."""
+    """Split a visual_action string into atomic parts.
+
+    Contract for visual_actions entries:
+      - preferred form: one declarative visual sentence per list item
+      - backward-compatible compact form: multiple short action beats separated by `, `
+
+    Example:
+      - "John walks toward the door."
+      - "John fidgets, paces, bites his lip"
+
+    Pass 3 only atomizes on the compact `, ` form when the string does not already
+    terminate as a sentence.
+    """
     if action.rstrip().endswith(('.', '!', '?')):
         return [action]
     if ", " in action:
@@ -145,7 +253,13 @@ def simplify_shots(scenes: list[VisualScene]) -> list[ShotDict]:
     Decompose visual scenes into atomic shots.
 
     Args:
-        scenes: List of scene dictionaries from pass2_visual
+        scenes: List of scene dictionaries from pass2_visual.
+            Each scene must provide non-empty visual_actions.
+            Expected visual_actions contract:
+              - preferred: one declarative visual sentence per item
+              - accepted for backward compatibility: a compact beat list separated by `, `
+                such as "John fidgets, paces, bites his lip"
+            Pass 3 atomizes the compact form into one shot per beat.
 
     Returns:
         List of shot dictionaries with shot_id, scene_id, prompt, duration_sec, emotion
@@ -160,6 +274,7 @@ def simplify_shots(scenes: list[VisualScene]) -> list[ShotDict]:
         location:       str       = scene.get("location", "unknown location")
         emotion:        str       = scene.get("emotion", "neutral")
         visual_actions: list[str] = scene.get("visual_actions", [])
+        action_units:   list[ActionSpec] = scene.get("action_units", [])
         dialogues:      list[str] = scene.get("dialogues", [])
         # NOTE: pacing/time_of_day_visual are only populated on the LLM path.
         # dominant_sound is computed per-shot on the rules path (NotRequired field).
@@ -170,20 +285,29 @@ def simplify_shots(scenes: list[VisualScene]) -> list[ShotDict]:
         if not visual_actions:
             raise ValueError(f"PASS 3: scene '{scene_id}' has empty visual_actions.")
 
-        action_parts: list[str] = [
-            part
-            for action in visual_actions
-            for part in _atomize_action(action)
-            if part.strip()
-        ]
+        action_parts_with_specs: list[tuple[str, ActionSpec | None]] = []
+        for index, action in enumerate(visual_actions):
+            seed_action = action_units[index] if index < len(action_units) else None
+            for part in _atomize_action(action):
+                if part.strip():
+                    action_parts_with_specs.append((part, seed_action))
+
+        action_parts = [part for part, _ in action_parts_with_specs]
         single_shot_dialogue_scene = bool(dialogues) and len(action_parts) == 1
 
         shot_num = 1
-        for part in action_parts:
+        for part, seed_action in action_parts_with_specs:
                 stype    = _compute_shot_type(part)
                 movement = _compute_camera_movement(part)
                 prompt   = _build_prompt(part, location)
                 duration = _compute_duration(part)
+                action_payload = _build_action_payload(
+                    part,
+                    list(scene.get("characters", [])),
+                    location,
+                    movement,
+                    seed_action,
+                )
                 if pacing == "fast":
                     duration = min(duration, 5)
                 elif pacing == "slow":
@@ -197,6 +321,7 @@ def simplify_shots(scenes: list[VisualScene]) -> list[ShotDict]:
                         "emotion":         emotion,
                         "shot_type":       stype,
                         "camera_movement": movement,
+                        "action":          action_payload,
                         "metadata": {
                             "time_of_day_visual": tod_visual,
                             "dominant_sound": (

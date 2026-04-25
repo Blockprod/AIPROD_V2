@@ -1,389 +1,171 @@
 ---
 title: "Audit Master — AIPROD_V2"
-creation: 2026-04-21 à 23:07
-auditor: GitHub Copilot (Claude Sonnet 4.6)
-baseline_commit: 42f99d7
+creation: 2026-04-23 à 14:11
+auditor: GitHub Copilot (GPT-5.4)
+baseline_commit: ab9bb76
 python: "3.11.9"
-tests: 278 passed
-mypy_prod: "0 erreurs (41 fichiers)"
-mypy_full: "52 erreurs dans 5 fichiers de tests"
-ruff: "0 erreurs"
+tests: "363 passed, 4 deselected"
+mypy_prod: "0 erreur (43 fichiers)"
+ruff: "0 erreur"
+main_smoke: "OK"
 ---
 
-# AUDIT MASTER — AIPROD_V2 — 2026-04-21
+# AUDIT MASTER — AIPROD_V2 — 2026-04-23
 
-## Score global : 🟡 — 0 critiques 🔴, 2 majeurs 🟠, 12 mineurs 🟡
-
----
+## Score global : 🟠 — 0 critique 🔴, 3 majeurs 🟠, 3 mineurs 🟡
 
 ## Résumé exécutif
 
-Le codebase AIPROD_V2 présente une architecture IR en 4 passes **solide et bien segmentée**. La déterminisme est totale (vérifié par test byte-identical), les schémas Pydantic v2 sont cohérents, et le périmètre de production (41 fichiers) est **zéro-erreur** en mypy strict. Les deux points majeurs sont : (1) le `CostReport` n'est jamais alimenté par les adapters (métriques de coût toujours à zéro), et (2) `EpisodeScheduler` importe tous les adapters production au top-level (risque `ImportError` si les packages tiers ne sont pas installés). Douze points mineurs concernent essentiellement des annotations de type manquantes dans les tests et des fichiers de maintenance.
+Le repo est dans un état nettement plus mature que l'audit master précédent ne le laissait entendre. Le socle exécutable est propre au moment de cet audit : `pytest aiprod_adaptation/tests/ -q --tb=short` retourne `363 passed, 4 deselected`, `ruff check .` est vert, `mypy aiprod_adaptation/core/ aiprod_adaptation/models/ aiprod_adaptation/backends/ aiprod_adaptation/cli.py --strict` est vert, et un smoke test `python main.py --input aiprod_adaptation/examples/sample.txt --title Sample | python -m json.tool` passe.
 
-**Périmètre inspecté :** 74 fichiers Python, 10 fichiers de tests, 278 tests, pipeline complet (segmentation → visual → shots → compilation → storyboard → vidéo → audio → export).
+Le coeur du concept est validé : pipeline IR 4 passes déterministe, branche LLM réelle avec routeur observable, comparateur rules vs LLM, scheduler image/video/audio, persistance JSON, CI GitHub Actions, et couverture de tests désormais répartie sur 11 fichiers. Les écarts encore ouverts ne remettent pas en cause la viabilité du système, mais ils touchent des zones importantes de contrat utilisateur et d'observabilité runtime : un flag CLI annoncé mais non effectif, plusieurs `except Exception` silencieux dans les couches de génération, et une observabilité coût encore partielle malgré une structure correcte.
 
----
+## DIMENSION 1 — Structure (repo actuel)
 
-## DIMENSION 1 — Structure (74 modules)
+### Constats vérifiés
 
-### Architecture globale
+- Le découpage par couches est clair et encore cohérent : IR déterministe dans `core/pass1_segment.py` → `core/pass2_visual.py` → `core/pass3_shots.py` → `core/pass4_compile.py`, adaptation LLM dans `core/adaptation/`, continuité dans `core/continuity/`, production dans `image_gen/`, `video_gen/`, `post_prod/`.
+- `aiprod_adaptation/core/engine.py` reste le point d'orchestration central, avec logging structlog sur stderr et séparation nette entre chemin script, chemin novel LLM et fallback rules.
+- `aiprod_adaptation/core/scheduling/episode_scheduler.py` orchestre bien image → video → audio et ne dépend pas de classes concrètes de providers au top-level, seulement des interfaces d'adapters.
 
-```
-IR pipeline (déterministe, pure functions) :
-  pass1_segment.py  → list[RawScene]
-  pass2_visual.py   → list[VisualScene]
-  pass3_shots.py    → list[ShotDict]
-  pass4_compile.py  → AIPRODOutput
+### Lecture d'ensemble
 
-LLM pipeline :
-  InputClassifier → ScriptParser | StoryExtractor → StoryValidator → IR passes
-
-Production pipeline :
-  CharacterPrepass → StoryboardGenerator → VideoSequencer → AudioSynchronizer
-
-Orchestration :
-  engine.py (run_pipeline) → EpisodeScheduler (run)
-```
-
-### Points positifs
-
-- Découpage SRP respecté : chaque module a une responsabilité unique ✅
-- Tous les passes IR sont des fonctions pures ou classes sans état ✅
-- Adapters production (flux, replicate, runway, kling, elevenlabs, openai_tts) isolés dans leurs sous-packages ✅
-- `novel_pipe.py` est correctement marqué `# DEAD CODE — deprecated` avec avertissement `DeprecationWarning` dans `run_novel_pipe()` ✅
-- `compile_output()` (wrapper déprécié de `pass4_compile`) maintenu pour rétrocompatibilité ✅
-- `frozenset` utilisé pour toutes les constantes en lecture seule (aucun `set()` mutable comme constante) ✅
-
-### Problèmes détectés
-
-| ID | Sévérité | Fichier | Description |
-|----|----------|---------|-------------|
-| M02 | 🟠 | `core/scheduling/episode_scheduler.py:1-16` | Imports adapters production au top-level (non lazy) — `ImportError` potentiel si runway/kling/elevenlabs non installés |
-| m01 | 🟡 | `core/rules/duration_rules.py` | Fichier documentation-only (5 lignes, docstring seule) — confusant car `core/rules/__init__.py` l'exporte |
-| m02 | 🟡 | `core/engine.py:33-38` | `CharacterRegistry()` instancié deux fois consécutivement (`.build()` puis `.enrich_from_text()`) alors qu'un seul objet suffit |
-| m12 | 🟡 | `core/adaptation/novel_pipe.py` | Fichier legacy confirmé (voir docstring ligne 1) — tests `TestNovelPipe` toujours présents dans `test_adaptation.py` (2 tests) — à migrer pour suppression complète |
-
----
+La structure globale est bonne et nettement plus avancée que ce que documentait l'audit du 2026-04-21. Je ne vois pas de dette architecturale critique dans le découpage lui-même. Les fragilités actuelles sont davantage dans les bords runtime que dans l'architecture des modules.
 
 ## DIMENSION 2 — Cohérence pipeline
 
-### Contrats de types vérifiés
+### Constats vérifiés
 
-```python
-RawScene (TypedDict) :
-  scene_id, characters, location, time_of_day, raw_text ✅
+- `aiprod_adaptation/core/pass4_compile.py` verrouille bien les invariants d'assemblage : titre non vide, listes non vides, validation des `scene_id` référencés par les shots, et remontée des `ValidationError` Pydantic en `ValueError(str(exc))`.
+- `aiprod_adaptation/core/engine.py` applique un enchaînement cohérent : classification d'entrée, extraction LLM ou fallback rules, `StoryValidator`, pass3, pass4, puis enrichissement continuité optionnel.
+- Les tests pipeline couvrent les entrées vides, la segmentation multi-scènes, les sauts temporels, le déterminisme et les contraintes pass4 dans `aiprod_adaptation/tests/test_pipeline.py`.
 
-VisualScene (TypedDict) :
-  + visual_actions, dialogues, emotion
-  + pacing?, time_of_day_visual?, dominant_sound?  (SE-04, optionnel) ✅
+### Problème détecté
 
-ShotDict (TypedDict) :
-  shot_id, scene_id, prompt, duration_sec, emotion,
-  shot_type, camera_movement, metadata ✅
+- 🟡 `aiprod_adaptation/video_gen/video_sequencer.py:35`, `aiprod_adaptation/video_gen/video_sequencer.py:39`, `aiprod_adaptation/video_gen/video_sequencer.py:41`, `aiprod_adaptation/post_prod/audio_synchronizer.py:60`, `aiprod_adaptation/post_prod/audio_synchronizer.py:64` : si une frame ou un clip référence un `shot_id` absent du graphe IR, la couche aval continue avec des valeurs par défaut (`duration=4`, `scene_id=""`, `prompt=""`, ou `clip.video_url` comme texte audio) au lieu de signaler explicitement une rupture de contrat inter-couches.
 
-AIPRODOutput (Pydantic) :
-  title: str, episodes: list[Episode] ✅
-```
+## DIMENSION 3 — Tests (363 passés, 4 désélectionnés)
 
-### Flux SE-04 (enrichissement)
+### Répartition constatée
 
-Les champs SE-04 (`pacing`, `time_of_day_visual`, `dominant_sound`) sont correctement :
-1. Produits par `normalizer.py` et injectés dans `VisualScene` via Pass2 ✅
-2. Consommés par `StoryboardGenerator.generate()` via `shot.metadata.get("time_of_day_visual", "day")` ✅
-3. Filtrés de `Scene` Pydantic par `_SCENE_KNOWN_KEYS` dans Pass4 (by design) ✅
+| Fichier | Tests détectés |
+|---|---:|
+| `test_adaptation.py` | 83 |
+| `test_backends.py` | 9 |
+| `test_cli.py` | 40 |
+| `test_comparison.py` | 5 |
+| `test_continuity.py` | 24 |
+| `test_image_gen.py` | 47 |
+| `test_io.py` | 6 |
+| `test_pipeline.py` | 64 |
+| `test_post_prod.py` | 30 |
+| `test_scheduling.py` | 23 |
+| `test_video_gen.py` | 32 |
 
-### Points positifs
+### Constats vérifiés
 
-- Validation Pass4 → `ValidationError → ValueError(str(exc))` avant de propager ✅
-- `StoryValidator.validate_all()` applique les règles de filtrabilité filmique séquentiellement ✅
-- `PromptEnricher._enrich_prompt()` trie les clés du registre via `sorted()` → déterministe ✅
+- La branche LLM est désormais bien plus couverte que dans l'ancien audit : router policy, trace, fallback, quarantaine, compare CLI et régressions `chapter1.txt` existent dans `aiprod_adaptation/tests/test_adaptation.py` et `aiprod_adaptation/tests/test_cli.py`.
+- La couche comparaison a maintenant sa propre suite dédiée dans `aiprod_adaptation/tests/test_comparison.py`.
+- Le scheduler et les métriques ont une couverture dédiée dans `aiprod_adaptation/tests/test_scheduling.py`.
 
-### Problèmes détectés
+### Gaps résiduels visibles
 
-| ID | Sévérité | Fichier | Description |
-|----|----------|---------|-------------|
-| m03 | 🟡 | `core/adaptation/story_validator.py:24` | `"felt"` dans `INTERNAL_THOUGHT_WORDS` → filtre incorrectement les actions physiques sensorielles ("felt the cold wind", "felt the floor crack") |
-| m04 | 🟡 | `core/engine.py:89` | Input vide → `Pass1.segment()` retourne `[]` → `StoryValidator` retourne `[]` → `ValueError("PASS 2: StoryValidator produced no filmable scenes")` — le préfixe `"PASS 2:"` est trompeur alors que la cause est un input vide (PASS 1) |
-
----
-
-## DIMENSION 3 — Tests (278 tests)
-
-### Distribution par fichier
-
-| Fichier | Tests | Couverture principale |
-|---------|-------|-----------------------|
-| `test_pipeline.py` | 55 | Passes IR, byte-identical, regression |
-| `test_adaptation.py` | 47 | Classifier, ScriptParser, StoryExtractor, NovelPipe, StoryValidator |
-| `test_image_gen.py` | 46 | StoryboardGenerator, CharacterPrepass, adapters |
-| `test_post_prod.py` | 29 | VideoSequencer, AudioSynchronizer, FFmpegExporter |
-| `test_continuity.py` | 24 | CharacterRegistry, LocationRegistry, PropRegistry, PromptEnricher |
-| `test_video_gen.py` | 32 | VideoSequencer, SmartVideoRouter |
-| `test_scheduling.py` | 21 | EpisodeScheduler |
-| `test_cli.py` | 9 | CLI commands (pipeline, storyboard, schedule) |
-| `test_backends.py` | 9 | CSVExport, JSONFlatExport |
-| `test_io.py` | 6 | IO (save/load JSON) |
-| **TOTAL** | **278** | |
-
-### Points positifs
-
-- `test_rule_pipeline_byte_identical` dans `test_pipeline.py` — déterminisme vérifié ✅
-- 0 test failing ✅
-- Tests CLI couvrent les 3 commandes : `pipeline`, `storyboard`, `schedule` ✅
-- Fixtures null-adapter systématiques pour éviter les appels réseau ✅
-
-### Problèmes détectés
-
-| ID | Sévérité | Fichier | Description |
-|----|----------|---------|-------------|
-| m05 | 🟡 | `tests/test_video_gen.py:46` | `_storyboard_and_output()` sans annotation de retour → 12 erreurs `no-untyped-call` en cascade (mypy full) |
-| m06 | 🟡 | `tests/test_post_prod.py:49` | `_video_and_output()` sans annotation de retour → 10 erreurs `no-untyped-call` en cascade |
-| m07 | 🟡 | `tests/test_continuity.py:24` | `_make_output()` sans annotation de retour → 1 erreur mypy |
-| m08 | 🟡 | `tests/test_adaptation.py:438,441,457` | 3× `# type: ignore[override]` devenus `unused-ignore` + `Function is missing a type annotation` (mypy full) |
-| m09 | 🟡 | `tests/test_pipeline.py:51,61,72,136,149,157,164,170,209,227+` | Dicts raw non castés vers `RawScene`/`VisualScene`/`ShotDict` → 22 erreurs mypy ; clés `shot_type`/`camera_movement` manquantes dans un `ShotDict` littéral (ligne 51) |
-| m10 | 🟡 | — | Aucun test pour : `LLMRouter`, `audio_utils.py`, `ssml_builder.py`, `checkpoint.py` |
-
----
+- 🟡 `aiprod_adaptation/cli.py:247` combiné à `aiprod_adaptation/cli.py:377-381` : le help de `schedule --output` promet "Directory or JSON path for SchedulerResult", mais les tests existants dans `aiprod_adaptation/tests/test_cli.py:728-763` ne couvrent que le mode répertoire, qui est le seul mode réellement implémenté aujourd'hui.
 
 ## DIMENSION 4 — Qualité technique
 
-### État actuel
+### Constats vérifiés
 
-| Outil | Périmètre | Résultat |
-|-------|-----------|----------|
-| **ruff** | 74 fichiers | ✅ `All checks passed!` |
-| **mypy strict** | 41 fichiers production | ✅ `Success: no issues found` |
-| **mypy strict** | 74 fichiers (incl. tests) | 🟡 `52 errors in 5 files` |
-| **pytest** | 278 tests | ✅ `278 passed, 15 warnings` |
+- `pyproject.toml` déclare `requires-python = ">=3.11"`, Pydantic v2, structlog et les dépendances dev attendues.
+- `.github/workflows/ci.yml` exécute Ruff, mypy strict sur la cible prod et pytest.
+- La recherche `# type: ignore` sur `**/*.py` n'a retourné aucun match dans le workspace audité.
+- `aiprod_adaptation/core/engine.py:21-25` configure structlog avec `PrintLoggerFactory(file=sys.stderr)`, ce qui respecte l'invariant projet de ne pas polluer stdout.
 
-### Occurrences `# type: ignore` restantes (13)
+### Lecture d'ensemble
 
-| Fichier | Nb | Motif | Statut |
-|---------|----|-------|--------|
-| `core/adaptation/claude_adapter.py` | 2 | `attr-defined`, `index` (Anthropic SDK non typé) | ✅ Légitime |
-| `video_gen/kling_adapter.py` | 2 | `import-untyped` (jwt, requests) | ✅ Légitime |
-| `video_gen/runway_adapter.py` | 1 | `import-untyped` (runwayml) | ✅ Légitime |
-| `image_gen/replicate_adapter.py` | 1 | `import-untyped` | ✅ Légitime |
-| `image_gen/flux_adapter.py` | 1 | `import-untyped` (requests) | ✅ Légitime |
-| `post_prod/openai_tts_adapter.py` | 1 | `import-untyped` | ✅ Légitime |
-| `post_prod/elevenlabs_adapter.py` | 1 | `import-untyped` | ✅ Légitime |
-| `tests/test_adaptation.py` | 4 | Frozen dataclass mutation + override | 🟡 3 sont `unused-ignore` (voir m08) |
-
-**Note :** Les adapters (runway, kling, flux, replicate, elevenlabs, openai_tts, claude, gemini) sont **exclus du scope mypy CI** via `[tool.mypy] exclude` dans `pyproject.toml` — comportement intentionnel et documenté.
-
-### CI/CD
-
-```yaml
-# .github/workflows/ci.yml
-# on: push/PR → main
-# ubuntu-latest, Python 3.11
-# steps: ruff → mypy (41 fichiers prod) → pytest
-```
-
-Couverture CI correcte. `pytest-cov>=4.0` déclaré dans `[project.optional-dependencies.dev]` mais non activé dans le step CI (`pytest` sans `--cov`) ✅ (par design — mesure de couverture locale uniquement).
-
----
+Le niveau de qualité statique est bon. Les problèmes restants de cette dimension ne sont pas des problèmes de typage ou de style; ce sont des problèmes de comportement runtime silencieux qui échappent naturellement à Ruff et mypy.
 
 ## DIMENSION 5 — Déterminisme
 
-### Vérification exhaustive (grep `core/`)
+### Constats vérifiés
 
-| Pattern | Résultat |
-|---------|----------|
-| `import random` / `random.` | ✅ 0 match |
-| `import uuid` / `uuid.uuid` | ✅ 0 match |
-| `import datetime` / `datetime.now` | ✅ 0 match |
-| `time.time()` | ✅ 0 match |
-| `shuffle(` / `choice(` | ✅ 0 match |
-| `set()` mutable comme ordonnateur | ✅ 0 match — uniquement `frozenset` comme constantes |
+- Les tests de déterminisme sont présents dans plusieurs couches : `aiprod_adaptation/tests/test_pipeline.py:242`, `aiprod_adaptation/tests/test_backends.py:63`, `aiprod_adaptation/tests/test_backends.py:86`, `aiprod_adaptation/tests/test_image_gen.py`, `aiprod_adaptation/tests/test_video_gen.py`, `aiprod_adaptation/tests/test_post_prod.py`, `aiprod_adaptation/tests/test_continuity.py`.
+- Les constantes critiques côté core utilisent `frozenset`, notamment dans `aiprod_adaptation/core/pass1_segment.py:70`, `aiprod_adaptation/core/pass1_segment.py:79` et `aiprod_adaptation/core/pass4_compile.py:11`.
+- L'enrichissement continuité maintient explicitement la stabilité d'ordre via `sorted()` dans `aiprod_adaptation/core/continuity/prompt_enricher.py:62-63` et `aiprod_adaptation/core/continuity/prop_registry.py:46`.
+- La recherche ciblée sur `aiprod_adaptation/core/**` n'a trouvé aucune utilisation effective de `random`, `uuid`, `shuffle`, `choice`, `datetime.now()` ou `time.time()` dans le runtime core audité.
 
-### Garanties structurelles
+### Lecture d'ensemble
 
-- `PromptEnricher._enrich_prompt()` : `sorted()` sur les clés du registre ✅
-- `CharacterPrepass._unique_characters()` : `set` pour déduplication, mais l'ordre final est déterminé par un `list` d'insertion séquentielle ✅
-- `PropRegistry.get_prompt_hint()` : `sorted(relevant, key=lambda p: p.name)` ✅
-- **Test de régression byte-identical** : `test_rule_pipeline_byte_identical` dans `test_pipeline.py` — deux appels successifs à `run_pipeline()` produisent un JSON identique octet par octet ✅
+La dimension déterminisme reste forte. Je ne vois pas d'indice d'une régression conceptuelle sur ce point.
 
----
+## DIMENSION 6 — Schémas Pydantic & validation
 
-## DIMENSION 6 — Schémas Pydantic
+### Constats vérifiés
 
-### Modèles principaux
+- `aiprod_adaptation/models/schema.py:29`, `aiprod_adaptation/models/schema.py:38` et `aiprod_adaptation/models/schema.py:47` valident explicitement `duration_sec`, `shot_type` et `camera_movement`.
+- `aiprod_adaptation/core/pass4_compile.py:54-76` convertit les erreurs Pydantic en `ValueError`, conformément aux invariants projet.
+- Les tests associés existent dans `aiprod_adaptation/tests/test_pipeline.py` et couvrent les durées invalides, les types de plans et les mouvements caméra invalides.
 
-| Modèle | Fichier | Validations |
-|--------|---------|-------------|
-| `Scene` | `models/schema.py` | `scene_id, characters, location, time_of_day, shots` ✅ |
-| `Shot` | `models/schema.py` | `shot_id, scene_id, prompt, duration_sec: int, emotion, shot_type, camera_movement, metadata` — validation range en Pass4 uniquement |
-| `Episode` | `models/schema.py` | `episode_id, scenes, shots` ✅ |
-| `AIPRODOutput` | `models/schema.py` | `title: str, episodes: list[Episode]` ✅ |
-| `ShotStoryboardFrame` | `image_gen/image_request.py` | `shot_id, prompt, image_url, latency_ms` ✅ |
-| `StoryboardOutput` | `image_gen/image_request.py` | `title, frames: list[ShotStoryboardFrame]` + computed `total_shots`, `generated` ✅ |
-| `VideoClipResult` | `video_gen/video_request.py` | `latency_ms` ✅ |
-| `TimelineClip` | `video_gen/video_request.py` | `latency_ms: int = 0` ✅ |
-| `ProductionOutput` | `post_prod/audio_request.py` | `resolution="3840x2160"`, `fps=24`, `fps >= 1` validé ✅ |
-| `AudioRequest` | `post_prod/audio_request.py` | `@field_validator` : `duration_hint_sec >= 1` ✅ |
-| `VideoRequest` | `video_gen/video_request.py` | `motion_score` validator [1.0, 10.0], `last_frame_hint_url` ✅ |
+### Lecture d'ensemble
 
-### Problèmes détectés
-
-| ID | Sévérité | Fichier | Description |
-|----|----------|---------|-------------|
-| m11 | 🟡 | `models/schema.py:Shot` | `duration_sec: int` sans `@field_validator` Pydantic pour contraindre le range — validation assurée uniquement dans `pass4_compile.py` (hors modèle) |
-
----
+Les schémas sont cohérents et serrés. Je ne relève pas d'écart majeur dans la modélisation Pydantic actuelle.
 
 ## DIMENSION 7 — Observabilité
 
-### CostReport & RunMetrics
+### Constats vérifiés
 
-```python
-# cost_report.py
-@dataclass
-class CostReport:
-    image_count: int = 0
-    video_count: int = 0
-    audio_count: int = 0
-    llm_count: int = 0
-    backend_count: int = 0
-    llm_cost_usd: float = 0.0
-    image_cost_usd: float = 0.0
-    video_cost_usd: float = 0.0
-    audio_cost_usd: float = 0.0
-
-    @property
-    def total_cost_usd(self) -> float:
-        return self.llm_cost_usd + self.image_cost_usd + self.video_cost_usd + self.audio_cost_usd
-
-    def merge(self, other: CostReport) -> CostReport:
-        # Somme des 9 champs ✅
-```
-
-```python
-# run_metrics.py
-@dataclass
-class RunMetrics:
-    cost: CostReport = field(default_factory=CostReport)
-    total_latency_ms: int = 0
-    # + latency breakdowns par adapter
-```
-
-### Logging structuré (structlog)
-
-- Configuré **uniquement** dans `engine.py` → `JSONRenderer` + `PrintLoggerFactory(file=sys.stderr)` ✅
-- `logger.info("pipeline_start")`, `logger.info("storyboard_complete")`, `logger.warning("storyboard_frame_failed")` présents ✅
-- Aucun `print()` ou `logging.basicConfig()` dans le code de production ✅
+- `aiprod_adaptation/core/engine.py:64`, `aiprod_adaptation/core/engine.py:95`, `aiprod_adaptation/core/engine.py:145`, `aiprod_adaptation/core/engine.py:210` journalisent les étapes structurantes du pipeline et les échecs de frames storyboard.
+- `aiprod_adaptation/core/adaptation/llm_router.py` fournit une trace de décision détaillée (`trace_history`, `last_trace`) et la CLI sait l'exporter via `aiprod_adaptation/cli.py:55-63`, `aiprod_adaptation/cli.py:79-98`, `aiprod_adaptation/cli.py:338-343`, `aiprod_adaptation/cli.py:425-430`.
+- `aiprod_adaptation/core/run_metrics.py:17` et `aiprod_adaptation/core/cost_report.py:25-38` donnent une base saine pour les métriques et le coût agrégé.
 
 ### Problèmes détectés
 
-| ID | Sévérité | Fichier | Description |
-|----|----------|---------|-------------|
-| M01 | 🟠 | `core/scheduling/episode_scheduler.py:run()` | `metrics.cost` (CostReport) n'est jamais alimenté — aucun adapter ne remonte ses coûts. `total_cost_usd` sera toujours `0.0` à l'exécution réelle. `total_latency_ms` est correctement calculé (somme image+video+audio latency) mais le coût USD est entièrement absent |
+- 🟠 `aiprod_adaptation/image_gen/checkpoint.py:19` : `CheckpointStore` avale silencieusement toute erreur de lecture/parse/cache (`except Exception: pass`). Un checkpoint corrompu ou illisible devient un cache miss muet, sans signal dans les logs.
+- 🟠 `aiprod_adaptation/image_gen/storyboard.py:78`, `aiprod_adaptation/image_gen/storyboard.py:134`, `aiprod_adaptation/video_gen/video_sequencer.py:64`, `aiprod_adaptation/post_prod/audio_synchronizer.py:82`, `aiprod_adaptation/image_gen/character_prepass.py:75` : plusieurs couches de génération capturent `Exception` puis dégradent silencieusement vers `error://generation-failed` ou un simple compteur `failed += 1`, sans journaliser la cause racine. Le système reste robuste, mais devient beaucoup moins diagnostiquer en conditions réelles.
+- 🟡 La structure coût est présente, mais l'observabilité économique reste partielle. La recherche workspace montre des écritures runtime pour `metrics.cost.image_api_calls`, `metrics.cost.video_api_calls` et `metrics.cost.audio_api_calls` dans `aiprod_adaptation/core/scheduling/episode_scheduler.py:63`, `aiprod_adaptation/core/scheduling/episode_scheduler.py:71`, `aiprod_adaptation/core/scheduling/episode_scheduler.py:78`. En revanche, aucune écriture runtime n'a été trouvée pour `llm_tokens_input`, `llm_tokens_output` ou `*_cost_usd` hors `aiprod_adaptation/core/cost_report.py` et les tests.
 
----
+## DIMENSION 8 — CLI & adapters
 
-## DIMENSION 8 — CLI & Adapters
+### Constats vérifiés
 
-### Commandes CLI
-
-| Commande | Flag adapters | Sortie |
-|----------|--------------|--------|
-| `aiprod pipeline` | `--llm-adapter` | JSON stdout / `--output` fichier |
-| `aiprod storyboard` | `--image-adapter` (null\|flux\|replicate) | JSON storyboard |
-| `aiprod schedule` | `--video-adapter` (null\|runway\|kling\|smart), `--audio-adapter` (null\|elevenlabs\|openai) | JSON ProductionOutput |
-
-### SmartVideoRouter
-
-```python
-DEFAULT_THRESHOLD_SEC = 5
-# duration_sec <= 5 → runway
-# duration_sec > 5  → kling
-```
-
-### Imports lazy (adapters)
-
-- `FluxAdapter`, `ReplicateAdapter`, `RunwayAdapter`, `KlingAdapter`, `ElevenLabsAdapter`, `OpenAITTSAdapter` : tous importés via `_load_*()` functions dans leurs modules respectifs ✅
+- La CLI packagée couvre désormais `pipeline`, `storyboard`, `schedule` et `compare` dans `aiprod_adaptation/cli.py`.
+- Le routeur LLM est réellement configurable et exportable côté CLI (`--router-short-provider`, `--router-trace-output`, `--max-chars-per-chunk`).
+- `main.py` supporte maintenant le chemin LLM réel avec `--require-llm`, export de trace et override de chunking, et le smoke test JSON passe.
+- Les imports des adapters concrets restent lazy dans les chargeurs `_load_image_adapter`, `_load_llm_adapter`, `_load_video_adapter`, `_load_audio_adapter` de `aiprod_adaptation/cli.py`.
 
 ### Problèmes détectés
 
-| ID | Sévérité | Fichier | Description |
-|----|----------|---------|-------------|
-| M02 | 🟠 | `core/scheduling/episode_scheduler.py:1-16` | Tous les adapters de production sont importés au top-level (`from aiprod_adaptation.image_gen.flux_adapter import FluxAdapter`, etc.) — alors que les CLI loaders sont lazy. En environnement sans `runwayml` ou `kling` installé, `import EpisodeScheduler` lèvera `ImportError` immédiatement |
+- 🟠 `aiprod_adaptation/cli.py:204-207` annonce `pipeline --format` comme un moyen de "Force input format (auto-detected if omitted)", mais `cmd_pipeline()` ne lit jamais `args.format`, et `aiprod_adaptation/core/engine.py:68-70` continue à décider exclusivement via `InputClassifier().classify(text)`. C'est un contrat utilisateur cassé : le flag existe mais n'a aucun effet.
+- 🟡 `aiprod_adaptation/cli.py:247` annonce pour `schedule --output` un "Directory or JSON path for SchedulerResult", mais `aiprod_adaptation/cli.py:377-381` crée systématiquement un répertoire puis y écrit `storyboard.json`, `video.json`, `production.json` et `metrics.json`. Le comportement actuel est cohérent en mode dossier, mais le help ment sur le mode fichier JSON.
 
----
+## Écarts par rapport à l'audit master du 2026-04-21
+
+L'ancien audit n'est plus une photographie fiable du repo. Les écarts les plus nets sont :
+
+1. La base de tests n'est plus à `278`, mais à `363 passed, 4 deselected`, répartis sur 11 fichiers.
+2. La couche router/compare a désormais une couverture et une opérabilité réelles : tests de matrice routeur, compare CLI, trace exportable et validations `chapter1.txt` existent.
+3. Le scheduler n'est plus un chantier théorique : il existe, écrit ses artefacts attendus, et alimente déjà les compteurs d'appels image/video/audio.
+4. Le problème ancien sur les imports top-level d'adapters concrets dans le scheduler n'est plus représentatif de l'état actuel de `aiprod_adaptation/core/scheduling/episode_scheduler.py`.
 
 ## Tableau consolidé des problèmes
 
 | ID | Dim | Sévérité | Fichier:ligne | Description |
-|----|-----|----------|---------------|-------------|
-| **M01** | D7 | 🟠 Majeur | `episode_scheduler.py:run()` | CostReport non alimenté — `total_cost_usd` toujours `0.0` à l'exécution réelle |
-| **M02** | D1/D8 | 🟠 Majeur | `episode_scheduler.py:1-16` | Imports adapters production au top-level (non lazy) — risque `ImportError` sans packages tiers |
-| m01 | D1 | 🟡 Mineur | `core/rules/duration_rules.py` | Fichier documentation-only sans code exécutable |
-| m02 | D1 | 🟡 Mineur | `core/engine.py:33-38` | `CharacterRegistry()` instancié deux fois inutilement |
-| m03 | D2 | 🟡 Mineur | `core/adaptation/story_validator.py:24` | `"felt"` dans `INTERNAL_THOUGHT_WORDS` filtre les actions physiques sensorielles |
-| m04 | D2 | 🟡 Mineur | `core/engine.py:89` | Input vide → `ValueError("PASS 2:")` au lieu de `"PASS 1:"` |
-| m05 | D3 | 🟡 Mineur | `tests/test_video_gen.py:46` | `_storyboard_and_output()` sans return type → 12 erreurs mypy cascade |
-| m06 | D3 | 🟡 Mineur | `tests/test_post_prod.py:49` | `_video_and_output()` sans return type → 10 erreurs mypy cascade |
-| m07 | D3 | 🟡 Mineur | `tests/test_continuity.py:24` | `_make_output()` sans return type → 1 erreur mypy |
-| m08 | D3/D4 | 🟡 Mineur | `tests/test_adaptation.py:438,441,457` | 3× `# type: ignore[override]` devenus `unused-ignore` + annotations manquantes |
-| m09 | D3 | 🟡 Mineur | `tests/test_pipeline.py:51,61,72+` | Dicts raw non castés vers TypedDicts → 22 erreurs mypy ; clés manquantes dans `ShotDict` ligne 51 |
-| m10 | D3 | 🟡 Mineur | — | Aucun test unitaire pour `LLMRouter`, `audio_utils.py`, `ssml_builder.py`, `checkpoint.py` |
-| m11 | D6 | 🟡 Mineur | `models/schema.py:Shot` | `duration_sec: int` sans `@field_validator` Pydantic (validation range uniquement en Pass4) |
-| m12 | D1 | 🟡 Mineur | `core/adaptation/novel_pipe.py` | Fichier legacy confirmé avec tests orphelins — bloquer la suppression tant que `TestNovelPipe` existe |
-
-**Total : 0 critique 🔴 / 2 majeurs 🟠 / 12 mineurs 🟡**
-
----
+|---|---|---|---|---|
+| M-01 | 8 | 🟠 | `aiprod_adaptation/cli.py:204-207`, `aiprod_adaptation/core/engine.py:68-70` | Le flag `pipeline --format` est documenté comme forçage du type d'entrée, mais il n'est jamais consommé; l'auto-classification reste toujours active. |
+| M-02 | 7 | 🟠 | `aiprod_adaptation/image_gen/checkpoint.py:19` | Lecture de checkpoint protégée par `except Exception: pass`, ce qui masque corruption de cache et erreurs I/O. |
+| M-03 | 7 | 🟠 | `aiprod_adaptation/image_gen/storyboard.py:78`, `aiprod_adaptation/image_gen/storyboard.py:134`, `aiprod_adaptation/video_gen/video_sequencer.py:64`, `aiprod_adaptation/post_prod/audio_synchronizer.py:82`, `aiprod_adaptation/image_gen/character_prepass.py:75` | Les couches de génération attrapent des exceptions larges sans journalisation structurée de la cause, ce qui réduit fortement la diagnosabilité runtime. |
+| m-01 | 2 | 🟡 | `aiprod_adaptation/video_gen/video_sequencer.py:35`, `:39`, `:41`, `aiprod_adaptation/post_prod/audio_synchronizer.py:60`, `:64` | Les ruptures de référence `shot_id` dans les couches aval sont converties en valeurs de repli silencieuses au lieu d'échouer explicitement. |
+| m-02 | 8 | 🟡 | `aiprod_adaptation/cli.py:247`, `aiprod_adaptation/cli.py:377-381` | Le help de `schedule --output` promet un chemin fichier JSON ou un dossier, mais seule la sémantique dossier est implémentée. |
+| m-03 | 7 | 🟡 | `aiprod_adaptation/core/cost_report.py:12-38`, `aiprod_adaptation/core/run_metrics.py:17`, `aiprod_adaptation/core/scheduling/episode_scheduler.py:63`, `:71`, `:78` | La structure de coût est bonne, mais l'alimentation runtime reste partielle : appels image/video/audio incrémentés, pas de preuve d'alimentation runtime pour tokens LLM ni coûts USD. |
 
 ## Plan de correction suggéré
 
-### Priorité HAUTE (🟠 Majeurs)
+1. Corriger ou supprimer le faux contrat `pipeline --format`, puis ajouter un test CLI qui prouve le forçage réel du type d'entrée.
+2. Remplacer les `except Exception` silencieux des couches storyboard/video/audio/prepass/checkpoint par des captures ciblées avec logs structurés et conservation de la cause racine.
+3. Faire échouer explicitement `VideoSequencer` et `AudioSynchronizer` quand un `shot_id` attendu n'est plus résolu depuis l'IR amont.
+4. Aligner le help de `schedule --output` sur le comportement réel, ou implémenter réellement le mode fichier JSON agrégé promis par l'aide.
+5. Compléter l'observabilité économique en alimentant `llm_tokens_input`, `llm_tokens_output` et `*_cost_usd` dans les chemins runtime réels, pas seulement dans les dataclasses et les tests.
 
-**[T08] — Rendre les imports `EpisodeScheduler` lazy**
-- Fichier : `aiprod_adaptation/core/scheduling/episode_scheduler.py`
-- Action : Déplacer les imports `FluxAdapter`, `ReplicateAdapter`, `RunwayAdapter`, `KlingAdapter`, `ElevenLabsAdapter`, `OpenAITTSAdapter` à l'intérieur des méthodes `_load_*()` correspondantes (pattern identique à celui déjà utilisé dans les CLI loaders)
-- Risque : Faible (refactoring mécanique d'imports)
+## Verdict
 
-**[T09] — Alimenter `CostReport` depuis les adapters**
-- Fichier : `aiprod_adaptation/core/scheduling/episode_scheduler.py` + adapters image/video/audio
-- Action : Définir un protocol/convention pour que chaque adapter retourne un `CostReport` partiel ; agréger dans `EpisodeScheduler.run()` via `CostReport.merge()`
-- Note : Nécessite de définir les tarifs par adapter (ou laisser en `0.0` avec un TODO explicite)
-- Risque : Modéré (interface entre adapters et scheduler)
-
-### Priorité NORMALE (🟡 Mineurs — tests)
-
-**[T10] — Annotations return type dans 3 fonctions helper de tests**
-- Fichiers : `test_video_gen.py:46`, `test_post_prod.py:49`, `test_continuity.py:24`
-- Action : Ajouter les return type annotations pour éliminer les 23 erreurs mypy en cascade
-- Pattern : Même correction que T04 (déjà appliquée sur 5 autres fichiers)
-
-**[T11] — Nettoyer `test_adaptation.py:438,441,457`**
-- Action : Retirer les `# type: ignore[override]` devenus `unused-ignore` ; ajouter les annotations complètes aux fonctions concernées
-
-**[T12] — Caster les dicts raw dans `test_pipeline.py`**
-- Action : Ajouter `cast(RawScene, {...})`, `cast(VisualScene, {...})`, `cast(ShotDict, {...})` ; ajouter `shot_type`/`camera_movement` à la ligne 51
-
-### Priorité BASSE (🟡 Mineurs — code)
-
-**[T13] — Corriger le préfixe `"PASS 2:"` pour input vide**
-- Fichier : `aiprod_adaptation/core/engine.py:89` ou `pass1_segment.py`
-- Action : Lever `ValueError("PASS 1: empty input")` dans `segment()` si le texte est vide, avant que `StoryValidator` soit appelé
-
-**[T14] — Dédupliquer `CharacterRegistry()` dans `engine.py`**
-- Fichier : `aiprod_adaptation/core/engine.py:33-38`
-- Action : Instancier une seule fois : `registry = CharacterRegistry().build(output)` puis `CharacterRegistry.enrich_from_text(registry, ...)` → vérifier la signature exacte
-
-**[T15] — Retirer `"felt"` de `INTERNAL_THOUGHT_WORDS`**
-- Fichier : `aiprod_adaptation/core/adaptation/story_validator.py:24`
-- Action : Supprimer `"felt"` ou le remplacer par `"felt that"` (marqueur de pensée interne avec subordination)
-
-### Priorité TRÈS BASSE (dette technique)
-
-**[T16] — Migrer/supprimer `novel_pipe.py`**
-- Dépendance : Migrer `TestNovelPipe` → `TestStoryExtractor` puis supprimer `novel_pipe.py`
-
-**[T17] — Ajouter `@field_validator` range sur `Shot.duration_sec`**
-- Fichier : `models/schema.py`
-- Action : `@field_validator("duration_sec") → ge=1, le=120` (ou valeur config)
-
-**[T18] — Tests unitaires manquants**
-- Couvrir `LLMRouter` (routing null/claude/gemini), `audio_utils.py`, `ssml_builder.py`, `checkpoint.py`
+Le projet est proche d'un état v1 technique crédible. Les fondations sont bonnes, la validation est solide, et la fermeture router récente change clairement la lecture globale du repo. Les prochains gains à fort levier ne sont plus dans la création de nouvelles briques fondamentales, mais dans la cohérence des contrats CLI et dans l'observabilité fine des erreurs et des coûts en production locale.

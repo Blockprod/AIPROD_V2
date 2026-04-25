@@ -6,6 +6,8 @@ from __future__ import annotations
 
 from pydantic import BaseModel, field_validator
 
+from aiprod_adaptation.models.schema import ActionSpec
+
 
 class AudioRequest(BaseModel):
     """Input for a single-shot audio generation request."""
@@ -13,6 +15,7 @@ class AudioRequest(BaseModel):
     shot_id: str
     scene_id: str
     text: str
+    action: ActionSpec | None = None
     voice_id: str = "default"
     language: str = "en"
     duration_hint_sec: int = 4
@@ -35,6 +38,7 @@ class AudioResult(BaseModel):
     duration_sec: int
     model_used: str
     latency_ms: int
+    cost_usd: float = 0.0
 
 
 class TimelineClip(BaseModel):
@@ -49,6 +53,7 @@ class TimelineClip(BaseModel):
     audio_duration_sec: int = 0    # real measured audio duration (0 = not measured)
     silence_padding_sec: int = 0   # silence to append when audio < video
     latency_ms: int = 0            # audio adapter call duration in ms (0 if not measured)
+    cost_usd: float = 0.0
 
 
 class ProductionOutput(BaseModel):

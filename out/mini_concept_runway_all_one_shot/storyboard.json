@@ -1,0 +1,27 @@
+{
+  "title": "MiniConcept",
+  "frames": [
+    {
+      "shot_id": "SCN_001_SHOT_001",
+      "scene_id": "SCN_001",
+      "image_url": "error://generation-failed",
+      "image_b64": "",
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Marcus pushes open a heavy wooden door, stepping inside, in abandoned chapel interior. interior lighting. Marcus cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+      "seed_used": 42,
+      "shot_type": "medium",
+      "camera_movement": "pan",
+      "time_of_day_visual": "interior",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "Marcus"
+      ],
+      "reference_image_url": "https://dnznrvs05pmza.cloudfront.net/84f01e4a-d95e-44d5-9374-f13ab5515c28.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMGEzN2EzMGY1NzAyYmQ5MiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzA3NTk4M30.Yfcm57wMWoCZtP-Zv7lPxHgfkmllvQSf9pKf4nl7UVg"
+    }
+  ],
+  "style_token": "cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded",
+  "total_shots": 1,
+  "generated": 0
+}

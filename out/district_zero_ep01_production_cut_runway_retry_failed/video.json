@@ -1,0 +1,97 @@
+{
+  "title": "District Zero - Episode 1 - Production Cut",
+  "clips": [
+    {
+      "shot_id": "SCN_002_SHOT_001",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/90c377d8-b097-4ccc-85c0-4fb5b5f9919a.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMmQxMmIzNzU4NjRkMTg3MiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzE4OTEwOX0.8UAnX7PPQtLvRA-MciOjRipjBt2WRmZ1jKFVVm0qMnA",
+      "duration_sec": 5,
+      "model_used": "gen4_turbo",
+      "latency_ms": 30250,
+      "cost_usd": 0.25,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_008_SHOT_004",
+      "video_url": "error://generation-failed",
+      "duration_sec": 3,
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_010_SHOT_003",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/45974503-f118-4db3-bd68-b67bcbfc07dc.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNjRjNjFhNDhiOWZlNzVmMiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzE5MDg1Nn0.CNk-IGAWV2MwW-DKgOABFmQRxKA5x1nreZC_v-hJE8w",
+      "duration_sec": 4,
+      "model_used": "gen4_turbo",
+      "latency_ms": 27687,
+      "cost_usd": 0.2,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_001",
+      "video_url": "error://generation-failed",
+      "duration_sec": 3,
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_002",
+      "video_url": "error://generation-failed",
+      "duration_sec": 3,
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_003",
+      "video_url": "error://generation-failed",
+      "duration_sec": 3,
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_004",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/4edc54fd-d141-433a-847d-25ca5d35ab86.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZGQyNDYyMjg0Yzk1YzhhZCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzIwODM2MH0.1DqiCWGjh25qfWfsFb8WsIbWP1vse8y1ScDcZQ2Y0JE",
+      "duration_sec": 3,
+      "model_used": "gen4_turbo",
+      "latency_ms": 22296,
+      "cost_usd": 0.15,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_005",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/1c0b7ea1-da89-4fbe-be22-07a2ed384e96.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNDU4ZGE2ZmQ3NTUwMmVlMSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzE1NDQyOX0.sgGsEcfOHuOcfpMLRQ5zOROrPkd6Wg8F1WSO--KpG1w",
+      "duration_sec": 3,
+      "model_used": "gen4_turbo",
+      "latency_ms": 26187,
+      "cost_usd": 0.15,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_006",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/3dd5a80a-39ac-4b18-9027-752f8c49b572.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiM2EyYmE4MzdiYTRkMGViOSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzIxMzIzOX0.3eA9JZzo6VrEkoi3b6ro7ZZXfTYJe9zN7fsbJR81XG8",
+      "duration_sec": 3,
+      "model_used": "gen4_turbo",
+      "latency_ms": 20657,
+      "cost_usd": 0.15,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_011_SHOT_007",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/d308d57d-272d-4aba-bfe3-5cc15bb43d1d.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNTg2MzliOWZjNTBlYTBkYyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzIwMTMxMX0.0GyHoGl9k76nngDUZpU7uxNUFwOuhKbyCy3Bp6urCsI",
+      "duration_sec": 3,
+      "model_used": "gen4_turbo",
+      "latency_ms": 26734,
+      "cost_usd": 0.15,
+      "last_frame_url": ""
+    }
+  ],
+  "total_shots": 10,
+  "generated": 6
+}

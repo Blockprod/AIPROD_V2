@@ -27,6 +27,7 @@ from aiprod_adaptation.post_prod.audio_request import (
     ProductionOutput,
     TimelineClip,
 )
+from aiprod_adaptation.post_prod.runway_tts_adapter import RunwayTTSAdapter
 from aiprod_adaptation.post_prod.audio_synchronizer import AudioSynchronizer
 from aiprod_adaptation.video_gen.video_adapter import NullVideoAdapter
 from aiprod_adaptation.video_gen.video_request import VideoOutput
@@ -94,6 +95,24 @@ class TestAudioRequest:
         with pytest.raises(Exception):
             AudioRequest(shot_id="S1", scene_id="SC001", text="x", duration_hint_sec=0)
 
+    def test_audio_request_accepts_structured_action(self) -> None:
+        req = AudioRequest(
+            shot_id="S1",
+            scene_id="SC001",
+            text="x",
+            action={
+                "subject_id": "john",
+                "action_type": "walked",
+                "target": "door",
+                "modifiers": ["quickly"],
+                "location_id": "hallway",
+                "camera_intent": "follow",
+                "source_text": "John walked quickly to the door.",
+            },
+        )
+        assert req.action is not None
+        assert req.action.source_text == "John walked quickly to the door."
+
 
 # ---------------------------------------------------------------------------
 # 2. NullAudioAdapter
@@ -116,6 +135,14 @@ class TestNullAudioAdapter:
     def test_null_adapter_shot_id_preserved(self) -> None:
         result = self.adapter.generate(_REQ)
         assert result.shot_id == _REQ.shot_id
+
+
+class TestRunwayTTSAdapter:
+    def test_runway_tts_adapter_requires_token(self) -> None:
+        adapter = RunwayTTSAdapter(api_token="")
+
+        with pytest.raises(ValueError, match="RUNWAY_API_TOKEN"):
+            adapter.generate(_REQ)
 
 
 # ---------------------------------------------------------------------------
@@ -161,16 +188,42 @@ class TestAudioSynchronizer:
         _, production = self.sync.generate(video, output)
         assert production.title == video.title
 
+    def test_synchronizer_raises_on_unknown_video_shot_id(self) -> None:
+        video, output = _video_and_output()
+        broken_video = video.model_copy(
+            update={
+                "clips": [video.clips[0].model_copy(update={"shot_id": "SHOT_MISSING"})]
+            }
+        )
+
+        with pytest.raises(
+            ValueError,
+            match="Video clip references unknown shot_id: SHOT_MISSING",
+        ):
+            self.sync.build_requests(broken_video, output)
+
+    def test_synchronizer_build_requests_include_structured_action(self) -> None:
+        video, output = _video_and_output()
+        requests = self.sync.build_requests(video, output)
+        assert requests[0].action is not None
+        assert requests[0].action.source_text == output.episodes[0].shots[0].action.source_text
+
     def test_synchronizer_error_does_not_crash(self) -> None:
+        from unittest.mock import MagicMock, patch
+
         class _BrokenAdapter(NullAudioAdapter):
             def generate(self, _request: AudioRequest) -> AudioResult:
                 raise RuntimeError("boom")
 
         sync = AudioSynchronizer(adapter=_BrokenAdapter())
         video, output = _video_and_output()
-        audio_results, production = sync.generate(video, output)
+        logger = MagicMock()
+        with patch("aiprod_adaptation.post_prod.audio_synchronizer.logger", logger):
+            audio_results, production = sync.generate(video, output)
         assert len(audio_results) == video.total_shots
         assert all(r.model_used == "error" for r in audio_results)
+        assert len(production.timeline) == video.total_shots
+        logger.warning.assert_called()
 
     def test_synchronizer_with_empty_clips(self) -> None:
         video = VideoOutput(title="T", clips=[], total_shots=0, generated=0)
@@ -181,6 +234,12 @@ class TestAudioSynchronizer:
         assert audio_results == []
         assert production.timeline == []
         assert production.total_duration_sec == 0
+
+    def test_synchronizer_build_requests_propagates_structured_action(self) -> None:
+        video, output = _video_and_output()
+        requests = self.sync.build_requests(video, output)
+        assert requests[0].action is not None
+        assert requests[0].action.subject_id != ""
 
 
 # ---------------------------------------------------------------------------

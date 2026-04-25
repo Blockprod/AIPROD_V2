@@ -4,6 +4,8 @@ pytest test suite — EpisodeScheduler + RunMetrics (SO-04, SO-08)
 
 from __future__ import annotations
 
+import pytest
+
 from aiprod_adaptation.core.engine import run_pipeline
 from aiprod_adaptation.core.run_metrics import RunMetrics
 from aiprod_adaptation.core.scheduling.episode_scheduler import EpisodeScheduler, SchedulerResult
@@ -186,3 +188,72 @@ class TestCostReport:
         assert merged.image_api_calls == 3
         assert merged.video_api_calls == 2
         assert abs(merged.llm_cost_usd - 1.5) < 1e-9
+
+    def test_cost_report_notes_document_runtime_gaps(self) -> None:
+        from aiprod_adaptation.core.cost_report import CostReport
+
+        report = CostReport()
+
+        assert (
+            (
+                "llm_tokens_input, llm_tokens_output, and llm_cost_usd are not populated "
+                "by scheduler runtime."
+            )
+            in report.notes
+        )
+
+    def test_scheduler_metrics_aggregate_adapter_costs(self) -> None:
+        from aiprod_adaptation.image_gen.image_adapter import ImageAdapter
+        from aiprod_adaptation.image_gen.image_request import ImageRequest, ImageResult
+        from aiprod_adaptation.post_prod.audio_adapter import AudioAdapter
+        from aiprod_adaptation.post_prod.audio_request import AudioRequest, AudioResult
+        from aiprod_adaptation.video_gen.video_adapter import VideoAdapter
+        from aiprod_adaptation.video_gen.video_request import VideoClipResult, VideoRequest
+
+        class CostedImageAdapter(ImageAdapter):
+            def generate(self, request: ImageRequest) -> ImageResult:
+                return ImageResult(
+                    shot_id=request.shot_id,
+                    image_url=f"null://storyboard/{request.shot_id}.png",
+                    model_used="costed-image",
+                    latency_ms=1,
+                    cost_usd=0.11,
+                )
+
+        class CostedVideoAdapter(VideoAdapter):
+            def generate(self, request: VideoRequest) -> VideoClipResult:
+                return VideoClipResult(
+                    shot_id=request.shot_id,
+                    video_url=f"null://video/{request.shot_id}.mp4",
+                    duration_sec=request.duration_sec,
+                    model_used="costed-video",
+                    latency_ms=2,
+                    cost_usd=0.22,
+                )
+
+        class CostedAudioAdapter(AudioAdapter):
+            def generate(self, request: AudioRequest) -> AudioResult:
+                return AudioResult(
+                    shot_id=request.shot_id,
+                    audio_url=f"null://audio/{request.shot_id}.mp3",
+                    duration_sec=request.duration_hint_sec,
+                    model_used="costed-audio",
+                    latency_ms=3,
+                    cost_usd=0.33,
+                )
+
+        output = _output()
+        total_shots = sum(len(ep.shots) for ep in output.episodes)
+        scheduler = EpisodeScheduler(
+            image_adapter=CostedImageAdapter(),
+            video_adapter=CostedVideoAdapter(),
+            audio_adapter=CostedAudioAdapter(),
+            base_seed=0,
+        )
+
+        result = scheduler.run(output)
+
+        assert result.metrics.cost.image_cost_usd == pytest.approx(total_shots * 0.11)
+        assert result.metrics.cost.video_cost_usd == pytest.approx(total_shots * 0.22)
+        assert result.metrics.cost.audio_cost_usd == pytest.approx(total_shots * 0.33)
+        assert result.metrics.cost.total_cost_usd == pytest.approx(total_shots * 0.66)

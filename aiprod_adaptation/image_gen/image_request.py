@@ -2,11 +2,14 @@ from __future__ import annotations
 
 from pydantic import BaseModel, field_validator
 
+from aiprod_adaptation.models.schema import ActionSpec
+
 
 class ImageRequest(BaseModel):
     shot_id: str
     scene_id: str
     prompt: str
+    action: ActionSpec | None = None
     negative_prompt: str = "blurry, low quality, watermark, text, oversaturated"
     width: int = 1024
     height: int = 576
@@ -36,6 +39,7 @@ class ImageResult(BaseModel):
     image_b64: str = ""
     model_used: str
     latency_ms: int
+    cost_usd: float = 0.0
 
 
 class ShotStoryboardFrame(BaseModel):
@@ -45,6 +49,7 @@ class ShotStoryboardFrame(BaseModel):
     image_b64: str = ""
     model_used: str
     latency_ms: int
+    cost_usd: float = 0.0
     prompt_used: str
     seed_used: int | None = None
     shot_type: str = ""

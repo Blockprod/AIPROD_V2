@@ -9,8 +9,60 @@ from aiprod_adaptation.models.intermediate import ShotDict, VisualScene
 from aiprod_adaptation.models.schema import AIPRODOutput, Episode, Scene, Shot
 
 _SCENE_KNOWN_KEYS: frozenset[str] = frozenset(
-    {"scene_id", "characters", "location", "time_of_day", "visual_actions", "dialogues", "emotion"}
+    {
+        "scene_id",
+        "characters",
+        "character_ids",
+        "location",
+        "location_id",
+        "time_of_day",
+        "visual_actions",
+        "dialogues",
+        "emotion",
+        "action_units",
+        "shot_ids",
+    }
 )
+
+
+def _slugify_identifier(text: str) -> str:
+    slug = "".join(character.lower() if character.isalnum() else "_" for character in text)
+    slug = "_".join(part for part in slug.split("_") if part)
+    return slug or "unknown"
+
+
+def _character_ids_for_scene(scene: VisualScene) -> list[str]:
+    explicit = [_slugify_identifier(character) for character in scene.get("characters", [])]
+    if explicit:
+        return explicit
+
+    derived: list[str] = []
+    for action in scene.get("action_units", []):
+        subject_id = action.get("subject_id")
+        if not subject_id or subject_id in {
+            "unknown_subject",
+            "male_subject",
+            "female_subject",
+            "group_subject",
+            "speaker_subject",
+            "listener_subject",
+        }:
+            continue
+        if subject_id not in derived:
+            derived.append(subject_id)
+    return derived
+
+
+def _location_id_for_scene(scene: VisualScene) -> str | None:
+    location = scene.get("location", "Unknown")
+    if location.lower() != "unknown":
+        return _slugify_identifier(location)
+
+    for action in scene.get("action_units", []):
+        target = action.get("target")
+        if target:
+            return _slugify_identifier(target)
+    return None
 
 
 def compile_episode(
@@ -49,9 +101,26 @@ def compile_episode(
                 f"PASS 4: shot '{sid}' references unknown scene_id '{scid}'"
             )
 
+    scene_to_shot_ids: dict[str, list[str]] = {scene["scene_id"]: [] for scene in scenes}
+    for shot in shots:
+        shot_id = shot.get("shot_id")
+        scene_id = shot.get("scene_id")
+        if isinstance(shot_id, str) and isinstance(scene_id, str):
+            scene_to_shot_ids.setdefault(scene_id, []).append(shot_id)
+
     try:
         pydantic_scenes = [
-            Scene(**cast(Any, {k: v for k, v in s.items() if k in _SCENE_KNOWN_KEYS}))
+            Scene(
+                **cast(
+                    Any,
+                    {
+                        **{k: v for k, v in s.items() if k in _SCENE_KNOWN_KEYS},
+                        "character_ids": _character_ids_for_scene(s),
+                        "location_id": _location_id_for_scene(s),
+                        "shot_ids": scene_to_shot_ids.get(s["scene_id"], []),
+                    },
+                )
+            )
             for s in scenes
         ]
     except ValidationError as exc:
@@ -66,7 +135,11 @@ def compile_episode(
                 f"PASS 4: shot '{sid}' has invalid duration_sec={duration} (must be 3-8)"
             )
         try:
-            validated_shots.append(Shot(**shot))
+            shot_payload = dict(shot)
+            action_payload = shot_payload.get("action")
+            if action_payload is not None:
+                shot_payload["action"] = dict(cast(Any, action_payload))
+            validated_shots.append(Shot(**cast(Any, shot_payload)))
         except ValidationError as exc:
             raise ValueError(str(exc)) from exc
 

@@ -33,11 +33,15 @@ from __future__ import annotations
 
 import re
 
-from aiprod_adaptation.models.intermediate import RawScene, VisualScene
+from aiprod_adaptation.models.intermediate import ActionSpec, RawScene, VisualScene
 
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
+from .rules.cinematography_rules import (
+    CAMERA_MOVEMENT_INTERACTION_KEYWORDS,
+    CAMERA_MOVEMENT_MOTION_KEYWORDS,
+)
 from .rules.emotion_rules import _INTERNAL_THOUGHT_WORDS, EMOTION_RULES
 
 # Regex to extract quoted dialogue (ASCII straight quotes and typographic curly quotes).
@@ -171,6 +175,109 @@ def _extract_dialogues(raw_text: str) -> list[str]:
     return _DIALOGUE_RE.findall(raw_text)
 
 
+def _slugify_identifier(text: str) -> str:
+    slug = re.sub(r"[^a-z0-9]+", "_", text.lower()).strip("_")
+    return slug or "unknown"
+
+
+def _has_any(text_lower: str, keywords: list[str]) -> bool:
+    return any(re.search(r"\b" + re.escape(keyword) + r"\b", text_lower) for keyword in keywords)
+
+
+def _infer_camera_intent(action: str) -> str:
+    lower = action.lower()
+    if _has_any(lower, CAMERA_MOVEMENT_MOTION_KEYWORDS):
+        return "follow"
+    if _has_any(lower, CAMERA_MOVEMENT_INTERACTION_KEYWORDS):
+        return "pan"
+    return "static"
+
+
+def _extract_subject_id(action: str, characters: list[str]) -> str:
+    lower = action.lower()
+    for character in characters:
+        if character.lower() in lower:
+            return _slugify_identifier(character)
+
+    tokens = re.findall(r"[A-Za-z']+", action)
+    if not tokens:
+        return "unknown_subject"
+
+    pronoun_subjects = {
+        "he": "male_subject",
+        "she": "female_subject",
+        "they": "group_subject",
+        "we": "group_subject",
+        "i": "speaker_subject",
+        "you": "listener_subject",
+    }
+    first = tokens[0].lower()
+    if first in pronoun_subjects:
+        return pronoun_subjects[first]
+    if first in {"a", "an", "the"} and len(tokens) > 1:
+        return _slugify_identifier(tokens[1])
+    return _slugify_identifier(tokens[0])
+
+
+def _extract_action_type_and_target(action: str) -> tuple[str, str | None, list[str]]:
+    tokens = re.findall(r"[A-Za-z']+", action)
+    lower_tokens = [token.lower() for token in tokens]
+    if not lower_tokens:
+        return "observe", None, []
+
+    modifiers = [token for token in lower_tokens if token.endswith("ly")]
+    index = 0
+    while index < len(lower_tokens) and lower_tokens[index].endswith("ly"):
+        index += 1
+
+    if index < len(lower_tokens) and lower_tokens[index] in {"a", "an", "the"}:
+        index += 2
+    else:
+        index += 1
+
+    while index < len(lower_tokens) and lower_tokens[index] in {
+        "am", "is", "are", "was", "were", "be", "been", "being",
+        "has", "have", "had", "do", "does", "did",
+    }:
+        index += 1
+
+    if index >= len(lower_tokens):
+        action_type = lower_tokens[-1]
+    else:
+        action_type = lower_tokens[index]
+
+    target: str | None = None
+    target_markers = {
+        "to", "toward", "towards", "into", "in",
+        "at", "through", "inside", "onto", "on",
+    }
+    for target_index in range(index + 1, len(lower_tokens)):
+        if lower_tokens[target_index] in target_markers:
+            remainder = [
+                token
+                for token in lower_tokens[target_index + 1:]
+                if token not in {"a", "an", "the"}
+            ]
+            if remainder:
+                target = " ".join(remainder)
+            break
+
+    return action_type, target, modifiers
+
+
+def _build_action_unit(action: str, characters: list[str], location: str) -> ActionSpec:
+    action_type, target, modifiers = _extract_action_type_and_target(action)
+    return {
+        "subject_id": _extract_subject_id(action, characters),
+        "action_type": action_type,
+        "target": target,
+        "modifiers": modifiers,
+        "location_id": None if location.lower() == "unknown" else _slugify_identifier(location),
+        "camera_intent": _infer_camera_intent(action),
+        "source_text": action,
+    }
+
+
 # ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
@@ -245,8 +352,18 @@ def visual_rewrite(scenes: list[RawScene]) -> list[VisualScene]:
                 "visual_actions": visual_actions,
                 "dialogues":      dialogues,
                 "emotion":        emotion,
+                "action_units":   [
+                    _build_action_unit(
+                        action,
+                        list(scene.get("characters", [])),
+                        scene.get("location", "Unknown"),
+                    )
+                    for action in visual_actions
+                ],
             }
         )
+        if scene.get("time_of_day") in {"dawn", "day", "dusk", "night", "interior"}:
+            output[-1]["time_of_day_visual"] = scene["time_of_day"]
 
     return output
 

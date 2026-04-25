@@ -18,6 +18,17 @@ from typing import Any, NotRequired
 from typing_extensions import TypedDict
 
 
+class ActionSpec(TypedDict):
+    """Structured action payload propagated alongside textual compatibility fields."""
+    subject_id: str
+    action_type: str
+    target: str | None
+    modifiers: list[str]
+    location_id: str | None
+    camera_intent: str
+    source_text: str
+
+
 class RawScene(TypedDict):
     """Output of Pass 1 (segment). Input to Pass 2 (visual_rewrite)."""
     scene_id:    str
@@ -43,6 +54,7 @@ class VisualScene(TypedDict):
     pacing:             NotRequired[str]   # "fast" | "medium" | "slow"
     time_of_day_visual: NotRequired[str]   # "dawn" | "day" | "dusk" | "night" | "interior"
     dominant_sound:     NotRequired[str]   # "dialogue" | "ambient" | "silence"
+    action_units:       NotRequired[list[ActionSpec]]
 
 
 class ShotDict(TypedDict):
@@ -55,3 +67,4 @@ class ShotDict(TypedDict):
     shot_type:        str   # "wide" | "medium" | "close_up" | "pov"
     camera_movement:  str   # "static" | "follow" | "pan"
     metadata:         NotRequired[dict[str, Any]]
+    action:           NotRequired[ActionSpec]

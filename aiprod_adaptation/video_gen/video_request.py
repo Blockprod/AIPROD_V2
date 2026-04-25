@@ -2,12 +2,15 @@ from __future__ import annotations
 
 from pydantic import BaseModel, field_validator
 
+from aiprod_adaptation.models.schema import ActionSpec
+
 
 class VideoRequest(BaseModel):
     shot_id: str
     scene_id: str
     image_url: str
     prompt: str
+    action: ActionSpec | None = None
     duration_sec: int
     motion_score: float = 5.0
     seed: int | None = None
@@ -27,6 +30,7 @@ class VideoClipResult(BaseModel):
     duration_sec: int
     model_used: str
     latency_ms: int
+    cost_usd: float = 0.0
     last_frame_url: str = ""   # last frame of this clip (used as hint for next shot)
 
 

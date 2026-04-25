@@ -5,6 +5,8 @@ a fully ordered ProductionOutput (timeline with cumulative start_sec).
 
 from __future__ import annotations
 
+import structlog
+
 from aiprod_adaptation.models.schema import AIPRODOutput, Scene, Shot
 from aiprod_adaptation.post_prod.audio_adapter import AudioAdapter
 from aiprod_adaptation.post_prod.audio_request import (
@@ -15,6 +17,8 @@ from aiprod_adaptation.post_prod.audio_request import (
 )
 from aiprod_adaptation.post_prod.audio_utils import audio_duration_from_b64
 from aiprod_adaptation.video_gen.video_request import VideoClipResult, VideoOutput
+
+logger = structlog.get_logger(__name__)
 
 
 def _shot_map(output: AIPRODOutput) -> dict[str, Shot]:
@@ -48,21 +52,24 @@ class AudioSynchronizer:
         requests: list[AudioRequest] = []
         for clip in video.clips:
             shot = shots.get(clip.shot_id)
-            scene = scenes.get(shot.scene_id) if shot is not None else None
+            if shot is None:
+                raise ValueError(
+                    f"Video clip references unknown shot_id: {clip.shot_id}"
+                )
+            scene = scenes.get(shot.scene_id)
             dominant_sound = (
                 shot.metadata.get("dominant_sound", "dialogue")
-                if shot is not None
-                else "dialogue"
             )
             if dominant_sound == "silence":
                 text = ""
             else:
-                text = _text_for_shot(shot, scene) if shot is not None else clip.video_url
+                text = _text_for_shot(shot, scene)
             requests.append(
                 AudioRequest(
                     shot_id=clip.shot_id,
-                    scene_id=shot.scene_id if shot is not None else "",
+                    scene_id=shot.scene_id,
                     text=text,
+                    action=shot.action,
                     duration_hint_sec=clip.duration_sec,
                 )
             )
@@ -79,7 +86,13 @@ class AudioSynchronizer:
         for request in requests:
             try:
                 result = self._adapter.generate(request)
-            except Exception:
+            except Exception as exc:
+                logger.warning(
+                    "audio_generation_failed",
+                    shot_id=request.shot_id,
+                    scene_id=request.scene_id,
+                    error=str(exc),
+                )
                 result = AudioResult(
                     shot_id=request.shot_id,
                     audio_url="error://generation-failed",
@@ -115,6 +128,7 @@ class AudioSynchronizer:
                     audio_duration_sec=real_audio_dur,
                     silence_padding_sec=silence_padding,
                     latency_ms=audio.latency_ms,
+                    cost_usd=audio.cost_usd,
                 )
             )
             start_sec += clip_duration

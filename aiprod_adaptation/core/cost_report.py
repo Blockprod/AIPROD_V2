@@ -4,7 +4,15 @@ CostReport — tracks API usage and estimated costs per run.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+
+_DEFAULT_NOTES = (
+    "llm_tokens_input, llm_tokens_output, and llm_cost_usd are not populated by scheduler runtime.",
+    (
+        "image_cost_usd, video_cost_usd, and audio_cost_usd stay at 0.0 unless adapters "
+        "return cost_usd."
+    ),
+)
 
 
 @dataclass
@@ -20,12 +28,14 @@ class CostReport:
     image_cost_usd: float = 0.0
     video_cost_usd: float = 0.0
     audio_cost_usd: float = 0.0
+    notes: list[str] = field(default_factory=lambda: list(_DEFAULT_NOTES))
 
     @property
     def total_cost_usd(self) -> float:
         return self.llm_cost_usd + self.image_cost_usd + self.video_cost_usd + self.audio_cost_usd
 
     def merge(self, other: CostReport) -> CostReport:
+        merged_notes = list(dict.fromkeys([*self.notes, *other.notes]))
         return CostReport(
             llm_tokens_input=self.llm_tokens_input + other.llm_tokens_input,
             llm_tokens_output=self.llm_tokens_output + other.llm_tokens_output,
@@ -36,6 +46,7 @@ class CostReport:
             image_cost_usd=self.image_cost_usd + other.image_cost_usd,
             video_cost_usd=self.video_cost_usd + other.video_cost_usd,
             audio_cost_usd=self.audio_cost_usd + other.audio_cost_usd,
+            notes=merged_notes,
         )
 
     def to_summary_str(self) -> str:
