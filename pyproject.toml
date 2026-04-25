@@ -28,6 +28,10 @@ llm = [
 image = [
     "replicate",
 ]
+reference = [
+    "Pillow>=10.0",
+    "numpy>=1.24",
+]
 video = [
     "runwayml",
     "requests",

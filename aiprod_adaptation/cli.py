@@ -407,6 +407,64 @@ def build_parser() -> argparse.ArgumentParser:
     _add_router_trace_output_option(p_compare)
     _add_max_chars_per_chunk_option(p_compare)
 
+    # ------------------------------------------------------------------ metrics
+    p_metrics = sub.add_parser(
+        "metrics",
+        help="AIPRODOutput JSON → episode quality metrics JSON",
+    )
+    p_metrics.add_argument("--input", required=True, help="Path to AIPRODOutput JSON")
+    p_metrics.add_argument(
+        "--output",
+        required=False,
+        default=None,
+        help="Optional path to write EpisodeMetrics JSON (default: stdout)",
+    )
+    p_metrics.add_argument(
+        "--season-id",
+        default="S01",
+        dest="season_id",
+        help="Season identifier for reporting (default: S01)",
+    )
+
+    # ------------------------------------------------------------------ export
+    p_export = sub.add_parser(
+        "export",
+        help="AIPRODOutput JSON → post-production export (edl | resolve | audio-cue | batch | season-report)",
+    )
+    p_export.add_argument("--input", required=True, help="Path to AIPRODOutput JSON")
+    p_export.add_argument("--output", required=True, help="Path to write the export file")
+    p_export.add_argument(
+        "--format",
+        choices=["edl", "resolve", "audio-cue", "batch", "season-report"],
+        required=True,
+        dest="export_format",
+        help="Export format",
+    )
+    p_export.add_argument(
+        "--fps",
+        type=float,
+        default=24.0,
+        help="Frames per second (default: 24.0)",
+    )
+    p_export.add_argument(
+        "--adapter-target",
+        default="runway",
+        dest="adapter_target",
+        help="Target adapter for batch export (default: runway)",
+    )
+    p_export.add_argument(
+        "--season-id",
+        default="S01",
+        dest="season_id",
+        help="Season identifier for season-report export (default: S01)",
+    )
+    p_export.add_argument(
+        "--series-title",
+        default="",
+        dest="series_title",
+        help="Series title for season-report export",
+    )
+
     return parser
 
 
@@ -580,6 +638,68 @@ def cmd_compare(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_metrics(args: argparse.Namespace) -> int:
+    from aiprod_adaptation.core.io import load_output
+    from aiprod_adaptation.core.metrics import MetricsEngine
+
+    _load_env_file()
+    output = load_output(args.input)
+    engine = MetricsEngine()
+    ep_metrics = engine.compute_episode(output)
+    result = ep_metrics.model_dump()
+    result["broadcast_gate"] = "PASS" if ep_metrics.passes_broadcast_gate() else "FAIL"
+    import json as _json
+    text = _json.dumps(result, indent=2, ensure_ascii=False)
+    if args.output:
+        Path(args.output).write_text(text, encoding="utf-8")
+        print(f"Metrics written: {args.output}", file=sys.stderr)
+    else:
+        print(text)
+    return 0
+
+
+def cmd_export(args: argparse.Namespace) -> int:
+    from aiprod_adaptation.core.exports import (
+        export_audio_cue_sheet,
+        export_batch_generation,
+        export_edl_json,
+        export_resolve_timeline,
+        export_season_report,
+    )
+    from aiprod_adaptation.core.io import load_output
+
+    _load_env_file()
+    output = load_output(args.input)
+    fps: float = getattr(args, "fps", 24.0)
+    fmt: str = args.export_format
+
+    if fmt == "edl":
+        result = export_edl_json(output, fps=fps)
+    elif fmt == "resolve":
+        result = export_resolve_timeline(output, fps=fps)
+    elif fmt == "audio-cue":
+        result = export_audio_cue_sheet(output, fps=fps)
+    elif fmt == "batch":
+        result = export_batch_generation(
+            output,
+            adapter_target=getattr(args, "adapter_target", "runway"),
+            fps=fps,
+        )
+    elif fmt == "season-report":
+        result = export_season_report(
+            [output],
+            season_id=getattr(args, "season_id", "S01"),
+            series_title=getattr(args, "series_title", ""),
+        )
+    else:
+        print(f"Unknown export format: {fmt}", file=sys.stderr)
+        return 1
+
+    Path(args.output).write_text(result, encoding="utf-8")
+    print(f"Export complete: {args.output}", file=sys.stderr)
+    return 0
+
+
 def main() -> None:
     _load_env_file()
     parser = build_parser()
@@ -592,6 +712,10 @@ def main() -> None:
         sys.exit(cmd_schedule(args))
     elif args.command == "compare":
         sys.exit(cmd_compare(args))
+    elif args.command == "metrics":
+        sys.exit(cmd_metrics(args))
+    elif args.command == "export":
+        sys.exit(cmd_export(args))
     else:
         parser.print_help()
         sys.exit(1)

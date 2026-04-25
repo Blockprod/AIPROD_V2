@@ -59,11 +59,14 @@ def run_pipeline(
     text: str,
     title: str,
     episode_id: str = "EP01",
-    llm: LLMAdapter | None = None,
+    llm: "LLMAdapter | None" = None,
     character_descriptions: dict[str, str] | None = None,
-    budget: ProductionBudget | None = None,
+    budget: "ProductionBudget | None" = None,
     require_llm: bool = False,
     pipeline_mode: PipelineMode = "auto",
+    visual_bible: object | None = None,
+    ref_invariants: object | None = None,
+    episode_index: int = 1,
 ) -> AIPRODOutput:
     from aiprod_adaptation.core.adaptation.classifier import InputClassifier
     from aiprod_adaptation.core.adaptation.llm_adapter import NullLLMAdapter
@@ -129,7 +132,15 @@ def run_pipeline(
     logger.info("pass3_complete", shot_count=len(shots_pass3))
 
     logger.debug("pass4_start")
-    output = compile_episode(scenes_pass2, shots_pass3, title, episode_id)
+    output = compile_episode(
+        scenes_pass2,
+        shots_pass3,
+        title,
+        episode_id,
+        visual_bible=visual_bible,
+        ref_invariants=ref_invariants,
+        episode_index=episode_index,
+    )
     logger.info("pipeline_complete", episode_count=len(output.episodes))
 
     if character_descriptions:
@@ -245,3 +256,73 @@ def run_pipeline_full(
         _, production = AudioSynchronizer(adapter=audio_adapter).generate(video, output)
         logger.info("production_complete", total_duration_sec=production.total_duration_sec)
     return output, storyboard, video, production
+
+
+def process_narrative_with_reference(
+    text: str,
+    title: str,
+    visual_bible: object,
+    ref_invariants: object | None = None,
+    episode_id: str = "EP01",
+    episode_index: int = 1,
+    llm: "LLMAdapter | None" = None,
+    character_descriptions: dict[str, str] | None = None,
+    pipeline_mode: PipelineMode = "auto",
+) -> AIPRODOutput:
+    """
+    Primary entry point for AIPROD_Cinematic reference-anchored production.
+
+    Wraps run_pipeline() with mandatory VisualBible and optional ref_invariants,
+    ensuring the Rule Engine in Pass 4 has access to the reference invariants for
+    every shot.
+
+    Parameters
+    ----------
+    text             : narrative text (novel excerpt or script)
+    title            : episode title
+    visual_bible     : VisualBible instance (from core/visual_bible.py)
+    ref_invariants   : VisualInvariants from reference image analysis (optional).
+                       If provided, the Rule Engine will enforce P2–P4 constraints.
+    episode_id       : e.g. "EP01"
+    episode_index    : 1-based episode number within the season (for Rule Engine context)
+    llm              : LLM adapter for novel extraction (optional — deterministic fallback)
+    character_descriptions : character descriptions for continuity enrichment (optional)
+    pipeline_mode    : "auto" | "deterministic" | "generative"
+
+    Returns
+    -------
+    AIPRODOutput with rule_engine_report populated (even when no conflicts are found).
+    """
+    logger.info(
+        "process_narrative_with_reference_start",
+        title=title,
+        episode_id=episode_id,
+        episode_index=episode_index,
+        has_ref_invariants=ref_invariants is not None,
+    )
+    output = run_pipeline(
+        text=text,
+        title=title,
+        episode_id=episode_id,
+        llm=llm,
+        character_descriptions=character_descriptions,
+        require_llm=False,
+        pipeline_mode=pipeline_mode,
+        visual_bible=visual_bible,
+        ref_invariants=ref_invariants,
+        episode_index=episode_index,
+    )
+    logger.info(
+        "process_narrative_with_reference_complete",
+        episode_id=episode_id,
+        shots=sum(len(ep.shots) for ep in output.episodes),
+        hard_resolved=(
+            output.rule_engine_report.hard_conflicts_resolved
+            if output.rule_engine_report else 0
+        ),
+        soft_annotated=(
+            output.rule_engine_report.soft_conflicts_annotated
+            if output.rule_engine_report else 0
+        ),
+    )
+    return output

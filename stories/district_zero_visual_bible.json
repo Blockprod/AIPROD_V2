@@ -1,0 +1,70 @@
+{
+  "series_title": "District Zero",
+  "series_style": {
+    "aspect_ratio": "2.39:1",
+    "primary_lens_kit_mm": [21, 35, 50, 85, 135],
+    "default_color_grade": "orange_teal",
+    "default_scene_tone": "tense",
+    "grain_level": "medium",
+    "default_shot_ratio": {
+      "wide": 0.20,
+      "medium": 0.45,
+      "close_up": 0.25,
+      "other": 0.10
+    }
+  },
+  "characters": {
+    "Kael": {
+      "wardrobe_fingerprint": "worn leather jacket, dark tactical trousers, no insignia, scuffed boots",
+      "physical_signature": "tall, lean, scar across left brow, moves with controlled economy and deliberate stillness",
+      "color_anchor": "#1a1a2e",
+      "lighting_affinity": "hard side-light from frame-right, high contrast, deep shadows on left side of face"
+    },
+    "Mira": {
+      "wardrobe_fingerprint": "slate-grey tactical vest over black thermal, utility belt, close-cropped hair",
+      "physical_signature": "compact, precise movements, rarely makes eye contact until she has made a decision",
+      "color_anchor": "#2d4a3e",
+      "lighting_affinity": "motivated practical source, cool ambient fill, minimal key — she does not invite attention"
+    },
+    "Director Voss": {
+      "wardrobe_fingerprint": "pressed charcoal suit, no tie, single silver signet ring on right hand",
+      "physical_signature": "measured, economy of gesture, never raises voice, occupies the centre of any frame he enters",
+      "color_anchor": "#4a4a4a",
+      "lighting_affinity": "soft high-key from above, bleached shadows — power expressed as overexposure"
+    }
+  },
+  "locations": {
+    "district_zero_central": {
+      "description": "Industrial brutalist district, crumbling concrete overpass, sodium-vapour streetlamps, neon signage in Cyrillic and Mandarin, perpetual drizzle",
+      "lighting_condition": "sodium-vapour key from above-right, neon fill (magenta/cyan), ground-level practical sources, motivated, no ambient bounce",
+      "palette": ["#ff6b35", "#004e89", "#1a1a2e"],
+      "architecture_style": "brutalist",
+      "default_camera_height": "low_angle",
+      "ref_image_id": "loc_dz_central_001"
+    },
+    "the_archive": {
+      "description": "Sub-basement record vault, steel shelving floor-to-ceiling, flickering fluorescent tubes, water stains on concrete, smell of ozone",
+      "lighting_condition": "fluorescent overhead, practical motivated, high-frequency flicker on damaged fixtures, pools of shadow between shelves",
+      "palette": ["#e8e8e8", "#1a1a1a", "#4a7c59"],
+      "architecture_style": "industrial",
+      "default_camera_height": "eye_level",
+      "ref_image_id": "loc_the_archive_001"
+    },
+    "voss_office": {
+      "description": "Executive office, floor-to-ceiling smoked glass overlooking the district, single curved desk, no decoration except a decommissioned weapon on the wall",
+      "lighting_condition": "overcast exterior fill through glass, single practical desk lamp (warm tungsten), strong backlight from window creates silhouette potential",
+      "palette": ["#c0c0c0", "#2b2b2b", "#8b7355"],
+      "architecture_style": "corporate_brutalist",
+      "default_camera_height": "eye_level",
+      "ref_image_id": "loc_voss_office_001"
+    },
+    "safe_house_omega": {
+      "description": "Abandoned laundry facility repurposed as a field operations base, hanging plastic sheeting, exposed wiring, temporary lighting rigs",
+      "lighting_condition": "battery-powered work lights (hard, directional), bare-bulb practicals, coloured gels on secondary fills for team identification",
+      "palette": ["#f5e642", "#1a1a2e", "#8b0000"],
+      "architecture_style": "industrial",
+      "default_camera_height": "eye_level",
+      "ref_image_id": "loc_safe_house_omega_001"
+    }
+  }
+}

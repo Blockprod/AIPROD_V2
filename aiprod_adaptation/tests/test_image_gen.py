@@ -255,8 +255,8 @@ class TestStoryboardGenerator:
         output = run_pipeline("Emma walked quickly to the door.", "T")
         requests = self.gen.build_requests(output)
         assert requests[0].action is not None
+        # v3: first action is from body-language layer (e.g. 'face'); subject must be 'emma'
         assert requests[0].action.subject_id == "emma"
-        assert requests[0].action.action_type == "walked"
 
     def test_storyboard_error_in_adapter_does_not_crash(self) -> None:
         class BrokenAdapter(NullImageAdapter):
@@ -617,9 +617,16 @@ class TestCharacterSheetRegistry:
 # 9. ShotStoryboardFrame + StoryboardOutput enrichi (SB-05)
 # ---------------------------------------------------------------------------
 
+# Multi-shot input for tests that need >= 2 frames (> SILENT_SCENE_WORD_THRESHOLD=30 words)
+_NOVEL_MULTI_SHOT = (
+    "John walked quickly through the busy city streets, feeling excited about the upcoming meeting. "
+    "He suddenly spotted Sarah waiting nervously at the corner, her expression completely unreadable in the fading afternoon light."
+)
+
+
 class TestShotStoryboardFrame:
     def _gen(self) -> StoryboardOutput:
-        output = run_pipeline(_NOVEL, "T")
+        output = run_pipeline(_NOVEL_MULTI_SHOT, "T")
         return StoryboardGenerator(adapter=NullImageAdapter(), base_seed=10).generate(output)
 
     def test_storyboard_frame_has_prompt_used(self) -> None:
@@ -700,7 +707,8 @@ class TestCheckpointStore:
                 call_count += 1
                 return NullImageAdapter().generate(request)
 
-        output = run_pipeline(_NOVEL, "T")
+        # Use multi-shot input to guarantee >= 2 shots (v3 body-language layers)
+        output = run_pipeline(_NOVEL_MULTI_SHOT, "T")
         shots = [s for ep in output.episodes for s in ep.shots]
         assert len(shots) >= 2
         store = CheckpointStore()

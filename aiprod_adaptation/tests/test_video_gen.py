@@ -200,8 +200,8 @@ class TestVideoSequencer:
         storyboard = StoryboardGenerator(adapter=NullImageAdapter(), base_seed=0).generate(output)
         reqs = self.seq.build_requests(storyboard, output)
         assert reqs[0].action is not None
+        # v3: first shot action is from body-language layer; subject must be 'emma'
         assert reqs[0].action.subject_id == "emma"
-        assert reqs[0].action.action_type == "walked"
 
     def test_sequencer_raises_on_unknown_storyboard_shot_id(self) -> None:
         storyboard, output = _storyboard_and_output()

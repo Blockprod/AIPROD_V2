@@ -21,6 +21,10 @@ _SCENE_KNOWN_KEYS: frozenset[str] = frozenset(
         "emotion",
         "action_units",
         "shot_ids",
+        # v3.0 cinematic fields — passed through to compiled Scene
+        "beat_type",
+        "scene_tone",
+        "emotional_beat_index",
     }
 )
 
@@ -70,6 +74,9 @@ def compile_episode(
     shots: list[ShotDict],
     title: str,
     episode_id: str = "EP01",
+    visual_bible: object | None = None,
+    ref_invariants: object | None = None,
+    episode_index: int = 1,
 ) -> AIPRODOutput:
     """
     Assemble scenes and shots into a validated AIPRODOutput.
@@ -143,13 +150,105 @@ def compile_episode(
         except ValidationError as exc:
             raise ValueError(str(exc)) from exc
 
+    # ------------------------------------------------------------------
+    # Pass 4 global coherence layer
+    # ------------------------------------------------------------------
+    from aiprod_adaptation.core.global_coherence.consistency_checker import check_and_enrich
+    from aiprod_adaptation.core.global_coherence.pacing_analyzer import analyze
+    from aiprod_adaptation.core.global_coherence.prompt_finalizer import finalize_prompts
+
+    validated_shots, consistency_report = check_and_enrich(
+        pydantic_scenes, validated_shots, visual_bible
+    )
+
+    # ------------------------------------------------------------------
+    # Pass 4 rule engine layer — per-shot conflict detection + resolution
+    # ------------------------------------------------------------------
+    from aiprod_adaptation.core.rule_engine.builtin_rules import make_default_evaluator
+    from aiprod_adaptation.core.rule_engine.conflict_resolver import ConflictResolutionEngine
+    from aiprod_adaptation.core.rule_engine.models import EvalContext
+    from aiprod_adaptation.models.schema import RuleEngineReport
+
+    _evaluator = make_default_evaluator()
+    _resolver = ConflictResolutionEngine()
+    _scene_index = {s.scene_id: s for s in pydantic_scenes}
+    _all_res_records: list[Any] = []
+    _resolved_shots: list[Shot] = []
+    for _shot in validated_shots:
+        _scene = _scene_index.get(_shot.scene_id, pydantic_scenes[0])
+        _ctx = EvalContext(
+            shot=_shot,
+            scene=_scene,
+            visual_bible=visual_bible,
+            ref_invariants=ref_invariants,
+            episode_id=episode_id,
+            episode_index=episode_index,
+        )
+        _eval_results = _evaluator.evaluate(_ctx)
+        _resolved_shot, _records = _resolver.resolve(_shot, _ctx, _eval_results)
+        _resolved_shots.append(_resolved_shot)
+        _all_res_records.extend(_records)
+    validated_shots = _resolved_shots
+
+    _hard_count = sum(
+        1 for r in _all_res_records
+        if r.conflict.conflict_type.value == "HARD" and r.was_modified
+    )
+    _soft_count = sum(
+        1 for r in _all_res_records
+        if r.conflict.conflict_type.value == "SOFT" and r.was_modified
+    )
+    _modified_shot_ids = sorted({r.conflict.shot_id for r in _all_res_records if r.was_modified})
+    _fired_rule_ids = sorted({r.conflict.rule_id for r in _all_res_records if r.was_modified})
+    rule_engine_report = RuleEngineReport(
+        rules_evaluated=len(_evaluator.rules) * len(validated_shots),
+        hard_conflicts_resolved=_hard_count,
+        soft_conflicts_annotated=_soft_count,
+        total_shots_modified=len(_modified_shot_ids),
+        conflict_shot_ids=_modified_shot_ids,
+        rule_ids_fired=_fired_rule_ids,
+    )
+
+    validated_shots, enrichment_count = finalize_prompts(validated_shots, visual_bible)
+    consistency_report = consistency_report.model_copy(
+        update={"prompt_enrichments": enrichment_count}
+    )
+    pacing_profile = analyze(validated_shots)
+
+    # ------------------------------------------------------------------
+    # Assemble final Episode + AIPRODOutput
+    # ------------------------------------------------------------------
     try:
-        episode = Episode(episode_id=episode_id, scenes=pydantic_scenes, shots=validated_shots)
+        episode = Episode(
+            episode_id=episode_id,
+            scenes=pydantic_scenes,
+            shots=validated_shots,
+            pacing_profile=pacing_profile,
+            consistency_report=consistency_report,
+            rule_engine_report=rule_engine_report,
+        )
     except ValidationError as exc:
         raise ValueError(str(exc)) from exc
 
+    bible_summary: dict[str, Any] = {}
+    if visual_bible is not None:
+        try:
+            vb_data = visual_bible.data  # type: ignore[union-attr]
+            bible_summary = {
+                "series_title": vb_data.get("series_title", ""),
+                "character_count": len(vb_data.get("characters", {})),
+                "location_count": len(vb_data.get("locations", {})),
+            }
+        except Exception:  # noqa: BLE001 — never crash on optional enrichment
+            pass
+
     try:
-        return AIPRODOutput(title=title, episodes=[episode])
+        return AIPRODOutput(
+            title=title,
+            episodes=[episode],
+            visual_bible_summary=bible_summary,
+            rule_engine_report=rule_engine_report,
+        )
     except ValidationError as exc:
         raise ValueError(str(exc)) from exc
 
