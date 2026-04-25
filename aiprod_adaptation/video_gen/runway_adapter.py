@@ -36,8 +36,8 @@ class RunwayAdapter(VideoAdapter):
     DEFAULT_MODEL: str = "gen4_turbo"
 
     def __init__(self, api_token: str | None = None, model: str | None = None) -> None:
-        self._token = api_token or os.environ.get("RUNWAY_API_TOKEN", "")
-        self._model = model or os.environ.get("RUNWAY_VIDEO_MODEL", self.DEFAULT_MODEL)
+        self._token = api_token if api_token is not None else os.environ.get("RUNWAY_API_TOKEN", "")
+        self._model = model if model is not None else os.environ.get("RUNWAY_VIDEO_MODEL", self.DEFAULT_MODEL)
 
     def generate(self, request: VideoRequest) -> VideoClipResult:
         if not self._token:
@@ -47,14 +47,17 @@ class RunwayAdapter(VideoAdapter):
 
         t0 = time.monotonic()
         client = runwayml.RunwayML(api_key=self._token)
-        task = client.image_to_video.create(
-            model=self._model,
-            prompt_image=request.image_url,
-            prompt_text=request.prompt,
-            duration=request.duration_sec,
-            ratio="1280:720",
-            seed=request.seed,
-        )
+        create_kwargs: dict[str, object] = {
+            "model": self._model,
+            "prompt_image": request.image_url,
+            "prompt_text": request.prompt,
+            "duration": request.duration_sec,
+            "ratio": "1280:720",
+        }
+        if request.seed is not None:
+            create_kwargs["seed"] = request.seed
+
+        task = client.image_to_video.create(**create_kwargs)
         result = task.wait_for_task_output()
 
         latency = int((time.monotonic() - t0) * 1000)

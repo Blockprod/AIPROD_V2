@@ -33,8 +33,8 @@ class RunwayImageAdapter(ImageAdapter):
         api_token: str | None = None,
         model: str | None = None,
     ) -> None:
-        self._token = api_token or os.environ.get("RUNWAY_API_TOKEN", "")
-        self._model = model or os.environ.get("RUNWAY_IMAGE_MODEL", DEFAULT_MODEL)
+        self._token = api_token if api_token is not None else os.environ.get("RUNWAY_API_TOKEN", "")
+        self._model = model if model is not None else os.environ.get("RUNWAY_IMAGE_MODEL", DEFAULT_MODEL)
 
     def generate(self, request: ImageRequest) -> ImageResult:
         if not self._token:
@@ -44,11 +44,16 @@ class RunwayImageAdapter(ImageAdapter):
 
         client = runwayml.RunwayML(api_key=self._token)
         t0 = time.monotonic()
+        create_kwargs: dict[str, object] = {
+            "model": self._model,
+            "prompt_text": request.prompt,
+            "ratio": _runway_image_ratio(request.width, request.height, self._model),
+        }
+        if request.seed is not None:
+            create_kwargs["seed"] = request.seed
+
         task = client.text_to_image.create(
-            model=self._model,
-            prompt_text=request.prompt,
-            ratio=_runway_image_ratio(request.width, request.height, self._model),
-            seed=request.seed,
+            **create_kwargs,
         )
         result = task.wait_for_task_output()
         latency_ms = int((time.monotonic() - t0) * 1000)

@@ -21,9 +21,9 @@ class RunwayTTSAdapter(AudioAdapter):
         model: str | None = None,
         voice: str | None = None,
     ) -> None:
-        self._token = api_token or os.environ.get("RUNWAY_API_TOKEN", "")
-        self._model = model or os.environ.get("RUNWAY_AUDIO_MODEL", DEFAULT_MODEL)
-        self._voice = voice or os.environ.get("RUNWAY_TTS_VOICE", DEFAULT_VOICE)
+        self._token = api_token if api_token is not None else os.environ.get("RUNWAY_API_TOKEN", "")
+        self._model = model if model is not None else os.environ.get("RUNWAY_AUDIO_MODEL", DEFAULT_MODEL)
+        self._voice = voice if voice is not None else os.environ.get("RUNWAY_TTS_VOICE", DEFAULT_VOICE)
 
     def generate(self, request: AudioRequest) -> AudioResult:
         if not self._token:
