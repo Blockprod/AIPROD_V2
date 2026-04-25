@@ -70,7 +70,6 @@ def run_pipeline(
     episode_index: int = 1,
 ) -> AIPRODOutput:
     from aiprod_adaptation.core.adaptation.classifier import InputClassifier
-    from aiprod_adaptation.models.intermediate import RawScene
     from aiprod_adaptation.core.adaptation.llm_adapter import NullLLMAdapter
     from aiprod_adaptation.core.adaptation.script_parser import ScriptParser
     from aiprod_adaptation.core.adaptation.story_extractor import StoryExtractor
@@ -80,6 +79,7 @@ def run_pipeline(
     from aiprod_adaptation.core.pass3_shots import simplify_shots
     from aiprod_adaptation.core.pass4_compile import compile_episode
     from aiprod_adaptation.core.production_budget import ProductionBudget
+    from aiprod_adaptation.models.intermediate import RawScene
 
     logger.info("pipeline_start", input_length=len(text), title=title)
 
