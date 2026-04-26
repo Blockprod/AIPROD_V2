@@ -1,6 +1,11 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 import structlog
+
+if TYPE_CHECKING:
+    from aiprod_adaptation.image_gen.flux_kontext_adapter import FluxKontextAdapter
 
 from aiprod_adaptation.image_gen.character_image_registry import CharacterImageRegistry
 from aiprod_adaptation.image_gen.character_sheet import CharacterSheetRegistry
@@ -40,6 +45,7 @@ class StoryboardGenerator:
         checkpoint: CheckpointStore | None = None,
         prepass_registry: CharacterImageRegistry | None = None,
         reference_pack: ReferencePack | None = None,
+        kontext_adapter: FluxKontextAdapter | None = None,
     ) -> None:
         self._adapter = adapter
         self._base_seed = base_seed
@@ -48,6 +54,7 @@ class StoryboardGenerator:
         self._checkpoint = checkpoint
         self._prepass_registry = prepass_registry
         self._reference_pack = reference_pack
+        self._kontext_adapter = kontext_adapter
 
     def _location_key_for_shot(self, shot: Shot) -> str:
         if self._reference_pack is None:
@@ -160,6 +167,66 @@ class StoryboardGenerator:
                 reference_url = location_reference_url
             tod_visual: str = shot.metadata.get("time_of_day_visual", "day")
             dom_sound: str = shot.metadata.get("dominant_sound", "dialogue")
+
+            # Use FluxKontextAdapter when available and a character reference exists
+            active_adapter: ImageAdapter
+            if self._kontext_adapter is not None and reference_url:
+                from aiprod_adaptation.image_gen.flux_kontext_adapter import FluxKontextAdapter  # noqa: PLC0415
+                if isinstance(self._kontext_adapter, FluxKontextAdapter) and location_prompt:
+                    kontext_prompt = FluxKontextAdapter.build_location_prompt(location_prompt)
+                    kontext_request = ImageRequest(
+                        shot_id=shot.shot_id,
+                        scene_id=shot.scene_id,
+                        prompt=kontext_prompt,
+                        action=shot.action,
+                        seed=seed,
+                        reference_image_url=reference_url,
+                    )
+                    if self._checkpoint is not None and self._checkpoint.has(shot.shot_id):
+                        cached = self._checkpoint.get(shot.shot_id)
+                        assert cached is not None
+                        frames.append(cached)
+                        if primary_char and cached.model_used != "error":
+                            char_registry.register(primary_char, cached.image_url)
+                        continue
+                    try:
+                        result = self._kontext_adapter.generate(kontext_request)
+                    except Exception as exc:
+                        logger.warning(
+                            "kontext_frame_failed",
+                            shot_id=shot.shot_id,
+                            error=str(exc),
+                        )
+                        result = ImageResult(
+                            shot_id=shot.shot_id,
+                            image_url="error://generation-failed",
+                            image_b64="",
+                            model_used="error",
+                            latency_ms=0,
+                        )
+                    if primary_char and result.model_used != "error":
+                        char_registry.register(primary_char, result.image_url)
+                    frame = ShotStoryboardFrame(
+                        shot_id=result.shot_id,
+                        scene_id=shot.scene_id,
+                        image_url=result.image_url,
+                        image_b64=result.image_b64,
+                        model_used=result.model_used,
+                        latency_ms=result.latency_ms,
+                        cost_usd=result.cost_usd,
+                        prompt_used=kontext_prompt,
+                        seed_used=seed,
+                        shot_type=shot.shot_type,
+                        camera_movement=shot.camera_movement,
+                        time_of_day_visual=tod_visual,
+                        dominant_sound=dom_sound,
+                        characters_in_frame=characters_in_frame,
+                        reference_image_url=reference_url,
+                    )
+                    if self._checkpoint is not None:
+                        self._checkpoint.save(frame)
+                    frames.append(frame)
+                    continue
 
             prompt_parts = [shot.prompt, f"{tod_visual} lighting."]
             if location_prompt:

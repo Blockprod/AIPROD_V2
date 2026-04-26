@@ -17,6 +17,11 @@ _RUNWAY_VIDEO_CREDITS_PER_SECOND: dict[str, int] = {
     "veo3.1_fast": 15,
 }
 
+_I2V_MODELS: frozenset[str] = frozenset(
+    {"gen4.5", "gen4_turbo", "gen3a_turbo", "veo3", "veo3.1", "veo3.1_fast"}
+)
+_V2V_ALEPH_MODELS: frozenset[str] = frozenset({"gen4_aleph"})
+
 
 def _build_runway_client(api_key: str) -> object:
     import runwayml
@@ -52,12 +57,25 @@ class RunwayAdapter(VideoAdapter):
     def generate(self, request: VideoRequest) -> VideoClipResult:
         if not self._token:
             raise ValueError("RUNWAY_API_TOKEN is required for Runway video generation.")
+        if self._model in _V2V_ALEPH_MODELS:
+            return self._generate_aleph(request)
+        return self._generate_i2v(request)
 
+    def _generate_i2v(self, request: VideoRequest) -> VideoClipResult:
         t0 = time.monotonic()
         client = _build_runway_client(self._token)
+
+        if self._model == "gen3a_turbo" and request.last_frame_hint_url:
+            prompt_image: object = [
+                {"position": "first", "uri": request.image_url},
+                {"position": "last", "uri": request.last_frame_hint_url},
+            ]
+        else:
+            prompt_image = request.image_url
+
         create_kwargs: dict[str, object] = {
             "model": self._model,
-            "prompt_image": request.image_url,
+            "prompt_image": prompt_image,
             "prompt_text": request.prompt,
             "duration": request.duration_sec,
             "ratio": "1280:720",
@@ -76,4 +94,35 @@ class RunwayAdapter(VideoAdapter):
             model_used=self._model,
             latency_ms=latency,
             cost_usd=_estimate_runway_video_cost(self._model, request.duration_sec),
+        )
+
+    def _generate_aleph(self, request: VideoRequest) -> VideoClipResult:
+        t0 = time.monotonic()
+        client = _build_runway_client(self._token)
+
+        create_kwargs: dict[str, object] = {
+            "model": "gen4_aleph",
+            "video_uri": request.image_url,
+            "prompt_text": request.prompt,
+        }
+        if request.character_reference_urls:
+            create_kwargs["references"] = [
+                {"type": "image", "uri": url}
+                for url in request.character_reference_urls
+                if url
+            ]
+        if request.seed is not None:
+            create_kwargs["seed"] = request.seed
+
+        task = client.video_to_video.create(**create_kwargs)
+        result = task.wait_for_task_output()
+
+        latency = int((time.monotonic() - t0) * 1000)
+        return VideoClipResult(
+            shot_id=request.shot_id,
+            video_url=result.output[0],
+            duration_sec=request.duration_sec,
+            model_used="gen4_aleph",
+            latency_ms=latency,
+            cost_usd=_estimate_runway_video_cost("gen4_aleph", request.duration_sec),
         )

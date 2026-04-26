@@ -38,7 +38,8 @@ aiprod_adaptation/
 │   ├── global_coherence/        — PASS 4 enrichment layer
 │   │   ├── consistency_checker.py   — R01 shot-type vs feasibility correction
 │   │   ├── pacing_analyzer.py       — PacingProfile computation
-│   │   ├── prompt_finalizer.py      — R07/R08 character & location prompt enrichment
+│   │   ├── prompt_finalizer.py      — R05–R09 prompt enrichment
+│   │   │                              (R07/R08 VisualBible; R09 Kontext preservation clause)
 │   │   └── __init__.py
 │   │
 │   ├── rule_engine/             — cinematic rule enforcement
@@ -127,25 +128,35 @@ aiprod_adaptation/
 ├── image_gen/                   — image generation adapters
 │   ├── image_adapter.py         — ImageAdapter base
 │   ├── openai_image_adapter.py  — DALL·E adapter
-│   ├── flux_adapter.py          — Flux adapter (Replicate)
+│   ├── flux_adapter.py          — Flux adapter (A1111 + IP-Adapter)
+│   ├── comfyui_adapter.py       — ComfyUIAdapter base (workflow JSON + polling)
+│   │                              + make_xlabs_ipadapter_adapter() factory
+│   ├── flux_kontext_adapter.py  — FluxKontextAdapter (Kontext Dev, background-swap)
 │   ├── runway_image_adapter.py  — Runway image adapter
 │   ├── replicate_adapter.py     — generic Replicate adapter
 │   ├── character_sheet.py       — character reference sheet builder
 │   ├── character_prepass.py     — pre-pass character image generation
 │   ├── character_image_registry.py
 │   ├── reference_pack.py        — reference image packing
-│   ├── storyboard.py            — storyboard assembly
+│   ├── storyboard.py            — storyboard assembly (+ kontext_adapter param)
 │   ├── image_request.py
 │   ├── checkpoint.py
 │   └── __init__.py
 │
 ├── video_gen/                   — video generation adapters
 │   ├── video_adapter.py         — VideoAdapter base
-│   ├── runway_adapter.py        — Runway Gen-3/4 adapter
+│   ├── runway_adapter.py        — Runway Gen-3/4/Aleph adapter
+│   │                              (i2v: gen4_turbo/gen4.5/gen3a_turbo;
+│   │                               v2v: gen4_aleph with character references;
+│   │                               Gen3aTurbo: last_frame continuity via prompt_image list)
+│   ├── runway_prompt_formatter.py — format_runway_prompt() motion prompt builder
+│   │                              (14 camera movements → Runway i2v instructions,
+│   │                               anti-cut clause, sequential timestamps)
 │   ├── kling_adapter.py         — Kling adapter
 │   ├── smart_video_router.py    — cost/quality-aware router
 │   ├── video_sequencer.py       — clip stitching sequencer
-│   ├── video_request.py
+│   │                              (propagates character_reference_urls from storyboard)
+│   ├── video_request.py         — VideoRequest + character_reference_urls field
 │   └── __init__.py
 │
 ├── post_prod/                   — audio & video post adapters
@@ -160,7 +171,7 @@ aiprod_adaptation/
 │   ├── ffmpeg_exporter.py       — FFmpeg timeline export
 │   └── __init__.py
 │
-├── tests/                       — 982 tests, 0 failures
+├── tests/                       — 998 tests, 0 failures
 │   ├── test_pipeline.py
 │   ├── test_backends.py
 │   ├── test_cli.py
@@ -179,7 +190,10 @@ aiprod_adaptation/
 │   ├── test_pass3_cinematic.py
 │   ├── test_pass4_cinematic.py
 │   ├── test_cinematic_integration.py
-│   └── test_sprint9.py          — metrics + postprod + exports (68 tests)
+│   ├── test_sprint9.py          — metrics + postprod + exports (68 tests)
+│   ├── test_video_sequencer.py  — VideoSequencer propagation + Aleph routing (3 tests)
+│   ├── test_runway_prompt_formatter.py — motion prompt + anti-cut + R09 (9 tests)
+│   └── test_comfyui_adapter.py  — ComfyUIAdapter + FluxKontext (4 tests)
 │
 └── examples/
     ├── sample.txt               — minimal narrative input (smoke test baseline)
@@ -362,7 +376,7 @@ Output format:
 pytest aiprod_adaptation/tests/ -q
 ```
 
-**982 passed, 4 deselected** across 19 test modules:
+**998 passed, 4 deselected** across 22 test modules:
 
 | Module | Tests | Coverage |
 |---|---|---|
@@ -382,6 +396,9 @@ pytest aiprod_adaptation/tests/ -q
 | `test_pass1/2/3/4_cinematic.py` | ~160 | per-pass cinematic rules |
 | `test_cinematic_integration.py` | ~400 | end-to-end integration |
 | `test_sprint9.py` | 68 | metrics + postprod NLE + exports |
+| `test_video_sequencer.py` | 3 | ref propagation + Aleph routing |
+| `test_runway_prompt_formatter.py` | 9 | motion prompts + anti-cut + R09 |
+| `test_comfyui_adapter.py` | 4 | ComfyUIAdapter + FluxKontextAdapter |
 
 ---
 

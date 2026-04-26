@@ -15,6 +15,7 @@ class VideoRequest(BaseModel):
     motion_score: float = 5.0
     seed: int | None = None
     last_frame_hint_url: str = ""   # last_frame of previous clip (intra-scene continuity)
+    character_reference_urls: list[str] = []   # used by Aleph (v2v) only
 
     @field_validator("motion_score")
     @classmethod

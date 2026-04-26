@@ -23,6 +23,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from aiprod_adaptation.core.visual_bible import VisualBible
+    from aiprod_adaptation.image_gen.reference_pack import ReferencePack
 
 from aiprod_adaptation.core.rules.pass4_coherence_rules import (
     PROMPT_ENRICHMENT_SEPARATOR,
@@ -37,14 +38,17 @@ from aiprod_adaptation.models.schema import Shot
 def finalize_prompts(
     shots: list[Shot],
     visual_bible: VisualBible | None = None,
+    reference_pack: ReferencePack | None = None,
 ) -> tuple[list[Shot], int]:
     """
     Enrich shot prompts with cinematic directives.
 
     Args:
-        shots:        Validated Shot objects after consistency checking.
-        visual_bible: Optional VisualBible instance for character/location
-                      invariant injection.  If None, R07/R08 are skipped.
+        shots:          Validated Shot objects after consistency checking.
+        visual_bible:   Optional VisualBible instance for character/location
+                        invariant injection.  If None, R07/R08 are skipped.
+        reference_pack: Optional ReferencePack for R09 Kontext preservation
+                        clauses.  If None, R09 is skipped.
 
     Returns:
         (enriched_shots, total_enrichment_count) where enrichment_count is
@@ -102,6 +106,25 @@ def finalize_prompts(
                     additions.append(
                         f"{PROMPT_LABEL_LOCATION}: {fragment}"
                     )
+
+        # ------------------------------------------------------------------
+        # R09 — Kontext preservation clause (ReferencePack)
+        # ------------------------------------------------------------------
+        if (
+            reference_pack is not None
+            and shot.action is not None
+            and shot.action.subject_id
+            and reference_pack.character_reference_url(shot.action.subject_id)
+        ):
+            canonical = reference_pack.character_prompt(shot.action.subject_id)
+            if canonical and PROMPT_LABEL_CHARACTER not in prompt:
+                fragment = (
+                    f"while maintaining the same facial features, hairstyle, "
+                    f"and costume of {canonical}"
+                )
+                additions.append(
+                    f"{PROMPT_ENRICHMENT_SEPARATOR}{PROMPT_LABEL_CHARACTER}{fragment}"
+                )
 
         # ------------------------------------------------------------------
         # Build enriched prompt

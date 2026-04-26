@@ -4,6 +4,7 @@ import structlog
 
 from aiprod_adaptation.image_gen.image_request import StoryboardOutput
 from aiprod_adaptation.models.schema import AIPRODOutput, Shot
+from aiprod_adaptation.video_gen.runway_prompt_formatter import format_runway_prompt
 from aiprod_adaptation.video_gen.video_adapter import VideoAdapter
 from aiprod_adaptation.video_gen.video_request import (
     VideoClipResult,
@@ -48,15 +49,17 @@ class VideoSequencer:
                 raise ValueError(
                     f"Storyboard frame references unknown shot_id: {frame.shot_id}"
                 )
+            ref_urls = [frame.reference_image_url] if frame.reference_image_url else []
             requests.append(
                 VideoRequest(
                     shot_id=frame.shot_id,
                     scene_id=shot.scene_id,
                     image_url=_prompt_image_source(frame.image_url, frame.image_b64),
-                    prompt=shot.prompt,
+                    prompt=format_runway_prompt(shot),
                     action=shot.action,
                     duration_sec=shot.duration_sec,
                     seed=self._base_seed + i if self._base_seed is not None else None,
+                    character_reference_urls=ref_urls,
                 )
             )
         return requests
