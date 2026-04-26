@@ -90,7 +90,7 @@ aiprod_adaptation/
 │   │   ├── audio_directives.py      — AudioDirectivesBuilder (tone → cue_type + mood)
 │   │   ├── continuity.py            — ContinuityBuilder (establishing/lighting/color)
 │   │   ├── timeline.py              — TimelineBuilder (transitions + SMPTE timecodes)
-│   │   └── __init__.py              — build_manifest_for_episode()
+│   │   └── __init__.py              — build_manifest_for_episode(clock=…) (clock injectable for deterministic testing)
 │   │
 │   ├── exports/                 — delivery format serializers (Sprint 9)
 │   │   ├── edl_json.py              — export_edl_json()
@@ -408,14 +408,19 @@ pytest aiprod_adaptation/tests/ -q
 # 1. Style and imports
 ruff check aiprod_adaptation/
 
-# 2. Static type checking (strict)
-mypy aiprod_adaptation/core/ aiprod_adaptation/models/ aiprod_adaptation/backends/ --strict
+# 2. Static type checking — core / models / backends / CLI (strict)
+mypy aiprod_adaptation/core/ aiprod_adaptation/models/ aiprod_adaptation/backends/ \
+     aiprod_adaptation/cli.py main.py --strict
+
+# 2b. Static type checking — adapters (ignore missing stubs)
+mypy aiprod_adaptation/image_gen/ aiprod_adaptation/post_prod/ aiprod_adaptation/video_gen/ \
+     --ignore-missing-imports
 
 # 3. Tests
 pytest aiprod_adaptation/tests/ -q
 ```
 
-All three commands must pass before any commit.
+All four commands must pass before any commit.
 
 ---
 
@@ -564,20 +569,3 @@ Each `Shot` in the output carries structured cinematic fields:
 - +1 s if perception verb present
 - +1 s if action description > 10 words
 - Clamped to [3, 8]
-
----
-
-## Development — Lint Sequence
-
-```bash
-# 1. Style and imports
-ruff check aiprod_adaptation/
-
-# 2. Static type checking (strict)
-mypy aiprod_adaptation/core/ aiprod_adaptation/models/ aiprod_adaptation/backends/ --strict
-
-# 3. Tests
-pytest aiprod_adaptation/tests/ -q
-```
-
-All three commands must pass before any commit.
