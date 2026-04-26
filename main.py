@@ -108,6 +108,13 @@ def _build_parser() -> argparse.ArgumentParser:
             "Useful for forcing multi-chunk real validation on shorter inputs."
         ),
     )
+    parser.add_argument(
+        "--visual-bible",
+        metavar="FILE",
+        default=None,
+        dest="visual_bible",
+        help="Path to a VisualBible JSON file (enables reference anchoring and RQS scoring).",
+    )
     return parser
 
 
@@ -132,6 +139,12 @@ def main() -> None:
         print(f"ERROR: LLM adapter init failed ({args.llm_adapter}): {exc}", file=sys.stderr)
         sys.exit(1)
 
+    visual_bible = None
+    if args.visual_bible:
+        from aiprod_adaptation.core.visual_bible import VisualBible
+        vb_data = json.loads(pathlib.Path(args.visual_bible).read_text(encoding="utf-8"))
+        visual_bible = VisualBible(vb_data)
+
     try:
         output = run_pipeline(
             raw_text,
@@ -141,6 +154,7 @@ def main() -> None:
             budget=_build_budget(args.max_chars_per_chunk),
             require_llm=args.require_llm,
             pipeline_mode=getattr(args, "mode", "auto"),
+            visual_bible=visual_bible,
         )
     except (LLMProviderError, ValueError) as exc:
         print(f"ERROR: Pipeline failed: {exc}", file=sys.stderr)

@@ -320,6 +320,13 @@ def build_parser() -> argparse.ArgumentParser:
     _add_router_short_provider_option(p_pipeline)
     _add_router_trace_output_option(p_pipeline)
     _add_max_chars_per_chunk_option(p_pipeline)
+    p_pipeline.add_argument(
+        "--visual-bible",
+        metavar="FILE",
+        default=None,
+        dest="visual_bible",
+        help="Path to a VisualBible JSON file (enables reference anchoring and RQS scoring).",
+    )
 
     p_storyboard = sub.add_parser("storyboard", help="AIPRODOutput JSON → StoryboardOutput JSON")
     p_storyboard.add_argument("--input", required=True, help="Path to AIPRODOutput JSON")
@@ -485,6 +492,12 @@ def cmd_pipeline(args: argparse.Namespace) -> int:
 
     budget = _build_budget(getattr(args, "max_chars_per_chunk", None))
 
+    visual_bible = None
+    vb_path = getattr(args, "visual_bible", None)
+    if vb_path:
+        from aiprod_adaptation.core.visual_bible import VisualBible
+        visual_bible = VisualBible(json.loads(Path(vb_path).read_text(encoding="utf-8")))
+
     try:
         output = run_pipeline(
             text,
@@ -493,6 +506,7 @@ def cmd_pipeline(args: argparse.Namespace) -> int:
             budget=budget,
             require_llm=args.require_llm,
             pipeline_mode=getattr(args, "pipeline_mode", "auto"),
+            visual_bible=visual_bible,
         )
     except (LLMProviderError, ValueError) as exc:
         print(f"Pipeline failed: {exc}", file=sys.stderr)
