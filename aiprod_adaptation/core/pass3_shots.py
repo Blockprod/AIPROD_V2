@@ -296,6 +296,7 @@ def _apply_emotional_layer_block(
         return "close_up"
     max_type = mod.get("max_shot_type")
     if max_type:
+        assert isinstance(max_type, str)
         order = ["extreme_wide", "wide", "medium_wide", "medium", "medium_close",
                  "over_shoulder", "close_up", "extreme_close_up"]
         current_rank = order.index(shot_type) if shot_type in order else 4

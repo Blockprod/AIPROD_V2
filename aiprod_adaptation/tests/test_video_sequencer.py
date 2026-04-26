@@ -102,7 +102,7 @@ class TestRunwayAdapterAlephRouting:
 
         monkeypatch.setattr(
             "aiprod_adaptation.video_gen.runway_adapter._build_runway_client",
-            lambda token: mock_client,
+            lambda _token: mock_client,
         )
 
         adapter = RunwayAdapter(api_token="fake-token", model="gen4_aleph")

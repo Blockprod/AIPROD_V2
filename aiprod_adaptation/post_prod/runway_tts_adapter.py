@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import time
+from typing import Any, cast
 
 from aiprod_adaptation.post_prod.audio_adapter import AudioAdapter
 from aiprod_adaptation.post_prod.audio_request import AudioRequest, AudioResult
@@ -42,11 +43,11 @@ class RunwayTTSAdapter(AudioAdapter):
 
         t0 = time.monotonic()
         task = client.text_to_speech.create(
-            model=self._model,
+            model=cast(Any, self._model),
             prompt_text=request.text,
-            voice={"type": "runway-preset", "preset_id": voice},
+            voice=cast(Any, {"type": "runway-preset", "preset_id": voice}),
         )
-        result = task.wait_for_task_output()
+        result: Any = task.wait_for_task_output()
         latency_ms = int((time.monotonic() - t0) * 1000)
 
         return AudioResult(

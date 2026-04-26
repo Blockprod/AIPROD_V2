@@ -579,7 +579,7 @@ class TestHelpers:
 
     def test_classify_scene_type_cliffhanger_takes_priority(self) -> None:
         stype = _classify_scene_type(["Any text."], is_cliffhanger=True,
-                                     is_act_break=False, act_position="act1")
+                                     _is_act_break=False, _act_position="act1")
         assert stype == "cliffhanger"
 
     def test_resolve_location_id_exact_match(self) -> None:

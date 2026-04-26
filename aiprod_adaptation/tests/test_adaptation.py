@@ -149,13 +149,7 @@ class TestProviderAdapters:
             text = '{"scenes": []}'
 
         class _RetryingModels:
-            def generate_content(
-                self,
-                *,
-                model: str,
-                contents: str,
-                config: object,
-            ) -> _Response:
+            def generate_content(self, **_kwargs: object) -> _Response:
                 calls["count"] += 1
                 if calls["count"] == 1:
                     raise RuntimeError("503 UNAVAILABLE high demand, try again later")
@@ -185,13 +179,7 @@ class TestProviderAdapters:
             text = '{"scenes": []}'
 
         class _FallbackModels:
-            def generate_content(
-                self,
-                *,
-                model: str,
-                contents: str,
-                config: object,
-            ) -> _Response:
+            def generate_content(self, *, model: str, **_kwargs: object) -> _Response:
                 seen_models.append(model)
                 if model == "gemini-2.5-flash":
                     raise RuntimeError("503 UNAVAILABLE high demand")
@@ -218,13 +206,7 @@ class TestProviderAdapters:
         adapter._fallback_models = ()
 
         class _FailingModels:
-            def generate_content(
-                self,
-                *,
-                model: str,
-                contents: str,
-                config: object,
-            ) -> dict[str, str]:
+            def generate_content(self, **_kwargs: object) -> dict[str, str]:
                 raise RuntimeError("quota exceeded")
 
         class _FailingClient:
@@ -256,7 +238,7 @@ class TestProviderAdapters:
         adapter = ClaudeAdapter()
 
         class _FailingMessages:
-            def create(self, **kwargs: object) -> dict[str, str]:
+            def create(self, **_kwargs: object) -> dict[str, str]:
                 raise RuntimeError("unauthorized: invalid api key")
 
         class _FailingClient:
@@ -287,13 +269,7 @@ class TestProviderAdapters:
             text = '{"scenes": [}]'
 
         class _MalformedModels:
-            def generate_content(
-                self,
-                *,
-                model: str,
-                contents: str,
-                config: object,
-            ) -> _MalformedResponse:
+            def generate_content(self, **_kwargs: object) -> _MalformedResponse:
                 return _MalformedResponse()
 
         class _MalformedClient:

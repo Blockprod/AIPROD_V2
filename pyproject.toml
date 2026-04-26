@@ -69,6 +69,11 @@ module = [
 ]
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+module = ["aiprod_adaptation.core.reference_image.*"]
+disallow_any_generics = false
+warn_return_any = false
+
 [tool.pytest.ini_options]
 testpaths = ["aiprod_adaptation/tests"]
 addopts = "-m 'not integration'"

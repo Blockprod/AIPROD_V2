@@ -1,46 +1,12 @@
+﻿---
+type: plan_result
+projet: AIPROD_V2
+plan_date: 2026-04-26
+creation: 2026-04-26 à 13:10
+source: SCAN_result.md
 ---
-produit: tasks/audits/fix_errors/fix_results/PLAN_result.md
-date: 2026-04-22
-input: tasks/audits/fix_errors/fix_results/SCAN_result.md
----
 
-# PLAN DE CORRECTION — AIPROD_V2
-
-## ANALYSE PRÉALABLE
-
-### Point clé — pyproject.toml mypy exclude
-Le `[tool.mypy]` exclut actuellement 7 fichiers adaptateurs de la vérification mypy.
-C'est pourquoi mypy affiche 0 erreur malgré la présence de `type:ignore`.
-La correction **remplace ces exclusions** par des `[[tool.mypy.overrides]]` par package tiers
-(`ignore_missing_imports = true`), puis supprime tous les `type:ignore` des adaptateurs.
-
-### Stratégie type:ignore[import-untyped]
-Les packages sans stubs (requests, replicate, anthropic, runwayml, jwt, elevenlabs, openai)
-sont traités via overrides mypy. Aucun inline `type:ignore` restant.
-
-### Stratégie type:ignore[attr-defined / index,union-attr] — claude_adapter.py
-anthropic déclaré via overrides → tout le module anthropic est typé `Any` →
-`anthropic.Anthropic(...)` et `message.content[0].text` ne déclenchent plus d'erreurs mypy.
-
-### Stratégie type:ignore[misc] — test_adaptation.py:419
-Test de frozen dataclass. Remplacement par cast `Any` :
-```python
-mutable: Any = budget
-try:
-    mutable.max_chars_per_chunk = 999
-    assert False, "Should have raised"
-except Exception:
-    pass
-```
-Import `from typing import Any` déjà présent dans le fichier.
-
-### Stratégie ARG* (ruff)
-- Fixtures pytest non utilisées (`request`) → renommer en `_request` dans la signature.
-  (Pytest injecte par nom exact : retirer le paramètre serait plus propre, mais risque
-  de casser des tests qui dépendraient d'un side-effect de la fixture. Underscore prefix
-  est le pattern standard.)
-- Argument de fonction régulier `check` (line 338) → `_check`
-- Lambda arguments `check` (lines 364, 383) → `_check`
+# PLAN_result — P2 PLAN DE CORRECTION PAR BATCHES
 
 ---
 
@@ -50,250 +16,364 @@ Import `from typing import Any` déjà présent dans le fichier.
 PLAN = [
   {
     batch: 1,
-    label: "Core code — main + llm_adapter",
+    module: "core/rule_engine + core/global_coherence",
     files: [
-      "main.py",
-      "aiprod_adaptation/core/adaptation/llm_adapter.py"
+      "aiprod_adaptation/core/rule_engine/conflict_resolver.py",
+      "aiprod_adaptation/core/global_coherence/consistency_checker.py",
     ],
-    error_types: ["ruff-E501", "ruff-ARG002"],
-    fixes: [
-      "main.py:21 — couper la chaîne description argparse pour passer sous 100 chars",
-      "llm_adapter.py:19 — renommer `prompt` → `_prompt` dans la signature"
-    ],
-    estimated_fixes: 2,
+    error_types: ["ruff-ARG002", "ruff-ARG001"],
+    estimated_fixes: 4,
     difficulty: "Facile",
-    depends_on: []
+    note: "Renommages _ sur méthodes privées — tous les call sites sont positionnels."
   },
   {
     batch: 2,
-    label: "pyproject.toml — remplacement exclusions mypy par overrides",
+    module: "core/pass1_segment",
     files: [
-      "pyproject.toml"
+      "aiprod_adaptation/core/pass1_segment.py",
     ],
-    error_types: ["config-mypy"],
-    fixes: [
-      "Supprimer la section `exclude` mypy (7 fichiers adaptateurs)",
-      "Ajouter [[tool.mypy.overrides]] pour : anthropic, requests, replicate, runwayml, jwt, elevenlabs, openai",
-      "Chaque override : ignore_missing_imports = true"
-    ],
-    estimated_fixes: 1,
-    difficulty: "Facile",
-    depends_on: [],
-    note: "Ce batch est prérequis pour les batches 3, 4, 5 (suppression type:ignore)"
+    error_types: ["ruff-ARG001"],
+    estimated_fixes: 5,  // 2 params renommés + 3 call sites keyword dans pass1 + 1 dans le test
+    difficulty: "Moyen",
+    note: "Callers dans pass1_segment.py et test_pass1_cinematic.py utilisent les
+           kwargs par nom → renommage _is_act_break + _act_position + MAJ call sites."
   },
   {
     batch: 3,
-    label: "claude_adapter — suppression type:ignore après override anthropic",
+    module: "video_gen/",
     files: [
-      "aiprod_adaptation/core/adaptation/claude_adapter.py"
+      "aiprod_adaptation/video_gen/runway_adapter.py",
     ],
-    error_types: ["type:ignore[attr-defined]", "type:ignore[index,union-attr]"],
-    fixes: [
-      "line 30 — supprimer # type: ignore[attr-defined]",
-      "line 38 — supprimer # type: ignore[index,union-attr]"
-    ],
-    estimated_fixes: 2,
+    error_types: ["mypy-attr-defined"],
+    estimated_fixes: 2,  // 2 erreurs résolues par 1 seul changement de type
     difficulty: "Facile",
-    depends_on: [2]
+    note: "_build_runway_client() retourne object → Any.
+           Les deux appels .image_to_video et .video_to_video se résolvent d'un coup."
   },
   {
     batch: 4,
-    label: "image_gen adapters — suppression type:ignore[import-untyped]",
+    module: "image_gen/",
     files: [
-      "aiprod_adaptation/image_gen/flux_adapter.py",
-      "aiprod_adaptation/image_gen/replicate_adapter.py"
+      "aiprod_adaptation/image_gen/replicate_adapter.py",
+      "aiprod_adaptation/image_gen/runway_image_adapter.py",
+      "aiprod_adaptation/image_gen/openai_image_adapter.py",
     ],
-    error_types: ["type:ignore[import-untyped]"],
-    fixes: [
-      "flux_adapter.py:21 — supprimer # type: ignore[import-untyped]",
-      "replicate_adapter.py:23 — supprimer # type: ignore[import-untyped]"
-    ],
-    estimated_fixes: 2,
+    error_types: ["mypy-index", "mypy-call-overload", "mypy-assignment", "mypy-attr-defined"],
+    estimated_fixes: 4,
     difficulty: "Facile",
-    depends_on: [2]
+    note: "Patterns distincts par fichier — fixes indépendants entre eux."
   },
   {
     batch: 5,
-    label: "post_prod adapters — suppression type:ignore[import-untyped]",
+    module: "post_prod/",
     files: [
-      "aiprod_adaptation/post_prod/elevenlabs_adapter.py",
-      "aiprod_adaptation/post_prod/openai_tts_adapter.py"
+      "aiprod_adaptation/post_prod/runway_tts_adapter.py",
     ],
-    error_types: ["type:ignore[import-untyped]"],
-    fixes: [
-      "elevenlabs_adapter.py:39 — supprimer # type: ignore[import-untyped]",
-      "openai_tts_adapter.py:38 — supprimer # type: ignore[import-untyped]"
-    ],
-    estimated_fixes: 2,
-    difficulty: "Facile",
-    depends_on: [2]
+    error_types: ["mypy-arg-type", "mypy-typeddict-item", "mypy-union-attr"],
+    estimated_fixes: 7,  // 7 erreurs mypy, 3 lignes à corriger
+    difficulty: "Moyen",
+    note: "cast(Any,...) sur model/preset_id (l45,47) + annotation Any sur result (l54).
+           5 erreurs union-attr résolues par la seule annotation Any sur result."
   },
   {
     batch: 6,
-    label: "video_gen adapters — suppression type:ignore[import-untyped]",
+    module: "tests/",
     files: [
-      "aiprod_adaptation/video_gen/runway_adapter.py",
-      "aiprod_adaptation/video_gen/kling_adapter.py"
+      "aiprod_adaptation/tests/test_adaptation.py",
+      "aiprod_adaptation/tests/test_cinematic_integration.py",
+      "aiprod_adaptation/tests/test_pass2_cinematic.py",
+      "aiprod_adaptation/tests/test_video_sequencer.py",
     ],
-    error_types: ["type:ignore[import-untyped]"],
-    fixes: [
-      "runway_adapter.py:24 — supprimer # type: ignore[import-untyped]",
-      "kling_adapter.py:30 — supprimer # type: ignore[import-untyped]",
-      "kling_adapter.py:40 — supprimer # type: ignore[import-untyped]"
-    ],
-    estimated_fixes: 3,
+    error_types: ["ruff-ARG002", "ruff-ARG001", "ruff-ARG005"],
+    estimated_fixes: 15,
     difficulty: "Facile",
-    depends_on: [2]
+    note: "Stubs/mocks par design — préfixer _ sur tous les args non utilisés.
+           Aucun risque fonctionnel."
   },
-  {
-    batch: 7,
-    label: "Tests ARG — fixtures et lambdas non utilisés",
-    files: [
-      "aiprod_adaptation/tests/test_image_gen.py",
-      "aiprod_adaptation/tests/test_video_gen.py",
-      "aiprod_adaptation/tests/test_post_prod.py"
-    ],
-    error_types: ["ruff-ARG001", "ruff-ARG002", "ruff-ARG005"],
-    fixes: [
-      "test_image_gen.py:138 — `request` → `_request`",
-      "test_image_gen.py:370 — `request` → `_request`",
-      "test_image_gen.py:518 — `request` → `_request`",
-      "test_video_gen.py:141 — `request` → `_request`",
-      "test_post_prod.py:166 — `request` → `_request`",
-      "test_post_prod.py:338 — `check: bool` → `_check: bool`",
-      "test_post_prod.py:364 — `lambda cmd, check:` → `lambda cmd, _check:`",
-      "test_post_prod.py:383 — `lambda cmd, check:` → `lambda cmd, _check:`"
-    ],
-    estimated_fixes: 8,
-    difficulty: "Facile",
-    depends_on: []
-  },
-  {
-    batch: 8,
-    label: "test_adaptation — type:ignore[misc] → cast Any",
-    files: [
-      "aiprod_adaptation/tests/test_adaptation.py"
-    ],
-    error_types: ["type:ignore[misc]"],
-    fixes: [
-      "line 419 — remplacer `budget.max_chars_per_chunk = 999  # type: ignore[misc]`",
-      "       par `mutable: Any = budget` suivi de `mutable.max_chars_per_chunk = 999`"
-    ],
-    estimated_fixes: 1,
-    difficulty: "Facile",
-    depends_on: []
-  }
 ]
+```
 
+---
+
+## DÉTAIL DES CORRECTIONS PAR BATCH
+
+---
+
+### BATCH 1 — `core/rule_engine` + `core/global_coherence` — ARG (ruff)
+
+**Priorité** : Haute — **Risque** : Nul (call sites positionnels)
+
+#### `conflict_resolver.py` — 3 ARG002 `ctx`
+
+Les méthodes `_hard_flag_and_annotate` (l275), méthode l322, et `_soft_compromise_movement` (l348)
+reçoivent `ctx: EvalContext` mais ne l'utilisent pas dans leur corps.
+Tous les call sites internes (lignes 160, 184, 315, 316) utilisent la syntaxe positionnelle.
+
+| Ligne | Paramètre | Correction |
+|------:|-----------|------------|
+| 275 | `ctx: EvalContext` | `_ctx: EvalContext` |
+| 322 | `ctx: EvalContext` | `_ctx: EvalContext` |
+| 348 | `ctx: EvalContext` | `_ctx: EvalContext` |
+
+#### `consistency_checker.py` — 1 ARG001 `visual_bible`
+
+`check_and_enrich(scenes, shots, visual_bible)` : appelé avec syntaxe positionnelle dans
+`pass4_compile.py:163`. Renommage sans impact sur les callers.
+
+| Ligne | Paramètre | Correction |
+|------:|-----------|------------|
+| 43 | `visual_bible: VisualBible \| None = None` | `_visual_bible: VisualBible \| None = None` |
+
+---
+
+### BATCH 2 — `core/pass1_segment` — ARG001 (ruff) + callers
+
+**Priorité** : Haute — **Risque** : Moyen (callers keyword)
+
+#### `pass1_segment.py` — 2 ARG001 + mise à jour call sites
+
+Fonction `_classify_scene_type`. `_is_act_break` et `_act_position` sont intentionnellement
+non utilisés (docstring : "stored separately — does NOT override the narrative classification").
+
+**Signature (ligne 262)** :
+```python
+# AVANT
+def _classify_scene_type(
+    sentences: list[str],
+    is_cliffhanger: bool,
+    is_act_break: bool,
+    act_position: str | None,
+) -> str:
+
+# APRÈS
+def _classify_scene_type(
+    sentences: list[str],
+    is_cliffhanger: bool,
+    _is_act_break: bool,
+    _act_position: str | None,
+) -> str:
+```
+
+**Call sites à mettre à jour** :
+
+| Fichier | Ligne | Avant | Après |
+|---------|------:|-------|-------|
+| `pass1_segment.py` | ~521 | `_classify_scene_type(sentences_tmp, False, False, current_act)` | inchangé (positionnels) |
+| `pass1_segment.py` | ~595 | `is_act_break=pending_act_break is not None` | `_is_act_break=pending_act_break is not None` |
+| `pass1_segment.py` | ~599 | `act_position=current_act` | `_act_position=current_act` |
+| `pass1_segment.py` | ~630 | tout keyword → vérifier | préfixer si keyword |
+| `tests/test_pass1_cinematic.py` | 583–584 | `is_act_break=False, act_position="act1"` | `_is_act_break=False, _act_position="act1"` |
+
+---
+
+### BATCH 3 — `video_gen/runway_adapter` — mypy attr-defined
+
+**Priorité** : Haute — **Risque** : Nul (type hint uniquement)
+
+#### `runway_adapter.py` — 2 erreurs résolues par 1 changement
+
+```python
+# AVANT (ligne ~26)
+def _build_runway_client(api_key: str) -> object:
+    import runwayml
+    return runwayml.RunwayML(api_key=api_key)
+
+# APRÈS
+from typing import Any   # ajouter en tête de fichier
+
+def _build_runway_client(api_key: str) -> Any:
+    import runwayml
+    return runwayml.RunwayML(api_key=api_key)
+```
+
+---
+
+### BATCH 4 — `image_gen/` — mypy (4 erreurs, 3 fichiers)
+
+**Priorité** : Haute — **Risque** : Nul
+
+#### `replicate_adapter.py:45` — mypy-index
+
+`output` est `Any | Iterator[Any]` → indexation directe interdite.
+
+```python
+# AVANT
+image_url=str(output[0]),
+
+# APRÈS (à l'intérieur du return ImageResult)
+output_list = list(output)
+...
+image_url=str(output_list[0]),
+```
+
+#### `runway_image_adapter.py` — mypy-call-overload
+
+`create_kwargs: dict[str, object]` → overload SDK refuse le `**` unpacking.
+
+```python
+# AVANT
+create_kwargs: dict[str, object] = { ... }
+
+# APRÈS (ajouter from typing import Any en tête)
+create_kwargs: dict[str, Any] = { ... }
+```
+
+#### `openai_image_adapter.py:89` — mypy-assignment
+
+```python
+# AVANT
+self._quality: OpenAIImageQuality = quality or os.environ.get(
+    "OPENAI_IMAGE_QUALITY",
+    DEFAULT_QUALITY,
+)
+
+# APRÈS (ajouter cast à l'import typing)
+from typing import cast
+_raw_quality = quality or os.environ.get("OPENAI_IMAGE_QUALITY", DEFAULT_QUALITY)
+self._quality = cast(OpenAIImageQuality, _raw_quality)
+```
+
+#### `openai_image_adapter.py` — mypy-attr-defined (via `_build_openai_client`)
+
+```python
+# AVANT
+def _build_openai_client(api_key: str) -> object:
+    from openai import OpenAI
+    return OpenAI(api_key=api_key)
+
+# APRÈS
+from typing import Any
+
+def _build_openai_client(api_key: str) -> Any:
+    from openai import OpenAI
+    return OpenAI(api_key=api_key)
+```
+
+---
+
+### BATCH 5 — `post_prod/runway_tts_adapter` — mypy (7 erreurs)
+
+**Priorité** : Haute — **Risque** : Moyen
+
+#### Lignes 45-47 — mypy-arg-type + mypy-typeddict-item
+
+```python
+# AVANT
+task = client.text_to_speech.create(
+    model=self._model,
+    prompt_text=request.text,
+    voice={"type": "runway-preset", "preset_id": voice},
+)
+
+# APRÈS
+from typing import Any, cast
+task = client.text_to_speech.create(
+    model=cast(Any, self._model),
+    prompt_text=request.text,
+    voice=cast(Any, {"type": "runway-preset", "preset_id": voice}),
+)
+```
+
+#### Ligne 54 — mypy-union-attr (5 erreurs)
+
+`task.wait_for_task_output()` retourne une union. Seul `Succeeded` a `.output`.
+Le SDK lève déjà une exception si non-Succeeded → `Any` est sûr ici.
+
+```python
+# AVANT
+result = task.wait_for_task_output()
+
+# APRÈS
+from typing import Any
+result: Any = task.wait_for_task_output()
+```
+
+---
+
+### BATCH 6 — `tests/` — ARG stubs (ruff, 15 fixes)
+
+**Priorité** : Basse — **Risque** : Nul
+
+#### `test_adaptation.py` — 11 ARG002
+
+Stubs `generate_content(self, *, model, contents, config)` ignorent leurs args.
+
+| Lignes | Params | Correction |
+|--------|--------|------------|
+| 155–157 | `model`, `contents`, `config` (stub 1) | `_model`, `_contents`, `_config` |
+| 192–193 | `contents`, `config` (stub 2) | `_contents`, `_config` |
+| 224–226 | `model`, `contents`, `config` (stub 3) | `_model`, `_contents`, `_config` |
+| 259 | `**kwargs` | `**_kwargs` |
+| 293–295 | `model`, `contents`, `config` (stub 4) | `_model`, `_contents`, `_config` |
+
+#### `test_cinematic_integration.py` — 2 ARG002
+
+| Ligne | Avant | Après |
+|------:|-------|-------|
+| 615 | `char_name: str` | `_char_name: str` |
+| 618 | `loc_id: str` | `_loc_id: str` |
+
+#### `test_pass2_cinematic.py` — 1 ARG001
+
+| Ligne | Avant | Après |
+|------:|-------|-------|
+| 37 | `emotion_override: str \| None = None` | `_emotion_override: str \| None = None` |
+
+#### `test_video_sequencer.py` — 1 ARG005
+
+| Ligne | Avant | Après |
+|------:|-------|-------|
+| 105 | `lambda token: mock_client` | `lambda _token: mock_client` |
+
+---
+
+## CONTRAINTES DE VÉRIFICATION
+
+Après **chaque batch** :
+```bash
+pytest aiprod_adaptation/tests/ -q --tb=short         # 998 passed obligatoire
+mypy aiprod_adaptation/core/ aiprod_adaptation/models/ aiprod_adaptation/backends/ aiprod_adaptation/cli.py main.py --strict  # 0 errors
+ruff check . --exclude venv,__pycache__,build          # All checks passed
+```
+
+Après batch 3, 4, 5 — vérifier aussi les modules externes :
+```bash
+mypy aiprod_adaptation/video_gen/ --ignore-missing-imports   # 0 après batch 3
+mypy aiprod_adaptation/image_gen/ --ignore-missing-imports   # 0 après batch 4
+mypy aiprod_adaptation/post_prod/ --ignore-missing-imports   # 0 après batch 5
+```
+
+---
+
+## RÉSUMÉ
+
+```
 RÉSUMÉ:
-  total_batches    : 8
-  total_files      : 13  (+pyproject.toml)
-  estimated_fixes  : 21
-  ordre_execution  : [Batch1 → Batch2 → Batch3 → Batch4 → Batch5 → Batch6 → Batch7 → Batch8]
+  total_batches    : 6
+  total_files      : 12
+  estimated_fixes  : 35  (22 ARG ruff + 13 mypy)
+  ordre_execution  : [Batch1 → Batch2 → Batch3 → Batch4 → Batch5 → Batch6]
 
-GRAPHE DE DÉPENDANCES:
-  Batch1  ─── (indépendant)
-  Batch2  ─── (indépendant — prérequis de 3,4,5,6)
-  Batch3  ─── dépend de Batch2
-  Batch4  ─── dépend de Batch2
-  Batch5  ─── dépend de Batch2
-  Batch6  ─── dépend de Batch2
-  Batch7  ─── (indépendant)
-  Batch8  ─── (indépendant)
+  répartition:
+    batch_1 : 4 fixes  · Facile  · core/rule_engine + global_coherence — _ prefix (positionnels)
+    batch_2 : 5 ops    · Moyen   · core/pass1 — _ prefix + MAJ callers keyword + 1 test
+    batch_3 : 1 fix    · Facile  · video_gen/ — _build_runway_client -> Any (résout 2 erreurs)
+    batch_4 : 4 fixes  · Facile  · image_gen/ — cast / Any / list() patterns
+    batch_5 : 3 fixes  · Moyen   · post_prod/ — cast(Any) + Any annotation (résout 7 erreurs)
+    batch_6 : 15 fixes · Facile  · tests/ — _ prefix stubs/mocks
 
-ORDRE OPTIMAL (séquentiel sûr) :
-  Batch1 → Batch2 → Batch3 → Batch4 → Batch5 → Batch6 → Batch7 → Batch8
+  zero_risk_batches    : 1, 3, 4, 6  (type hints / signatures uniquement)
+  moderate_risk_batches: 2, 5        (callers keyword / union-attr guard)
+
+  baseline_a_preserver:
+    ruff_general   : 0 violations
+    mypy_strict_ci : 0 errors
+    tests          : 998 passed
 ```
 
 ---
 
-## DÉTAIL DES CORRECTIONS PAR FICHIER
+## VERDICT
 
-### Batch 1
+→ Passer à **P3_FIX_prompt.md** en commençant par **Batch 1**.
 
-**main.py:21** — E501 (107 > 100)
-```python
-# AVANT
-description="AIPROD Adaptation Engine — transforms narrative text into structured cinematic data.",
-
-# APRÈS
-description=(
-    "AIPROD Adaptation Engine"
-    " — transforms narrative text into structured cinematic data."
-),
-```
-
-**llm_adapter.py:19** — ARG002
-```python
-# AVANT
-def generate_json(self, prompt: str) -> dict[str, Any]:
-
-# APRÈS
-def generate_json(self, _prompt: str) -> dict[str, Any]:
-```
-
----
-
-### Batch 2
-
-**pyproject.toml** — Remplacer :
-```toml
-# SUPPRIMER ces lignes du [tool.mypy] :
-exclude = [
-    "aiprod_adaptation/core/adaptation/claude_adapter\\.py",
-    "aiprod_adaptation/image_gen/flux_adapter\\.py",
-    "aiprod_adaptation/image_gen/replicate_adapter\\.py",
-    "aiprod_adaptation/video_gen/runway_adapter\\.py",
-    "aiprod_adaptation/video_gen/kling_adapter\\.py",
-    "aiprod_adaptation/post_prod/elevenlabs_adapter\\.py",
-    "aiprod_adaptation/post_prod/openai_tts_adapter\\.py",
-    "aiprod_adaptation/core/adaptation/gemini_adapter\\.py",
-]
-
-# AJOUTER après [tool.mypy] :
-[[tool.mypy.overrides]]
-module = ["anthropic.*", "requests.*", "replicate.*", "runwayml.*", "jwt.*", "elevenlabs.*", "openai.*"]
-ignore_missing_imports = true
-```
-
----
-
-### Batches 3–6
-
-Pour chaque adaptateur : supprimer le commentaire `# type: ignore[...]` en fin de ligne.
-Aucune autre modification du code source.
-
----
-
-### Batch 7
-
-Prefixer les arguments non utilisés avec `_` dans les signatures et lambdas.
-
----
-
-### Batch 8
-
-**test_adaptation.py:419** — type:ignore[misc]
-```python
-# AVANT
-budget.max_chars_per_chunk = 999  # type: ignore[misc]
-assert False, "Should have raised"
-
-# APRÈS
-mutable: Any = budget
-mutable.max_chars_per_chunk = 999
-assert False, "Should have raised"
-```
-Note : `Any` est déjà importé dans ce fichier via `from typing import Any` (ou équivalent).
-
----
-
-## VERDICT PLAN
-
-```
-VERDICT PLAN: PRÊT
-  Complexité globale  : Facile (pas de refactoring logique)
-  Risque tests        : Faible (renommages ARG non utilisés, cast Any en test)
-  Risque pipeline     : Nul (aucune modification de logique core)
-  Prochaine étape     : Lancer P3_FIX_prompt.md avec "Batch 1"
-```

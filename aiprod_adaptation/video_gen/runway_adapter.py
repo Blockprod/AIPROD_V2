@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import time
+from typing import Any
 
 from aiprod_adaptation.video_gen.video_adapter import VideoAdapter
 from aiprod_adaptation.video_gen.video_request import VideoClipResult, VideoRequest
@@ -23,7 +24,7 @@ _I2V_MODELS: frozenset[str] = frozenset(
 _V2V_ALEPH_MODELS: frozenset[str] = frozenset({"gen4_aleph"})
 
 
-def _build_runway_client(api_key: str) -> object:
+def _build_runway_client(api_key: str) -> Any:
     import runwayml
 
     return runwayml.RunwayML(api_key=api_key)

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 import time
-from typing import Literal
+from typing import Any, Literal, cast
 
 from aiprod_adaptation.image_gen.image_adapter import ImageAdapter
 from aiprod_adaptation.image_gen.image_request import ImageRequest, ImageResult
@@ -35,7 +35,7 @@ _OPENAI_IMAGE_COST_USD: dict[str, dict[str, dict[str, float]]] = {
 }
 
 
-def _build_openai_client(api_key: str) -> object:
+def _build_openai_client(api_key: str) -> Any:
     from openai import OpenAI
 
     return OpenAI(api_key=api_key)
@@ -86,10 +86,8 @@ class OpenAIImageAdapter(ImageAdapter):
     ) -> None:
         self._api_key = api_key or os.environ.get("OPENAI_API_KEY", "")
         self._model = model or os.environ.get("OPENAI_IMAGE_MODEL", DEFAULT_MODEL)
-        self._quality: OpenAIImageQuality = quality or os.environ.get(
-            "OPENAI_IMAGE_QUALITY",
-            DEFAULT_QUALITY,
-        )
+        _raw_quality = quality or os.environ.get("OPENAI_IMAGE_QUALITY", DEFAULT_QUALITY)
+        self._quality = cast(OpenAIImageQuality, _raw_quality)
 
     def generate(self, request: ImageRequest) -> ImageResult:
         client = _build_openai_client(self._api_key)

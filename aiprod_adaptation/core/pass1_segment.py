@@ -262,8 +262,8 @@ def _detect_explicit_montage(sentences: list[str]) -> bool:
 def _classify_scene_type(
     sentences: list[str],
     is_cliffhanger: bool,
-    is_act_break: bool,
-    act_position: str | None,
+    _is_act_break: bool,
+    _act_position: str | None,
 ) -> str:
     """Determine narrative scene type. `act_position` is structural metadata
     stored separately — it does NOT override the narrative classification."""
@@ -593,8 +593,8 @@ def segment(
             ctype = _classify_scene_type(
                 sentences_so_far,
                 is_cliffhanger=False,
-                is_act_break=pending_act_break is not None,
-                act_position=current_act,
+                _is_act_break=pending_act_break is not None,
+                _act_position=current_act,
             )
             # R06 montage auto-detection on the accumulated block
             if short_para_streak >= MONTAGE_MIN_SHORT_PARAS:
@@ -628,8 +628,8 @@ def segment(
         ctype = _classify_scene_type(
             sentences_final,
             is_cliffhanger=is_cliff,
-            is_act_break=False,
-            act_position=current_act,
+            _is_act_break=False,
+            _act_position=current_act,
         )
         if short_para_streak >= MONTAGE_MIN_SHORT_PARAS:
             ctype = "montage"

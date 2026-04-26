@@ -140,12 +140,11 @@ class ConflictResolutionEngine:
         ]
 
         # --- sort: priority ASC, HARD before SOFT at equal priority --------
-        active.sort(
-            key=lambda r: (
-                r.conflict.priority,                       # type: ignore[union-attr]
-                0 if r.conflict_type == ConflictType.HARD else 1,
-            )
-        )
+        def _sort_key(r: RuleEvalResult) -> tuple[int, int]:
+            assert r.conflict is not None  # guaranteed by filter above
+            return (r.conflict.priority, 0 if r.conflict_type == ConflictType.HARD else 1)
+
+        active.sort(key=_sort_key)
 
         records: list[ResolutionRecord] = []
         working_shot = shot
@@ -272,7 +271,7 @@ class ConflictResolutionEngine:
         self,
         shot: Shot,
         conflict: ConflictRecord,
-        ctx: EvalContext,
+        _ctx: EvalContext,
     ) -> tuple[Shot, ResolutionRecord]:
         """
         For HARD conflicts on fields we cannot safely rewrite (e.g. shot.prompt):
@@ -319,7 +318,7 @@ class ConflictResolutionEngine:
         self,
         shot: Shot,
         conflict: ConflictRecord,
-        ctx: EvalContext,
+        _ctx: EvalContext,
     ) -> tuple[Shot, ResolutionRecord]:
         """Downgrade camera movement one step as a compromise."""
         orig = shot.camera_movement
@@ -345,7 +344,7 @@ class ConflictResolutionEngine:
         self,
         shot: Shot,
         conflict: ConflictRecord,
-        ctx: EvalContext,
+        _ctx: EvalContext,
     ) -> tuple[Shot, ResolutionRecord]:
         """Narrative intent yields: annotate visual_invariants_applied, shot unchanged."""
         flag = f"SOFT-CONFLICT:{conflict.rule_id}"

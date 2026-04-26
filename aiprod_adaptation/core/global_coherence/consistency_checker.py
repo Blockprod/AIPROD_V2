@@ -40,7 +40,7 @@ from aiprod_adaptation.models.schema import ConsistencyReport, Scene, Shot
 def check_and_enrich(
     scenes: list[Scene],
     shots: list[Shot],
-    visual_bible: VisualBible | None = None,
+    _visual_bible: VisualBible | None = None,
 ) -> tuple[list[Shot], ConsistencyReport]:
     """
     Validate and (where required) mutate the compiled shot list.

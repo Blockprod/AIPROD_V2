@@ -612,10 +612,10 @@ class TestProcessNarrativeWithReference:
             characters: dict = {}
             locations: dict = {}
 
-            def get_character_prompt_fragment(self, char_name: str) -> str | None:
+            def get_character_prompt_fragment(self, _char_name: str) -> str | None:
                 return None
 
-            def get_location_prompt_fragment(self, loc_id: str) -> str | None:
+            def get_location_prompt_fragment(self, _loc_id: str) -> str | None:
                 return None
         return _MockVB()
 

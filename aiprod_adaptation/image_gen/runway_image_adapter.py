@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import time
+from typing import Any
 
 from aiprod_adaptation.image_gen.image_adapter import ImageAdapter
 from aiprod_adaptation.image_gen.image_request import ImageRequest, ImageResult
@@ -48,7 +49,7 @@ class RunwayImageAdapter(ImageAdapter):
 
         client = runwayml.RunwayML(api_key=self._token)
         t0 = time.monotonic()
-        create_kwargs: dict[str, object] = {
+        create_kwargs: dict[str, Any] = {
             "model": self._model,
             "prompt_text": request.prompt,
             "ratio": _runway_image_ratio(request.width, request.height, self._model),
@@ -59,7 +60,7 @@ class RunwayImageAdapter(ImageAdapter):
         task = client.text_to_image.create(
             **create_kwargs,
         )
-        result = task.wait_for_task_output()
+        result: Any = task.wait_for_task_output()
         latency_ms = int((time.monotonic() - t0) * 1000)
 
         return ImageResult(

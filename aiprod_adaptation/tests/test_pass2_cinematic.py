@@ -34,7 +34,7 @@ if TYPE_CHECKING:
 
 def _make_scene(
     raw_text: str = "Marcus stood by the window.",
-    emotion_override: str | None = None,
+    _emotion_override: str | None = None,
     arc_index: float = 0.5,
     beat_type: str = "exposition",
     scene_type: str = "standard",

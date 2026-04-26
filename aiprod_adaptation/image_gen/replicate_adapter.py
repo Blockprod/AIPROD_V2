@@ -40,9 +40,10 @@ class ReplicateAdapter(ImageAdapter):
             input=input_data,
         )
         latency = int((time.monotonic() - t0) * 1000)
+        output_list = list(output)
         return ImageResult(
             shot_id=request.shot_id,
-            image_url=str(output[0]),
+            image_url=str(output_list[0]),
             image_b64="",
             model_used=self.MODEL,
             latency_ms=latency,

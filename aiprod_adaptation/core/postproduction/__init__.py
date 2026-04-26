@@ -12,6 +12,7 @@ Public API
 from __future__ import annotations
 
 import dataclasses
+from collections.abc import Callable
 from datetime import UTC, datetime
 
 from aiprod_adaptation.core.postproduction.audio_directives import AudioDirectivesBuilder
@@ -40,6 +41,8 @@ __all__ = [
 def build_manifest_for_episode(
     output: AIPRODOutput,
     fps: float = 24.0,
+    *,
+    clock: Callable[[], str] = lambda: datetime.now(UTC).isoformat(),
 ) -> PostProductionManifest:
     """
     Build a complete PostProductionManifest from the first episode in *output*.
@@ -60,7 +63,7 @@ def build_manifest_for_episode(
             timeline_clips=[],
             audio_cues=[],
             continuity_notes=[],
-            created_at=datetime.now(UTC).isoformat(),
+            created_at=clock(),
         )
 
     ep = output.episodes[0]
@@ -92,5 +95,5 @@ def build_manifest_for_episode(
         audio_cues=[dataclasses.asdict(c) for c in audio_cues],
         continuity_notes=[dataclasses.asdict(n) for n in cont_notes],
         dominant_color_grade=dominant_grade,
-        created_at=datetime.now(UTC).isoformat(),
+        created_at=clock(),
     )
