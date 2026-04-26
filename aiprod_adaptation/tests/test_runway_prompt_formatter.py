@@ -12,13 +12,10 @@ Covers:
 
 from __future__ import annotations
 
-import pytest
-
 from aiprod_adaptation.core.global_coherence.prompt_finalizer import finalize_prompts
 from aiprod_adaptation.image_gen.reference_pack import ReferencePack, ReferenceSubject
 from aiprod_adaptation.models.schema import ActionSpec, Shot
 from aiprod_adaptation.video_gen.runway_prompt_formatter import format_runway_prompt
-
 
 # ---------------------------------------------------------------------------
 # Helpers

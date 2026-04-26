@@ -23,7 +23,6 @@ from aiprod_adaptation.video_gen.video_adapter import NullVideoAdapter
 from aiprod_adaptation.video_gen.video_request import VideoRequest
 from aiprod_adaptation.video_gen.video_sequencer import VideoSequencer
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------

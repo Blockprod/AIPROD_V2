@@ -11,12 +11,10 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 from aiprod_adaptation.image_gen.comfyui_adapter import ComfyUIAdapter
 from aiprod_adaptation.image_gen.flux_kontext_adapter import (
-    FluxKontextAdapter,
     _KONTEXT_PRESERVATION_CLAUSE,
+    FluxKontextAdapter,
 )
 from aiprod_adaptation.image_gen.image_request import ImageRequest
 

@@ -23,10 +23,10 @@ Excluded from mypy strict and CI integration suites — integration only.
 from __future__ import annotations
 
 import copy
+from typing import Any
 
 from aiprod_adaptation.image_gen.comfyui_adapter import ComfyUIAdapter
 from aiprod_adaptation.image_gen.image_request import ImageRequest, ImageResult
-
 
 # ---------------------------------------------------------------------------
 # Flux Kontext workflow template (ComfyUI API format)
@@ -44,7 +44,7 @@ from aiprod_adaptation.image_gen.image_request import ImageRequest, ImageResult
 #   "9"  — SaveImage (output)                         ← output_node_id
 # ---------------------------------------------------------------------------
 
-_FLUX_KONTEXT_WORKFLOW_TEMPLATE: dict = {
+_FLUX_KONTEXT_WORKFLOW_TEMPLATE: dict[str, Any] = {
     "1": {
         "class_type": "UNETLoader",
         "inputs": {

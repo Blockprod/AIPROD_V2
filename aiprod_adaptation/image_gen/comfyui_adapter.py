@@ -22,6 +22,7 @@ import base64
 import copy
 import os
 import time
+from typing import Any
 
 import requests as _requests
 
@@ -47,7 +48,7 @@ class ComfyUIAdapter(ImageAdapter):
 
     def __init__(
         self,
-        workflow_template: dict,
+        workflow_template: dict[str, Any],
         api_url: str | None = None,
         poll_interval: float = 1.0,
         timeout: float = 120.0,
@@ -96,7 +97,7 @@ class ComfyUIAdapter(ImageAdapter):
     # Internal helpers
     # ------------------------------------------------------------------
 
-    def _build_workflow(self, request: ImageRequest) -> dict:
+    def _build_workflow(self, request: ImageRequest) -> dict[str, Any]:
         workflow = copy.deepcopy(self._template)
 
         # Patch text prompt node
@@ -113,14 +114,14 @@ class ComfyUIAdapter(ImageAdapter):
 
         return workflow
 
-    def _submit(self, workflow: dict) -> str:
+    def _submit(self, workflow: dict[str, Any]) -> str:
         resp = _requests.post(
             f"{self._url}/prompt",
             json={"prompt": workflow},
             timeout=30,
         )
         resp.raise_for_status()
-        return resp.json()["prompt_id"]
+        return str(resp.json()["prompt_id"])
 
     def _poll(self, prompt_id: str, t0: float) -> str | None:
         """Poll /history until the job completes or timeout is reached."""
@@ -136,7 +137,7 @@ class ComfyUIAdapter(ImageAdapter):
                     node_out = outputs.get(self._output_node_id, {})
                     images = node_out.get("images", [])
                     if images:
-                        return images[0]["filename"]
+                        return str(images[0]["filename"])
             time.sleep(self._poll_interval)
         return None
 
@@ -174,7 +175,7 @@ class ComfyUIAdapter(ImageAdapter):
 #   models/ipadapter/flux-ip-adapter.safetensors
 #   models/clip_vision/<clip_vision_model>
 
-_XLABS_IPADAPTER_WORKFLOW_TEMPLATE: dict = {
+_XLABS_IPADAPTER_WORKFLOW_TEMPLATE: dict[str, Any] = {
     "1": {
         "class_type": "UNETLoader",
         "inputs": {"unet_name": "flux1-dev.safetensors", "weight_dtype": "fp8_e4m3fn"},
@@ -264,7 +265,7 @@ def make_xlabs_ipadapter_adapter(
         clip_vision_model: CLIP vision checkpoint filename in models/clip_vision/.
         ipadapter_model:   XLabs IP-Adapter checkpoint filename in models/ipadapter/.
     """
-    template = copy.deepcopy(_XLABS_IPADAPTER_WORKFLOW_TEMPLATE)
+    template: dict[str, Any] = copy.deepcopy(_XLABS_IPADAPTER_WORKFLOW_TEMPLATE)
     template["20"]["inputs"]["ipadapter_file"] = ipadapter_model
     template["20"]["inputs"]["clip_vision"] = clip_vision_model
     return ComfyUIAdapter(

@@ -169,7 +169,6 @@ class StoryboardGenerator:
             dom_sound: str = shot.metadata.get("dominant_sound", "dialogue")
 
             # Use FluxKontextAdapter when available and a character reference exists
-            active_adapter: ImageAdapter
             if self._kontext_adapter is not None and reference_url:
                 from aiprod_adaptation.image_gen.flux_kontext_adapter import FluxKontextAdapter  # noqa: PLC0415
                 if isinstance(self._kontext_adapter, FluxKontextAdapter) and location_prompt:
