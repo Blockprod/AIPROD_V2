@@ -9,6 +9,7 @@ requires-python = ">=3.11"
 dependencies = [
     "pydantic>=2.0",
     "structlog>=21.0",
+    "requests>=2.28",
 ]
 
 [project.scripts]
