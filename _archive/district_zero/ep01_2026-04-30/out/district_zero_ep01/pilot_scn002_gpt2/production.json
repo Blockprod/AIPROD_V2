@@ -1,0 +1,80 @@
+{
+  "title": "District Zero - Episode 1",
+  "timeline": [
+    {
+      "shot_id": "SCN_002_SHOT_001",
+      "scene_id": "SCN_002",
+      "video_url": "null://clips/SCN_002_SHOT_001.mp4",
+      "audio_url": "null://audio/SCN_002_SHOT_001.mp3",
+      "duration_sec": 4,
+      "start_sec": 0,
+      "audio_duration_sec": 4,
+      "silence_padding_sec": 0,
+      "latency_ms": 0,
+      "cost_usd": 0.0
+    },
+    {
+      "shot_id": "SCN_002_SHOT_002",
+      "scene_id": "SCN_002",
+      "video_url": "null://clips/SCN_002_SHOT_002.mp4",
+      "audio_url": "null://audio/SCN_002_SHOT_002.mp3",
+      "duration_sec": 4,
+      "start_sec": 4,
+      "audio_duration_sec": 4,
+      "silence_padding_sec": 0,
+      "latency_ms": 0,
+      "cost_usd": 0.0
+    },
+    {
+      "shot_id": "SCN_002_SHOT_003",
+      "scene_id": "SCN_002",
+      "video_url": "null://clips/SCN_002_SHOT_003.mp4",
+      "audio_url": "null://audio/SCN_002_SHOT_003.mp3",
+      "duration_sec": 4,
+      "start_sec": 8,
+      "audio_duration_sec": 4,
+      "silence_padding_sec": 0,
+      "latency_ms": 0,
+      "cost_usd": 0.0
+    },
+    {
+      "shot_id": "SCN_002_SHOT_004",
+      "scene_id": "SCN_002",
+      "video_url": "null://clips/SCN_002_SHOT_004.mp4",
+      "audio_url": "null://audio/SCN_002_SHOT_004.mp3",
+      "duration_sec": 4,
+      "start_sec": 12,
+      "audio_duration_sec": 4,
+      "silence_padding_sec": 0,
+      "latency_ms": 0,
+      "cost_usd": 0.0
+    },
+    {
+      "shot_id": "SCN_002_SHOT_005",
+      "scene_id": "SCN_002",
+      "video_url": "null://clips/SCN_002_SHOT_005.mp4",
+      "audio_url": "null://audio/SCN_002_SHOT_005.mp3",
+      "duration_sec": 3,
+      "start_sec": 16,
+      "audio_duration_sec": 3,
+      "silence_padding_sec": 0,
+      "latency_ms": 0,
+      "cost_usd": 0.0
+    },
+    {
+      "shot_id": "SCN_002_SHOT_006",
+      "scene_id": "SCN_002",
+      "video_url": "null://clips/SCN_002_SHOT_006.mp4",
+      "audio_url": "null://audio/SCN_002_SHOT_006.mp3",
+      "duration_sec": 3,
+      "start_sec": 19,
+      "audio_duration_sec": 3,
+      "silence_padding_sec": 0,
+      "latency_ms": 0,
+      "cost_usd": 0.0
+    }
+  ],
+  "total_duration_sec": 22,
+  "resolution": "3840x2160",
+  "fps": 24
+}

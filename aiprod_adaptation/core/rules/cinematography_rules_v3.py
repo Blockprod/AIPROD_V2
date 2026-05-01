@@ -219,7 +219,7 @@ GAZE_DIRECTION_RULES: dict[str, tuple[str, str]] = {
     "hunting":  ("pov",     "handheld"),   # R06
     "avoidant": ("medium",  "static"),     # character refuses to engage
     "inward":   ("close_up","static"),     # internal — extreme reaction shot
-    "forward":  ("medium",  "static"),     # neutral engagement
+    "forward":  ("medium",  "static"),     # neutral gaze: anchor to medium shot
     "scanning": ("wide",    "pan"),        # environmental awareness
 }
 

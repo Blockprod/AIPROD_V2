@@ -54,6 +54,8 @@ class GeminiAdapter(LLMAdapter):
         self._max_attempts = self.DEFAULT_MAX_ATTEMPTS
         self._retry_delay_sec = self.DEFAULT_RETRY_DELAY_SEC
         self._generation_config = _build_generation_config()
+        self._input_tokens: int = 0
+        self._output_tokens: int = 0
 
     def _ensure_client(self) -> Any:
         if self._client is None:
@@ -76,6 +78,9 @@ class GeminiAdapter(LLMAdapter):
                     contents=prompt,
                     config=self._generation_config,
                 )
+                if hasattr(response, "usage_metadata"):
+                    self._input_tokens += getattr(response.usage_metadata, "prompt_token_count", 0)
+                    self._output_tokens += getattr(response.usage_metadata, "candidates_token_count", 0)
                 content = response.text or ""
                 start = content.find("{")
                 end = content.rfind("}") + 1
@@ -124,6 +129,9 @@ class GeminiAdapter(LLMAdapter):
             category=failures[-1].category if failures else LLMFailureCategory.UNKNOWN,
             failures=tuple(failures),
         )
+
+    def get_token_usage(self) -> tuple[int, int]:
+        return self._input_tokens, self._output_tokens
 
 
 @dataclass(frozen=True)

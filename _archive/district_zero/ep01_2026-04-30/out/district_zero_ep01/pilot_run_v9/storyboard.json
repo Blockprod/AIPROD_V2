@@ -1,0 +1,68 @@
+{
+  "title": "District Zero - Episode 1",
+  "frames": [
+    {
+      "shot_id": "SCN_001_SHOT_001",
+      "scene_id": "SCN_001",
+      "image_url": "https://replicate.delivery/xezq/BNRfOTsnpSwJeE7X5uDy97SRkrFJ8Lwu9qlhz659K3zHBCfsA/out-0.webp",
+      "image_b64": "",
+      "model_used": "black-forest-labs/flux-schnell",
+      "latency_ms": 890,
+      "cost_usd": 0.0,
+      "prompt_used": "Wide establishing shot — Cinematic wide establishing shot, monumental seawall at night. Black churning water crashing against weathered floodlit concrete. In the background: drowned megacity with sharply detailed Art Deco and Brutalist towers — visible facade architecture, window grids, structural ribs, water-stain markings — Night lighting, naturally contrasted chiaroscuro — 4K hyperrealistic, cinematic quality, ARRI Alexa 35 LF, anamorphic 2.39:1, film emulsion grain, cinematic depth of field",
+      "seed_used": 42,
+      "shot_type": "wide",
+      "camera_movement": "static",
+      "time_of_day_visual": "night",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "black"
+      ],
+      "reference_image_url": ""
+    },
+    {
+      "shot_id": "SCN_003_SHOT_005",
+      "scene_id": "SCN_003",
+      "image_url": "https://replicate.delivery/xezq/EmyyeI4Sl1wObqtyCpYN1dMIPauVjoJvQQdAMiSfxTocBCfsA/tmp_9aiunqm.png",
+      "image_b64": "",
+      "model_used": "black-forest-labs/flux-1.1-pro-ultra",
+      "latency_ms": 9687,
+      "cost_usd": 0.0,
+      "prompt_used": "Close-up portrait — Female protagonist of a dystopian survival thriller TV series. Late 20s, facial appearance close to a top model: fine balanced features, elegant defined jawline, high cheekbones. Intense, intelligent eyes exhausted by hardship — determination and contained vulnerability in every feature. No excessive makeup. Natural skin, no airbrushing. Dark hair loosely tied back, stray strands at temples. Dark tactical neck scarf, weathered utility jacket. Tight framing shoulders to crown. Cold atmosphere, bluish and silver-grey tones, blurred ruined urban or bunker background. — analog portrait photography, 35mm film, Kodak Portra 400, natural skin texture with visible pores, micro-imperfections, shallow depth of field f/2.0, soft bokeh background, film grain",
+      "seed_used": 43,
+      "shot_type": "close_up",
+      "camera_movement": "handheld",
+      "time_of_day_visual": "night",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "WORKER",
+        "NARA",
+        "nara"
+      ],
+      "reference_image_url": "C:/Users/averr/AIPROD_V2/preproduction/district_zero/characters/nara_voss/nara_hero_ref_01.png"
+    },
+    {
+      "shot_id": "SCN_010_SHOT_001",
+      "scene_id": "SCN_010",
+      "image_url": "https://replicate.delivery/xezq/WUALwEyMY15zAxV0xErX6J9ReimTv8kfX4PywfDfuyy9FI8ZB/out-0.webp",
+      "image_b64": "",
+      "model_used": "black-forest-labs/flux-schnell",
+      "latency_ms": 1780,
+      "cost_usd": 0.0,
+      "prompt_used": "Wide establishing shot — buried service corridor deep inside city skeleton, ancient sealed infrastructure with century-old steel and rust accumulation, extreme vanishing-point perspective dissolving into darkness, sparse amber emergency lights every 20 metres, discovery and dread — Interior lighting, naturally contrasted chiaroscuro — 4K hyperrealistic, cinematic quality, ARRI Alexa 35 LF, anamorphic 2.39:1, film emulsion grain, cinematic depth of field",
+      "seed_used": 44,
+      "shot_type": "wide",
+      "camera_movement": "static",
+      "time_of_day_visual": "interior",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "HANDHELD FAST",
+        "at"
+      ],
+      "reference_image_url": ""
+    }
+  ],
+  "style_token": "photorealistic, hyperrealistic cinema, shot on ARRI Alexa 35 LF, anamorphic 2.39:1, Cooke S7i lenses, natural skin texture with visible pores, subsurface scattering, motivated practical lighting only, cinematic depth of field, color graded DI, film emulsion grain, tack sharp",
+  "total_shots": 3,
+  "generated": 3
+}

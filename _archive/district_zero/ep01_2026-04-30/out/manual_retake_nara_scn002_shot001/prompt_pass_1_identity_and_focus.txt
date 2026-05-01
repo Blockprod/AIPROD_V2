@@ -1,0 +1,13 @@
+Edit the uploaded base frame. Keep the exact same shot composition, camera angle, lens feel, corridor layout, red practical emergency lighting, wet metal grates, running pose, toolkit placement, scarf, jacket, body position, and overall scene design. Do not reinterpret the scene and do not redesign the shot.
+
+The correction is specifically about Nara's face and facial focus.
+
+Nara must match the reference photo exactly: same woman, same age, same bone structure, same face proportions, same grey-green eyes, same eye shape, same nose, same mouth, same jawline, same cheekbones, same hairline, same dark brown hair tied back with stray wet strands, same olive skin tone, same natural skin texture.
+
+Her face must be 100% faithful to the reference photo, not approximately similar. She must be instantly recognizable as the exact same person in the reference image.
+
+Critical focus rule: the face must be tack-sharp when zooming to 100%. Both eyes, eyelashes, eyebrows, nose bridge, lips, pores, and skin micro-texture must be in crisp focus. No soft face, no mushy details, no blur on the eyes, no waxy skin, no plastic smoothing, no beauty retouch, no glamorization.
+
+Keep the cold industrial atmosphere and grounded photorealism. Keep practical lighting only. Preserve the existing set and costume exactly. Preserve the wide running shot framing. Do not crop tighter. Do not change the expression into fashion or beauty photography.
+
+Output requirements: high quality, cinematic photorealism, 16:9 composition, suitable for final 4K delivery after upscale. Natural skin, visible pores, realistic eye detail, realistic hair strands, realistic fabric texture.

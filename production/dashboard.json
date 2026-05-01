@@ -1,0 +1,57 @@
+{
+  "SCN_001": {
+    "seed": 11,
+    "location_key": "ext_outer_wall_night",
+    "master_plate_path": "C:\\Users\\averr\\AIPROD_V2\\production\\location_refs\\ext_outer_wall_night_master.png"
+  },
+  "SCN_002": {
+    "seed": 22,
+    "location_key": "int_transit_corridor_night",
+    "master_plate_path": "C:\\Users\\averr\\AIPROD_V2\\production\\location_refs\\int_transit_corridor_night_master.png"
+  },
+  "SCN_003": {
+    "seed": 33,
+    "location_key": "int_pressure_valve_chamber_night",
+    "master_plate_path": "C:\\Users\\averr\\AIPROD_V2\\production\\location_refs\\int_pressure_valve_chamber_night_master.png"
+  },
+  "SCN_004": {
+    "seed": 44,
+    "location_key": "int_voss_apartment_night",
+    "master_plate_path": "C:\\Users\\averr\\AIPROD_V2\\production\\location_refs\\int_voss_apartment_night_master.png"
+  },
+  "SCN_005": {
+    "seed": 55,
+    "location_key": "int_civic_atrium_morning",
+    "master_plate_path": "C:\\Users\\averr\\AIPROD_V2\\production\\location_refs\\int_civic_atrium_morning_master.png"
+  },
+  "SCN_006": {
+    "seed": 66,
+    "location_key": "int_black_market_sublevel_day",
+    "master_plate_path": "C:\\Users\\averr\\AIPROD_V2\\production\\location_refs\\int_black_market_sublevel_day_master.png"
+  },
+  "SCN_007": {
+    "seed": 77,
+    "location_key": "int_security_ops_center_day",
+    "master_plate_path": "C:\\Users\\averr\\AIPROD_V2\\production\\location_refs\\int_security_ops_center_day_master.png"
+  },
+  "SCN_008": {
+    "seed": 88,
+    "location_key": "int_service_spine_night",
+    "master_plate_path": "C:\\Users\\averr\\AIPROD_V2\\production\\location_refs\\int_service_spine_night_master.png"
+  },
+  "SCN_009": {
+    "seed": 99,
+    "location_key": "int_observation_chamber",
+    "master_plate_path": "C:\\Users\\averr\\AIPROD_V2\\production\\location_refs\\int_observation_chamber_master.png"
+  },
+  "SCN_010": {
+    "seed": 110,
+    "location_key": "int_service_spine_night",
+    "master_plate_path": null
+  },
+  "SCN_011": {
+    "seed": 121,
+    "location_key": "int_voss_apartment_predawn",
+    "master_plate_path": "C:\\Users\\averr\\AIPROD_V2\\production\\location_refs\\int_voss_apartment_predawn_master.png"
+  }
+}

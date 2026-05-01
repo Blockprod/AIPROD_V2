@@ -1,0 +1,15 @@
+{
+  "model": "black-forest-labs/flux-2-flex",
+  "prompt_file": "out/manual_retake_nara_scn002_shot001/prompt_flux2_flex_source_plus_reference.txt",
+  "source_image": "out/manual_retake_nara_scn002_shot001/source_shot_base.png",
+  "reference_image": "out/manual_retake_nara_scn002_shot001/nara_reference_photo.png",
+  "output_image": "out/manual_retake_nara_scn002_shot001/flux2_flex_source_plus_reference/flux2_flex_retake.png",
+  "aspect_ratio": "match_input_image",
+  "resolution": "match_input_image",
+  "output_format": "png",
+  "prompt_upsampling": false,
+  "steps": 40,
+  "guidance": 4.5,
+  "safety_tolerance": 5,
+  "latency_ms": 25405
+}

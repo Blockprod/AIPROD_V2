@@ -66,13 +66,24 @@ class RunwayAdapter(VideoAdapter):
         t0 = time.monotonic()
         client = _build_runway_client(self._token)
 
+        # Guard: Runway rejects any image_url that is not https://, runway://, or data:image/
+        image_url = request.image_url
+        _valid_prefixes = ("https://", "runway://", "data:image/")
+        valid_image = any(image_url.startswith(p) for p in _valid_prefixes)
+        if not valid_image:
+            url_preview = repr(image_url[:80])
+            raise ValueError(
+                f"RunwayAdapter: invalid prompt_image URL for shot {request.shot_id!r}: "
+                f"{url_preview}. Must start with https://, runway://, or data:image/."
+            )
+
         if self._model == "gen3a_turbo" and request.last_frame_hint_url:
             prompt_image: object = [
-                {"position": "first", "uri": request.image_url},
+                {"position": "first", "uri": image_url},
                 {"position": "last", "uri": request.last_frame_hint_url},
             ]
         else:
-            prompt_image = request.image_url
+            prompt_image = image_url
 
         create_kwargs: dict[str, object] = {
             "model": self._model,

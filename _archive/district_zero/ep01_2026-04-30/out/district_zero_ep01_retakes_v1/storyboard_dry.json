@@ -1,0 +1,257 @@
+{
+  "title": "District Zero - Episode 1",
+  "frames": [
+    {
+      "shot_id": "SCN_002_SHOT_004",
+      "scene_id": "SCN_002",
+      "image_url": "null://storyboard/SCN_002_SHOT_004.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Insert detail shot — Female protagonist of a dystopian survival thriller TV series. Late 20s, facial appearance close to a top model: fine balanced features, elegant defined jawline, high cheekbones. Intense, intelligent eyes exhausted by hardship — determination and contained vulnerability in every feature. No excessive makeup. Natural skin, no airbrushing. Dark hair loosely tied back, stray strands at temples. Dark tactical neck scarf, weathered utility jacket. Tight framing shoulders to crown. Cold atmosphere, bluish and silver-grey tones, blurred ruined urban or bunker background. Photorealistic cinematic quality, ARRI Alexa 35, anamorphic lens, 4K hyperrealistic. Color grading: desaturated teal and steel-blue dominant, selective warm amber highlights in practical sources. No oversaturation, no fantasy glow, no HDR clipping. Natural grain texture, corroded metal surfaces, wet concrete, humid air with visible light particles. Lighting logic: practical sources only (halogen cage lights, neon, water reflections, emergency strips). Naturally contrasted chiaroscuro. — leaking maintenance corridor at night, dense overlapping pipes and cable trays with condensation dripping, wet corroded steel surfaces reflecting emergency blue-white practicals, extreme foreground depth, claustrophobic vanishing-point perspective — Night lighting, naturally contrasted chiaroscuro — 4K hyperrealistic, cinematic quality, ARRI Alexa 35 LF, anamorphic 2.39:1, film emulsion grain, cinematic depth of field",
+      "seed_used": null,
+      "shot_type": "insert",
+      "camera_movement": "handheld",
+      "time_of_day_visual": "night",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA",
+        "nara"
+      ],
+      "reference_image_url": "preproduction/district_zero/characters/nara_voss_ref.png"
+    },
+    {
+      "shot_id": "SCN_002_SHOT_006",
+      "scene_id": "SCN_002",
+      "image_url": "null://storyboard/SCN_002_SHOT_006.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Insert detail shot — Female protagonist of a dystopian survival thriller TV series. Late 20s, facial appearance close to a top model: fine balanced features, elegant defined jawline, high cheekbones. Intense, intelligent eyes exhausted by hardship — determination and contained vulnerability in every feature. No excessive makeup. Natural skin, no airbrushing. Dark hair loosely tied back, stray strands at temples. Dark tactical neck scarf, weathered utility jacket. Tight framing shoulders to crown. Cold atmosphere, bluish and silver-grey tones, blurred ruined urban or bunker background. Photorealistic cinematic quality, ARRI Alexa 35, anamorphic lens, 4K hyperrealistic. Color grading: desaturated teal and steel-blue dominant, selective warm amber highlights in practical sources. No oversaturation, no fantasy glow, no HDR clipping. Natural grain texture, corroded metal surfaces, wet concrete, humid air with visible light particles. Lighting logic: practical sources only (halogen cage lights, neon, water reflections, emergency strips). Naturally contrasted chiaroscuro. — leaking maintenance corridor at night, dense overlapping pipes and cable trays with condensation dripping, wet corroded steel surfaces reflecting emergency blue-white practicals, extreme foreground depth, claustrophobic vanishing-point perspective — Night lighting, naturally contrasted chiaroscuro — 4K hyperrealistic, cinematic quality, ARRI Alexa 35 LF, anamorphic 2.39:1, film emulsion grain, cinematic depth of field",
+      "seed_used": null,
+      "shot_type": "insert",
+      "camera_movement": "static",
+      "time_of_day_visual": "night",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA",
+        "nara"
+      ],
+      "reference_image_url": "preproduction/district_zero/characters/nara_voss_ref.png"
+    },
+    {
+      "shot_id": "SCN_004_SHOT_004",
+      "scene_id": "SCN_004",
+      "image_url": "null://storyboard/SCN_004_SHOT_004.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Medium shot — Male supporting character in a dystopian survival thriller TV series. Early 50s, facial appearance close to a character actor of lead-role caliber: strong weathered features, deep lines earned by hardship, silver-streaked dark hair. Tired intelligent eyes carrying quiet guilt and emotional weight. Worn civilian workwear. Tight framing shoulders to crown. Dim warm practical light, cold atmospheric tones, blurred lower-stack background. Photorealistic cinematic quality, ARRI Alexa 35, anamorphic lens, 4K hyperrealistic. Color grading: desaturated teal and steel-blue dominant, selective warm amber highlights in practical sources. No oversaturation, no fantasy glow, no HDR clipping. Natural grain texture, corroded metal surfaces, wet concrete, humid air with visible light particles. Lighting logic: practical sources only (halogen cage lights, neon, water reflections, emergency strips). Naturally contrasted chiaroscuro. — cramped lower-stack apartment late night, peeling paint walls with exposed conduit wiring, improvised domestic warmth — handmade objects, worn furniture, salvaged light fixtures — Night lighting, naturally contrasted chiaroscuro — 4K hyperrealistic, cinematic quality, ARRI Alexa 35 LF, anamorphic 2.39:1, film emulsion grain, cinematic depth of field",
+      "seed_used": null,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "night",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA",
+        "ELIAN",
+        "elian"
+      ],
+      "reference_image_url": ""
+    },
+    {
+      "shot_id": "SCN_005_SHOT_001",
+      "scene_id": "SCN_005",
+      "image_url": "null://storyboard/SCN_005_SHOT_001.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Wide establishing shot — immaculate civic atrium morning, polished stone and glass with authoritarian precision, monumental propaganda screens with clinical typography, controlled bright daylight through high glass ceiling, emptiness emphasising authoritarian scale. Photorealistic cinematic quality — Interior lighting, naturally contrasted chiaroscuro — 4K hyperrealistic, cinematic quality, ARRI Alexa 35 LF, anamorphic 2.39:1, film emulsion grain, cinematic depth of field",
+      "seed_used": null,
+      "shot_type": "wide",
+      "camera_movement": "static",
+      "time_of_day_visual": "interior",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "VALE",
+        "AIDE",
+        "director"
+      ],
+      "reference_image_url": ""
+    },
+    {
+      "shot_id": "SCN_008_SHOT_005",
+      "scene_id": "SCN_008",
+      "image_url": "null://storyboard/SCN_008_SHOT_005.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Medium shot — Female protagonist of a dystopian survival thriller TV series. Late 20s, facial appearance close to a top model: fine balanced features, elegant defined jawline, high cheekbones. Intense, intelligent eyes exhausted by hardship — determination and contained vulnerability in every feature. No excessive makeup. Natural skin, no airbrushing. Dark hair loosely tied back, stray strands at temples. Dark tactical neck scarf, weathered utility jacket. Tight framing shoulders to crown. Cold atmosphere, bluish and silver-grey tones, blurred ruined urban or bunker background. Photorealistic cinematic quality, ARRI Alexa 35, anamorphic lens, 4K hyperrealistic. Color grading: desaturated teal and steel-blue dominant, selective warm amber highlights in practical sources. No oversaturation, no fantasy glow, no HDR clipping. Natural grain texture, corroded metal surfaces, wet concrete, humid air with visible light particles. Lighting logic: practical sources only (halogen cage lights, neon, water reflections, emergency strips). Naturally contrasted chiaroscuro. — underground tunnel corridor with perfectly symmetrical bilateral composition, extreme central vanishing point dissolving into darkness and mist, wooden plank walls on both sides with horizontal steel crossbeam supports, corroded iron pipes bundled along the lower walls at floor level, two parallel railway tracks embedded in dusty concrete floor — Night lighting, naturally contrasted chiaroscuro — 4K hyperrealistic, cinematic quality, ARRI Alexa 35 LF, anamorphic 2.39:1, film emulsion grain, cinematic depth of field",
+      "seed_used": null,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "night",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA",
+        "nara"
+      ],
+      "reference_image_url": "preproduction/district_zero/characters/nara_voss_ref.png"
+    },
+    {
+      "shot_id": "SCN_009_SHOT_002",
+      "scene_id": "SCN_009",
+      "image_url": "null://storyboard/SCN_009_SHOT_002.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Medium shot — Female protagonist of a dystopian survival thriller TV series. Late 20s, facial appearance close to a top model: fine balanced features, elegant defined jawline, high cheekbones. Intense, intelligent eyes exhausted by hardship — determination and contained vulnerability in every feature. No excessive makeup. Natural skin, no airbrushing. Dark hair loosely tied back, stray strands at temples. Dark tactical neck scarf, weathered utility jacket. Tight framing shoulders to crown. Cold atmosphere, bluish and silver-grey tones, blurred ruined urban or bunker background. Photorealistic cinematic quality, ARRI Alexa 35, anamorphic lens, 4K hyperrealistic. Color grading: desaturated teal and steel-blue dominant, selective warm amber highlights in practical sources. No oversaturation, no fantasy glow, no HDR clipping. Natural grain texture, corroded metal surfaces, wet concrete, humid air with visible light particles. Lighting logic: practical sources only (halogen cage lights, neon, water reflections, emergency strips). Naturally contrasted chiaroscuro. — opening to exterior, ancient observation chamber at massive industrial scale, hidden pumping machinery with hydraulic tubes and industrial grime, red alarm wash mixing with blue exterior light from opening, revelation scale — Interior lighting, naturally contrasted chiaroscuro — 4K hyperrealistic, cinematic quality, ARRI Alexa 35 LF, anamorphic 2.39:1, film emulsion grain, cinematic depth of field",
+      "seed_used": null,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "interior",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA",
+        "MIRA",
+        "nara"
+      ],
+      "reference_image_url": "preproduction/district_zero/characters/nara_voss_ref.png"
+    },
+    {
+      "shot_id": "SCN_010_SHOT_001",
+      "scene_id": "SCN_010",
+      "image_url": "null://storyboard/SCN_010_SHOT_001.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Wide establishing shot — underground tunnel corridor with perfectly symmetrical bilateral composition, extreme central vanishing point dissolving into darkness and mist, wooden plank walls on both sides with horizontal steel crossbeam supports, corroded iron pipes bundled along the lower walls at floor level, two parallel railway tracks embedded in dusty concrete floor — Interior lighting, naturally contrasted chiaroscuro — 4K hyperrealistic, cinematic quality, ARRI Alexa 35 LF, anamorphic 2.39:1, film emulsion grain, cinematic depth of field",
+      "seed_used": null,
+      "shot_type": "wide",
+      "camera_movement": "static",
+      "time_of_day_visual": "interior",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "HANDHELD FAST",
+        "units"
+      ],
+      "reference_image_url": "preproduction/district_zero/locations/service_spine_ref.png"
+    },
+    {
+      "shot_id": "SCN_010_SHOT_002",
+      "scene_id": "SCN_010",
+      "image_url": "null://storyboard/SCN_010_SHOT_002.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Medium shot — underground tunnel corridor with perfectly symmetrical bilateral composition, extreme central vanishing point dissolving into darkness and mist, wooden plank walls on both sides with horizontal steel crossbeam supports, corroded iron pipes bundled along the lower walls at floor level, two parallel railway tracks embedded in dusty concrete floor — Interior lighting, naturally contrasted chiaroscuro — 4K hyperrealistic, cinematic quality, ARRI Alexa 35 LF, anamorphic 2.39:1, film emulsion grain, cinematic depth of field",
+      "seed_used": null,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "interior",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "HANDHELD FAST",
+        "units"
+      ],
+      "reference_image_url": "null://storyboard/SCN_010_SHOT_001.png"
+    },
+    {
+      "shot_id": "SCN_010_SHOT_003",
+      "scene_id": "SCN_010",
+      "image_url": "null://storyboard/SCN_010_SHOT_003.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Wide establishing shot — underground tunnel corridor with perfectly symmetrical bilateral composition, extreme central vanishing point dissolving into darkness and mist, wooden plank walls on both sides with horizontal steel crossbeam supports, corroded iron pipes bundled along the lower walls at floor level, two parallel railway tracks embedded in dusty concrete floor — Interior lighting, naturally contrasted chiaroscuro — 4K hyperrealistic, cinematic quality, ARRI Alexa 35 LF, anamorphic 2.39:1, film emulsion grain, cinematic depth of field",
+      "seed_used": null,
+      "shot_type": "wide",
+      "camera_movement": "dolly_out",
+      "time_of_day_visual": "interior",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "HANDHELD FAST",
+        "units"
+      ],
+      "reference_image_url": "null://storyboard/SCN_010_SHOT_001.png"
+    },
+    {
+      "shot_id": "SCN_011_SHOT_007",
+      "scene_id": "SCN_011",
+      "image_url": "null://storyboard/SCN_011_SHOT_007.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Medium shot — pre-dawn apartment, cold blue dawn light spilling through cracked window blinds, mixing with dim warm dying practical lamp, emotional intimacy under siege, tense domestic realism — Dawn lighting, naturally contrasted chiaroscuro — 4K hyperrealistic, cinematic quality, ARRI Alexa 35 LF, anamorphic 2.39:1, film emulsion grain, cinematic depth of field",
+      "seed_used": null,
+      "shot_type": "medium",
+      "camera_movement": "static",
+      "time_of_day_visual": "dawn",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA",
+        "ELIAN",
+        "END OF EPISODE 1",
+        "door"
+      ],
+      "reference_image_url": "preproduction/district_zero/locations/voss_apartment_pre_dawn_ref.png"
+    },
+    {
+      "shot_id": "SCN_011_SHOT_008",
+      "scene_id": "SCN_011",
+      "image_url": "null://storyboard/SCN_011_SHOT_008.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Close-up portrait — pre-dawn apartment, cold blue dawn light spilling through cracked window blinds, mixing with dim warm dying practical lamp, emotional intimacy under siege, tense domestic realism — Dawn lighting, naturally contrasted chiaroscuro — 4K hyperrealistic, cinematic quality, ARRI Alexa 35 LF, anamorphic 2.39:1, film emulsion grain, cinematic depth of field",
+      "seed_used": null,
+      "shot_type": "close_up",
+      "camera_movement": "static",
+      "time_of_day_visual": "dawn",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA",
+        "ELIAN",
+        "END OF EPISODE 1",
+        "door"
+      ],
+      "reference_image_url": "null://storyboard/SCN_011_SHOT_007.png"
+    },
+    {
+      "shot_id": "SCN_011_SHOT_009",
+      "scene_id": "SCN_011",
+      "image_url": "null://storyboard/SCN_011_SHOT_009.png",
+      "image_b64": "",
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Wide establishing shot — Female protagonist of a dystopian survival thriller TV series. Late 20s, facial appearance close to a top model: fine balanced features, elegant defined jawline, high cheekbones. Intense, intelligent eyes exhausted by hardship — determination and contained vulnerability in every feature. No excessive makeup. Natural skin, no airbrushing. Dark hair loosely tied back, stray strands at temples. Dark tactical neck scarf, weathered utility jacket. Tight framing shoulders to crown. Cold atmosphere, bluish and silver-grey tones, blurred ruined urban or bunker background. Photorealistic cinematic quality, ARRI Alexa 35, anamorphic lens, 4K hyperrealistic. Color grading: desaturated teal and steel-blue dominant, selective warm amber highlights in practical sources. No oversaturation, no fantasy glow, no HDR clipping. Natural grain texture, corroded metal surfaces, wet concrete, humid air with visible light particles. Lighting logic: practical sources only (halogen cage lights, neon, water reflections, emergency strips). Naturally contrasted chiaroscuro. — pre-dawn apartment, cold blue dawn light spilling through cracked window blinds, mixing with dim warm dying practical lamp, emotional intimacy under siege, tense domestic realism — Dawn lighting, naturally contrasted chiaroscuro — 4K hyperrealistic, cinematic quality, ARRI Alexa 35 LF, anamorphic 2.39:1, film emulsion grain, cinematic depth of field",
+      "seed_used": null,
+      "shot_type": "wide",
+      "camera_movement": "dolly_out",
+      "time_of_day_visual": "dawn",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "NARA",
+        "ELIAN",
+        "END OF EPISODE 1",
+        "nara"
+      ],
+      "reference_image_url": "preproduction/district_zero/characters/nara_voss_ref.png"
+    }
+  ],
+  "style_token": "photorealistic, hyperrealistic cinema, shot on ARRI Alexa 35 LF, anamorphic 2.39:1, Cooke S7i lenses, natural skin texture with visible pores, subsurface scattering, motivated practical lighting only, cinematic depth of field, color graded DI, film emulsion grain, tack sharp",
+  "total_shots": 12,
+  "generated": 12
+}

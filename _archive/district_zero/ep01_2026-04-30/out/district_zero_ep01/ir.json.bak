@@ -1,0 +1,2456 @@
+{
+  "title": "District Zero - Episode 1",
+  "episodes": [
+    {
+      "episode_id": "EP01",
+      "scenes": [
+        {
+          "scene_id": "SCN_001",
+          "characters": [],
+          "character_ids": [],
+          "location": "EXT. DISTRICT ZERO OUTER WALL - NIGHT",
+          "location_id": "ext_district_zero_outer_wall_night",
+          "time_of_day": "night",
+          "visual_actions": [
+            "Black water slams against the illuminated seawall while the drowned city rots beyond it.",
+            "Search beams sweep the waves like prison lights."
+          ],
+          "dialogues": [],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_001_SHOT_001",
+            "SCN_001_SHOT_002",
+            "SCN_001_SHOT_003",
+            "SCN_001_SHOT_004"
+          ],
+          "beat_type": "exposition",
+          "scene_tone": null,
+          "emotional_beat_index": 0.2
+        },
+        {
+          "scene_id": "SCN_002",
+          "characters": [
+            "NARA"
+          ],
+          "character_ids": [
+            "nara"
+          ],
+          "location": "INT. LOWER TRANSIT STACK - SERVICE CORRIDOR - NIGHT",
+          "location_id": "int_lower_transit_stack_service_corridor_night",
+          "time_of_day": "night",
+          "visual_actions": [
+            "Nara Voss runs through a leaking maintenance corridor as her wrist display flashes a pressure alert.",
+            "On the map, a sealed route appears for a second and vanishes.",
+            "She captures the image and keeps moving.",
+            "She enters the unmapped access corridor alone."
+          ],
+          "dialogues": [
+            "That route was deleted."
+          ],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_002_SHOT_001",
+            "SCN_002_SHOT_002",
+            "SCN_002_SHOT_003",
+            "SCN_002_SHOT_004",
+            "SCN_002_SHOT_005",
+            "SCN_002_SHOT_006"
+          ],
+          "beat_type": "action",
+          "scene_tone": null,
+          "emotional_beat_index": 0.27
+        },
+        {
+          "scene_id": "SCN_003",
+          "characters": [
+            "WORKER",
+            "NARA"
+          ],
+          "character_ids": [
+            "worker",
+            "nara"
+          ],
+          "location": "INT. PRESSURE VALVE CHAMBER - NIGHT",
+          "location_id": "int_pressure_valve_chamber_night",
+          "time_of_day": "night",
+          "visual_actions": [
+            "Nara stabilizes a failing valve while exhausted workers keep their distance.",
+            "The alarm dies and the chamber returns to white light.",
+            "Nara looks at the hidden route on her wrist and understands that something is wrong."
+          ],
+          "dialogues": [
+            "You just saved half the block.",
+            "Who signed the last maintenance map update?",
+            "Central Authority. Same as always."
+          ],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_003_SHOT_001",
+            "SCN_003_SHOT_002",
+            "SCN_003_SHOT_003",
+            "SCN_003_SHOT_004",
+            "SCN_003_SHOT_005"
+          ],
+          "beat_type": "action",
+          "scene_tone": null,
+          "emotional_beat_index": 0.34
+        },
+        {
+          "scene_id": "SCN_004",
+          "characters": [
+            "NARA",
+            "ELIAN"
+          ],
+          "character_ids": [
+            "nara",
+            "elian"
+          ],
+          "location": "INT. VOSS APARTMENT - LOWER STACK - LATE NIGHT",
+          "location_id": "int_voss_apartment_lower_stack_late_night",
+          "time_of_day": "night",
+          "visual_actions": [
+            "In their cramped apartment, Nara shows the captured route to her father, Elian.",
+            "He freezes when he sees the unlisted access spine."
+          ],
+          "dialogues": [
+            "This showed up inside a live stack map and then vanished.",
+            "Forget it.",
+            "Then why are you scared of a corridor?",
+            "Because in this city, hidden doors are never just doors."
+          ],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_004_SHOT_001",
+            "SCN_004_SHOT_002",
+            "SCN_004_SHOT_003",
+            "SCN_004_SHOT_004"
+          ],
+          "beat_type": "climax",
+          "scene_tone": null,
+          "emotional_beat_index": 0.41
+        },
+        {
+          "scene_id": "SCN_005",
+          "characters": [
+            "VALE",
+            "AIDE"
+          ],
+          "character_ids": [
+            "vale",
+            "aide"
+          ],
+          "location": "INT. CIVIC ATRIUM - DISTRICT ZERO CENTRAL CORE - MORNING",
+          "location_id": "int_civic_atrium_district_zero_central_core_morning",
+          "time_of_day": "interior",
+          "visual_actions": [
+            "Director Halden Rook addresses the district from giant public screens while citizens move through an immaculate civic atrium.",
+            "Above them, Commander Sarin Vale watches from a glass balcony as an aide hands him a security alert tied to Nara."
+          ],
+          "dialogues": [
+            "Put her under passive watch.",
+            "Detain?",
+            "No. If she found one door, I want to know whether she can find the next."
+          ],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_005_SHOT_001",
+            "SCN_005_SHOT_002",
+            "SCN_005_SHOT_003",
+            "SCN_005_SHOT_004"
+          ],
+          "beat_type": "climax",
+          "scene_tone": null,
+          "emotional_beat_index": 0.48
+        },
+        {
+          "scene_id": "SCN_006",
+          "characters": [
+            "LOW LIGHT",
+            "MIRA",
+            "NARA"
+          ],
+          "character_ids": [
+            "low_light",
+            "mira",
+            "nara"
+          ],
+          "location": "INT. BLACK MARKET EXCHANGE - VENTILATION SUBLEVEL - DAY",
+          "location_id": "int_black_market_exchange_ventilation_sublevel_day",
+          "time_of_day": "day",
+          "visual_actions": [
+            "Mira Sol studies Nara's stolen map and overlays it with archived infrastructure.",
+            "Mira reaches into her bag and opens an archived signal map on the table.",
+            "A new route suddenly erupts on the display, leading toward the outer wall."
+          ],
+          "dialogues": [
+            "An illegal signal market hums beneath the transit network.",
+            "This isn't erased infrastructure. It's masked infrastructure.",
+            "Can you open it?",
+            "Probably. The better question is whether you survive after I do."
+          ],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_006_SHOT_001",
+            "SCN_006_SHOT_002",
+            "SCN_006_SHOT_003",
+            "SCN_006_SHOT_004",
+            "SCN_006_SHOT_005"
+          ],
+          "beat_type": "climax",
+          "scene_tone": null,
+          "emotional_beat_index": 0.55
+        },
+        {
+          "scene_id": "SCN_007",
+          "characters": [
+            "VALE"
+          ],
+          "character_ids": [
+            "vale"
+          ],
+          "location": "INT. SECURITY OPERATIONS CENTER - DAY",
+          "location_id": "int_security_operations_center_day",
+          "time_of_day": "day",
+          "visual_actions": [
+            "Analysts track Nara's movement across a live schematic of the city.",
+            "Vale watches her path converge on the outer sectors and chooses not to stop her."
+          ],
+          "dialogues": [
+            "If she reaches the gate, I want to know what she thinks she saw."
+          ],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_007_SHOT_001",
+            "SCN_007_SHOT_002",
+            "SCN_007_SHOT_003",
+            "SCN_007_SHOT_004"
+          ],
+          "beat_type": "dialogue_scene",
+          "scene_tone": null,
+          "emotional_beat_index": 0.62
+        },
+        {
+          "scene_id": "SCN_008",
+          "characters": [
+            "NARA"
+          ],
+          "character_ids": [
+            "nara"
+          ],
+          "location": "INT. SEALED SERVICE SPINE - NIGHT",
+          "location_id": "int_sealed_service_spine_night",
+          "time_of_day": "night",
+          "visual_actions": [
+            "Nara and Mira descend into an old service corridor buried in the skeleton of the city.",
+            "Mira powers up a buried control panel while Nara watches the dark passage behind them.",
+            "The system identifies an external containment access route.",
+            "Mira unlocks the gate."
+          ],
+          "dialogues": [
+            "Containment from what?"
+          ],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_008_SHOT_001",
+            "SCN_008_SHOT_002",
+            "SCN_008_SHOT_003",
+            "SCN_008_SHOT_004",
+            "SCN_008_SHOT_005",
+            "SCN_008_SHOT_006"
+          ],
+          "beat_type": "dialogue_scene",
+          "scene_tone": null,
+          "emotional_beat_index": 0.69
+        },
+        {
+          "scene_id": "SCN_009",
+          "characters": [
+            "NARA",
+            "MIRA"
+          ],
+          "character_ids": [
+            "nara",
+            "mira"
+          ],
+          "location": "INT. EXTERNAL OBSERVATION CHAMBER - CONTINUOUS",
+          "location_id": "int_external_observation_chamber_continuous",
+          "time_of_day": "interior",
+          "visual_actions": [
+            "Ancient shutters peel open and reveal organized lights far beyond the wall.",
+            "Nara realizes District Zero lied about the outside world.",
+            "A series of details register in rapid succession: industrial pumps hidden in the wall structure dumping poison into the lower sectors.",
+            "A silent alarm floods the chamber red."
+          ],
+          "dialogues": [
+            "They lied.",
+            "We need to go. Now."
+          ],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_009_SHOT_001",
+            "SCN_009_SHOT_002",
+            "SCN_009_SHOT_003",
+            "SCN_009_SHOT_004",
+            "SCN_009_SHOT_005",
+            "SCN_009_SHOT_006"
+          ],
+          "beat_type": "action",
+          "scene_tone": null,
+          "emotional_beat_index": 0.76
+        },
+        {
+          "scene_id": "SCN_010",
+          "characters": [
+            "HANDHELD FAST"
+          ],
+          "character_ids": [
+            "handheld_fast"
+          ],
+          "location": "INT. SERVICE SPINE - CONTINUOUS",
+          "location_id": "int_service_spine_continuous",
+          "time_of_day": "interior",
+          "visual_actions": [
+            "At the far end, armed units pour into the shaft entrance.",
+            "VALE (V.O. OVER COMMS)",
+            "Nara Voss. Stop running. The truth is not what you think it is.",
+            "Mira disappears into a side duct and Nara escapes behind a closing blast door.",
+            "Silence."
+          ],
+          "dialogues": [
+            "Security shutters slam down the corridor as Nara and Mira sprint through narrowing gaps."
+          ],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_010_SHOT_001",
+            "SCN_010_SHOT_002",
+            "SCN_010_SHOT_003",
+            "SCN_010_SHOT_004",
+            "SCN_010_SHOT_005",
+            "SCN_010_SHOT_006",
+            "SCN_010_SHOT_007"
+          ],
+          "beat_type": "denouement",
+          "scene_tone": null,
+          "emotional_beat_index": 0.83
+        },
+        {
+          "scene_id": "SCN_011",
+          "characters": [
+            "NARA",
+            "ELIAN",
+            "END OF EPISODE 1"
+          ],
+          "character_ids": [
+            "nara",
+            "elian",
+            "end_of_episode_1"
+          ],
+          "location": "INT. VOSS APARTMENT - PRE-DAWN",
+          "location_id": "int_voss_apartment_pre_dawn",
+          "time_of_day": "dawn",
+          "visual_actions": [
+            "Nara returns home soaked and shaken.",
+            "Elian sees her face and knows the secret is gone.",
+            "Nara recoils as the truth lands between them.",
+            "He gives her an encrypted drive.",
+            "Heavy boots pound outside the apartment door.",
+            "The door detonates inward.",
+            "SMASH CUT TO BLACK."
+          ],
+          "dialogues": [
+            "There are people outside the wall. And they're dumping poison into the lower sectors.",
+            "I helped design part of the flow control system.",
+            "If they take me, this is the only thing that proves the system was built this way.",
+            "Go to the freight tunnels. Find the relay called Lantern. Ask for Mira Sol.",
+            "Open the city."
+          ],
+          "emotion": "neutral",
+          "action_units": [],
+          "shot_ids": [
+            "SCN_011_SHOT_001",
+            "SCN_011_SHOT_002",
+            "SCN_011_SHOT_003",
+            "SCN_011_SHOT_004",
+            "SCN_011_SHOT_005",
+            "SCN_011_SHOT_006",
+            "SCN_011_SHOT_007",
+            "SCN_011_SHOT_008",
+            "SCN_011_SHOT_009"
+          ],
+          "beat_type": "denouement",
+          "scene_tone": null,
+          "emotional_beat_index": 0.9
+        }
+      ],
+      "shots": [
+        {
+          "shot_id": "SCN_001_SHOT_001",
+          "scene_id": "SCN_001",
+          "prompt": "Black water slams against the illuminated seawall while the drowned city rots beyond it, in EXT. DISTRICT ZERO OUTER WALL - NIGHT. motivated practical sources only; cool ambient; silhouettes acceptable |cinematic| Composition: full figure visible; subject occupies 25–40% frame height; rule of thirds applied.",
+          "duration_sec": 6,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "black",
+            "action_type": "water",
+            "target": null,
+            "modifiers": [],
+            "location_id": "ext_district_zero_outer_wall_night",
+            "camera_intent": "static",
+            "source_text": "Black water slams against the illuminated seawall while the drowned city rots beyond it."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient",
+            "depth_of_field": "deep depth of field, f/8.0",
+            "beat_type": "exposition",
+            "color_grade_hint": "cool",
+            "emotional_beat_index": 0.2
+          },
+          "shot_role": "establishing",
+          "composition_description": "full figure visible; subject occupies 25–40% frame height; rule of thirds applied",
+          "lighting_directives": "motivated practical sources only; cool ambient; silhouettes acceptable",
+          "framing_note": "full body visible, environment readable",
+          "rhythm_purpose": "geography establishment",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_001_SHOT_002",
+          "scene_id": "SCN_001",
+          "prompt": "Black water slams against the illuminated seawall while the drowned city rots beyond it, in EXT. DISTRICT ZERO OUTER WALL - NIGHT. motivated practical sources only; cool ambient; silhouettes acceptable |cinematic| Composition: waist-up framing; subject on vertical third; negative space on conversation side.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "black",
+            "action_type": "water",
+            "target": null,
+            "modifiers": [],
+            "location_id": "ext_district_zero_outer_wall_night",
+            "camera_intent": "static",
+            "source_text": "Black water slams against the illuminated seawall while the drowned city rots beyond it."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient",
+            "depth_of_field": "moderate depth of field, f/4.0–5.6",
+            "beat_type": "exposition",
+            "color_grade_hint": "cool",
+            "emotional_beat_index": 0.2
+          },
+          "shot_role": "establishing",
+          "composition_description": "waist-up framing; subject on vertical third; negative space on conversation side",
+          "lighting_directives": "motivated practical sources only; cool ambient; silhouettes acceptable",
+          "framing_note": "full body visible, environment readable",
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_001_SHOT_003",
+          "scene_id": "SCN_001",
+          "prompt": "Black water slams against the illuminated seawall while the drowned city rots beyond it, in EXT. DISTRICT ZERO OUTER WALL - NIGHT. motivated practical sources only; cool ambient; silhouettes acceptable |cinematic| Composition: subject <10% frame height; environment dominant; horizon line at golden ratio.",
+          "duration_sec": 7,
+          "emotion": "neutral",
+          "shot_type": "extreme_wide",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "black",
+            "action_type": "water",
+            "target": null,
+            "modifiers": [],
+            "location_id": "ext_district_zero_outer_wall_night",
+            "camera_intent": "static",
+            "source_text": "Black water slams against the illuminated seawall while the drowned city rots beyond it."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient",
+            "depth_of_field": "deep depth of field, f/11–16",
+            "beat_type": "exposition",
+            "color_grade_hint": "cool",
+            "emotional_beat_index": 0.2
+          },
+          "shot_role": "establishing",
+          "composition_description": "subject <10% frame height; environment dominant; horizon line at golden ratio",
+          "lighting_directives": "motivated practical sources only; cool ambient; silhouettes acceptable",
+          "framing_note": null,
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_001_SHOT_004",
+          "scene_id": "SCN_001",
+          "prompt": "Search beams sweep the waves like prison lights, in EXT. DISTRICT ZERO OUTER WALL - NIGHT. motivated practical sources only; cool ambient; silhouettes acceptable |cinematic| Composition: full figure visible; subject occupies 25–40% frame height; rule of thirds applied.",
+          "duration_sec": 6,
+          "emotion": "neutral",
+          "shot_type": "insert",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "search",
+            "action_type": "beams",
+            "target": null,
+            "modifiers": [],
+            "location_id": "ext_district_zero_outer_wall_night",
+            "camera_intent": "static",
+            "source_text": "Search beams sweep the waves like prison lights."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient",
+            "depth_of_field": "deep depth of field, f/8.0",
+            "beat_type": "exposition",
+            "color_grade_hint": "cool",
+            "emotional_beat_index": 0.2
+          },
+          "shot_role": "establishing",
+          "composition_description": "full figure visible; subject occupies 25–40% frame height; rule of thirds applied",
+          "lighting_directives": "motivated practical sources only; cool ambient; silhouettes acceptable",
+          "framing_note": null,
+          "rhythm_purpose": "release and exit",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_002_SHOT_001",
+          "scene_id": "SCN_002",
+          "prompt": "Nara Voss runs through a leaking maintenance corridor as her wrist display flashes a pressure alert, in INT. LOWER TRANSIT STACK - SERVICE CORRIDOR - NIGHT. motivated practical sources only; cool ambient; silhouettes acceptable |cinematic| Composition: full figure visible; subject occupies 25–40% frame height; rule of thirds applied.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "voss",
+            "target": "leaking maintenance corridor as her wrist display flashes pressure alert",
+            "modifiers": [],
+            "location_id": "int_lower_transit_stack_service_corridor_night",
+            "camera_intent": "static",
+            "source_text": "Nara Voss runs through a leaking maintenance corridor as her wrist display flashes a pressure alert."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient",
+            "depth_of_field": "deep depth of field, f/8.0",
+            "beat_type": "action",
+            "color_grade_hint": "cool",
+            "emotional_beat_index": 0.27
+          },
+          "shot_role": "establishing",
+          "composition_description": "full figure visible; subject occupies 25–40% frame height; rule of thirds applied",
+          "lighting_directives": "motivated practical sources only; cool ambient; silhouettes acceptable",
+          "framing_note": "full body visible, environment readable",
+          "rhythm_purpose": "geography establishment",
+          "visual_invariants_applied": [],
+          "feasibility_score": 90,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_002_SHOT_002",
+          "scene_id": "SCN_002",
+          "prompt": "Nara Voss runs through a leaking maintenance corridor as her wrist display flashes a pressure alert, in INT. LOWER TRANSIT STACK - SERVICE CORRIDOR - NIGHT. motivated practical sources only; cool ambient; silhouettes acceptable |cinematic| Composition: waist-up framing; subject on vertical third; negative space on conversation side.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "voss",
+            "target": "leaking maintenance corridor as her wrist display flashes pressure alert",
+            "modifiers": [],
+            "location_id": "int_lower_transit_stack_service_corridor_night",
+            "camera_intent": "static",
+            "source_text": "Nara Voss runs through a leaking maintenance corridor as her wrist display flashes a pressure alert."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient",
+            "depth_of_field": "moderate depth of field, f/4.0–5.6",
+            "beat_type": "action",
+            "color_grade_hint": "cool",
+            "emotional_beat_index": 0.27
+          },
+          "shot_role": "establishing",
+          "composition_description": "waist-up framing; subject on vertical third; negative space on conversation side",
+          "lighting_directives": "motivated practical sources only; cool ambient; silhouettes acceptable",
+          "framing_note": "full body visible, environment readable",
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 90,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_002_SHOT_003",
+          "scene_id": "SCN_002",
+          "prompt": "Nara Voss runs through a leaking maintenance corridor as her wrist display flashes a pressure alert, in INT. LOWER TRANSIT STACK - SERVICE CORRIDOR - NIGHT. motivated practical sources only; cool ambient; silhouettes acceptable |cinematic| Composition: full figure visible; subject occupies 25–40% frame height; rule of thirds applied.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "over_shoulder",
+          "camera_movement": "tracking",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "voss",
+            "target": "leaking maintenance corridor as her wrist display flashes pressure alert",
+            "modifiers": [],
+            "location_id": "int_lower_transit_stack_service_corridor_night",
+            "camera_intent": "tracking",
+            "source_text": "Nara Voss runs through a leaking maintenance corridor as her wrist display flashes a pressure alert."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient",
+            "depth_of_field": "deep depth of field, f/8.0",
+            "beat_type": "action",
+            "color_grade_hint": "cool",
+            "emotional_beat_index": 0.27
+          },
+          "shot_role": "establishing",
+          "composition_description": "full figure visible; subject occupies 25–40% frame height; rule of thirds applied",
+          "lighting_directives": "motivated practical sources only; cool ambient; silhouettes acceptable",
+          "framing_note": null,
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 65,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_002_SHOT_004",
+          "scene_id": "SCN_002",
+          "prompt": "On the map, a sealed route for a second and vanishes, in INT. LOWER TRANSIT STACK - SERVICE CORRIDOR - NIGHT. motivated practical sources only; cool ambient; silhouettes acceptable |cinematic| Composition: waist-up framing; subject on vertical third; negative space on conversation side.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "insert",
+          "camera_movement": "handheld",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "the",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_lower_transit_stack_service_corridor_night",
+            "camera_intent": "handheld",
+            "source_text": "On the map, a sealed route appears for a second and vanishes."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient",
+            "depth_of_field": "moderate depth of field, f/4.0–5.6",
+            "beat_type": "action",
+            "color_grade_hint": "cool",
+            "emotional_beat_index": 0.27
+          },
+          "shot_role": "coverage",
+          "composition_description": "waist-up framing; subject on vertical third; negative space on conversation side",
+          "lighting_directives": "motivated practical sources only; cool ambient; silhouettes acceptable",
+          "framing_note": null,
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 70,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_002_SHOT_005",
+          "scene_id": "SCN_002",
+          "prompt": "She captures the image and keeps moving, in INT. LOWER TRANSIT STACK - SERVICE CORRIDOR - NIGHT. motivated practical sources only; cool ambient; silhouettes acceptable |cinematic| Composition: shoulders-to-crown; eyes at upper third; mouth near center; ear off-frame.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "close_up",
+          "camera_movement": "handheld",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "captures",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_lower_transit_stack_service_corridor_night",
+            "camera_intent": "handheld",
+            "source_text": "She captures the image and keeps moving."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient",
+            "depth_of_field": "shallow depth of field, f/1.8–2.0",
+            "beat_type": "action",
+            "color_grade_hint": "cool",
+            "emotional_beat_index": 0.27
+          },
+          "shot_role": "reaction",
+          "composition_description": "shoulders-to-crown; eyes at upper third; mouth near center; ear off-frame",
+          "lighting_directives": "motivated practical sources only; cool ambient; silhouettes acceptable",
+          "framing_note": null,
+          "rhythm_purpose": "peak intensity reaction",
+          "visual_invariants_applied": [],
+          "feasibility_score": 68,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_002_SHOT_006",
+          "scene_id": "SCN_002",
+          "prompt": "She enters the unmapped access corridor alone, in INT. LOWER TRANSIT STACK - SERVICE CORRIDOR - NIGHT. motivated practical sources only; cool ambient; silhouettes acceptable |cinematic| Composition: object fills 60–80% frame; surroundings soft; graphic isolation.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "insert",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "enters",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_lower_transit_stack_service_corridor_night",
+            "camera_intent": "static",
+            "source_text": "She enters the unmapped access corridor alone."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient",
+            "depth_of_field": "macro depth of field, f/2.8, detail sharp, surroundings diffused",
+            "beat_type": "action",
+            "color_grade_hint": "cool",
+            "emotional_beat_index": 0.27
+          },
+          "shot_role": "insert",
+          "composition_description": "object fills 60–80% frame; surroundings soft; graphic isolation",
+          "lighting_directives": "motivated practical sources only; cool ambient; silhouettes acceptable",
+          "framing_note": null,
+          "rhythm_purpose": "scene resolution",
+          "visual_invariants_applied": [],
+          "feasibility_score": 90,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_003_SHOT_001",
+          "scene_id": "SCN_003",
+          "prompt": "Nara stabilizes a failing valve while exhausted workers keep their distance, in INT. PRESSURE VALVE CHAMBER - NIGHT. motivated practical sources only; cool ambient; silhouettes acceptable |cinematic| Composition: full figure visible; subject occupies 25–40% frame height; rule of thirds applied.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "worker",
+            "action_type": "stabilizes",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_pressure_valve_chamber_night",
+            "camera_intent": "static",
+            "source_text": "Nara stabilizes a failing valve while exhausted workers keep their distance."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient",
+            "depth_of_field": "deep depth of field, f/8.0",
+            "beat_type": "action",
+            "color_grade_hint": "cool",
+            "emotional_beat_index": 0.34
+          },
+          "shot_role": "establishing",
+          "composition_description": "full figure visible; subject occupies 25–40% frame height; rule of thirds applied",
+          "lighting_directives": "motivated practical sources only; cool ambient; silhouettes acceptable",
+          "framing_note": "full body visible, environment readable",
+          "rhythm_purpose": "geography establishment",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_003_SHOT_002",
+          "scene_id": "SCN_003",
+          "prompt": "Nara stabilizes a failing valve while exhausted workers keep their distance, in INT. PRESSURE VALVE CHAMBER - NIGHT. motivated practical sources only; cool ambient; silhouettes acceptable |cinematic| Composition: waist-up framing; subject on vertical third; negative space on conversation side.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "worker",
+            "action_type": "stabilizes",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_pressure_valve_chamber_night",
+            "camera_intent": "static",
+            "source_text": "Nara stabilizes a failing valve while exhausted workers keep their distance."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient",
+            "depth_of_field": "moderate depth of field, f/4.0–5.6",
+            "beat_type": "action",
+            "color_grade_hint": "cool",
+            "emotional_beat_index": 0.34
+          },
+          "shot_role": "establishing",
+          "composition_description": "waist-up framing; subject on vertical third; negative space on conversation side",
+          "lighting_directives": "motivated practical sources only; cool ambient; silhouettes acceptable",
+          "framing_note": "full body visible, environment readable",
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_003_SHOT_003",
+          "scene_id": "SCN_003",
+          "prompt": "Nara stabilizes a failing valve while exhausted workers keep their distance, in INT. PRESSURE VALVE CHAMBER - NIGHT. motivated practical sources only; cool ambient; silhouettes acceptable |cinematic| Composition: full figure visible; subject occupies 25–40% frame height; rule of thirds applied.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "tracking",
+          "action": {
+            "subject_id": "worker",
+            "action_type": "stabilizes",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_pressure_valve_chamber_night",
+            "camera_intent": "tracking",
+            "source_text": "Nara stabilizes a failing valve while exhausted workers keep their distance."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient",
+            "depth_of_field": "deep depth of field, f/8.0",
+            "beat_type": "action",
+            "color_grade_hint": "cool",
+            "emotional_beat_index": 0.34
+          },
+          "shot_role": "establishing",
+          "composition_description": "full figure visible; subject occupies 25–40% frame height; rule of thirds applied",
+          "lighting_directives": "motivated practical sources only; cool ambient; silhouettes acceptable",
+          "framing_note": null,
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 75,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_003_SHOT_004",
+          "scene_id": "SCN_003",
+          "prompt": "The alarm dies and the chamber returns to white light, in INT. PRESSURE VALVE CHAMBER - NIGHT. motivated practical sources only; cool ambient; silhouettes acceptable |cinematic| Composition: waist-up framing; subject on vertical third; negative space on conversation side.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "alarm",
+            "action_type": "dies",
+            "target": "white light",
+            "modifiers": [],
+            "location_id": "int_pressure_valve_chamber_night",
+            "camera_intent": "static",
+            "source_text": "The alarm dies and the chamber returns to white light."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient",
+            "depth_of_field": "moderate depth of field, f/4.0–5.6",
+            "beat_type": "action",
+            "color_grade_hint": "cool",
+            "emotional_beat_index": 0.34
+          },
+          "shot_role": "coverage",
+          "composition_description": "waist-up framing; subject on vertical third; negative space on conversation side",
+          "lighting_directives": "motivated practical sources only; cool ambient; silhouettes acceptable",
+          "framing_note": null,
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_003_SHOT_005",
+          "scene_id": "SCN_003",
+          "prompt": "Nara looks at the hidden route on her wrist and understands that something is wrong, in INT. PRESSURE VALVE CHAMBER - NIGHT. motivated practical sources only; cool ambient; silhouettes acceptable |cinematic| Composition: shoulders-to-crown; eyes at upper third; mouth near center; ear off-frame.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "close_up",
+          "camera_movement": "handheld",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "looks",
+            "target": "hidden route on her wrist and understands that something is wrong",
+            "modifiers": [],
+            "location_id": "int_pressure_valve_chamber_night",
+            "camera_intent": "handheld",
+            "source_text": "Nara looks at the hidden route on her wrist and understands that something is wrong."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient",
+            "depth_of_field": "shallow depth of field, f/1.8–2.0",
+            "beat_type": "action",
+            "color_grade_hint": "cool",
+            "emotional_beat_index": 0.34
+          },
+          "shot_role": "reaction",
+          "composition_description": "shoulders-to-crown; eyes at upper third; mouth near center; ear off-frame",
+          "lighting_directives": "motivated practical sources only; cool ambient; silhouettes acceptable",
+          "framing_note": null,
+          "rhythm_purpose": "emotional apex close",
+          "visual_invariants_applied": [],
+          "feasibility_score": 78,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_004_SHOT_001",
+          "scene_id": "SCN_004",
+          "prompt": "In their cramped apartment, Nara shows the captured route to her father, Elian, in INT. VOSS APARTMENT - LOWER STACK - LATE NIGHT. motivated practical sources only; cool ambient; silhouettes acceptable |cinematic| Composition: full figure visible; subject occupies 25–40% frame height; rule of thirds applied.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "their",
+            "target": "her father elian",
+            "modifiers": [],
+            "location_id": "int_voss_apartment_lower_stack_late_night",
+            "camera_intent": "static",
+            "source_text": "In their cramped apartment, Nara shows the captured route to her father, Elian."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient",
+            "depth_of_field": "deep depth of field, f/8.0",
+            "beat_type": "climax",
+            "color_grade_hint": "cool",
+            "emotional_beat_index": 0.41
+          },
+          "shot_role": "establishing",
+          "composition_description": "full figure visible; subject occupies 25–40% frame height; rule of thirds applied",
+          "lighting_directives": "motivated practical sources only; cool ambient; silhouettes acceptable",
+          "framing_note": "full body visible, environment readable",
+          "rhythm_purpose": "geography establishment",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_004_SHOT_002",
+          "scene_id": "SCN_004",
+          "prompt": "In their cramped apartment, Nara shows the captured route to her father, Elian, in INT. VOSS APARTMENT - LOWER STACK - LATE NIGHT. motivated practical sources only; cool ambient; silhouettes acceptable |cinematic| Composition: waist-up framing; subject on vertical third; negative space on conversation side.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "their",
+            "target": "her father elian",
+            "modifiers": [],
+            "location_id": "int_voss_apartment_lower_stack_late_night",
+            "camera_intent": "static",
+            "source_text": "In their cramped apartment, Nara shows the captured route to her father, Elian."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient",
+            "depth_of_field": "moderate depth of field, f/4.0–5.6",
+            "beat_type": "climax",
+            "color_grade_hint": "cool",
+            "emotional_beat_index": 0.41
+          },
+          "shot_role": "establishing",
+          "composition_description": "waist-up framing; subject on vertical third; negative space on conversation side",
+          "lighting_directives": "motivated practical sources only; cool ambient; silhouettes acceptable",
+          "framing_note": "full body visible, environment readable",
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_004_SHOT_003",
+          "scene_id": "SCN_004",
+          "prompt": "In their cramped apartment, Nara shows the captured route to her father, Elian, in INT. VOSS APARTMENT - LOWER STACK - LATE NIGHT. motivated practical sources only; cool ambient; silhouettes acceptable |cinematic| Composition: full figure visible; subject occupies 25–40% frame height; rule of thirds applied.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "their",
+            "target": "her father elian",
+            "modifiers": [],
+            "location_id": "int_voss_apartment_lower_stack_late_night",
+            "camera_intent": "static",
+            "source_text": "In their cramped apartment, Nara shows the captured route to her father, Elian."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient",
+            "depth_of_field": "deep depth of field, f/8.0",
+            "beat_type": "climax",
+            "color_grade_hint": "cool",
+            "emotional_beat_index": 0.41
+          },
+          "shot_role": "establishing",
+          "composition_description": "full figure visible; subject occupies 25–40% frame height; rule of thirds applied",
+          "lighting_directives": "motivated practical sources only; cool ambient; silhouettes acceptable",
+          "framing_note": null,
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_004_SHOT_004",
+          "scene_id": "SCN_004",
+          "prompt": "He freezes when he sees the unlisted access spine, in INT. VOSS APARTMENT - LOWER STACK - LATE NIGHT. motivated practical sources only; cool ambient; silhouettes acceptable |cinematic| Composition: waist-up framing; subject on vertical third; negative space on conversation side.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "he",
+            "action_type": "freezes",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_voss_apartment_lower_stack_late_night",
+            "camera_intent": "static",
+            "source_text": "He freezes when he sees the unlisted access spine."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient",
+            "depth_of_field": "moderate depth of field, f/4.0–5.6",
+            "beat_type": "climax",
+            "color_grade_hint": "cool",
+            "emotional_beat_index": 0.41
+          },
+          "shot_role": "coverage",
+          "composition_description": "waist-up framing; subject on vertical third; negative space on conversation side",
+          "lighting_directives": "motivated practical sources only; cool ambient; silhouettes acceptable",
+          "framing_note": null,
+          "rhythm_purpose": "scene resolution",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_005_SHOT_001",
+          "scene_id": "SCN_005",
+          "prompt": "Director Halden Rook addresses the district from giant public screens while citizens move through an immaculate civic atrium, in INT. CIVIC ATRIUM - DISTRICT ZERO CENTRAL CORE - MORNING. motivated practical sources; mixed temperature acceptable |cinematic| Composition: full figure visible; subject occupies 25–40% frame height; rule of thirds applied. Character: measured, economy of gesture, never raises voice, occupies the centre of any frame he enters pressed charcoal suit, no tie, single silver signet ring on right hand Lighting: soft high-key from above, bleached shadows — power expressed as overexposure..",
+          "duration_sec": 6,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "director",
+            "action_type": "halden",
+            "target": "immaculate civic atrium",
+            "modifiers": [],
+            "location_id": "int_civic_atrium_district_zero_central_core_morning",
+            "camera_intent": "static",
+            "source_text": "Director Halden Rook addresses the district from giant public screens while citizens move through an immaculate civic atrium."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient",
+            "depth_of_field": "deep depth of field, f/8.0",
+            "beat_type": "climax",
+            "emotional_beat_index": 0.48
+          },
+          "shot_role": "establishing",
+          "composition_description": "full figure visible; subject occupies 25–40% frame height; rule of thirds applied",
+          "lighting_directives": "motivated practical sources; mixed temperature acceptable",
+          "framing_note": "full body visible, environment readable",
+          "rhythm_purpose": "geography establishment",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_005_SHOT_002",
+          "scene_id": "SCN_005",
+          "prompt": "Director Halden Rook addresses the district from giant public screens while citizens move through an immaculate civic atrium, in INT. CIVIC ATRIUM - DISTRICT ZERO CENTRAL CORE - MORNING. motivated practical sources; mixed temperature acceptable |cinematic| Composition: waist-up framing; subject on vertical third; negative space on conversation side. Character: measured, economy of gesture, never raises voice, occupies the centre of any frame he enters pressed charcoal suit, no tie, single silver signet ring on right hand Lighting: soft high-key from above, bleached shadows — power expressed as overexposure..",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "over_shoulder",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "director",
+            "action_type": "halden",
+            "target": "immaculate civic atrium",
+            "modifiers": [],
+            "location_id": "int_civic_atrium_district_zero_central_core_morning",
+            "camera_intent": "static",
+            "source_text": "Director Halden Rook addresses the district from giant public screens while citizens move through an immaculate civic atrium."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient",
+            "depth_of_field": "moderate depth of field, f/4.0–5.6",
+            "beat_type": "climax",
+            "emotional_beat_index": 0.48
+          },
+          "shot_role": "establishing",
+          "composition_description": "waist-up framing; subject on vertical third; negative space on conversation side",
+          "lighting_directives": "motivated practical sources; mixed temperature acceptable",
+          "framing_note": "full body visible, environment readable",
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_005_SHOT_003",
+          "scene_id": "SCN_005",
+          "prompt": "Close on Director Rook's face on the monumental propaganda screens — tight medium on screen display, citizens in blurred foreground watching, in INT. CIVIC ATRIUM - DISTRICT ZERO CENTRAL CORE - MORNING. motivated practical sources |cinematic| Composition: Rook's broadcast face fills the screen, institutional cold lighting, citizens silhouetted in foreground.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "rook",
+            "action_type": "halden",
+            "target": "immaculate civic atrium",
+            "modifiers": [],
+            "location_id": "int_civic_atrium_district_zero_central_core_morning",
+            "camera_intent": "static",
+            "source_text": "Director Halden Rook addresses the district from giant public screens while citizens move through an immaculate civic atrium."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient",
+            "depth_of_field": "moderate depth of field, f/4.0–5.6",
+            "beat_type": "climax",
+            "emotional_beat_index": 0.48
+          },
+          "shot_role": "coverage",
+          "composition_description": "waist-up framing; subject on vertical third; negative space on conversation side",
+          "lighting_directives": "motivated practical sources; mixed temperature acceptable",
+          "framing_note": null,
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_005_SHOT_004",
+          "scene_id": "SCN_005",
+          "prompt": "Above them, Commander Sarin Vale watches from a glass balcony as an aide hands him a security alert tied to Nara, in INT. CIVIC ATRIUM - DISTRICT ZERO CENTRAL CORE - MORNING. motivated practical sources; mixed temperature acceptable |cinematic| Composition: shoulders-to-crown; eyes at upper third; mouth near center; ear off-frame.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "close_up",
+          "camera_movement": "dolly_in",
+          "action": {
+            "subject_id": "vale",
+            "action_type": "them",
+            "target": "nara",
+            "modifiers": [],
+            "location_id": "int_civic_atrium_district_zero_central_core_morning",
+            "camera_intent": "dolly_in",
+            "source_text": "Above them, Commander Sarin Vale watches from a glass balcony as an aide hands him a security alert tied to Nara."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient",
+            "depth_of_field": "shallow depth of field, f/1.8–2.0",
+            "beat_type": "climax",
+            "emotional_beat_index": 0.48
+          },
+          "shot_role": "reaction",
+          "composition_description": "shoulders-to-crown; eyes at upper third; mouth near center; ear off-frame",
+          "lighting_directives": "motivated practical sources; mixed temperature acceptable",
+          "framing_note": null,
+          "rhythm_purpose": "emotional apex close",
+          "visual_invariants_applied": [],
+          "feasibility_score": 80,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_006_SHOT_001",
+          "scene_id": "SCN_006",
+          "prompt": "Mira Sol studies Nara's stolen map and overlays it with archived infrastructure, in INT. BLACK MARKET EXCHANGE - VENTILATION SUBLEVEL - DAY. natural motivated light; balanced exposure |cinematic| Composition: full figure visible; subject occupies 25–40% frame height; rule of thirds applied. Character: compact, precise movements, rarely makes eye contact until she has made a decision slate-grey tactical vest over black thermal, utility belt, close-cropped hair Lighting: motivated practical source, cool ambient fill, minimal key — she does not invite attention..",
+          "duration_sec": 6,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "mira",
+            "action_type": "sol",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_black_market_exchange_ventilation_sublevel_day",
+            "camera_intent": "static",
+            "source_text": "Mira Sol studies Nara's stolen map and overlays it with archived infrastructure."
+          },
+          "metadata": {
+            "time_of_day_visual": "day",
+            "dominant_sound": "ambient",
+            "depth_of_field": "deep depth of field, f/8.0",
+            "beat_type": "climax",
+            "emotional_beat_index": 0.55
+          },
+          "shot_role": "establishing",
+          "composition_description": "full figure visible; subject occupies 25–40% frame height; rule of thirds applied",
+          "lighting_directives": "natural motivated light; balanced exposure",
+          "framing_note": "full body visible, environment readable",
+          "rhythm_purpose": "geography establishment",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_006_SHOT_002",
+          "scene_id": "SCN_006",
+          "prompt": "Mira Sol studies Nara's stolen map and overlays it with archived infrastructure, in INT. BLACK MARKET EXCHANGE - VENTILATION SUBLEVEL - DAY. natural motivated light; balanced exposure |cinematic| Composition: waist-up framing; subject on vertical third; negative space on conversation side. Character: compact, precise movements, rarely makes eye contact until she has made a decision slate-grey tactical vest over black thermal, utility belt, close-cropped hair Lighting: motivated practical source, cool ambient fill, minimal key — she does not invite attention..",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "mira",
+            "action_type": "sol",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_black_market_exchange_ventilation_sublevel_day",
+            "camera_intent": "static",
+            "source_text": "Mira Sol studies Nara's stolen map and overlays it with archived infrastructure."
+          },
+          "metadata": {
+            "time_of_day_visual": "day",
+            "dominant_sound": "ambient",
+            "depth_of_field": "moderate depth of field, f/4.0–5.6",
+            "beat_type": "climax",
+            "emotional_beat_index": 0.55
+          },
+          "shot_role": "establishing",
+          "composition_description": "waist-up framing; subject on vertical third; negative space on conversation side",
+          "lighting_directives": "natural motivated light; balanced exposure",
+          "framing_note": "full body visible, environment readable",
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_006_SHOT_003",
+          "scene_id": "SCN_006",
+          "prompt": "Mira Sol studies Nara's stolen map and overlays it with archived infrastructure, in INT. BLACK MARKET EXCHANGE - VENTILATION SUBLEVEL - DAY. natural motivated light; balanced exposure |cinematic| Composition: waist-up framing; subject on vertical third; negative space on conversation side. Character: compact, precise movements, rarely makes eye contact until she has made a decision slate-grey tactical vest over black thermal, utility belt, close-cropped hair Lighting: motivated practical source, cool ambient fill, minimal key — she does not invite attention..",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "mira",
+            "action_type": "sol",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_black_market_exchange_ventilation_sublevel_day",
+            "camera_intent": "static",
+            "source_text": "Mira Sol studies Nara's stolen map and overlays it with archived infrastructure."
+          },
+          "metadata": {
+            "time_of_day_visual": "day",
+            "dominant_sound": "ambient",
+            "depth_of_field": "moderate depth of field, f/4.0–5.6",
+            "beat_type": "climax",
+            "emotional_beat_index": 0.55
+          },
+          "shot_role": "coverage",
+          "composition_description": "waist-up framing; subject on vertical third; negative space on conversation side",
+          "lighting_directives": "natural motivated light; balanced exposure",
+          "framing_note": null,
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_006_SHOT_004",
+          "scene_id": "SCN_006",
+          "prompt": "Mira reaches into her bag and opens an archived signal map on the table, in INT. BLACK MARKET EXCHANGE - VENTILATION SUBLEVEL - DAY. natural motivated light; balanced exposure |cinematic| Composition: shoulders-to-crown; eyes at upper third; mouth near center; ear off-frame. Character: compact, precise movements, rarely makes eye contact until she has made a decision slate-grey tactical vest over black thermal, utility belt, close-cropped hair Lighting: motivated practical source, cool ambient fill, minimal key — she does not invite attention..",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "close_up",
+          "camera_movement": "dolly_in",
+          "action": {
+            "subject_id": "mira",
+            "action_type": "reaches",
+            "target": "her bag and opens archived signal map on table",
+            "modifiers": [],
+            "location_id": "int_black_market_exchange_ventilation_sublevel_day",
+            "camera_intent": "dolly_in",
+            "source_text": "Mira reaches into her bag and opens an archived signal map on the table."
+          },
+          "metadata": {
+            "time_of_day_visual": "day",
+            "dominant_sound": "ambient",
+            "depth_of_field": "shallow depth of field, f/1.8–2.0",
+            "beat_type": "climax",
+            "emotional_beat_index": 0.55
+          },
+          "shot_role": "reaction",
+          "composition_description": "shoulders-to-crown; eyes at upper third; mouth near center; ear off-frame",
+          "lighting_directives": "natural motivated light; balanced exposure",
+          "framing_note": null,
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 80,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_006_SHOT_005",
+          "scene_id": "SCN_006",
+          "prompt": "A new route suddenly erupts on the display, leading toward the outer wall, in INT. BLACK MARKET EXCHANGE - VENTILATION SUBLEVEL - DAY. natural motivated light; balanced exposure |cinematic| Composition: single facial feature or eyes fill frame; no headroom; texture dominant.",
+          "duration_sec": 3,
+          "emotion": "neutral",
+          "shot_type": "extreme_close_up",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "new",
+            "action_type": "route",
+            "target": "display leading toward outer wall",
+            "modifiers": [
+              "suddenly"
+            ],
+            "location_id": "int_black_market_exchange_ventilation_sublevel_day",
+            "camera_intent": "static",
+            "source_text": "A new route suddenly erupts on the display, leading toward the outer wall."
+          },
+          "metadata": {
+            "time_of_day_visual": "day",
+            "dominant_sound": "ambient",
+            "depth_of_field": "extremely shallow depth of field, f/1.4",
+            "beat_type": "climax",
+            "emotional_beat_index": 0.55
+          },
+          "shot_role": "reaction",
+          "composition_description": "single facial feature or eyes fill frame; no headroom; texture dominant",
+          "lighting_directives": "natural motivated light; balanced exposure",
+          "framing_note": null,
+          "rhythm_purpose": "emotional apex close",
+          "visual_invariants_applied": [],
+          "feasibility_score": 95,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_007_SHOT_001",
+          "scene_id": "SCN_007",
+          "prompt": "Analysts track Nara's movement across a live schematic of the city, in INT. SECURITY OPERATIONS CENTER - DAY. natural motivated light; balanced exposure |cinematic| Composition: full figure visible; subject occupies 25–40% frame height; rule of thirds applied.",
+          "duration_sec": 6,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "analysts",
+            "action_type": "track",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_security_operations_center_day",
+            "camera_intent": "static",
+            "source_text": "Analysts track Nara's movement across a live schematic of the city."
+          },
+          "metadata": {
+            "time_of_day_visual": "day",
+            "dominant_sound": "ambient",
+            "depth_of_field": "deep depth of field, f/8.0",
+            "beat_type": "dialogue_scene",
+            "emotional_beat_index": 0.62
+          },
+          "shot_role": "establishing",
+          "composition_description": "full figure visible; subject occupies 25–40% frame height; rule of thirds applied",
+          "lighting_directives": "natural motivated light; balanced exposure",
+          "framing_note": "full body visible, environment readable",
+          "rhythm_purpose": "geography establishment",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_007_SHOT_002",
+          "scene_id": "SCN_007",
+          "prompt": "Analysts track Nara's movement across a live schematic of the city, in INT. SECURITY OPERATIONS CENTER - DAY. natural motivated light; balanced exposure |cinematic| Composition: waist-up framing; subject on vertical third; negative space on conversation side.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "analysts",
+            "action_type": "track",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_security_operations_center_day",
+            "camera_intent": "static",
+            "source_text": "Analysts track Nara's movement across a live schematic of the city."
+          },
+          "metadata": {
+            "time_of_day_visual": "day",
+            "dominant_sound": "ambient",
+            "depth_of_field": "moderate depth of field, f/4.0–5.6",
+            "beat_type": "dialogue_scene",
+            "emotional_beat_index": 0.62
+          },
+          "shot_role": "establishing",
+          "composition_description": "waist-up framing; subject on vertical third; negative space on conversation side",
+          "lighting_directives": "natural motivated light; balanced exposure",
+          "framing_note": "full body visible, environment readable",
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_007_SHOT_003",
+          "scene_id": "SCN_007",
+          "prompt": "Analysts track Nara's movement across a live schematic of the city, in INT. SECURITY OPERATIONS CENTER - DAY. natural motivated light; balanced exposure |cinematic| Composition: waist-up framing; subject on vertical third; negative space on conversation side.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "analysts",
+            "action_type": "track",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_security_operations_center_day",
+            "camera_intent": "static",
+            "source_text": "Analysts track Nara's movement across a live schematic of the city."
+          },
+          "metadata": {
+            "time_of_day_visual": "day",
+            "dominant_sound": "ambient",
+            "depth_of_field": "moderate depth of field, f/4.0–5.6",
+            "beat_type": "dialogue_scene",
+            "emotional_beat_index": 0.62
+          },
+          "shot_role": "coverage",
+          "composition_description": "waist-up framing; subject on vertical third; negative space on conversation side",
+          "lighting_directives": "natural motivated light; balanced exposure",
+          "framing_note": null,
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_007_SHOT_004",
+          "scene_id": "SCN_007",
+          "prompt": "Vale watches her path converge on the outer sectors and chooses not to stop her, in INT. SECURITY OPERATIONS CENTER - DAY. natural motivated light; balanced exposure |cinematic| Composition: foreground shoulder 30% frame; subject faces 2/3 frame; eyes visible and sharp.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "over_shoulder",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "vale",
+            "action_type": "watches",
+            "target": "outer sectors and chooses not to stop her",
+            "modifiers": [],
+            "location_id": "int_security_operations_center_day",
+            "camera_intent": "static",
+            "source_text": "Vale watches her path converge on the outer sectors and chooses not to stop her."
+          },
+          "metadata": {
+            "time_of_day_visual": "day",
+            "dominant_sound": "ambient",
+            "depth_of_field": "shallow depth of field, f/2.0–2.8, subject in focus, background soft",
+            "beat_type": "dialogue_scene",
+            "emotional_beat_index": 0.62
+          },
+          "shot_role": "coverage",
+          "composition_description": "foreground shoulder 30% frame; subject faces 2/3 frame; eyes visible and sharp",
+          "lighting_directives": "natural motivated light; balanced exposure",
+          "framing_note": null,
+          "rhythm_purpose": "scene resolution",
+          "visual_invariants_applied": [],
+          "feasibility_score": 97,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_008_SHOT_001",
+          "scene_id": "SCN_008",
+          "prompt": "Nara and Mira descend into an old service corridor buried in the skeleton of the city, in INT. SEALED SERVICE SPINE - NIGHT. motivated practical sources only; cool ambient; silhouettes acceptable |cinematic| Composition: full figure visible; subject occupies 25–40% frame height; rule of thirds applied.",
+          "duration_sec": 6,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "and",
+            "target": "old service corridor buried in skeleton of city",
+            "modifiers": [],
+            "location_id": "int_sealed_service_spine_night",
+            "camera_intent": "static",
+            "source_text": "Nara and Mira descend into an old service corridor buried in the skeleton of the city."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient",
+            "depth_of_field": "deep depth of field, f/8.0",
+            "beat_type": "dialogue_scene",
+            "color_grade_hint": "cool",
+            "emotional_beat_index": 0.69
+          },
+          "shot_role": "establishing",
+          "composition_description": "full figure visible; subject occupies 25–40% frame height; rule of thirds applied",
+          "lighting_directives": "motivated practical sources only; cool ambient; silhouettes acceptable",
+          "framing_note": "full body visible, environment readable",
+          "rhythm_purpose": "geography establishment",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_008_SHOT_002",
+          "scene_id": "SCN_008",
+          "prompt": "Nara and Mira descend into an old service corridor buried in the skeleton of the city, in INT. SEALED SERVICE SPINE - NIGHT. motivated practical sources only; cool ambient; silhouettes acceptable |cinematic| Composition: waist-up framing; subject on vertical third; negative space on conversation side.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "and",
+            "target": "old service corridor buried in skeleton of city",
+            "modifiers": [],
+            "location_id": "int_sealed_service_spine_night",
+            "camera_intent": "static",
+            "source_text": "Nara and Mira descend into an old service corridor buried in the skeleton of the city."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient",
+            "depth_of_field": "moderate depth of field, f/4.0–5.6",
+            "beat_type": "dialogue_scene",
+            "color_grade_hint": "cool",
+            "emotional_beat_index": 0.69
+          },
+          "shot_role": "establishing",
+          "composition_description": "waist-up framing; subject on vertical third; negative space on conversation side",
+          "lighting_directives": "motivated practical sources only; cool ambient; silhouettes acceptable",
+          "framing_note": "full body visible, environment readable",
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_008_SHOT_003",
+          "scene_id": "SCN_008",
+          "prompt": "Nara and Mira descend into an old service corridor buried in the skeleton of the city, in INT. SEALED SERVICE SPINE - NIGHT. motivated practical sources only; cool ambient; silhouettes acceptable |cinematic| Composition: waist-up framing; subject on vertical third; negative space on conversation side.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "and",
+            "target": "old service corridor buried in skeleton of city",
+            "modifiers": [],
+            "location_id": "int_sealed_service_spine_night",
+            "camera_intent": "static",
+            "source_text": "Nara and Mira descend into an old service corridor buried in the skeleton of the city."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient",
+            "depth_of_field": "moderate depth of field, f/4.0–5.6",
+            "beat_type": "dialogue_scene",
+            "color_grade_hint": "cool",
+            "emotional_beat_index": 0.69
+          },
+          "shot_role": "coverage",
+          "composition_description": "waist-up framing; subject on vertical third; negative space on conversation side",
+          "lighting_directives": "motivated practical sources only; cool ambient; silhouettes acceptable",
+          "framing_note": null,
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_008_SHOT_004",
+          "scene_id": "SCN_008",
+          "prompt": "Mira powers up a buried control panel while Nara watches the dark passage behind them, in INT. SEALED SERVICE SPINE - NIGHT. motivated practical sources only; cool ambient; silhouettes acceptable |cinematic| Composition: foreground shoulder 30% frame; subject faces 2/3 frame; eyes visible and sharp.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "over_shoulder",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "powers",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_sealed_service_spine_night",
+            "camera_intent": "static",
+            "source_text": "Mira powers up a buried control panel while Nara watches the dark passage behind them."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient",
+            "depth_of_field": "shallow depth of field, f/2.0–2.8, subject in focus, background soft",
+            "beat_type": "dialogue_scene",
+            "color_grade_hint": "cool",
+            "emotional_beat_index": 0.69
+          },
+          "shot_role": "coverage",
+          "composition_description": "foreground shoulder 30% frame; subject faces 2/3 frame; eyes visible and sharp",
+          "lighting_directives": "motivated practical sources only; cool ambient; silhouettes acceptable",
+          "framing_note": null,
+          "rhythm_purpose": "conversational coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 97,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_008_SHOT_005",
+          "scene_id": "SCN_008",
+          "prompt": "The system identifies an external containment access route, in INT. SEALED SERVICE SPINE - NIGHT. motivated practical sources only; cool ambient; silhouettes acceptable |cinematic| Composition: waist-up framing; subject on vertical third; negative space on conversation side.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "system",
+            "action_type": "identifies",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_sealed_service_spine_night",
+            "camera_intent": "static",
+            "source_text": "The system identifies an external containment access route."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient",
+            "depth_of_field": "moderate depth of field, f/4.0–5.6",
+            "beat_type": "dialogue_scene",
+            "color_grade_hint": "cool",
+            "emotional_beat_index": 0.69
+          },
+          "shot_role": "coverage",
+          "composition_description": "waist-up framing; subject on vertical third; negative space on conversation side",
+          "lighting_directives": "motivated practical sources only; cool ambient; silhouettes acceptable",
+          "framing_note": null,
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_008_SHOT_006",
+          "scene_id": "SCN_008",
+          "prompt": "Mira unlocks the gate, in INT. SEALED SERVICE SPINE - NIGHT. motivated practical sources only; cool ambient; silhouettes acceptable |cinematic| Composition: waist-up framing; subject on vertical third; negative space on conversation side. Character: compact, precise movements, rarely makes eye contact until she has made a decision slate-grey tactical vest over black thermal, utility belt, close-cropped hair Lighting: motivated practical source, cool ambient fill, minimal key — she does not invite attention..",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "mira",
+            "action_type": "unlocks",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_sealed_service_spine_night",
+            "camera_intent": "static",
+            "source_text": "Mira unlocks the gate."
+          },
+          "metadata": {
+            "time_of_day_visual": "night",
+            "dominant_sound": "ambient",
+            "depth_of_field": "moderate depth of field, f/4.0–5.6",
+            "beat_type": "dialogue_scene",
+            "color_grade_hint": "cool",
+            "emotional_beat_index": 0.69
+          },
+          "shot_role": "coverage",
+          "composition_description": "waist-up framing; subject on vertical third; negative space on conversation side",
+          "lighting_directives": "motivated practical sources only; cool ambient; silhouettes acceptable",
+          "framing_note": null,
+          "rhythm_purpose": "scene resolution",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_009_SHOT_001",
+          "scene_id": "SCN_009",
+          "prompt": "Ancient shutters peel open and reveal organized lights far beyond the wall, in INT. EXTERNAL OBSERVATION CHAMBER - CONTINUOUS. motivated practical sources; mixed temperature acceptable |cinematic| Composition: full figure visible; subject occupies 25–40% frame height; rule of thirds applied.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "ancient",
+            "action_type": "shutters",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_external_observation_chamber_continuous",
+            "camera_intent": "static",
+            "source_text": "Ancient shutters peel open and reveal organized lights far beyond the wall."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient",
+            "depth_of_field": "deep depth of field, f/8.0",
+            "beat_type": "action",
+            "emotional_beat_index": 0.76
+          },
+          "shot_role": "establishing",
+          "composition_description": "full figure visible; subject occupies 25–40% frame height; rule of thirds applied",
+          "lighting_directives": "motivated practical sources; mixed temperature acceptable",
+          "framing_note": "full body visible, environment readable",
+          "rhythm_purpose": "geography establishment",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_009_SHOT_002",
+          "scene_id": "SCN_009",
+          "prompt": "Ancient shutters peel open and reveal organized lights far beyond the wall, in INT. EXTERNAL OBSERVATION CHAMBER - CONTINUOUS. motivated practical sources; mixed temperature acceptable |cinematic| Composition: waist-up framing; subject on vertical third; negative space on conversation side.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "ancient",
+            "action_type": "shutters",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_external_observation_chamber_continuous",
+            "camera_intent": "static",
+            "source_text": "Ancient shutters peel open and reveal organized lights far beyond the wall."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient",
+            "depth_of_field": "moderate depth of field, f/4.0–5.6",
+            "beat_type": "action",
+            "emotional_beat_index": 0.76
+          },
+          "shot_role": "establishing",
+          "composition_description": "waist-up framing; subject on vertical third; negative space on conversation side",
+          "lighting_directives": "motivated practical sources; mixed temperature acceptable",
+          "framing_note": "full body visible, environment readable",
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_009_SHOT_003",
+          "scene_id": "SCN_009",
+          "prompt": "Ancient shutters peel open and reveal organized lights far beyond the wall, in INT. EXTERNAL OBSERVATION CHAMBER - CONTINUOUS. motivated practical sources; mixed temperature acceptable |cinematic| Composition: full figure visible; subject occupies 25–40% frame height; rule of thirds applied.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "tracking",
+          "action": {
+            "subject_id": "ancient",
+            "action_type": "shutters",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_external_observation_chamber_continuous",
+            "camera_intent": "tracking",
+            "source_text": "Ancient shutters peel open and reveal organized lights far beyond the wall."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient",
+            "depth_of_field": "deep depth of field, f/8.0",
+            "beat_type": "action",
+            "emotional_beat_index": 0.76
+          },
+          "shot_role": "establishing",
+          "composition_description": "full figure visible; subject occupies 25–40% frame height; rule of thirds applied",
+          "lighting_directives": "motivated practical sources; mixed temperature acceptable",
+          "framing_note": null,
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 75,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_009_SHOT_004",
+          "scene_id": "SCN_009",
+          "prompt": "Nara realizes District Zero lied about the outside world, in INT. EXTERNAL OBSERVATION CHAMBER - CONTINUOUS. motivated practical sources; mixed temperature acceptable |cinematic| Composition: waist-up framing; subject on vertical third; negative space on conversation side.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "realizes",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_external_observation_chamber_continuous",
+            "camera_intent": "static",
+            "source_text": "Nara realizes District Zero lied about the outside world."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient",
+            "depth_of_field": "moderate depth of field, f/4.0–5.6",
+            "beat_type": "action",
+            "emotional_beat_index": 0.76
+          },
+          "shot_role": "coverage",
+          "composition_description": "waist-up framing; subject on vertical third; negative space on conversation side",
+          "lighting_directives": "motivated practical sources; mixed temperature acceptable",
+          "framing_note": null,
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_009_SHOT_005",
+          "scene_id": "SCN_009",
+          "prompt": "A series of details register in rapid succession: industrial pumps hidden in the wall structure dumping poison into the lower sectors, in INT. EXTERNAL OBSERVATION CHAMBER - CONTINUOUS. motivated practical sources; mixed temperature acceptable |cinematic| Composition: shoulders-to-crown; eyes at upper third; mouth near center; ear off-frame.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "close_up",
+          "camera_movement": "handheld",
+          "action": {
+            "subject_id": "series",
+            "action_type": "of",
+            "target": "rapid succession industrial pumps hidden in wall structure dumping poison into lower sectors",
+            "modifiers": [],
+            "location_id": "int_external_observation_chamber_continuous",
+            "camera_intent": "handheld",
+            "source_text": "A series of details register in rapid succession: industrial pumps hidden in the wall structure dumping poison into the lower sectors."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient",
+            "depth_of_field": "shallow depth of field, f/1.8–2.0",
+            "beat_type": "action",
+            "emotional_beat_index": 0.76
+          },
+          "shot_role": "reaction",
+          "composition_description": "shoulders-to-crown; eyes at upper third; mouth near center; ear off-frame",
+          "lighting_directives": "motivated practical sources; mixed temperature acceptable",
+          "framing_note": null,
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 78,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_009_SHOT_006",
+          "scene_id": "SCN_009",
+          "prompt": "A silent alarm floods the chamber red, in INT. EXTERNAL OBSERVATION CHAMBER - CONTINUOUS. motivated practical sources; mixed temperature acceptable |cinematic| Composition: full figure visible; subject occupies 25–40% frame height; rule of thirds applied.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "tracking",
+          "action": {
+            "subject_id": "silent",
+            "action_type": "alarm",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_external_observation_chamber_continuous",
+            "camera_intent": "tracking",
+            "source_text": "A silent alarm floods the chamber red."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient",
+            "depth_of_field": "deep depth of field, f/8.0",
+            "beat_type": "action",
+            "emotional_beat_index": 0.76
+          },
+          "shot_role": "establishing",
+          "composition_description": "full figure visible; subject occupies 25–40% frame height; rule of thirds applied",
+          "lighting_directives": "motivated practical sources; mixed temperature acceptable",
+          "framing_note": null,
+          "rhythm_purpose": "release and exit",
+          "visual_invariants_applied": [],
+          "feasibility_score": 75,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_010_SHOT_001",
+          "scene_id": "SCN_010",
+          "prompt": "At the far end, armed units pour into the shaft entrance, in INT. SERVICE SPINE - CONTINUOUS. motivated practical sources; mixed temperature acceptable |cinematic| Composition: full figure visible; subject occupies 25–40% frame height; rule of thirds applied.",
+          "duration_sec": 6,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "at",
+            "action_type": "the",
+            "target": "shaft entrance",
+            "modifiers": [],
+            "location_id": "int_service_spine_continuous",
+            "camera_intent": "static",
+            "source_text": "At the far end, armed units pour into the shaft entrance."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient",
+            "depth_of_field": "deep depth of field, f/8.0",
+            "beat_type": "denouement",
+            "lens_mm": 85,
+            "emotional_beat_index": 0.83
+          },
+          "shot_role": "establishing",
+          "composition_description": "full figure visible; subject occupies 25–40% frame height; rule of thirds applied",
+          "lighting_directives": "motivated practical sources; mixed temperature acceptable",
+          "framing_note": "full body visible, environment readable",
+          "rhythm_purpose": "geography establishment",
+          "visual_invariants_applied": [],
+          "feasibility_score": 90,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_010_SHOT_002",
+          "scene_id": "SCN_010",
+          "prompt": "At the far end, armed units pour into the shaft entrance, in INT. SERVICE SPINE - CONTINUOUS. motivated practical sources; mixed temperature acceptable |cinematic| Composition: waist-up framing; subject on vertical third; negative space on conversation side.",
+          "duration_sec": 6,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "at",
+            "action_type": "the",
+            "target": "shaft entrance",
+            "modifiers": [],
+            "location_id": "int_service_spine_continuous",
+            "camera_intent": "static",
+            "source_text": "At the far end, armed units pour into the shaft entrance."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient",
+            "depth_of_field": "moderate depth of field, f/4.0–5.6",
+            "beat_type": "denouement",
+            "lens_mm": 85,
+            "emotional_beat_index": 0.83
+          },
+          "shot_role": "establishing",
+          "composition_description": "waist-up framing; subject on vertical third; negative space on conversation side",
+          "lighting_directives": "motivated practical sources; mixed temperature acceptable",
+          "framing_note": "full body visible, environment readable",
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 90,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_010_SHOT_003",
+          "scene_id": "SCN_010",
+          "prompt": "At the far end, armed units pour into the shaft entrance, in INT. SERVICE SPINE - CONTINUOUS. motivated practical sources; mixed temperature acceptable |cinematic| Composition: full figure visible; subject occupies 25–40% frame height; rule of thirds applied.",
+          "duration_sec": 6,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "dolly_out",
+          "action": {
+            "subject_id": "at",
+            "action_type": "the",
+            "target": "shaft entrance",
+            "modifiers": [],
+            "location_id": "int_service_spine_continuous",
+            "camera_intent": "dolly_out",
+            "source_text": "At the far end, armed units pour into the shaft entrance."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient",
+            "depth_of_field": "deep depth of field, f/8.0",
+            "beat_type": "denouement",
+            "lens_mm": 85,
+            "emotional_beat_index": 0.83
+          },
+          "shot_role": "establishing",
+          "composition_description": "full figure visible; subject occupies 25–40% frame height; rule of thirds applied",
+          "lighting_directives": "motivated practical sources; mixed temperature acceptable",
+          "framing_note": null,
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 70,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_010_SHOT_004",
+          "scene_id": "SCN_010",
+          "prompt": "VALE (V.O. OVER COMMS), in INT. SERVICE SPINE - CONTINUOUS. motivated practical sources; mixed temperature acceptable |cinematic| Composition: waist-up framing; subject on vertical third; negative space on conversation side.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "vale",
+            "action_type": "v",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_service_spine_continuous",
+            "camera_intent": "static",
+            "source_text": "VALE (V.O. OVER COMMS)"
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient",
+            "depth_of_field": "moderate depth of field, f/4.0–5.6",
+            "beat_type": "denouement",
+            "lens_mm": 85,
+            "emotional_beat_index": 0.83
+          },
+          "shot_role": "coverage",
+          "composition_description": "waist-up framing; subject on vertical third; negative space on conversation side",
+          "lighting_directives": "motivated practical sources; mixed temperature acceptable",
+          "framing_note": null,
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 90,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_010_SHOT_005",
+          "scene_id": "SCN_010",
+          "prompt": "Nara Voss. Stop running. The truth is not what you think it is, in INT. SERVICE SPINE - CONTINUOUS. motivated practical sources; mixed temperature acceptable |cinematic| Composition: shoulders-to-crown; eyes at upper third; mouth near center; ear off-frame.",
+          "duration_sec": 4,
+          "emotion": "neutral",
+          "shot_type": "close_up",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "voss",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_service_spine_continuous",
+            "camera_intent": "static",
+            "source_text": "Nara Voss. Stop running. The truth is not what you think it is."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient",
+            "depth_of_field": "shallow depth of field, f/1.8–2.0",
+            "beat_type": "denouement",
+            "lens_mm": 85,
+            "emotional_beat_index": 0.83
+          },
+          "shot_role": "reaction",
+          "composition_description": "shoulders-to-crown; eyes at upper third; mouth near center; ear off-frame",
+          "lighting_directives": "motivated practical sources; mixed temperature acceptable",
+          "framing_note": null,
+          "rhythm_purpose": "peak intensity reaction",
+          "visual_invariants_applied": [],
+          "feasibility_score": 90,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_010_SHOT_006",
+          "scene_id": "SCN_010",
+          "prompt": "Mira disappears into a side duct and Nara escapes behind a closing blast door, in INT. SERVICE SPINE - CONTINUOUS. motivated practical sources; mixed temperature acceptable |cinematic| Composition: full figure visible; subject occupies 25–40% frame height; rule of thirds applied. Character: compact, precise movements, rarely makes eye contact until she has made a decision slate-grey tactical vest over black thermal, utility belt, close-cropped hair Lighting: motivated practical source, cool ambient fill, minimal key — she does not invite attention..",
+          "duration_sec": 6,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "dolly_out",
+          "action": {
+            "subject_id": "mira",
+            "action_type": "disappears",
+            "target": "side duct and nara escapes behind closing blast door",
+            "modifiers": [],
+            "location_id": "int_service_spine_continuous",
+            "camera_intent": "dolly_out",
+            "source_text": "Mira disappears into a side duct and Nara escapes behind a closing blast door."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient",
+            "depth_of_field": "deep depth of field, f/8.0",
+            "beat_type": "denouement",
+            "lens_mm": 85,
+            "emotional_beat_index": 0.83
+          },
+          "shot_role": "establishing",
+          "composition_description": "full figure visible; subject occupies 25–40% frame height; rule of thirds applied",
+          "lighting_directives": "motivated practical sources; mixed temperature acceptable",
+          "framing_note": null,
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 70,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_010_SHOT_007",
+          "scene_id": "SCN_010",
+          "prompt": "Silence, in INT. SERVICE SPINE - CONTINUOUS. motivated practical sources; mixed temperature acceptable |cinematic| Composition: waist-up framing; subject on vertical third; negative space on conversation side.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "silence",
+            "action_type": "silence",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_service_spine_continuous",
+            "camera_intent": "static",
+            "source_text": "Silence."
+          },
+          "metadata": {
+            "time_of_day_visual": "interior",
+            "dominant_sound": "ambient",
+            "depth_of_field": "moderate depth of field, f/4.0–5.6",
+            "beat_type": "denouement",
+            "lens_mm": 85,
+            "emotional_beat_index": 0.83
+          },
+          "shot_role": "coverage",
+          "composition_description": "waist-up framing; subject on vertical third; negative space on conversation side",
+          "lighting_directives": "motivated practical sources; mixed temperature acceptable",
+          "framing_note": null,
+          "rhythm_purpose": "scene resolution",
+          "visual_invariants_applied": [],
+          "feasibility_score": 90,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_011_SHOT_001",
+          "scene_id": "SCN_011",
+          "prompt": "Nara returns home soaked and shaken, in INT. VOSS APARTMENT - PRE-DAWN. soft diffused natural light; low saturation; horizon warm |cinematic| Composition: full figure visible; subject occupies 25–40% frame height; rule of thirds applied.",
+          "duration_sec": 6,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "returns",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "static",
+            "source_text": "Nara returns home soaked and shaken."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient",
+            "depth_of_field": "deep depth of field, f/8.0",
+            "beat_type": "denouement",
+            "lens_mm": 85,
+            "emotional_beat_index": 0.9
+          },
+          "shot_role": "establishing",
+          "composition_description": "full figure visible; subject occupies 25–40% frame height; rule of thirds applied",
+          "lighting_directives": "soft diffused natural light; low saturation; horizon warm",
+          "framing_note": "full body visible, environment readable",
+          "rhythm_purpose": "geography establishment",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_011_SHOT_002",
+          "scene_id": "SCN_011",
+          "prompt": "Nara returns home soaked and shaken, in INT. VOSS APARTMENT - PRE-DAWN. soft diffused natural light; low saturation; horizon warm |cinematic| Composition: waist-up framing; subject on vertical third; negative space on conversation side.",
+          "duration_sec": 6,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "returns",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "static",
+            "source_text": "Nara returns home soaked and shaken."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient",
+            "depth_of_field": "moderate depth of field, f/4.0–5.6",
+            "beat_type": "denouement",
+            "lens_mm": 85,
+            "emotional_beat_index": 0.9
+          },
+          "shot_role": "establishing",
+          "composition_description": "waist-up framing; subject on vertical third; negative space on conversation side",
+          "lighting_directives": "soft diffused natural light; low saturation; horizon warm",
+          "framing_note": "full body visible, environment readable",
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_011_SHOT_003",
+          "scene_id": "SCN_011",
+          "prompt": "Nara returns home soaked and shaken, in INT. VOSS APARTMENT - PRE-DAWN. soft diffused natural light; low saturation; horizon warm |cinematic| Composition: full figure visible; subject occupies 25–40% frame height; rule of thirds applied.",
+          "duration_sec": 7,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "dolly_out",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "returns",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "dolly_out",
+            "source_text": "Nara returns home soaked and shaken."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient",
+            "depth_of_field": "deep depth of field, f/8.0",
+            "beat_type": "denouement",
+            "lens_mm": 85,
+            "emotional_beat_index": 0.9
+          },
+          "shot_role": "establishing",
+          "composition_description": "full figure visible; subject occupies 25–40% frame height; rule of thirds applied",
+          "lighting_directives": "soft diffused natural light; low saturation; horizon warm",
+          "framing_note": null,
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 80,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_011_SHOT_004",
+          "scene_id": "SCN_011",
+          "prompt": "Elian sees her face and knows the secret is gone, in INT. VOSS APARTMENT - PRE-DAWN. soft diffused natural light; low saturation; horizon warm |cinematic| Composition: waist-up framing; subject on vertical third; negative space on conversation side.",
+          "duration_sec": 6,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "elian",
+            "action_type": "sees",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "static",
+            "source_text": "Elian sees her face and knows the secret is gone."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient",
+            "depth_of_field": "moderate depth of field, f/4.0–5.6",
+            "beat_type": "denouement",
+            "lens_mm": 85,
+            "emotional_beat_index": 0.9
+          },
+          "shot_role": "coverage",
+          "composition_description": "waist-up framing; subject on vertical third; negative space on conversation side",
+          "lighting_directives": "soft diffused natural light; low saturation; horizon warm",
+          "framing_note": null,
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_011_SHOT_005",
+          "scene_id": "SCN_011",
+          "prompt": "Nara recoils as the truth lands between them, in INT. VOSS APARTMENT - PRE-DAWN. soft diffused natural light; low saturation; horizon warm |cinematic| Composition: shoulders-to-crown; eyes at upper third; mouth near center; ear off-frame.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "close_up",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "nara",
+            "action_type": "recoils",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "static",
+            "source_text": "Nara recoils as the truth lands between them."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient",
+            "depth_of_field": "shallow depth of field, f/1.8–2.0",
+            "beat_type": "denouement",
+            "lens_mm": 85,
+            "emotional_beat_index": 0.9
+          },
+          "shot_role": "reaction",
+          "composition_description": "shoulders-to-crown; eyes at upper third; mouth near center; ear off-frame",
+          "lighting_directives": "soft diffused natural light; low saturation; horizon warm",
+          "framing_note": null,
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_011_SHOT_006",
+          "scene_id": "SCN_011",
+          "prompt": "He gives her an encrypted drive, in INT. VOSS APARTMENT - PRE-DAWN. soft diffused natural light; low saturation; horizon warm |cinematic| Composition: full figure visible; subject occupies 25–40% frame height; rule of thirds applied.",
+          "duration_sec": 7,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "dolly_out",
+          "action": {
+            "subject_id": "he",
+            "action_type": "gives",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "dolly_out",
+            "source_text": "He gives her an encrypted drive."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient",
+            "depth_of_field": "deep depth of field, f/8.0",
+            "beat_type": "denouement",
+            "lens_mm": 85,
+            "emotional_beat_index": 0.9
+          },
+          "shot_role": "establishing",
+          "composition_description": "full figure visible; subject occupies 25–40% frame height; rule of thirds applied",
+          "lighting_directives": "soft diffused natural light; low saturation; horizon warm",
+          "framing_note": null,
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 80,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_011_SHOT_007",
+          "scene_id": "SCN_011",
+          "prompt": "Heavy boots pound outside the apartment door, in INT. VOSS APARTMENT - PRE-DAWN. soft diffused natural light; low saturation; horizon warm |cinematic| Composition: waist-up framing; subject on vertical third; negative space on conversation side.",
+          "duration_sec": 6,
+          "emotion": "neutral",
+          "shot_type": "medium",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "heavy",
+            "action_type": "boots",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "static",
+            "source_text": "Heavy boots pound outside the apartment door."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient",
+            "depth_of_field": "moderate depth of field, f/4.0–5.6",
+            "beat_type": "denouement",
+            "lens_mm": 85,
+            "emotional_beat_index": 0.9
+          },
+          "shot_role": "coverage",
+          "composition_description": "waist-up framing; subject on vertical third; negative space on conversation side",
+          "lighting_directives": "soft diffused natural light; low saturation; horizon warm",
+          "framing_note": null,
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_011_SHOT_008",
+          "scene_id": "SCN_011",
+          "prompt": "The door detonates inward, in INT. VOSS APARTMENT - PRE-DAWN. soft diffused natural light; low saturation; horizon warm |cinematic| Composition: shoulders-to-crown; eyes at upper third; mouth near center; ear off-frame.",
+          "duration_sec": 5,
+          "emotion": "neutral",
+          "shot_type": "close_up",
+          "camera_movement": "static",
+          "action": {
+            "subject_id": "door",
+            "action_type": "detonates",
+            "target": null,
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "static",
+            "source_text": "The door detonates inward."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient",
+            "depth_of_field": "shallow depth of field, f/1.8–2.0",
+            "beat_type": "denouement",
+            "lens_mm": 85,
+            "emotional_beat_index": 0.9
+          },
+          "shot_role": "reaction",
+          "composition_description": "shoulders-to-crown; eyes at upper third; mouth near center; ear off-frame",
+          "lighting_directives": "soft diffused natural light; low saturation; horizon warm",
+          "framing_note": null,
+          "rhythm_purpose": "continuity coverage",
+          "visual_invariants_applied": [],
+          "feasibility_score": 100,
+          "reference_anchor_strength": 0.9
+        },
+        {
+          "shot_id": "SCN_011_SHOT_009",
+          "scene_id": "SCN_011",
+          "prompt": "SMASH CUT TO BLACK, in INT. VOSS APARTMENT - PRE-DAWN. soft diffused natural light; low saturation; horizon warm |cinematic| Composition: full figure visible; subject occupies 25–40% frame height; rule of thirds applied.",
+          "duration_sec": 7,
+          "emotion": "neutral",
+          "shot_type": "wide",
+          "camera_movement": "dolly_out",
+          "action": {
+            "subject_id": "smash",
+            "action_type": "cut",
+            "target": "black",
+            "modifiers": [],
+            "location_id": "int_voss_apartment_pre_dawn",
+            "camera_intent": "dolly_out",
+            "source_text": "SMASH CUT TO BLACK."
+          },
+          "metadata": {
+            "time_of_day_visual": "dawn",
+            "dominant_sound": "ambient",
+            "depth_of_field": "deep depth of field, f/8.0",
+            "beat_type": "denouement",
+            "lens_mm": 85,
+            "emotional_beat_index": 0.9
+          },
+          "shot_role": "establishing",
+          "composition_description": "full figure visible; subject occupies 25–40% frame height; rule of thirds applied",
+          "lighting_directives": "soft diffused natural light; low saturation; horizon warm",
+          "framing_note": null,
+          "rhythm_purpose": "release and exit",
+          "visual_invariants_applied": [],
+          "feasibility_score": 80,
+          "reference_anchor_strength": 0.9
+        }
+      ],
+      "pacing_profile": {
+        "total_duration_sec": 303,
+        "mean_shot_duration": 5.05,
+        "shot_count": 60,
+        "pacing_label": "medium"
+      },
+      "consistency_report": {
+        "consistency_score": 1.0,
+        "tone_conflicts": [],
+        "continuity_warnings": [],
+        "movement_simplifications": [],
+        "prompt_enrichments": 60
+      },
+      "rule_engine_report": {
+        "rules_evaluated": 540,
+        "hard_conflicts_resolved": 0,
+        "soft_conflicts_annotated": 0,
+        "total_shots_modified": 0,
+        "conflict_shot_ids": [],
+        "rule_ids_fired": []
+      }
+    }
+  ],
+  "visual_bible_summary": {
+    "series_title": "District Zero",
+    "character_count": 3,
+    "location_count": 4
+  },
+  "rule_engine_report": {
+    "rules_evaluated": 540,
+    "hard_conflicts_resolved": 0,
+    "soft_conflicts_annotated": 0,
+    "total_shots_modified": 0,
+    "conflict_shot_ids": [],
+    "rule_ids_fired": []
+  }
+}

@@ -1,0 +1,173 @@
+{
+  "ext_outer_wall_night": {
+    "scene_ids": [
+      "SCN_001"
+    ],
+    "slug": "EXT. DISTRICT ZERO OUTER WALL — NIGHT",
+    "ref_image": "C:\\Users\\averr\\AIPROD_V2\\production\\location_refs\\ext_outer_wall_night_master.png",
+    "seed": 11,
+    "canonical": "Monumental seawall at night — concrete face 25 metres high, water-stained, corroded steel reinforcement bars visible at base. Black churning water crashing against the wall base, catching searchbeam reflections. Behind the wall and above it: the drowned megacity skyline — Art Deco and Brutalist towers individually distinct, hundreds of dark windows, structural ribs, water-stain tide marks halfway up every facade. Each tower readable separately even at distance. Salt mist. Search beams sweeping in slow mechanical arcs from elevated positions.",
+    "lighting_brief": "Search beams: HMI 18K on motorised pan heads — cold 5600K, sweeping 4-second arcs. Building facades: practical LED strips at distant window grids — warm amber pinpoints. Water surface: picking up every beam reflection, black glass between sweeps. No fill light, no ambient warmth. Contrast ratio 15:1.",
+    "camera": "ARRI Alexa 35, Cooke Anamorphic /i 32mm T2.3, ISO 1600, 180deg shutter",
+    "colour": {
+      "dominant": "#0A1520",
+      "accent": "#2060C0",
+      "blacks": "#060A0F"
+    },
+    "dop_ref": "Roger Deakins / Blade Runner 2049 (2017) — exterior water sequence"
+  },
+  "int_transit_corridor_night": {
+    "scene_ids": [
+      "SCN_002"
+    ],
+    "slug": "INT. LOWER TRANSIT STACK — SERVICE CORRIDOR — NIGHT",
+    "ref_image": "C:\\Users\\averr\\AIPROD_V2\\production\\location_refs\\int_transit_corridor_night_master.png",
+    "seed": 22,
+    "canonical": "Narrow maintenance corridor, 2.2m wide, extreme vanishing-point perspective to infinity. Corroded riveted steel walls — each rivet head individually textured with rust bloom. Dense cable tray bundles running the full length at 2m height, conduit packed in layers of 3-4. Wet concrete floor: puddles reflecting the single light source at the far end. Broken pipe joint mid-corridor releasing a horizontal steam jet that catches the backlight. Overhead: darkness. The single cage tungsten lamp at the far vanishing point is the only visible light source. Everything else in shadow.",
+    "lighting_brief": "Key: single cage tungsten work lamp at vanishing point 30m ahead — 2850K, 500W, generating circular warm glow that falls off sharply to full shadow on both sides. Practical: amber LED accent strips at ankle height on left wall — 2200K, 15% intensity. Ambient: cool blue reflection from wet floor — 6500K bounce from an unseen source behind camera. Ratio 8:1.",
+    "camera": "ARRI Alexa 35, Cooke Anamorphic /i 32mm T2.3, ISO 1600, 180deg shutter",
+    "colour": {
+      "dominant": "#1C2B35",
+      "accent": "#B8600A",
+      "blacks": "#0A0F12"
+    },
+    "dop_ref": "Roger Deakins / Sicario (2015) — sub-tunnel approach sequence"
+  },
+  "int_pressure_valve_chamber_night": {
+    "scene_ids": [
+      "SCN_003"
+    ],
+    "slug": "INT. PRESSURE VALVE CHAMBER — NIGHT",
+    "ref_image": "C:\\Users\\averr\\AIPROD_V2\\production\\location_refs\\int_pressure_valve_chamber_night_master.png",
+    "seed": 33,
+    "canonical": "Cathedral-scale industrial chamber — ceiling lost in darkness 15m above. Wall-to-wall pressure valve assembly: cast iron manifolds, 40cm diameter flanged pipes in arrays, valves with large wheel handles showing orange rust streaks. Scale crushing: human figures at 10% of frame height. Steam vent active — horizontal white jet at 2m height catches overhead fluorescent light. Emergency alarm strobe: white pulse cycling at 2Hz — hard shadows snapping across metal surfaces. Workers in worn coveralls visible as blurred distant figures.",
+    "lighting_brief": "Alarm strobe: white 5600K, cycling at 0.5Hz — spikes to 20:1 on each flash. Base: overhead emergency fluorescent strips — green-white 5000K wash at 15% intensity between flashes. Industrial practical: amber halogen on valve gauges — 2700K pin sources. Steam backlit by fluorescent overhead — diffused glow. Base ratio 6:1, alarm flash 12:1.",
+    "camera": "ARRI Alexa 35, Cooke Anamorphic /i 32mm T2.3, ISO 800, 180deg shutter",
+    "colour": {
+      "dominant": "#1A2215",
+      "accent": "#E8F040",
+      "blacks": "#0A0D08"
+    },
+    "dop_ref": "Denis Villeneuve / Arrival (2016) — interior industrial scale"
+  },
+  "int_voss_apartment_night": {
+    "scene_ids": [
+      "SCN_004"
+    ],
+    "slug": "INT. VOSS APARTMENT — LOWER STACK — LATE NIGHT",
+    "ref_image": "C:\\Users\\averr\\AIPROD_V2\\production\\location_refs\\int_voss_apartment_night_master.png",
+    "seed": 44,
+    "canonical": "Cramped single-room apartment in a lower stack block. Walls: peeling paint over exposed concrete, improvised shelving of salvaged planks, stacked containers, tools. Ceiling: exposed pipe bundles running diagonally, single wire-hung practical lamp (amber, cloth-shade). Narrow window with condensation on the glass — neon glow bleeding through from building exterior. Floor: worn linoleum, random objects. Furniture: repurposed industrial crates as seating, one salvaged chair. Everything dense and layered — the visual language of survival.",
+    "lighting_brief": "Key: practical desk lamp 2700K at camera-right — small, warm, only 60W equivalent. Creating intimate amber circle within larger darkness. Fill: zero. Ambient: amber neon exterior seeping through window behind — barely 1% contribution, just separation. Deep shadows fill 70% of frame. Ratio 6:1.",
+    "camera": "ARRI Alexa 35, Cooke Anamorphic /i 50mm T2.8, ISO 1600, 180deg shutter",
+    "colour": {
+      "dominant": "#1E1510",
+      "accent": "#C87820",
+      "blacks": "#0C0A07"
+    },
+    "dop_ref": "Alfonso Cuaron / Children of Men (2006) — domestic late-night interior"
+  },
+  "int_civic_atrium_morning": {
+    "scene_ids": [
+      "SCN_005"
+    ],
+    "slug": "INT. CIVIC ATRIUM — DISTRICT ZERO CENTRAL CORE — MORNING",
+    "ref_image": "C:\\Users\\averr\\AIPROD_V2\\production\\location_refs\\int_civic_atrium_morning_master.png",
+    "seed": 55,
+    "canonical": "Vast civic atrium: polished white marble floor 80m across. High glass ceiling — diffused grey morning sky visible above. Monumental propaganda screens 12m tall on the east wall — precise sans-serif typography, institutional imagery. Steel and glass balconies on three levels above ground floor. Ground floor: streams of citizens moving in organised patterns — hundreds of figures, dense but orderly. Upper balcony (level 2): glass-and-steel railing, Vale's observation position. The architecture expresses control through immaculate emptiness and scale.",
+    "lighting_brief": "Key: diffused daylight through high glass ceiling — overcast 6000K, flat overhead. Ground: marble bounce adding subtle fill from below. Upper balcony: harder shaft of directional daylight through narrower window — 4:1 ratio on Vale. No warm practicals. Clean, clinical, oppressive perfection. Overall ratio 3:1 in atrium, 5:1 on balcony.",
+    "camera": "ARRI Alexa 35, Cooke Anamorphic /i 32mm T2.3, ISO 400, 180deg shutter",
+    "colour": {
+      "dominant": "#C8D0D0",
+      "accent": "#D4AF6A",
+      "blacks": "#1A1A18"
+    },
+    "dop_ref": "Roger Deakins / Skyfall (2012) — Silva's island interior architecture"
+  },
+  "int_black_market_sublevel_day": {
+    "scene_ids": [
+      "SCN_006"
+    ],
+    "slug": "INT. BLACK MARKET EXCHANGE — VENTILATION SUBLEVEL — DAY",
+    "ref_image": "C:\\Users\\averr\\AIPROD_V2\\production\\location_refs\\int_black_market_sublevel_day_master.png",
+    "seed": 66,
+    "canonical": "Underground ventilation sublevel converted into an illegal signal market. Dense: vendor stalls made from scavenged server racks, cable-draped canopies, stacked monitors at varying heights. Ceiling: exposed ventilation ductwork — rectangular 60cm ducts running in a grid, with dust-covered grilles admitting thin grey daylight shafts. Wiring bundles looping between stall uprights. Neon signs in improvised Cyrillic-adjacent lettering — cyan and amber. Ground: bare concrete, moisture seeping from walls. 40+ people as background — specific details, not a crowd blur.",
+    "lighting_brief": "Primary: amber LED strips under stall tables — 2000K, warm, from below creating uplight on vendor faces. Neon: cyan signage one side, amber the other — strong colour clash at 2m height. Daylight: thin grey shafts from ventilation grilles above — 6000K, narrow, cutting through haze. Result: warm amber foreground, colour neon mid, cold grey from above. Ratio 7:1.",
+    "camera": "ARRI Alexa 35, Cooke Anamorphic /i 32mm T2.3, ISO 1600, 180deg shutter",
+    "colour": {
+      "dominant": "#2A1A0A",
+      "accent": "#E8890A",
+      "blacks": "#0F0A05"
+    },
+    "dop_ref": "Denis Villeneuve / Blade Runner 2049 (2017) — underground market"
+  },
+  "int_security_ops_center_day": {
+    "scene_ids": [
+      "SCN_007"
+    ],
+    "slug": "INT. SECURITY OPERATIONS CENTER — DAY",
+    "ref_image": "C:\\Users\\averr\\AIPROD_V2\\production\\location_refs\\int_security_ops_center_day_master.png",
+    "seed": 77,
+    "canonical": "Control room occupying a converted upper-level space. Wall of displays: 12 screens in 4x3 grid showing live city schematic, sector heat maps, movement tracking. Displays: dark glass, cold blue-cyan glow. Analyst stations in rows: 8 workstations, all facing the wall display. Overhead: strip lighting dimmed to 10%. One large window behind analysts: cold grey exterior view providing backlight silhouette separation. Vale's position: standing 2m back from the display wall, arms behind back — the only person not seated.",
+    "lighting_brief": "Key: screen glow — cold cyan-blue 6500K washing analysts from front. Overhead: dimmed to near-zero — 10% of rated output. Window: cold grey exterior backlight providing rim on analysts. Vale backlit — near-silhouette with cold edge. Zero warm sources. Ratio 9:1 in shadows, 3:1 on illuminated analyst faces.",
+    "camera": "ARRI Alexa 35, Cooke Anamorphic /i 32mm T2.3, ISO 800, 180deg shutter",
+    "colour": {
+      "dominant": "#0D1B2A",
+      "accent": "#00C8FF",
+      "blacks": "#080C10"
+    },
+    "dop_ref": "David Fincher / The Social Network (2010) — ops room cold interior"
+  },
+  "int_service_spine_night": {
+    "scene_ids": [
+      "SCN_008",
+      "SCN_010"
+    ],
+    "slug": "INT. SEALED SERVICE SPINE — NIGHT",
+    "ref_image": "C:\\Users\\averr\\AIPROD_V2\\production\\location_refs\\int_service_spine_night_master.png",
+    "seed": 88,
+    "canonical": "Underground maintenance tunnel buried in the city's structural skeleton. Symmetrical bilateral composition with extreme central vanishing point. Wooden plank walls with horizontal steel crossbeam supports every 2m — aged wood, mineral deposits, surface rust. Corroded iron pipe bundles along both lower walls at floor level. Two parallel narrow-gauge railway tracks in dust-covered concrete floor. Emergency floor-level fluorescent strips at intervals on right wall — green-tinted 4000K, receding into atmospheric fog. Ancient relay control panel on left wall at mid-point: amber OLED backlit gauges, physical toggle switches, brass identification plaques. Absolute darkness beyond 8 metres ahead.",
+    "lighting_brief": "Key: floor-level emergency fluorescent strips at right wall — green 4000K, extremely low angle, creating long horizontal shadows. Control panel: amber OLED back-glow 2700K — only visible warm source at close range. Fog/atmosphere: micro-particles in tunnel air scattering floor strips. Overhead: zero light — absolute ceiling darkness. Ratio 12:1. ISO pushed — visible grain.",
+    "camera": "ARRI Alexa 35, Cooke Anamorphic /i 32mm T2.3, ISO 3200, 180deg shutter",
+    "colour": {
+      "dominant": "#0A150A",
+      "accent": "#40B040",
+      "blacks": "#050805"
+    },
+    "dop_ref": "Roger Deakins / Sicario (2015) — sub-tunnel NVG sequence"
+  },
+  "int_observation_chamber": {
+    "scene_ids": [
+      "SCN_009"
+    ],
+    "slug": "INT. EXTERNAL OBSERVATION CHAMBER — CONTINUOUS",
+    "ref_image": "C:\\Users\\averr\\AIPROD_V2\\production\\location_refs\\int_observation_chamber_master.png",
+    "seed": 99,
+    "canonical": "Industrial observation chamber at massive scale — the hidden truth of the wall's interior. Pumping machinery filling the walls: large hydraulic cylinders, corroded copper piping with verdigris, pressure gauges, metal walkways at multiple heights. A bank of mechanical shutters across the outer wall: steel slats 30cm wide, hinged, motorised — currently opening. Through the opening shutters: the impossible view — organised lights in the far distance, the outside world that was declared dead. Red alarm ceiling strip flooding the chamber — 360-degree wall wash. Two competing light sources at war.",
+    "lighting_brief": "Red alarm: ceiling strip — 2700K red, wall-washing all interior surfaces. Through shutters: cold grey-blue exterior ambient — 7000K, growing stronger as shutters open. Interior vs exterior war: warm red vs cold blue-grey at the shutter threshold. Ratio 8:1 inside. Alarm active.",
+    "camera": "ARRI Alexa 35, Cooke Anamorphic /i 32mm T2.3, ISO 800, 180deg shutter",
+    "colour": {
+      "dominant": "#1A0505",
+      "accent": "#FF2010",
+      "blacks": "#0A0202"
+    },
+    "dop_ref": "Alfonso Cuaron / Children of Men (2006) — revelation exterior light"
+  },
+  "int_voss_apartment_predawn": {
+    "scene_ids": [
+      "SCN_011"
+    ],
+    "slug": "INT. VOSS APARTMENT — PRE-DAWN",
+    "ref_image": "C:\\Users\\averr\\AIPROD_V2\\production\\location_refs\\int_voss_apartment_predawn_master.png",
+    "seed": 121,
+    "canonical": "Same apartment as SCN_004, but now pre-dawn. The practical desk lamp is off — dead. The single window admits the only light: cold pre-dawn blue, 4500K, a thin horizontal bar of grey-blue across the floor and lower walls. The rest of the apartment is in near-absolute darkness. Objects are shapes, not details. Two human presences in the room — revealed only by the cold exterior light edge on hair and shoulder. Then: the door at frame-right begins to fracture at the lock housing — first the paint chips, then the frame splinters.",
+    "lighting_brief": "Pre-dawn exterior: 4500K cold blue through small window — single source, extremely low intensity. Acts as ambient wash from one direction only. No practicals. Faces: near-darkness, detail only from cold exterior bounce. Ratio 15:1. Then: door detonation — practical explosion flash, white 5600K, 1/24sec burst. Absolute contrast with dread silence before it.",
+    "camera": "ARRI Alexa 35, Cooke Anamorphic /i 50mm T2.8, ISO 3200, 180deg shutter",
+    "colour": {
+      "dominant": "#12100E",
+      "accent": "#6080C0",
+      "blacks": "#080706"
+    },
+    "dop_ref": "Roger Deakins / No Country for Old Men (2007) — pre-dawn interior, dread before violence"
+  }
+}

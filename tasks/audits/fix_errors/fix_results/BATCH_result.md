@@ -1,9 +1,9 @@
 ﻿---
 type: batch_result
 projet: AIPROD_V2
-batch_date: 2026-04-26
-creation: 2026-04-26 à 13:27
-batches_appliques: [1, 2, 3, 4, 5, 6]
+batch_date: 2026-04-27
+creation: 2026-04-27 à 15:56
+batches_appliques: [1, 2, 3, 4, 5, 6, "A1", "A2", "A3", "A4"]
 ---
 
 # BATCH_result — P3 CORRECTIONS APPLIQUÉES (Batches 1–6)
@@ -171,4 +171,108 @@ tests             : 998 passed, 4 deselected  ✅
 **TOUS LES BATCHES APPLIQUÉS AVEC SUCCÈS — 0 BLOCKER**
 
 → Passer à **P4_VERIFY_prompt.md** pour validation indépendante.
+
+---
+
+# SESSION 2 — Option A (rembg + images.edit) — Batches A1–A4
+## (2026-04-27)
+
+---
+
+## BATCH A1 — `image_gen/character_mask` + `pyproject.toml`
+
+```
+BATCH_A1 = {
+  files_corriges: [
+    "aiprod_adaptation/image_gen/character_mask.py",
+    "pyproject.toml",
+  ],
+  fixes_appliques: [
+    { file: "character_mask.py", line: 36, type: "interdit-type_ignore[import-untyped]", fix: "removed # type: ignore[import-untyped] on rembg import" },
+    { file: "character_mask.py", line: 77, type: "interdit-type_ignore[import-untyped]", fix: "removed # type: ignore[import-untyped] on PIL import" },
+    { file: "pyproject.toml", line: null, type: "mypy-import-not-found", fix: "added 'rembg' and 'rembg.*' to [[tool.mypy.overrides]] ignore_missing_imports block (PIL.* was already there)" },
+  ],
+  blockers: [],
+  verify: "mypy strict 88 files — 0 errors ✅ | ruff character_mask.py — 0 errors ✅",
+}
+```
+
+---
+
+## BATCH A2 — `image_gen/image_adapter` + `openai_image_adapter`
+
+```
+BATCH_A2 = {
+  files_corriges: [
+    "aiprod_adaptation/image_gen/image_adapter.py",
+    "aiprod_adaptation/image_gen/openai_image_adapter.py",
+  ],
+  fixes_appliques: [
+    { file: "image_adapter.py", line: null, type: "missing-base-method (root cause type:ignore[override])", fix: "added concrete generate_edit(request, reference_rgba) → ImageResult to ImageAdapter ABC (delegates to self.generate()); NullImageAdapter inherits it" },
+    { file: "openai_image_adapter.py", line: 138, type: "interdit-noqa PLC0415", fix: "moved 'import io' from inside generate_edit() body to top-level stdlib imports, removed # noqa: PLC0415" },
+  ],
+  blockers: [],
+  verify: "ruff — 0 errors ✅",
+}
+```
+
+---
+
+## BATCH A3 — `image_gen/character_prepass` + `storyboard`
+
+```
+BATCH_A3 = {
+  files_corriges: [
+    "aiprod_adaptation/image_gen/character_prepass.py",
+    "aiprod_adaptation/image_gen/storyboard.py",
+  ],
+  fixes_appliques: [
+    { file: "character_prepass.py", line: 114, type: "interdit-noqa PLC0415", fix: "moved 'import base64' to top-level" },
+    { file: "character_prepass.py", line: 115, type: "interdit-noqa PLC0415", fix: "moved 'from character_mask import build_edit_mask / remove_background as _remove_bg' to top-level (split into 2 import blocks per ruff I001)" },
+    { file: "character_prepass.py", line: 141, type: "E501 (142 chars)", fix: "split long if-condition into parenthesized multi-line form" },
+    { file: "storyboard.py", line: 8, type: "TYPE_CHECKING→runtime", fix: "promoted FluxKontextAdapter from TYPE_CHECKING guard to real top-level import" },
+    { file: "storyboard.py", line: 320, type: "interdit-noqa PLC0415", fix: "removed inline FluxKontextAdapter import from function body; removed noqa" },
+    { file: "storyboard.py", line: 406, type: "interdit-noqa PLC0415", fix: "added OpenAIImageAdapter top-level import; removed inline import from function body; removed noqa" },
+    { file: "storyboard.py", line: 415, type: "E501 (142 chars)", fix: "split long if-condition into parenthesized multi-line form" },
+  ],
+  blockers: [],
+  verify: "ruff — 0 errors ✅",
+}
+```
+
+---
+
+## BATCH A4 — `tests/test_image_gen`
+
+```
+BATCH_A4 = {
+  files_corriges: [
+    "aiprod_adaptation/tests/test_image_gen.py",
+  ],
+  fixes_appliques: [
+    { file: "test_image_gen.py", line: 1361, type: "interdit-type_ignore[override]", fix: "removed; no longer needed since ImageAdapter.generate_edit() is now concrete" },
+    { file: "test_image_gen.py", line: 1012, type: "F401 unused-import", fix: "removed 'import io' (unused)" },
+    { file: "test_image_gen.py", line: 1017, type: "F401 unused-import", fix: "removed '_build_hf_client' from import (unused — patched via string path)" },
+    { file: "test_image_gen.py", lines: [900,927,1012,1041,1215,1237,1331,1375], type: "I001 import-sort ×8", fix: "sorted all import blocks: stdlib→3rd-party→local order, blank line separations, alphabetical names" },
+    { file: "test_image_gen.py", lines: [1257,1406,1410], type: "E501 ×3", fix: "wrapped patch() call + 2 ImageResult constructors onto multiple lines" },
+  ],
+  blockers: [],
+  verify: "ruff — 0 errors ✅",
+}
+```
+
+---
+
+## VÉRIFICATION FINALE — Session 2 (Batches A1–A4)
+
+```
+ruff_image_gen_files  : All checks passed!   ✅
+ruff_test_image_gen   : All checks passed!   ✅
+mypy_strict_CI        : 0 errors (88 files)  ✅
+tests                 : 1048 passed, 4 deselected  ✅
+interdits_restants    : 0  ✅
+```
+
+**VERDICT : 0 interdit, 0 blocker, 0 régression.**
+
 

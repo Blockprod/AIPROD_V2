@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -271,6 +271,41 @@ class Episode(BaseModel):
     rule_engine_report: RuleEngineReport | None = None
 
 
+class GlobalAsset(BaseModel):
+    """
+    Persistent cross-episode asset entry (v5.0 consistency framework).
+
+    asset_type
+        "character" | "location" | "prop" | "costume" | "voice"
+    first_occurrence
+        shot_id of the first shot where this asset appears.
+    canon_locked
+        Once True, visual attributes must not change without a documented
+        narrative_lut_override in the shot IR.
+    """
+    asset_id: str
+    asset_type: Literal["character", "location", "prop", "costume", "voice"]
+    attributes: dict[str, Any] = Field(default_factory=dict)
+    first_occurrence: str
+    canon_locked: bool = False
+
+
+class Timeline(BaseModel):
+    """
+    Master timeline for an episode (v5.0 consistency framework).
+
+    episode_offsets
+        Maps episode_id → offset in seconds from season start.
+        { "EP_01": 0, "EP_02": 2340, ... }
+    absolute_timestamps
+        Ordered list of all shots with their absolute offsets.
+        Each entry: { shot_id, episode_id, offset_in_episode,
+                      offset_in_season, duration_sec, end_offset }
+    """
+    episode_offsets: dict[str, int] = Field(default_factory=dict)
+    absolute_timestamps: list[dict[str, Any]] = Field(default_factory=list)
+
+
 class AIPRODOutput(BaseModel):
     title: str
     episodes: list[Episode]
@@ -278,6 +313,10 @@ class AIPRODOutput(BaseModel):
     visual_bible_summary: dict[str, Any] = Field(default_factory=dict)
     # v4.1 rule engine report (aggregated across all episodes in this output)
     rule_engine_report: RuleEngineReport | None = None
+    # v5.0 consistency framework fields (all Optional — backward compatible)
+    global_assets: list[GlobalAsset] = Field(default_factory=list)
+    master_timeline: Timeline = Field(default_factory=Timeline)
+    color_luts: dict[str, str] = Field(default_factory=dict)
 
 
 class SeasonCoherenceMetrics(BaseModel):

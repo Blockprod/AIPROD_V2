@@ -1,0 +1,125 @@
+{
+  "style_block": "Photorealistic cinematic quality, ARRI Alexa 35, anamorphic lens, 4K hyperrealistic. Color grading: desaturated teal and steel-blue dominant, selective warm amber highlights in practical sources. No oversaturation, no fantasy glow, no HDR clipping. Natural grain texture, corroded metal surfaces, wet concrete, humid air with visible light particles. Lighting logic: practical sources only (halogen cage lights, neon, water reflections, emergency strips). Naturally contrasted chiaroscuro.",
+  "characters": {
+    "Nara": {
+      "prompt": "Female protagonist of a dystopian survival thriller TV series. Late 20s, facial appearance close to a top model: fine balanced features, elegant defined jawline, high cheekbones. Intense, intelligent eyes exhausted by hardship — determination and contained vulnerability in every feature. No excessive makeup. Natural skin, no airbrushing. Dark hair loosely tied back, stray strands at temples. Dark tactical neck scarf, weathered utility jacket.",
+      "reference_image_urls": [
+        "preproduction/district_zero/characters/nara_voss/nara_hero_ref_01.png"
+      ]
+    },
+    "Elian": {
+      "prompt": "Male supporting character in a dystopian survival thriller TV series. Early 50s, facial appearance close to a character actor of lead-role caliber: strong weathered features, deep lines earned by hardship, silver-streaked dark hair. Tired intelligent eyes carrying quiet guilt and emotional weight. Worn civilian workwear. Tight framing shoulders to crown. Dim warm practical light, cold atmospheric tones, blurred lower-stack background.",
+      "reference_image_urls": [
+        "preproduction/district_zero/characters/elian_voss/elian_hero_ref_01.png"
+      ]
+    },
+    "Mira": {
+      "prompt": "Female supporting character in a dystopian survival thriller TV series. Mid 30s, facial appearance close to a top model with an edge: sharp angular features, intense alert dark eyes expressing intelligence and distrust. Natural olive-brown complexion, no makeup. Scavenged layered urban tech outfit. Tight framing shoulders to crown. Low neon-tinged industrial lighting, cold industrial tones, blurred underground background.",
+      "reference_image_urls": [
+        "preproduction/district_zero/characters/mira_sol/mira_hero_ref_01.png"
+      ]
+    },
+    "Vale": {
+      "prompt": "Military antagonist in a dystopian thriller TV series. Late 40s, facial appearance close to a lead antagonist actor: commanding chiseled features with disciplined bearing and barely-contained menace. Precisely groomed dark hair with silver temples, cold pale eyes. Dark tactical command uniform. Tight framing shoulders to crown. Cold corporate-military overhead lighting, blue-grey tones, blurred cold glass institutional background.",
+      "reference_image_urls": [
+        "preproduction/district_zero/characters/vale/vale_hero_ref_01.png"
+      ]
+    },
+    "Rook": {
+      "prompt": "Political antagonist in a dystopian thriller TV series. Mid 50s, facial appearance close to a silver-fox lead actor: immaculate polished features projecting authority. Public-facing charisma concealing cold calculation in narrow eyes, silver hair with perfect grooming. High-authority formal attire. Tight framing shoulders to crown. Cold institutional lighting, blue-grey tones, blurred institutional background.",
+      "reference_image_urls": []
+    },
+    "units": {
+      "prompt": "Armed enforcement units of District Zero in matte black tactical gear, military-grade combat helmets, automatic weapons raised at the ready, multiple figures in tactical formation advancing through a corridor. Anonymous threat — no exposed faces, only armour and weaponry. Red emergency lighting, deep shadow, menace and power.",
+      "reference_image_urls": []
+    },
+    "door": {
+      "prompt": "Heavy reinforced metal apartment security door under violent siege, the frame bowing and shuddering under repeated impact from outside, red emergency warning light seeping under the door gap, lock housing visibly strained, paint chipped at impact points. Practical warm lamp light inside; darkness and threat beyond.",
+      "reference_image_urls": []
+    },
+    "Kael": {
+      "prompt": "Minor recurring character in a dystopian survival thriller TV series. Mid-twenties, East Asian features, dark wet hair, intense sideways gaze carrying quiet suspicion and street-survival intelligence. No allegiance, only survival. Worn dark work clothes. Operator of an illegal underground signal exchange — he has seen everything and trusts nobody. Tight framing shoulders to crown. Low neon-green and amber practical light, hacked monitor glow, humid underground air.",
+      "reference_image_urls": [
+        "preproduction/district_zero/characters/kael_dren/kael_hero_ref_01.png"
+      ]
+    }
+  },
+  "locations": {
+    "district_zero_outer_wall_night": {
+      "prompt": "Cinematic wide establishing shot, monumental seawall at night. Black churning water crashing against weathered floodlit concrete. In the background: drowned megacity with sharply detailed Art Deco and Brutalist towers — visible facade architecture, window grids, structural ribs, water-stain markings, each building individually distinct and precisely rendered even at distance. Search beams cutting through salt mist. Cold blue-steel atmosphere, deep depth of field, blurred foreground fog with sharp mid and background detail.",
+      "reference_image_urls": [
+        "preproduction/district_zero/locations/seawall_ref.png"
+      ]
+    },
+    "lower_transit_stack_service_corridor_night": {
+      "prompt": "photorealistic cinematic interior, leaking maintenance corridor at night, dense overlapping pipes and cable trays with condensation dripping, wet corroded steel surfaces reflecting emergency blue-white practicals, extreme foreground depth, claustrophobic vanishing-point perspective, dystopian industrial realism",
+      "reference_image_urls": [
+        "preproduction/district_zero/locations/transit_corridor_ref.png"
+      ]
+    },
+    "pressure_valve_chamber_night": {
+      "prompt": "photorealistic cinematic interior, massive industrial pressure valve chamber, cathedral-scale brutalist machinery with oxidised metal surfaces, harsh white diagnostic halogen light through steam and vapor haze, exhausted workers barely visible at distance, deep shadow pockets, extreme material detail on pipes and valves",
+      "reference_image_urls": [
+        "preproduction/district_zero/locations/pressure_valve_chamber_ref.png"
+      ]
+    },
+    "voss_apartment_lower_stack_late_night": {
+      "prompt": "photorealistic cinematic interior, cramped lower-stack apartment late night, peeling paint walls with exposed conduit wiring, improvised domestic warmth — handmade objects, worn furniture, salvaged light fixtures, intimate warm practical lamp glow against systemic decay, tight shallow depth of field, lived-in authenticity",
+      "reference_image_urls": [
+        "preproduction/district_zero/locations/voss_apartment_ref.png"
+      ]
+    },
+    "civic_atrium_central_core_morning": {
+      "prompt": "photorealistic cinematic wide shot, immaculate civic atrium morning, polished stone and glass with authoritarian precision, monumental propaganda screens with clinical typography, controlled bright daylight through high glass ceiling, emptiness emphasising authoritarian scale",
+      "reference_image_urls": [
+        "preproduction/district_zero/locations/civic_atrium_ref.png"
+      ]
+    },
+    "black_market_exchange_ventilation_sublevel_day": {
+      "prompt": "photorealistic cinematic interior, hidden underground signal market, hacked repurposed monitors and scavenged server racks in dense arrangement, humid industrial air with visible particulate light shafts, neon green and amber traces inside deep industrial shadow, extreme foreground detail, chaotic authenticity",
+      "reference_image_urls": [
+        "preproduction/district_zero/locations/black_market_ref.png"
+      ]
+    },
+    "security_operations_center_day": {
+      "prompt": "photorealistic cinematic interior, high-control surveillance operations center, layered live tactical schematics on dark glass displays, ordered authoritarian design with cold corporate-military precision, cool blue-grey overhead lighting without fill, controlled menace in emptiness",
+      "reference_image_urls": [
+        "preproduction/district_zero/locations/security_ops_ref.png"
+      ]
+    },
+    "sealed_service_spine_night": {
+      "prompt": "photorealistic cinematic interior, underground tunnel corridor with perfectly symmetrical bilateral composition, extreme central vanishing point dissolving into darkness and mist, wooden plank walls on both sides with horizontal steel crossbeam supports, corroded iron pipes bundled along the lower walls at floor level, two parallel railway tracks embedded in dusty concrete floor, amber cage bulb lights mounted at regular intervals on right wall receding into atmospheric fog, warm orange glow on rust-stained iron and aged wood, deep shadow overhead, no people, pure silence and dread",
+      "reference_image_urls": [
+        "preproduction/district_zero/locations/service_spine_ref.png"
+      ]
+    },
+    "external_observation_chamber_continuous": {
+      "prompt": "photorealistic cinematic interior opening to exterior, ancient observation chamber at massive industrial scale, hidden pumping machinery with hydraulic tubes and industrial grime, red alarm wash mixing with blue exterior light from opening, revelation scale, extreme wide depth",
+      "reference_image_urls": [
+        "preproduction/district_zero/locations/observation_chamber_ref.png"
+      ]
+    },
+    "voss_apartment_pre_dawn": {
+      "prompt": "photorealistic cinematic interior, pre-dawn apartment, cold blue dawn light spilling through cracked window blinds, mixing with dim warm dying practical lamp, emotional intimacy under siege, tense domestic realism, natural skin tone colour rendering, shallow depth of field",
+      "reference_image_urls": [
+        "preproduction/district_zero/locations/voss_apartment_pre_dawn_ref.png"
+      ]
+    }
+  },
+  "scene_locations": {
+    "SCN_001": "district_zero_outer_wall_night",
+    "SCN_002": "lower_transit_stack_service_corridor_night",
+    "SCN_003": "pressure_valve_chamber_night",
+    "SCN_004": "voss_apartment_lower_stack_late_night",
+    "SCN_005": "civic_atrium_central_core_morning",
+    "SCN_006": "black_market_exchange_ventilation_sublevel_day",
+    "SCN_007": "security_operations_center_day",
+    "SCN_008": "sealed_service_spine_night",
+    "SCN_009": "external_observation_chamber_continuous",
+    "SCN_010": "sealed_service_spine_night",
+    "SCN_011": "voss_apartment_pre_dawn"
+  },
+  "scene_adapters": {
+    "SCN_005": "openai"
+  }
+}

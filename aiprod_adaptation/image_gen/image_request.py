@@ -10,7 +10,13 @@ class ImageRequest(BaseModel):
     scene_id: str
     prompt: str
     action: ActionSpec | None = None
-    negative_prompt: str = "blurry, low quality, watermark, text, oversaturated"
+    negative_prompt: str = (
+        "cartoon, anime, illustration, painting, 3D render, CGI, digital art, "
+        "plastic skin, uncanny valley, wax figure, deformed hands, asymmetric face, "
+        "bad anatomy, blurry, low resolution, watermark, text, logo, "
+        "oversaturated, flat lighting, stock photography, AI artifacts, "
+        "stylised, painted look, smooth skin, airbrushed"
+    )
     width: int = 1024
     height: int = 576
     num_steps: int = 28

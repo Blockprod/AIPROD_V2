@@ -1,0 +1,44 @@
+{
+  "title": "District Zero - Episode 1",
+  "timeline": [
+    {
+      "shot_id": "SCN_001_SHOT_001",
+      "scene_id": "SCN_001",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/d8267874-f537-44b9-8a11-9b7943bf0114.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNTIxMWQ0YzQyZjgwMGIxZSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzM2NDI5Mn0.mSGQUeMxe_e74VrZ9ke2UevDmbV_3EEnLFX1fy5cbHg",
+      "audio_url": "null://audio/SCN_001_SHOT_001.mp3",
+      "duration_sec": 6,
+      "start_sec": 0,
+      "audio_duration_sec": 6,
+      "silence_padding_sec": 0,
+      "latency_ms": 0,
+      "cost_usd": 0.0
+    },
+    {
+      "shot_id": "SCN_003_SHOT_005",
+      "scene_id": "SCN_003",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/3e50872d-1cae-4569-9748-9c83c268c033.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMmM1MTAzNDJmNDJlYTllZiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzM2OTE1NH0.mlUcuJltJxW9wmp6H5wr2Aqjp3xw0sn5qVt99fmMBRM",
+      "audio_url": "null://audio/SCN_003_SHOT_005.mp3",
+      "duration_sec": 4,
+      "start_sec": 6,
+      "audio_duration_sec": 4,
+      "silence_padding_sec": 0,
+      "latency_ms": 0,
+      "cost_usd": 0.0
+    },
+    {
+      "shot_id": "SCN_010_SHOT_001",
+      "scene_id": "SCN_010",
+      "video_url": "https://dnznrvs05pmza.cloudfront.net/fea06102-9a0e-4c1c-a6b1-6c4b73cfcfc6.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMzNjNTljOTM4YmY1OTcxNyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc3NzM0Mzg5MX0.Ak62VUEWhmWh5QwVlOp5aXKxt7GEwtrpqTXuH6kx-t8",
+      "audio_url": "null://audio/SCN_010_SHOT_001.mp3",
+      "duration_sec": 6,
+      "start_sec": 10,
+      "audio_duration_sec": 6,
+      "silence_padding_sec": 0,
+      "latency_ms": 0,
+      "cost_usd": 0.0
+    }
+  ],
+  "total_duration_sec": 16,
+  "resolution": "3840x2160",
+  "fps": 24
+}

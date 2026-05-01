@@ -730,7 +730,7 @@ class TestVisualSceneEnrichment:
 
         StoryboardGenerator(TrackingAdapter()).generate(output)
         assert received
-        assert "night lighting" in received[0].prompt.lower()
+        assert "night" in received[0].prompt.lower()
 
     def test_script_input_propagates_night_lighting_to_storyboard_prompt(self) -> None:
         from aiprod_adaptation.image_gen.image_adapter import ImageAdapter

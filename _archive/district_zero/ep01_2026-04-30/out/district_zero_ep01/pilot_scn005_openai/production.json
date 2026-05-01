@@ -1,0 +1,20 @@
+{
+  "title": "District Zero - Episode 1",
+  "timeline": [
+    {
+      "shot_id": "SCN_005_SHOT_001",
+      "scene_id": "SCN_005",
+      "video_url": "null://clips/SCN_005_SHOT_001.mp4",
+      "audio_url": "null://audio/SCN_005_SHOT_001.mp3",
+      "duration_sec": 6,
+      "start_sec": 0,
+      "audio_duration_sec": 6,
+      "silence_padding_sec": 0,
+      "latency_ms": 0,
+      "cost_usd": 0.0
+    }
+  ],
+  "total_duration_sec": 6,
+  "resolution": "3840x2160",
+  "fps": 24
+}

@@ -1,0 +1,44 @@
+{
+  "title": "District Zero - Episode 1",
+  "timeline": [
+    {
+      "shot_id": "SCN_005_SHOT_002",
+      "scene_id": "SCN_005",
+      "video_url": "null://clips/SCN_005_SHOT_002.mp4",
+      "audio_url": "null://audio/SCN_005_SHOT_002.mp3",
+      "duration_sec": 5,
+      "start_sec": 0,
+      "audio_duration_sec": 5,
+      "silence_padding_sec": 0,
+      "latency_ms": 0,
+      "cost_usd": 0.0
+    },
+    {
+      "shot_id": "SCN_005_SHOT_003",
+      "scene_id": "SCN_005",
+      "video_url": "null://clips/SCN_005_SHOT_003.mp4",
+      "audio_url": "null://audio/SCN_005_SHOT_003.mp3",
+      "duration_sec": 5,
+      "start_sec": 5,
+      "audio_duration_sec": 5,
+      "silence_padding_sec": 0,
+      "latency_ms": 0,
+      "cost_usd": 0.0
+    },
+    {
+      "shot_id": "SCN_005_SHOT_004",
+      "scene_id": "SCN_005",
+      "video_url": "null://clips/SCN_005_SHOT_004.mp4",
+      "audio_url": "null://audio/SCN_005_SHOT_004.mp3",
+      "duration_sec": 4,
+      "start_sec": 10,
+      "audio_duration_sec": 4,
+      "silence_padding_sec": 0,
+      "latency_ms": 0,
+      "cost_usd": 0.0
+    }
+  ],
+  "total_duration_sec": 14,
+  "resolution": "3840x2160",
+  "fps": 24
+}

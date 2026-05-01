@@ -1,0 +1,10 @@
+{
+  "approach": "hybrid_flux2flex_v3_face_openai_masked",
+  "base_image": "out\\manual_retake_nara_scn002_shot001\\source_shot_base.png",
+  "reference_image": "out\\manual_retake_nara_scn002_shot001\\flux2_flex_v3\\flux2_flex_v3.png",
+  "mask_image": "out\\manual_retake_nara_scn002_shot001\\openai_masked_source_retake_4k\\source_face_mask.png",
+  "model": "gpt-image-2",
+  "size": "3840x2160",
+  "face_similarity_score": 0.7707579135894775,
+  "latency_ms": 91468
+}

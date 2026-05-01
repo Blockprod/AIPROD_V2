@@ -5,11 +5,12 @@ from typing import TYPE_CHECKING
 import structlog
 
 if TYPE_CHECKING:
-    from aiprod_adaptation.image_gen.flux_kontext_adapter import FluxKontextAdapter
+    pass
 
 from aiprod_adaptation.image_gen.character_image_registry import CharacterImageRegistry
 from aiprod_adaptation.image_gen.character_sheet import CharacterSheetRegistry
 from aiprod_adaptation.image_gen.checkpoint import CheckpointStore
+from aiprod_adaptation.image_gen.flux_kontext_adapter import FluxKontextAdapter
 from aiprod_adaptation.image_gen.image_adapter import ImageAdapter
 from aiprod_adaptation.image_gen.image_request import (
     ImageRequest,
@@ -17,14 +18,181 @@ from aiprod_adaptation.image_gen.image_request import (
     ShotStoryboardFrame,
     StoryboardOutput,
 )
+from aiprod_adaptation.image_gen.openai_image_adapter import OpenAIImageAdapter
 from aiprod_adaptation.image_gen.reference_pack import ReferencePack
 from aiprod_adaptation.models.schema import AIPRODOutput, Scene, Shot
 
 DEFAULT_STYLE_TOKEN = (
-    "cinematic storyboard, 16:9 aspect ratio, film grain, anamorphic lens, color graded"
+    "photorealistic, hyperrealistic cinema, shot on ARRI Alexa 35 LF, "
+    "anamorphic 2.39:1, Cooke S7i lenses, natural skin texture with visible pores, "
+    "subsurface scattering, motivated practical lighting only, "
+    "cinematic depth of field, color graded DI, film emulsion grain, tack sharp"
 )
 
 logger = structlog.get_logger(__name__)
+
+# ---------------------------------------------------------------------------
+# Prompt builder — dramatic archetype first, tech last (mirrors ChatGPT best practice)
+# ---------------------------------------------------------------------------
+
+_SHOT_TYPE_LABELS: dict[str, str] = {
+    "extreme_close_up": "Extreme close-up portrait",
+    "close_up": "Close-up portrait",
+    "medium": "Medium shot",
+    "wide": "Wide establishing shot",
+    "extreme_wide": "Extreme wide establishing shot",
+    "over_shoulder": "Over-shoulder shot",
+    "insert": "Insert detail shot",
+}
+
+_TECH_FOOTER = (
+    "4K hyperrealistic, cinematic quality, ARRI Alexa 35 LF, "
+    "anamorphic 2.39:1, film emulsion grain, cinematic depth of field"
+)
+
+# For portrait close-ups: photography language, NOT cinema CGI language.
+# FLUX.1 responds much better to analog photo cues for natural-looking skin.
+_PORTRAIT_FOOTER = (
+    "analog portrait photography, 35mm film, Kodak Portra 400, "
+    "natural skin texture with visible pores, micro-imperfections, "
+    "shallow depth of field f/2.0, soft bokeh background, film grain"
+)
+
+# Shot types that are tight portrait frames — location should NOT be injected
+_PORTRAIT_SHOT_TYPES = frozenset({"extreme_close_up", "close_up"})
+
+# Shot types where character-level framing directives ("Tight framing shoulders to crown")
+# must be stripped so they don't override the wide/establishing composition.
+_WIDE_SHOT_TYPES = frozenset({"wide", "extreme_wide", "insert", "over_shoulder"})
+
+# Shot types where the character canonical prompt must be OMITTED entirely:
+# - insert: object/detail close-up — character face would dominate and mislead the model
+# - wide / extreme_wide: environment-first — character description causes portrait generation
+_NO_CHAR_SHOT_TYPES = frozenset({"insert", "wide", "extreme_wide"})
+
+
+def _strip_framing_directives(char_prompt: str) -> str:
+    """Remove 'Tight framing ...' sentences from char prompts used in wide/
+    establishing/insert shots where they would fight the composition direction."""
+    sentences = char_prompt.split(". ")
+    filtered = [s for s in sentences if not s.strip().lower().startswith("tight framing")]
+    return ". ".join(filtered).strip()
+
+# Boilerplate prefixes/suffixes in old-style character prompts (kept for
+# backward compatibility with external prompts not yet migrated)
+_CHAR_PROMPT_PREFIXES = (
+    "photorealistic 35mm cinema still of a ",
+    "photorealistic 35mm cinema still of ",
+    "close-up portrait, ",
+    "close-up portrait ",
+    "photorealistic ",
+    "35mm cinema still of a ",
+    "35mm cinema still of ",
+)
+
+_CHAR_PROMPT_SUFFIXES = (
+    ", ARRI Alexa 35 look",
+    " ARRI Alexa 35 look",
+    ", 4K hyperrealistic, cinematic quality, naturally contrasted chiaroscuro.",
+    " 4K hyperrealistic, cinematic quality, naturally contrasted chiaroscuro.",
+    ", 4K hyperrealistic, cinematic quality.",
+    " 4K hyperrealistic, cinematic quality.",
+    ", naturally contrasted chiaroscuro.",
+    " naturally contrasted chiaroscuro.",
+)
+
+_LOC_TECH_STRIP = (
+    "ARRI Alexa 35", "anamorphic", "film grain",
+    "photorealistic cinematic interior,",
+    "photorealistic cinematic interior",
+    "photorealistic cinematic wide shot,",
+    "photorealistic cinematic wide shot",
+    "photorealistic cinematic",
+    "photorealistic",
+    "4K hyperrealistic, cinematic quality.",
+    "4K hyperrealistic, cinematic quality",
+)
+
+
+def _condense_char_prompt(canonical: str) -> str:
+    """Strip boilerplate preamble and trailing tech spec from character prompt."""
+    if not canonical:
+        return ""
+    result = canonical
+    for prefix in _CHAR_PROMPT_PREFIXES:
+        if result.lower().startswith(prefix.lower()):
+            result = result[len(prefix):]
+            break
+    for suffix in _CHAR_PROMPT_SUFFIXES:
+        if result.endswith(suffix):
+            result = result[: -len(suffix)]
+    return result.strip().rstrip(",").strip()
+
+
+def _condense_location(location_prompt: str) -> str:
+    """Strip tech boilerplate from location prompt, keep visual descriptors."""
+    if not location_prompt:
+        return ""
+    stripped = location_prompt
+    for tech in _LOC_TECH_STRIP:
+        stripped = stripped.replace(tech, " ").replace("  ", " ")
+    parts = [p.strip() for p in stripped.split(",") if p.strip() and len(p.strip()) > 4]
+    return ", ".join(parts[:5]).strip().strip(",").strip()
+
+
+def _build_shot_prompt(
+    shot: Shot,
+    canonical_char: str,
+    location_prompt: str,
+    tod_visual: str,
+) -> str:
+    """
+    Build a structured cinematic prompt optimised for gpt-image-1.
+
+    Mirrors the prompt structure that produces best results on ChatGPT:
+      1. Shot framing label
+      2. Character canonical description (archetype + dramatic presence first)
+      3. Location / environment atmosphere
+      4. Lighting / tone
+      5. Technical quality footer
+
+    Character prompts in reference_pack.json should already start with the
+    dramatic archetype ("protagonist of a dystopian thriller series...") so
+    _condense_char_prompt only strips residual boilerplate.
+    """
+    framing = _SHOT_TYPE_LABELS.get(shot.shot_type or "", "Cinematic shot")
+    char = _condense_char_prompt(canonical_char)
+    is_portrait = (shot.shot_type or "") in _PORTRAIT_SHOT_TYPES
+    shot_type_key = shot.shot_type or ""
+
+    # Insert / wide / extreme_wide: drop char entirely so the model composes
+    # the environment/object rather than defaulting to a portrait.
+    if shot_type_key in _NO_CHAR_SHOT_TYPES:
+        char = ""
+    elif shot_type_key in _WIDE_SHOT_TYPES:
+        # over_shoulder etc: keep char but strip tight-framing directives.
+        char = _strip_framing_directives(char)
+
+    segments: list[str] = [framing]
+    if char:
+        segments.append(char)
+
+    if is_portrait and char:
+        # Portrait close-up with a character: skip location (it confuses FLUX)
+        # and use photography footer for natural skin/face rendering.
+        segments.append(_PORTRAIT_FOOTER)
+    else:
+        # Wide / medium / over-shoulder / establishing shots: inject location + lighting.
+        loc = _condense_location(location_prompt)
+        if loc:
+            segments.append(loc)
+        # Only add tod_visual as a light qualifier; do NOT override location atmosphere
+        # with a blanket colour — service spine has amber, black market has neon, etc.
+        if tod_visual:
+            segments.append(f"{tod_visual.capitalize()} lighting, naturally contrasted chiaroscuro")
+        segments.append(_TECH_FOOTER)
+
+    return " — ".join(s.strip().rstrip(" —").strip() for s in segments if s.strip())
 
 
 def _all_shots(output: AIPRODOutput) -> list[Shot]:
@@ -46,6 +214,8 @@ class StoryboardGenerator:
         prepass_registry: CharacterImageRegistry | None = None,
         reference_pack: ReferencePack | None = None,
         kontext_adapter: FluxKontextAdapter | None = None,
+        adapter_overrides: dict[str, ImageAdapter] | None = None,
+        budget_cap_usd: float | None = None,
     ) -> None:
         self._adapter = adapter
         self._base_seed = base_seed
@@ -55,6 +225,8 @@ class StoryboardGenerator:
         self._prepass_registry = prepass_registry
         self._reference_pack = reference_pack
         self._kontext_adapter = kontext_adapter
+        self._adapter_overrides: dict[str, ImageAdapter] = adapter_overrides or {}
+        self._budget_cap_usd: float | None = budget_cap_usd
 
     def _location_key_for_shot(self, shot: Shot) -> str:
         if self._reference_pack is None:
@@ -123,10 +295,13 @@ class StoryboardGenerator:
             for char in self._prepass_registry.known_characters():
                 ref = self._prepass_registry.get_reference(char)
                 prompt = self._prepass_registry.get_canonical_prompt(char)
+                rgba = self._prepass_registry.get_rgba(char)
                 if ref:
                     char_registry.register(char, ref)
                 if prompt:
                     char_registry.register_prompt(char, prompt)
+                if rgba is not None:
+                    char_registry.register_rgba(char, rgba)
 
         if self._reference_pack is not None:
             for name in self._reference_pack.characters:
@@ -170,7 +345,6 @@ class StoryboardGenerator:
 
             # Use FluxKontextAdapter when available and a character reference exists
             if self._kontext_adapter is not None and reference_url:
-                from aiprod_adaptation.image_gen.flux_kontext_adapter import FluxKontextAdapter  # noqa: PLC0415
                 if isinstance(self._kontext_adapter, FluxKontextAdapter) and location_prompt:
                     kontext_prompt = FluxKontextAdapter.build_location_prompt(location_prompt)
                     kontext_request = ImageRequest(
@@ -234,7 +408,7 @@ class StoryboardGenerator:
                 prompt_parts.append(canonical)
             if self._style_token:
                 prompt_parts.append(self._style_token)
-            enriched_prompt = " ".join(prompt_parts)
+            enriched_prompt = _build_shot_prompt(shot, canonical, location_prompt, tod_visual)
 
             request = ImageRequest(
                 shot_id=shot.shot_id,
@@ -251,9 +425,27 @@ class StoryboardGenerator:
                 if primary_char and cached.model_used != "error":
                     char_registry.register(primary_char, cached.image_url)
                 continue
+            _shot_adapter = self._adapter_overrides.get(shot.scene_id, self._adapter)
             try:
-                result = self._adapter.generate(request)
+                # Use images.edit path when a reference image is available for the
+                # primary character AND the adapter supports it.
+                # gpt-image-1 images.edit uses the reference as a character consistency
+                # guide (not pixel-level compositing), so it works for all shot types.
+                rgba = char_registry.get_rgba(primary_char) if primary_char else None
+                if rgba is not None and isinstance(_shot_adapter, OpenAIImageAdapter):
+                    result = _shot_adapter.generate_edit(request, rgba)
+                else:
+                    result = _shot_adapter.generate(request)
             except Exception as exc:
+                err_str = str(exc)
+                # Fail-fast on auth/permission errors — abort immediately.
+                if "403" in err_str or "must be verified" in err_str or (
+                    "permission" in err_str.lower() and "organization" in err_str.lower()
+                ):
+                    raise RuntimeError(
+                        f"Image adapter auth/permission error — aborting run to avoid "
+                        f"wasting credits. Check API key and model access: {exc}"
+                    ) from exc
                 logger.warning(
                     "storyboard_frame_failed",
                     shot_id=shot.shot_id,
@@ -290,6 +482,17 @@ class StoryboardGenerator:
             if self._checkpoint is not None:
                 self._checkpoint.save(frame)
             frames.append(frame)
+            if self._budget_cap_usd is not None:
+                running_cost = sum(f.cost_usd for f in frames)
+                if running_cost >= self._budget_cap_usd:
+                    logger.warning(
+                        "budget_cap_reached",
+                        cap_usd=self._budget_cap_usd,
+                        cost_usd=running_cost,
+                        shots_generated=len(frames),
+                        shots_remaining=len(shots) - i - 1,
+                    )
+                    break
 
         return StoryboardOutput(
             title=output.title,

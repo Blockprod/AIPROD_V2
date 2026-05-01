@@ -28,6 +28,8 @@ llm = [
 ]
 image = [
     "replicate",
+    "Pillow>=10.0",
+    "rembg>=2.0",
 ]
 reference = [
     "Pillow>=10.0",
@@ -66,6 +68,8 @@ module = [
     "numpy.*",
     "PIL",
     "PIL.*",
+    "rembg",
+    "rembg.*",
 ]
 ignore_missing_imports = true
 

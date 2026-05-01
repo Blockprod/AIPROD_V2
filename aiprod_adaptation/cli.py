@@ -25,6 +25,8 @@ _IMAGE_ADAPTERS: dict[str, str] = {
     "openai": "aiprod_adaptation.image_gen.openai_image_adapter:OpenAIImageAdapter",
     "runway": "aiprod_adaptation.image_gen.runway_image_adapter:RunwayImageAdapter",
     "replicate": "aiprod_adaptation.image_gen.replicate_adapter:ReplicateAdapter",
+    "huggingface": "aiprod_adaptation.image_gen.huggingface_image_adapter:HuggingFaceImageAdapter",
+    "ideogram": "aiprod_adaptation.image_gen.ideogram_image_adapter:IdeogramImageAdapter",
 }
 _LLM_ADAPTERS: dict[str, str] = {
     "null": "aiprod_adaptation.core.adaptation.llm_adapter:NullLLMAdapter",
@@ -44,6 +46,35 @@ _AUDIO_ADAPTERS: dict[str, str] = {
     "openai": "aiprod_adaptation.post_prod.openai_tts_adapter:OpenAITTSAdapter",
     "runway": "aiprod_adaptation.post_prod.runway_tts_adapter:RunwayTTSAdapter",
 }
+# Conservative per-shot image cost estimates for --dry-run (USD)
+_DRY_RUN_COST_PER_SHOT: dict[str, float] = {
+    "null": 0.0,
+    "replicate": 0.06,      # flux-1.1-pro-ultra (portrait, worst case)
+    "openai": 0.005,        # gpt-image-1-mini low 1024x1024
+    "flux": 0.003,
+    "runway": 0.015,
+    "huggingface": 0.0,
+    "ideogram": 0.08,
+}
+# Conservative per-clip video cost estimates for --dry-run (USD)
+_DRY_RUN_COST_PER_CLIP: dict[str, float] = {
+    "null": 0.0,
+    "runway": 0.50,         # Gen-3 Alpha ~5s clip
+    "kling": 0.35,          # Kling 1.0 standard ~5s
+    "smart": 0.50,          # worst-case router
+}
+# Conservative per-line audio cost estimates for --dry-run (USD)
+_DRY_RUN_COST_PER_LINE: dict[str, float] = {
+    "null": 0.0,
+    "elevenlabs": 0.01,     # ~$0.30/1000 chars, ~30 chars/line
+    "openai": 0.005,        # TTS-1, ~$15/1M chars
+    "runway": 0.02,
+}
+# Paid (non-null) adapters — any active paid adapter must be flagged in dry-run
+_PAID_IMAGE_ADAPTERS: frozenset[str] = frozenset({"replicate", "openai", "flux", "runway", "ideogram", "huggingface"})
+_PAID_VIDEO_ADAPTERS: frozenset[str] = frozenset({"runway", "kling", "smart"})
+_PAID_AUDIO_ADAPTERS: frozenset[str] = frozenset({"elevenlabs", "openai", "runway"})
+
 _DOTENV_LOADED = False
 
 
@@ -377,6 +408,31 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help="Optional JSON file describing character and location reference packs",
     )
+    p_schedule.add_argument(
+        "--dry-run",
+        action="store_true",
+        default=False,
+        dest="dry_run",
+        help="Estimate shot count and image cost without calling any API.",
+    )
+    p_schedule.add_argument(
+        "--budget-cap",
+        type=float,
+        default=None,
+        dest="budget_cap",
+        metavar="USD",
+        help="Abort image generation if cumulative estimated cost reaches this USD limit.",
+    )
+    p_schedule.add_argument(
+        "--remove-background",
+        action="store_true",
+        default=False,
+        dest="remove_background",
+        help=(
+            "Remove background from character prepass portraits (rembg) and use "
+            "images.edit for subsequent shots — guarantees pixel-level face consistency."
+        ),
+    )
     _add_story_selection_options(p_schedule)
 
     p_compare = sub.add_parser("compare", help="compare rules output vs LLM output")
@@ -524,6 +580,9 @@ def cmd_pipeline(args: argparse.Namespace) -> int:
     except ValueError as exc:
         print(f"Pipeline failed: {exc}", file=sys.stderr)
         return 1
+    _in_tok, _out_tok = getattr(llm, "get_token_usage", lambda: (0, 0))()
+    if _in_tok or _out_tok:
+        print(f"LLM usage: {_in_tok:,} input / {_out_tok:,} output tokens", file=sys.stderr)
     print(f"Pipeline complete: {args.output}", file=sys.stderr)
     return 0
 
@@ -575,6 +634,106 @@ def cmd_schedule(args: argparse.Namespace) -> int:
     reference_pack = (
         load_reference_pack(args.reference_pack) if getattr(args, "reference_pack", None) else None
     )
+    # Build per-scene adapter overrides from reference_pack.scene_adapters
+    adapter_overrides: dict[str, ImageAdapter] = {}
+    if reference_pack is not None:
+        for scene_id, adapter_name in reference_pack.scene_adapters.items():
+            adapter_overrides[scene_id] = _load_image_adapter(adapter_name)
+    # Dry-run: full pre-flight validation — zero API calls, zero credits consumed
+    if getattr(args, "dry_run", False):
+        from aiprod_adaptation.image_gen.character_prepass import _unique_characters
+
+        _scene_adapter_names: dict[str, str] = (
+            reference_pack.scene_adapters if reference_pack is not None else {}
+        )
+        image_adapter_name: str = args.image_adapter
+        video_adapter_name: str = args.video_adapter
+        audio_adapter_name: str = args.audio_adapter
+        remove_bg = getattr(args, "remove_background", False)
+
+        # ── Shot / clip / dialogue counts ──────────────────────────────────
+        shot_count = 0
+        dialogue_count = 0
+        image_cost = 0.0
+        video_cost = 0.0
+        audio_cost = 0.0
+        for ep in output.episodes:
+            shot_count += len(ep.shots)
+            for shot in ep.shots:
+                _img_name = _scene_adapter_names.get(shot.scene_id, image_adapter_name)
+                image_cost += _DRY_RUN_COST_PER_SHOT.get(_img_name, 0.0)
+                video_cost += _DRY_RUN_COST_PER_CLIP.get(video_adapter_name, 0.0)
+            for scene in ep.scenes:
+                dialogue_count += len(scene.dialogues)
+        audio_cost = dialogue_count * _DRY_RUN_COST_PER_LINE.get(audio_adapter_name, 0.0)
+        total_cost = image_cost + video_cost + audio_cost
+
+        # ── Prepass character resolution ────────────────────────────────────
+        prepass_chars = _unique_characters(output)
+        sheet_registry = (
+            reference_pack.to_character_sheet_registry() if reference_pack is not None else None
+        )
+        prepass_resolved: list[str] = []
+        prepass_skipped: list[str] = []
+        for char in prepass_chars:
+            if sheet_registry is not None and sheet_registry.get(char) is not None:
+                prepass_resolved.append(char)
+            else:
+                prepass_skipped.append(char)
+
+        # ── Report ─────────────────────────────────────────────────────────
+        sep = "-" * 60
+        print(sep, file=sys.stderr)
+        print("DRY-RUN PRE-FLIGHT REPORT", file=sys.stderr)
+        print(sep, file=sys.stderr)
+        print(f"  Shots          : {shot_count}", file=sys.stderr)
+        print(f"  Dialogues      : {dialogue_count}", file=sys.stderr)
+        print(f"  Image adapter  : {image_adapter_name}"
+              f"{' [PAID]' if image_adapter_name in _PAID_IMAGE_ADAPTERS else ''}", file=sys.stderr)
+        print(f"  Video adapter  : {video_adapter_name}"
+              f"{' [PAID]' if video_adapter_name in _PAID_VIDEO_ADAPTERS else ''}", file=sys.stderr)
+        print(f"  Audio adapter  : {audio_adapter_name}"
+              f"{' [PAID]' if audio_adapter_name in _PAID_AUDIO_ADAPTERS else ''}", file=sys.stderr)
+        print(f"  --remove-background : {'ON' if remove_bg else 'off'}", file=sys.stderr)
+        print(sep, file=sys.stderr)
+        print(f"  Est. image cost : ${image_cost:.3f} USD  ({shot_count} shot(s))", file=sys.stderr)
+        print(f"  Est. video cost : ${video_cost:.3f} USD  ({shot_count} clip(s))", file=sys.stderr)
+        print(f"  Est. audio cost : ${audio_cost:.3f} USD  ({dialogue_count} line(s))", file=sys.stderr)
+        print(f"  Est. TOTAL      : ${total_cost:.3f} USD  (conservative upper bound)", file=sys.stderr)
+        print(sep, file=sys.stderr)
+        print(f"  Prepass resolved : {prepass_resolved if prepass_resolved else '(none)'}", file=sys.stderr)
+        if prepass_skipped:
+            print(
+                f"  Prepass SKIPPED  : {prepass_skipped}  ← no canonical in reference pack",
+                file=sys.stderr,
+            )
+        print(sep, file=sys.stderr)
+
+        # ── Hard blocks ─────────────────────────────────────────────────────
+        errors: list[str] = []
+        if remove_bg and not prepass_resolved:
+            errors.append(
+                "--remove-background is ON but zero characters have a canonical in the "
+                "reference pack — prepass will be fully skipped, face consistency IMPOSSIBLE."
+            )
+        if not output.episodes or not any(ep.shots for ep in output.episodes):
+            errors.append("Selection matched zero shots — run would produce no output.")
+        if errors:
+            for err in errors:
+                print(f"  ERROR: {err}", file=sys.stderr)
+            print(sep, file=sys.stderr)
+            print("DRY-RUN FAILED — fix the above errors before launching a paid run.", file=sys.stderr)
+            return 1
+
+        # ── Warnings ────────────────────────────────────────────────────────
+        if remove_bg and prepass_skipped:
+            print(
+                f"  WARNING: {len(prepass_skipped)} character(s) have no canonical — "
+                f"will be generated WITHOUT face consistency: {prepass_skipped}",
+                file=sys.stderr,
+            )
+        print("DRY-RUN OK — review the report above, then re-run WITHOUT --dry-run.", file=sys.stderr)
+        return 0
     if not output.episodes or not any(ep.shots for ep in output.episodes):
         print("Schedule failed: selection matched no shots.", file=sys.stderr)
         return 1
@@ -583,8 +742,15 @@ def cmd_schedule(args: argparse.Namespace) -> int:
         video_adapter=_load_video_adapter(args.video_adapter),
         audio_adapter=_load_audio_adapter(args.audio_adapter),
         reference_pack=reference_pack,
+        adapter_overrides=adapter_overrides or None,
+        budget_cap_usd=getattr(args, "budget_cap", None),
+        remove_background=getattr(args, "remove_background", False),
     )
-    result = scheduler.run(output)
+    try:
+        result = scheduler.run(output)
+    except RuntimeError as exc:
+        print(f"Schedule aborted: {exc}", file=sys.stderr)
+        return 1
     out_path = Path(args.output)
     out_path.mkdir(parents=True, exist_ok=True)
     save_storyboard(result.storyboard, out_path / "storyboard.json")
@@ -593,6 +759,13 @@ def cmd_schedule(args: argparse.Namespace) -> int:
     metrics_path = out_path / "metrics.json"
     from dataclasses import asdict
     metrics_path.write_text(_json.dumps(asdict(result.metrics), indent=2), encoding="utf-8")
+    # Save each frame as a PNG file so ephemeral URLs are not lost
+    import base64 as _b64
+    frames_dir = out_path / "frames"
+    frames_dir.mkdir(exist_ok=True)
+    for frame in result.storyboard.frames:
+        if frame.image_b64:
+            (frames_dir / f"{frame.shot_id}.png").write_bytes(_b64.b64decode(frame.image_b64))
     print(f"Schedule complete: {args.output}", file=sys.stderr)
     return 0
 

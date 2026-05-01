@@ -1,0 +1,68 @@
+{
+  "title": "District Zero - Episode 1",
+  "frames": [
+    {
+      "shot_id": "SCN_001_SHOT_001",
+      "scene_id": "SCN_001",
+      "image_url": "error://generation-failed",
+      "image_b64": "",
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Black water slams against the illuminated seawall while the drowned city rots beyond it, in EXT. DISTRICT ZERO OUTER WALL - NIGHT. motivated practical sources only; cool ambient; silhouettes acceptable |cinematic| Composition: full figure visible; subject occupies 25–40% frame height; rule of thirds applied. night lighting. photorealistic cinematic wide shot, monumental seawall at night, black churning water crashing against weathered floodlit concrete, parallel search beams cutting through salt mist, drowned megacity silhouette beyond — dead towers half-submerged, extreme depth of field, anamorphic lens flare on practicals, cold blue-steel colour grade, ARRI Alexa 35, film grain photorealistic, hyperrealistic cinema, shot on ARRI Alexa 35 LF, anamorphic 2.39:1, Cooke S7i lenses, natural skin texture with visible pores, subsurface scattering, motivated practical lighting only, cinematic depth of field, color graded DI, film emulsion grain, tack sharp",
+      "seed_used": 42,
+      "shot_type": "wide",
+      "camera_movement": "static",
+      "time_of_day_visual": "night",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "black"
+      ],
+      "reference_image_url": ""
+    },
+    {
+      "shot_id": "SCN_003_SHOT_005",
+      "scene_id": "SCN_003",
+      "image_url": "error://generation-failed",
+      "image_b64": "",
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Nara looks at the hidden route on her wrist and understands that something is wrong, in INT. PRESSURE VALVE CHAMBER - NIGHT. motivated practical sources only; cool ambient; silhouettes acceptable |cinematic| Composition: shoulders-to-crown; eyes at upper third; mouth near center; ear off-frame. night lighting. photorealistic cinematic interior, massive industrial pressure valve chamber, cathedral-scale brutalist machinery with oxidised metal surfaces, harsh white diagnostic halogen light through steam and vapor haze, exhausted workers barely visible at distance, deep shadow pockets, extreme material detail on pipes and valves, ARRI Alexa 35 photorealistic 35mm cinema still of a female lead actress, late 20s, olive complexion with visible skin pores and natural micro-texture, prominent sharp cheekbones casting subtle subsurface shadow, intense grey-green eyes with precise natural catchlights and emotional depth, dark brown hair loosely tied back with wet stray strands at temples, dark tactical neck scarf, weathered charcoal utility jacket with wear patina, lean athletic build, grounded coiled danger in posture, cold industrial blue-white practical lighting, ARRI Alexa 35 look photorealistic, hyperrealistic cinema, shot on ARRI Alexa 35 LF, anamorphic 2.39:1, Cooke S7i lenses, natural skin texture with visible pores, subsurface scattering, motivated practical lighting only, cinematic depth of field, color graded DI, film emulsion grain, tack sharp",
+      "seed_used": 43,
+      "shot_type": "close_up",
+      "camera_movement": "handheld",
+      "time_of_day_visual": "night",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "WORKER",
+        "NARA",
+        "nara"
+      ],
+      "reference_image_url": "C:/Users/averr/AIPROD_V2/preproduction/district_zero/characters/nara_voss/nara_hero_ref_01.png"
+    },
+    {
+      "shot_id": "SCN_010_SHOT_001",
+      "scene_id": "SCN_010",
+      "image_url": "error://generation-failed",
+      "image_b64": "",
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "At the far end, armed units pour into the shaft entrance, in INT. SERVICE SPINE - CONTINUOUS. motivated practical sources; mixed temperature acceptable |cinematic| Composition: full figure visible; subject occupies 25–40% frame height; rule of thirds applied. interior lighting. photorealistic cinematic interior, buried service corridor deep inside city skeleton, ancient sealed infrastructure with century-old steel and rust accumulation, extreme vanishing-point perspective dissolving into darkness, sparse amber emergency lights every 20 metres, discovery and dread, deep depth of field, ARRI Alexa 35 photorealistic, hyperrealistic cinema, shot on ARRI Alexa 35 LF, anamorphic 2.39:1, Cooke S7i lenses, natural skin texture with visible pores, subsurface scattering, motivated practical lighting only, cinematic depth of field, color graded DI, film emulsion grain, tack sharp",
+      "seed_used": 44,
+      "shot_type": "wide",
+      "camera_movement": "static",
+      "time_of_day_visual": "interior",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "HANDHELD FAST",
+        "at"
+      ],
+      "reference_image_url": ""
+    }
+  ],
+  "style_token": "photorealistic, hyperrealistic cinema, shot on ARRI Alexa 35 LF, anamorphic 2.39:1, Cooke S7i lenses, natural skin texture with visible pores, subsurface scattering, motivated practical lighting only, cinematic depth of field, color graded DI, film emulsion grain, tack sharp",
+  "total_shots": 3,
+  "generated": 0
+}

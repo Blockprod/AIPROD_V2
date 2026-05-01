@@ -1,0 +1,315 @@
+{
+  "episode_id": "EP01",
+  "shot_count": 60,
+  "total_duration_sec": 303,
+  "reference_quality_score": 0.8328,
+  "visual_consistency_score": 1.0,
+  "feasibility_score": 0.9222,
+  "cinematic_richness_score": 0.5583,
+  "continuity_accuracy": 1.0,
+  "conflict_resolution_accuracy": 1.0,
+  "overall_episode_quality": 0.8794,
+  "shot_metrics": [
+    {
+      "shot_id": "SCN_001_SHOT_001",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_001_SHOT_002",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_001_SHOT_003",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_001_SHOT_004",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_002_SHOT_001",
+      "reference_quality_score": 0.81,
+      "feasibility_normalized": 0.9
+    },
+    {
+      "shot_id": "SCN_002_SHOT_002",
+      "reference_quality_score": 0.81,
+      "feasibility_normalized": 0.9
+    },
+    {
+      "shot_id": "SCN_002_SHOT_003",
+      "reference_quality_score": 0.585,
+      "feasibility_normalized": 0.65
+    },
+    {
+      "shot_id": "SCN_002_SHOT_004",
+      "reference_quality_score": 0.63,
+      "feasibility_normalized": 0.7
+    },
+    {
+      "shot_id": "SCN_002_SHOT_005",
+      "reference_quality_score": 0.612,
+      "feasibility_normalized": 0.68
+    },
+    {
+      "shot_id": "SCN_002_SHOT_006",
+      "reference_quality_score": 0.81,
+      "feasibility_normalized": 0.9
+    },
+    {
+      "shot_id": "SCN_003_SHOT_001",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_003_SHOT_002",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_003_SHOT_003",
+      "reference_quality_score": 0.675,
+      "feasibility_normalized": 0.75
+    },
+    {
+      "shot_id": "SCN_003_SHOT_004",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_003_SHOT_005",
+      "reference_quality_score": 0.702,
+      "feasibility_normalized": 0.78
+    },
+    {
+      "shot_id": "SCN_004_SHOT_001",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_004_SHOT_002",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_004_SHOT_003",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_004_SHOT_004",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_005_SHOT_001",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_005_SHOT_002",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_005_SHOT_003",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_005_SHOT_004",
+      "reference_quality_score": 0.72,
+      "feasibility_normalized": 0.8
+    },
+    {
+      "shot_id": "SCN_006_SHOT_001",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_006_SHOT_002",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_006_SHOT_003",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_006_SHOT_004",
+      "reference_quality_score": 0.72,
+      "feasibility_normalized": 0.8
+    },
+    {
+      "shot_id": "SCN_006_SHOT_005",
+      "reference_quality_score": 0.855,
+      "feasibility_normalized": 0.95
+    },
+    {
+      "shot_id": "SCN_007_SHOT_001",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_007_SHOT_002",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_007_SHOT_003",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_007_SHOT_004",
+      "reference_quality_score": 0.873,
+      "feasibility_normalized": 0.97
+    },
+    {
+      "shot_id": "SCN_008_SHOT_001",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_008_SHOT_002",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_008_SHOT_003",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_008_SHOT_004",
+      "reference_quality_score": 0.873,
+      "feasibility_normalized": 0.97
+    },
+    {
+      "shot_id": "SCN_008_SHOT_005",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_008_SHOT_006",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_009_SHOT_001",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_009_SHOT_002",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_009_SHOT_003",
+      "reference_quality_score": 0.675,
+      "feasibility_normalized": 0.75
+    },
+    {
+      "shot_id": "SCN_009_SHOT_004",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_009_SHOT_005",
+      "reference_quality_score": 0.702,
+      "feasibility_normalized": 0.78
+    },
+    {
+      "shot_id": "SCN_009_SHOT_006",
+      "reference_quality_score": 0.675,
+      "feasibility_normalized": 0.75
+    },
+    {
+      "shot_id": "SCN_010_SHOT_001",
+      "reference_quality_score": 0.81,
+      "feasibility_normalized": 0.9
+    },
+    {
+      "shot_id": "SCN_010_SHOT_002",
+      "reference_quality_score": 0.81,
+      "feasibility_normalized": 0.9
+    },
+    {
+      "shot_id": "SCN_010_SHOT_003",
+      "reference_quality_score": 0.63,
+      "feasibility_normalized": 0.7
+    },
+    {
+      "shot_id": "SCN_010_SHOT_004",
+      "reference_quality_score": 0.81,
+      "feasibility_normalized": 0.9
+    },
+    {
+      "shot_id": "SCN_010_SHOT_005",
+      "reference_quality_score": 0.81,
+      "feasibility_normalized": 0.9
+    },
+    {
+      "shot_id": "SCN_010_SHOT_006",
+      "reference_quality_score": 0.63,
+      "feasibility_normalized": 0.7
+    },
+    {
+      "shot_id": "SCN_010_SHOT_007",
+      "reference_quality_score": 0.81,
+      "feasibility_normalized": 0.9
+    },
+    {
+      "shot_id": "SCN_011_SHOT_001",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_011_SHOT_002",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_011_SHOT_003",
+      "reference_quality_score": 0.72,
+      "feasibility_normalized": 0.8
+    },
+    {
+      "shot_id": "SCN_011_SHOT_004",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_011_SHOT_005",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_011_SHOT_006",
+      "reference_quality_score": 0.72,
+      "feasibility_normalized": 0.8
+    },
+    {
+      "shot_id": "SCN_011_SHOT_007",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_011_SHOT_008",
+      "reference_quality_score": 0.9,
+      "feasibility_normalized": 1.0
+    },
+    {
+      "shot_id": "SCN_011_SHOT_009",
+      "reference_quality_score": 0.72,
+      "feasibility_normalized": 0.8
+    }
+  ],
+  "broadcast_gate": "PASS"
+}

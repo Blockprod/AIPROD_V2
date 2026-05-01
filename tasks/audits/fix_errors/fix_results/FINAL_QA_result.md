@@ -185,3 +185,129 @@ Pipeline P1 → P2 → P3 → P4 → P5 complété avec succès :
 - **22 violations ARG ruff** → 0
 - **13 erreurs mypy extra** → 0
 - **998/998 tests** préservés, 0 régression
+
+---
+
+# SESSION 2 — Option A (rembg + images.edit) — FINAL QA
+## (2026-04-27)
+
+**Prérequis** : VERIFY_result.md Session 2 — VERDICT GLOBAL = PASS ✅ (après Batch A5)
+
+---
+
+## Scorecard (11/11)
+
+| # | Point | Résultat | Détail |
+|---|-------|----------|--------|
+| 1 | Qualité statique ruff (CI) | ✅ PASS | 0 violation dans fichiers A1–A5 |
+| 1b | Qualité statique ruff (global) | ⚠️ 15 pré-existants | huggingface/ideogram/replicate — hors scope A |
+| 2 | mypy --strict | ✅ PASS | 0 erreur (88 fichiers) |
+| 3 | Tests | ✅ PASS | **1048/1048**, 0 DeprecationWarning |
+| 4 | Déterminisme byte-level | ✅ PASS | 2/2 byte_identical |
+| 5 | Pipeline e2e | ✅ PASS | test_pipeline 71/71 |
+| 6 | Imports smoke test | ✅ PASS | `Pipeline imports OK` |
+| 7 | Aliases backward-compat | ✅ PASS | transform_visuals · atomize_shots · compile_output |
+| 8 | Interdictions absolues | ✅ PASS | 0 nouveau introduit par A1–A5 |
+| 9 | pyproject.toml versions | ✅ PASS | >=3.11, pydantic>=2.0, structlog>=21.0, pytest>=7.0, mypy>=1.0 |
+| 10 | Structlog → stderr | ✅ PASS | `PrintLoggerFactory(file=sys.stderr)` |
+| 11 | CI/CD | ✅ PASS | `.github/workflows/` présent |
+
+---
+
+## Détail des commandes
+
+### Point 2 — mypy
+```
+python -m mypy aiprod_adaptation/core/ aiprod_adaptation/models/ aiprod_adaptation/backends/ aiprod_adaptation/cli.py main.py --strict
+→ Success: no issues found in 88 source files
+```
+
+### Point 3 — Tests
+```
+pytest aiprod_adaptation/tests/ -q --tb=short
+→ 1048 passed, 4 deselected in 18.72s
+
+pytest -W error::DeprecationWarning -q --tb=no
+→ 1048 passed, 4 deselected in 18.46s
+```
+
+### Point 4 — Byte-level
+```
+pytest -k "byte_identical" -v
+→ test_null_adapter_novel_byte_identical  PASSED
+→ test_rule_pipeline_byte_identical       PASSED
+→ 2 passed, 1050 deselected
+```
+
+### Point 6 — Imports smoke
+```
+Pipeline imports OK
+```
+
+### Point 7 — Aliases
+```
+pass2_visual.py:788  def transform_visuals(...)   ✅
+pass3_shots.py:747   def atomize_shots(...)        ✅
+pass4_compile.py:260 def compile_output(...)       ✅
+```
+
+### Point 8 — Interditions absolues (core/)
+```
+type:ignore  → 0 (dans core/)
+randomness   → 0
+datetime.now → 1 PRÉ-EXISTANT (postproduction/__init__.py:45 — clock injectable)
+print()      → 0
+```
+0 interdit introduit par Batches A1–A5.
+
+### ARG002 — résolu en Batch A5
+```
+image_adapter.py:14    _reference_rgba  ✅
+test_image_gen.py:1376 _reference_rgba  ✅
+test_image_gen.py:1430 _reference_rgba  ✅
+```
+
+---
+
+## État global du projet (Session 2)
+
+| Métrique | Avant Option A | Après A1–A5 |
+|----------|---------------|-------------|
+| `# type: ignore` dans fichiers A | 4 | **0** |
+| `# noqa` dans fichiers A | 5 | **0** |
+| ARG002 nouvelles | 3 | **0** |
+| mypy strict (88 fichiers) | 0 | **0** (maintenu) |
+| pytest | 998 | **1048** (+50 tests) |
+
+---
+
+```
+╔══════════════════════════════════════════════════════╗
+║   FINAL QA — AIPROD_V2 — 2026-04-27 (Session 2)     ║
+╠══════════════════════════════════════════════════════╣
+║ ruff CI scope     : ✅ 0 violation (fichiers A1–A5)  ║
+║ mypy --strict     : ✅ 0 erreur (88 fichiers)        ║
+║ pytest            : ✅ 1048/1048                     ║
+║ DeprecationWarning: ✅ 0                             ║
+║ byte-level        : ✅ 2/2 passed                    ║
+║ pipeline E2E      : ✅ test_pipeline 71/71           ║
+║ imports smoke     : ✅ Pipeline imports OK           ║
+║ aliases compat    : ✅ 3 aliases présents            ║
+║ interdits A1–A5   : ✅ 0 nouveau introduit           ║
+║ pyproject.toml    : ✅ 3.11+ · pydantic≥2 · pytest  ║
+║ structlog stderr  : ✅ PrintLoggerFactory(stderr)    ║
+║ CI/CD             : ✅ .github/workflows/ présent    ║
+╠══════════════════════════════════════════════════════╣
+║ VERDICT : PRODUCTION-READY ✅                        ║
+╚══════════════════════════════════════════════════════╝
+```
+
+**✅ RELEASE READY — Option A (rembg + images.edit) intégrée proprement**
+
+Pipeline A1 → A2 → A3 → A4 → A5 complété :
+- **9 interdits** (`type:ignore` × 4 + `noqa` × 5) → 0
+- **3 ARG002** → 0
+- **1048/1048 tests** préservés, 0 régression
+- mypy strict 88 fichiers — 0 erreur maintenu
+
+Prochaine action : `pip install rembg` → générer SCN_002 avec `--remove-background`

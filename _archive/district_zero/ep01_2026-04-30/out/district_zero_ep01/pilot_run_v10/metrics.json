@@ -1,0 +1,24 @@
+{
+  "shots_requested": 3,
+  "shots_generated": 3,
+  "shots_failed": 0,
+  "total_latency_ms": 15890,
+  "image_latency_ms": 15890,
+  "video_latency_ms": 0,
+  "audio_latency_ms": 0,
+  "cost": {
+    "llm_tokens_input": 0,
+    "llm_tokens_output": 0,
+    "image_api_calls": 3,
+    "video_api_calls": 3,
+    "audio_api_calls": 3,
+    "llm_cost_usd": 0.0,
+    "image_cost_usd": 0.0,
+    "video_cost_usd": 0.0,
+    "audio_cost_usd": 0.0,
+    "notes": [
+      "llm_tokens_input, llm_tokens_output, and llm_cost_usd are not populated by scheduler runtime.",
+      "image_cost_usd, video_cost_usd, and audio_cost_usd stay at 0.0 unless adapters return cost_usd."
+    ]
+  }
+}

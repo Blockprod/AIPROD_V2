@@ -1,0 +1,46 @@
+{
+  "report_type": "season_coherence_report",
+  "schema_version": "1.0",
+  "season_id": "S01",
+  "series_title": "",
+  "episode_count": 1,
+  "season_metrics": {
+    "reference_quality_score": 0.8328,
+    "visual_consistency_score": 1.0,
+    "feasibility_score": 0.9222,
+    "cinematic_richness_score": 0.5583,
+    "continuity_accuracy": 1.0,
+    "conflict_resolution_accuracy": 1.0,
+    "overall_season_coherence_score": 0.8794
+  },
+  "netflix_targets": {
+    "reference_quality_score": 0.75,
+    "visual_consistency_score": 0.85,
+    "feasibility_score": 0.72,
+    "cinematic_richness_score": 0.55,
+    "continuity_accuracy": 0.8,
+    "conflict_resolution_accuracy": 0.92,
+    "overall_season_coherence_score": 0.78
+  },
+  "broadcast_gate": "PASS",
+  "per_episode": [
+    {
+      "episode_id": "EP01",
+      "shot_count": 60,
+      "total_duration_sec": 303,
+      "metrics": {
+        "reference_quality_score": 0.8328,
+        "visual_consistency_score": 1.0,
+        "feasibility_score": 0.9222,
+        "cinematic_richness_score": 0.5583,
+        "continuity_accuracy": 1.0,
+        "conflict_resolution_accuracy": 1.0,
+        "overall_episode_quality": 0.8794
+      },
+      "broadcast_gate": "PASS"
+    }
+  ],
+  "recommendations": [
+    "All metrics meet Netflix broadcast targets. Production is ready for delivery."
+  ]
+}

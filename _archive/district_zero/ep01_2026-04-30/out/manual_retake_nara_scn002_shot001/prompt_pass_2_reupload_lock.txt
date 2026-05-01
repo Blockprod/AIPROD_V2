@@ -1,0 +1,11 @@
+Use this newly uploaded image as the exact base frame and keep everything unchanged except for a final identity-and-focus lock on Nara's face.
+
+Do not alter the shot composition, corridor, lighting, pose, wardrobe, toolkit, background, camera angle, or framing. No new scene interpretation.
+
+Refine only the face so that it matches the reference photo with maximum fidelity: exact same woman, exact same facial structure, exact same eyes, nose, lips, jawline, hairline, skin tone, and skin texture.
+
+Final sharpness requirement: the face must hold up at 100% zoom. Both eyes must be critically sharp. Eyelashes, iris detail, eyebrows, nose bridge, lips, pores, and micro-texture must remain crisp and natural. No blur, no haze, no soft focus on the face, no waxy smoothing, no plastic skin, no CGI look, no over-sharpened halo artifacts.
+
+Preserve the cold industrial realism, red practical lighting, wet metal textures, scarf, jacket, and running motion exactly as they are. Preserve the wide 16:9 frame.
+
+The goal of this second pass is not to restyle the image. The goal is only to lock exact facial resemblance and perfect facial focus.

@@ -35,3 +35,7 @@ artifacts/
 # OS
 .DS_Store
 Thumbs.db
+
+# Large archive files
+_archive/**/*.json
+_archive/**/*.mp4

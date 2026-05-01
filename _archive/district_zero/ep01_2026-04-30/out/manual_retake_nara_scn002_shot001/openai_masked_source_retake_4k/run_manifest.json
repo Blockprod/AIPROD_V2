@@ -1,0 +1,17 @@
+{
+  "model": "gpt-image-2",
+  "size": "3840x2160",
+  "source_image": "out/manual_retake_nara_scn002_shot001/source_shot_base.png",
+  "reference_image": "out/manual_retake_nara_scn002_shot001/nara_reference_photo.png",
+  "mask_image": "out/manual_retake_nara_scn002_shot001/openai_masked_source_retake_4k/source_face_mask.png",
+  "prompt_file": "out/manual_retake_nara_scn002_shot001/prompt_pass_masked_source_retake.txt",
+  "output_image": "out/manual_retake_nara_scn002_shot001/openai_masked_source_retake_4k/masked_source_retake.png",
+  "latency_ms": 73156,
+  "revised_prompt": null,
+  "source_face_bbox": [
+    903.6787109375,
+    207.92840576171875,
+    1091.9779052734375,
+    480.06280517578125
+  ]
+}

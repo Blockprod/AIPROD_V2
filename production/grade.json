@@ -1,0 +1,33 @@
+{
+  "show_look": {
+    "reference": "Roger Deakins / Blade Runner 2049 (2017) + Sicario (2015) + Children of Men (2006)",
+    "grade_intent": "Desaturated cold teals and deep blacks throughout. Warm amber practicals as the only warmth — always motivated, never decorative. Crushed blacks below 5% IRE. Highlights rolled off above 80%. No blown-out whites except intentional flash events.",
+    "global_palette": {
+      "black_floor": "#05080A",
+      "shadow_mid": "#0D1520",
+      "skin_key_warm": "#C87840",
+      "cold_ambient": "#1A2B3C",
+      "accent_warm": "#B86010",
+      "accent_cold": "#2060A0"
+    },
+    "forbidden": [
+      "Saturated colours (>30% saturation except motivated neon signs)",
+      "Overhead fill light — zero ambient fills in interiors",
+      "Warm daylight >4000K unless it is a motivated practical",
+      "HDR-style blown highlights"
+    ]
+  },
+  "per_scene_grade": {
+    "SCN_001": "Cold and near-black — searchbeam only warm exception. Dominant #0A1520.",
+    "SCN_002": "Amber warm dominant — single cage lamp in distance. Dominant #1C2B35.",
+    "SCN_003": "Green-white strobe — most aggressive contrast in episode. Dominant #1A2215.",
+    "SCN_004": "Amber intimate — smallest warmest space in episode. Dominant #1E1510.",
+    "SCN_005": "Cold clinical — no warmth permitted. Dominant #C8D0D0.",
+    "SCN_006": "Amber/cyan dual — visual chaos of the underground. Dominant #2A1A0A.",
+    "SCN_007": "Cold cyan — coldest space in episode. Dominant #0D1B2A.",
+    "SCN_008": "Green teal — tunnel, NVG register. Dominant #0A150A.",
+    "SCN_009": "Red warm vs cold blue — war of two sources at the threshold. Dominant #1A0505.",
+    "SCN_010": "Red alarm + cold weapon lights — pursuit palette. Dominant #0A150A.",
+    "SCN_011": "Cold blue pre-dawn — stripping warmth from the apartment. Dominant #12100E."
+  }
+}

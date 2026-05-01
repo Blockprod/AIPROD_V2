@@ -1,0 +1,34 @@
+{
+  "title": "District Zero - Episode 1",
+  "clips": [
+    {
+      "shot_id": "SCN_001_SHOT_001",
+      "video_url": "error://generation-failed",
+      "duration_sec": 6,
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_003_SHOT_005",
+      "video_url": "error://generation-failed",
+      "duration_sec": 4,
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    },
+    {
+      "shot_id": "SCN_010_SHOT_001",
+      "video_url": "error://generation-failed",
+      "duration_sec": 6,
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    }
+  ],
+  "total_shots": 3,
+  "generated": 0
+}

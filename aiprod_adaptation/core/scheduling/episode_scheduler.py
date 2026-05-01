@@ -34,6 +34,9 @@ class EpisodeScheduler:
         base_seed: int = 42,
         style_token: str = DEFAULT_STYLE_TOKEN,
         reference_pack: ReferencePack | None = None,
+        adapter_overrides: dict[str, ImageAdapter] | None = None,
+        budget_cap_usd: float | None = None,
+        remove_background: bool = False,
     ) -> None:
         self._image_adapter = image_adapter
         self._video_adapter = video_adapter
@@ -41,6 +44,9 @@ class EpisodeScheduler:
         self._base_seed = base_seed
         self._style_token = style_token
         self._reference_pack = reference_pack
+        self._adapter_overrides: dict[str, ImageAdapter] = adapter_overrides or {}
+        self._budget_cap_usd: float | None = budget_cap_usd
+        self._remove_background = remove_background
 
     def run(self, output: AIPRODOutput) -> SchedulerResult:
         metrics = RunMetrics()
@@ -54,8 +60,11 @@ class EpisodeScheduler:
             ),
             base_seed=self._base_seed,
             style_token=self._style_token,
+            remove_background=self._remove_background,
         )
         prepass_result = prepass.run(output)
+        metrics.cost.image_api_calls += prepass_result.generated
+        metrics.cost.image_cost_usd += prepass_result.cost_usd
 
         storyboard = StoryboardGenerator(
             adapter=self._image_adapter,
@@ -63,6 +72,8 @@ class EpisodeScheduler:
             style_token=self._style_token,
             prepass_registry=prepass_result.registry,
             reference_pack=self._reference_pack,
+            adapter_overrides=self._adapter_overrides or None,
+            budget_cap_usd=self._budget_cap_usd,
         ).generate(output)
         metrics.shots_requested += storyboard.total_shots
         metrics.shots_generated += storyboard.generated

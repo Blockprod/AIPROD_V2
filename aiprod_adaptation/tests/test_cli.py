@@ -312,6 +312,9 @@ class TestCLIPipeline:
                     }
                 ]
 
+            def get_token_usage(self) -> tuple[int, int]:
+                return 0, 0
+
         with tempfile.TemporaryDirectory() as tmp:
             in_path = Path(tmp) / "input.txt"
             out_path = Path(tmp) / "output.json"
@@ -613,6 +616,9 @@ class TestCLICompare:
                         "result": "fallback_success",
                     }
                 ]
+
+            def get_token_usage(self) -> tuple[int, int]:
+                return 0, 0
 
         with tempfile.TemporaryDirectory() as tmp:
             in_path = Path(tmp) / "input.txt"
@@ -1008,10 +1014,232 @@ class TestCLIAdapters:
             assert len(video_data["clips"]) == 1
             assert len(production_data["timeline"]) == 1
 
+    def test_cli_schedule_dry_run_flag_accepted_by_parser(self) -> None:
+        parser = build_parser()
+        args = parser.parse_args([
+            "schedule", "--input", "x.json", "--output", "out",
+            "--image-adapter", "null", "--video-adapter", "null",
+            "--audio-adapter", "null", "--dry-run",
+        ])
+        assert args.dry_run is True
 
-# ---------------------------------------------------------------------------
-# TA01 — --output-format csv / json-flat + adapter loaders
-# ---------------------------------------------------------------------------
+    def test_cli_schedule_budget_cap_flag_accepted_by_parser(self) -> None:
+        parser = build_parser()
+        args = parser.parse_args([
+            "schedule", "--input", "x.json", "--output", "out",
+            "--image-adapter", "null", "--video-adapter", "null",
+            "--audio-adapter", "null", "--budget-cap", "2.50",
+        ])
+        assert args.budget_cap == pytest.approx(2.50)
+
+    def test_cli_schedule_dry_run_returns_zero_without_api_calls(self) -> None:
+        import sys as _sys
+        with tempfile.TemporaryDirectory() as tmp:
+            in_txt = Path(tmp) / "in.txt"
+            ir_json = Path(tmp) / "ir.json"
+            out_dir = Path(tmp) / "result_dry"
+            in_txt.write_text(_NOVEL_TEXT, encoding="utf-8")
+            parser = build_parser()
+            cmd_pipeline(
+                parser.parse_args(
+                    ["pipeline", "--input", str(in_txt), "--title", "T", "--output", str(ir_json)]
+                )
+            )
+            rc = cmd_schedule(
+                parser.parse_args([
+                    "schedule",
+                    "--input", str(ir_json),
+                    "--output", str(out_dir),
+                    "--image-adapter", "replicate",
+                    "--video-adapter", "null",
+                    "--audio-adapter", "null",
+                    "--dry-run",
+                ])
+            )
+            assert rc == 0
+            # output directory must NOT have been created (no adapter calls)
+            assert not out_dir.exists()
+
+    def test_cli_schedule_dry_run_reports_prepass_characters(self, capsys: pytest.CaptureFixture[str]) -> None:
+        """dry-run must list which characters would be prepass'd vs skipped."""
+        import json as _json
+        import tempfile as _tmp
+        with _tmp.TemporaryDirectory() as tmp:
+            in_txt = Path(tmp) / "in.txt"
+            ir_json = Path(tmp) / "ir.json"
+            ref_json = Path(tmp) / "ref.json"
+            out_dir = Path(tmp) / "result"
+            in_txt.write_text(_NOVEL_TEXT, encoding="utf-8")
+            parser = build_parser()
+            cmd_pipeline(
+                parser.parse_args(
+                    ["pipeline", "--input", str(in_txt), "--title", "T", "--output", str(ir_json)]
+                )
+            )
+            # Build reference pack with at least one character that matches IR subjects
+            from aiprod_adaptation.image_gen.character_prepass import _unique_characters
+            from aiprod_adaptation.core.io import load_output
+            output = load_output(str(ir_json))
+            chars = _unique_characters(output)
+            if not chars:
+                return  # no subjects in this novel — trivially ok
+            first_char = chars[0]
+            ref_pack = {
+                "style_block": "",
+                "characters": {
+                    first_char: {"prompt": f"canonical for {first_char}", "reference_image_urls": []}
+                },
+                "locations": {},
+            }
+            ref_json.write_text(_json.dumps(ref_pack), encoding="utf-8")
+            rc = cmd_schedule(
+                parser.parse_args([
+                    "schedule",
+                    "--input", str(ir_json),
+                    "--output", str(out_dir),
+                    "--image-adapter", "null",
+                    "--video-adapter", "null",
+                    "--audio-adapter", "null",
+                    "--reference-pack", str(ref_json),
+                    "--dry-run",
+                ])
+            )
+            assert rc == 0
+            captured = capsys.readouterr()
+            assert "Prepass resolved" in captured.err
+            assert first_char in captured.err
+
+    def test_cli_schedule_dry_run_remove_background_no_canonical_returns_1(self, capsys: pytest.CaptureFixture[str]) -> None:
+        """--remove-background + --dry-run must return exit code 1 when no character
+        has a canonical in the reference pack — prevents wasted paid runs."""
+        import json as _json
+        import tempfile as _tmp
+        with _tmp.TemporaryDirectory() as tmp:
+            in_txt = Path(tmp) / "in.txt"
+            ir_json = Path(tmp) / "ir.json"
+            ref_json = Path(tmp) / "ref.json"
+            out_dir = Path(tmp) / "result"
+            in_txt.write_text(_NOVEL_TEXT, encoding="utf-8")
+            parser = build_parser()
+            cmd_pipeline(
+                parser.parse_args(
+                    ["pipeline", "--input", str(in_txt), "--title", "T", "--output", str(ir_json)]
+                )
+            )
+            from aiprod_adaptation.image_gen.character_prepass import _unique_characters
+            from aiprod_adaptation.core.io import load_output
+            output = load_output(str(ir_json))
+            chars = _unique_characters(output)
+            if not chars:
+                return  # no subjects — can't test this path
+            # Empty reference pack — no canonical for any character
+            ref_pack = {"style_block": "", "characters": {}, "locations": {}}
+            ref_json.write_text(_json.dumps(ref_pack), encoding="utf-8")
+            rc = cmd_schedule(
+                parser.parse_args([
+                    "schedule",
+                    "--input", str(ir_json),
+                    "--output", str(out_dir),
+                    "--image-adapter", "openai",
+                    "--video-adapter", "null",
+                    "--audio-adapter", "null",
+                    "--reference-pack", str(ref_json),
+                    "--remove-background",
+                    "--dry-run",
+                ])
+            )
+            assert rc == 1, "dry-run must return 1 when --remove-background has no canonical"
+            captured = capsys.readouterr()
+            assert "ERROR" in captured.err
+
+    def test_cli_schedule_dry_run_reports_paid_adapters(self, capsys: pytest.CaptureFixture[str]) -> None:
+        """dry-run must flag every active paid adapter (image/video/audio) with [PAID]."""
+        with tempfile.TemporaryDirectory() as tmp:
+            in_txt = Path(tmp) / "in.txt"
+            ir_json = Path(tmp) / "ir.json"
+            out_dir = Path(tmp) / "result"
+            in_txt.write_text(_NOVEL_TEXT, encoding="utf-8")
+            parser = build_parser()
+            cmd_pipeline(
+                parser.parse_args(
+                    ["pipeline", "--input", str(in_txt), "--title", "T", "--output", str(ir_json)]
+                )
+            )
+            rc = cmd_schedule(
+                parser.parse_args([
+                    "schedule",
+                    "--input", str(ir_json),
+                    "--output", str(out_dir),
+                    "--image-adapter", "openai",
+                    "--video-adapter", "runway",
+                    "--audio-adapter", "elevenlabs",
+                    "--dry-run",
+                ])
+            )
+            assert rc == 0
+            captured = capsys.readouterr()
+            assert "openai [PAID]" in captured.err
+            assert "runway [PAID]" in captured.err
+            assert "elevenlabs [PAID]" in captured.err
+
+    def test_cli_schedule_dry_run_reports_all_cost_lines(self, capsys: pytest.CaptureFixture[str]) -> None:
+        """dry-run report must include image, video, audio and total cost lines."""
+        with tempfile.TemporaryDirectory() as tmp:
+            in_txt = Path(tmp) / "in.txt"
+            ir_json = Path(tmp) / "ir.json"
+            out_dir = Path(tmp) / "result"
+            in_txt.write_text(_NOVEL_TEXT, encoding="utf-8")
+            parser = build_parser()
+            cmd_pipeline(
+                parser.parse_args(
+                    ["pipeline", "--input", str(in_txt), "--title", "T", "--output", str(ir_json)]
+                )
+            )
+            rc = cmd_schedule(
+                parser.parse_args([
+                    "schedule",
+                    "--input", str(ir_json),
+                    "--output", str(out_dir),
+                    "--image-adapter", "openai",
+                    "--video-adapter", "runway",
+                    "--audio-adapter", "openai",
+                    "--dry-run",
+                ])
+            )
+            assert rc == 0
+            captured = capsys.readouterr()
+            assert "Est. image cost" in captured.err
+            assert "Est. video cost" in captured.err
+            assert "Est. audio cost" in captured.err
+            assert "Est. TOTAL" in captured.err
+            assert "DRY-RUN OK" in captured.err
+
+    def test_cli_schedule_dry_run_no_output_created_for_any_paid_adapter(self) -> None:
+        """dry-run must NEVER create output files regardless of which adapters are active."""
+        with tempfile.TemporaryDirectory() as tmp:
+            in_txt = Path(tmp) / "in.txt"
+            ir_json = Path(tmp) / "ir.json"
+            out_dir = Path(tmp) / "result_paid"
+            in_txt.write_text(_NOVEL_TEXT, encoding="utf-8")
+            parser = build_parser()
+            cmd_pipeline(
+                parser.parse_args(
+                    ["pipeline", "--input", str(in_txt), "--title", "T", "--output", str(ir_json)]
+                )
+            )
+            rc = cmd_schedule(
+                parser.parse_args([
+                    "schedule",
+                    "--input", str(ir_json),
+                    "--output", str(out_dir),
+                    "--image-adapter", "openai",
+                    "--video-adapter", "runway",
+                    "--audio-adapter", "elevenlabs",
+                    "--dry-run",
+                ])
+            )
+            assert rc == 0
+            assert not out_dir.exists(), "dry-run must never write output — credits not consumed"
 
 _NOVEL_SHORT = (
     "Alice walked into the old library and picked up a dusty book. "

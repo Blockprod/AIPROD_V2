@@ -1,0 +1,133 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "GlobalAssetRegistry",
+  "description": "Schéma centralisé de tous les assets persistants de la série (personnages, lieux, props, costumes, voix).",
+  "version": "1.0.0",
+  "type": "object",
+  "required": ["series_id", "assets"],
+  "properties": {
+    "series_id": {
+      "type": "string",
+      "description": "Identifiant unique de la série (ex: district_zero)"
+    },
+    "assets": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/GlobalAsset" }
+    }
+  },
+  "definitions": {
+    "GlobalAsset": {
+      "type": "object",
+      "required": ["asset_id", "asset_type", "attributes", "first_occurrence"],
+      "properties": {
+        "asset_id": {
+          "type": "string",
+          "description": "ID unique permanent (slug snake_case). NE CHANGE JAMAIS.",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "asset_type": {
+          "type": "string",
+          "enum": ["character", "location", "prop", "costume", "voice"],
+          "description": "Catégorie de l'asset"
+        },
+        "first_occurrence": {
+          "type": "string",
+          "description": "shot_id du premier plan où cet asset apparaît (ex: SCN_001_SHOT_002)"
+        },
+        "canon_locked": {
+          "type": "boolean",
+          "default": false,
+          "description": "Si true, les attributs visuels ne peuvent plus être modifiés sans justification narrative"
+        },
+        "attributes": {
+          "type": "object",
+          "description": "Attributs spécifiques selon asset_type",
+          "oneOf": [
+            { "$ref": "#/definitions/CharacterAttributes" },
+            { "$ref": "#/definitions/LocationAttributes" },
+            { "$ref": "#/definitions/PropAttributes" },
+            { "$ref": "#/definitions/CostumeAttributes" },
+            { "$ref": "#/definitions/VoiceAttributes" }
+          ]
+        }
+      }
+    },
+    "CharacterAttributes": {
+      "type": "object",
+      "required": ["display_name", "physical_description"],
+      "properties": {
+        "display_name": { "type": "string" },
+        "physical_description": { "type": "string", "description": "Description physique canonique (référence absolue)" },
+        "age_range": { "type": "string", "examples": ["25-30", "40s"] },
+        "ethnicity_note": { "type": "string" },
+        "height_note": { "type": "string" },
+        "distinguishing_features": { "type": "array", "items": { "type": "string" } },
+        "emotional_arc": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["episode_id", "state"],
+            "properties": {
+              "episode_id": { "type": "string" },
+              "state": { "type": "string" }
+            }
+          }
+        },
+        "reference_image_id": { "type": "string", "description": "ID dans le character image registry" }
+      }
+    },
+    "LocationAttributes": {
+      "type": "object",
+      "required": ["display_name", "lighting_condition"],
+      "properties": {
+        "display_name": { "type": "string" },
+        "description": { "type": "string" },
+        "lighting_condition": { "type": "string", "description": "Description canonique de l'éclairage" },
+        "palette": {
+          "type": "array",
+          "maxItems": 3,
+          "items": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+          "description": "Palette chromatique dominante (max 3 couleurs hex)"
+        },
+        "architecture_style": { "type": "string" },
+        "time_of_day": { "type": "string", "enum": ["dawn", "day", "dusk", "night", "interior"] },
+        "lut_id": { "type": "string", "description": "LUT de color grading associée à ce lieu/moment" },
+        "reference_image_id": { "type": "string" }
+      }
+    },
+    "PropAttributes": {
+      "type": "object",
+      "required": ["display_name", "physical_description"],
+      "properties": {
+        "display_name": { "type": "string" },
+        "physical_description": { "type": "string" },
+        "narrative_significance": { "type": "string" },
+        "owner_character_id": { "type": "string" }
+      }
+    },
+    "CostumeAttributes": {
+      "type": "object",
+      "required": ["character_id", "description"],
+      "properties": {
+        "character_id": { "type": "string" },
+        "episode_id": { "type": "string", "description": "Si null, valable pour toute la série" },
+        "description": { "type": "string" },
+        "color_palette": { "type": "array", "items": { "type": "string" } },
+        "distinguishing_items": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "VoiceAttributes": {
+      "type": "object",
+      "required": ["character_id", "timbre", "accent"],
+      "properties": {
+        "character_id": { "type": "string" },
+        "timbre": { "type": "string", "description": "Ex: low/warm, high/clear, raspy/mid" },
+        "accent": { "type": "string" },
+        "speech_pattern": { "type": "string" },
+        "tts_model_id": { "type": "string", "description": "ID du modèle TTS verrouillé pour ce personnage" },
+        "tts_voice_id": { "type": "string" },
+        "lufs_target": { "type": "number", "default": -23, "description": "Niveau LUFS dialogue normalisé" }
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "model": "google/nano-banana-pro",
+  "source_image": "out\\manual_retake_nara_scn002_shot001\\source_shot_base.png",
+  "reference_image": "preproduction\\district_zero\\characters\\nara_voss\\nara_hero_ref_01.png",
+  "output_image": "out\\manual_retake_nara_scn002_shot001\\nano_banana_v1\\retake.png",
+  "prompt": "Image 1 is a cinematic movie shot. Image 2 is a reference portrait. Replace ONLY the face of the woman in image 1 with the face of the woman in image 2. Keep absolutely everything else from image 1 unchanged: the wet industrial background with pipes and concrete, the body pose and wardrobe (dark jacket, scarf), the cinematic lighting and color grading, the rain atmosphere and depth of field, the framing and composition. Only change the facial features: apply the eye shape, eyebrows, nose, mouth, jaw line, and skin tone from image 2, while keeping the same head position and orientation as in image 1. Blend naturally at the face boundary. Photorealistic. Cinematic quality.",
+  "aspect_ratio": "match_input_image",
+  "resolution": "4K",
+  "output_format": "png",
+  "safety_filter_level": "block_only_high",
+  "face_similarity_score": 0.41729646921157837,
+  "latency_ms": 87300,
+  "cost_usd": 0.3
+}

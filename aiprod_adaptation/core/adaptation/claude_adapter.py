@@ -40,6 +40,8 @@ class ClaudeAdapter(LLMAdapter):
             raise ValueError("ANTHROPIC_API_KEY environment variable not set.")
         self._api_key = api_key
         self._client: Any | None = None
+        self._input_tokens: int = 0
+        self._output_tokens: int = 0
 
     def _ensure_client(self) -> Any:
         if self._client is None:
@@ -65,6 +67,9 @@ class ClaudeAdapter(LLMAdapter):
                 category=classify_llm_failure(str(exc)),
             ) from exc
 
+        if hasattr(message, "usage"):
+            self._input_tokens += getattr(message.usage, "input_tokens", 0)
+            self._output_tokens += getattr(message.usage, "output_tokens", 0)
         content = _extract_message_text(message)
         start = content.find("{")
         end = content.rfind("}") + 1
@@ -78,8 +83,15 @@ class ClaudeAdapter(LLMAdapter):
                 category=LLMFailureCategory.SCHEMA,
             ) from exc
 
+    def get_token_usage(self) -> tuple[int, int]:
+        return self._input_tokens, self._output_tokens
+
 
 def _build_anthropic_client(api_key: str) -> Any:
     import anthropic
 
     return anthropic.Anthropic(api_key=api_key)
+
+
+def _get_claude_token_usage(adapter: ClaudeAdapter) -> tuple[int, int]:
+    return adapter._input_tokens, adapter._output_tokens

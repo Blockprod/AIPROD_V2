@@ -1,0 +1,7 @@
+{
+  "approach": "insightface_inswapper_128",
+  "source_image": "out\\manual_retake_nara_scn002_shot001\\source_shot_base.png",
+  "reference_image": "preproduction\\district_zero\\characters\\nara_voss\\nara_hero_ref_01.png",
+  "output_image": "out\\manual_retake_nara_scn002_shot001\\insightface_swap\\face_swap_result.png",
+  "face_similarity_score": 0.7800355553627014
+}

@@ -1,0 +1,16 @@
+{
+  "title": "District Zero - Episode 1",
+  "clips": [
+    {
+      "shot_id": "SCN_005_SHOT_001",
+      "video_url": "null://clips/SCN_005_SHOT_001.mp4",
+      "duration_sec": 6,
+      "model_used": "null",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "last_frame_url": ""
+    }
+  ],
+  "total_shots": 1,
+  "generated": 1
+}

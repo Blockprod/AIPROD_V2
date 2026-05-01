@@ -1,0 +1,18 @@
+{
+  "model": "black-forest-labs/flux-2-flex",
+  "source_image": "out\\manual_retake_nara_scn002_shot001\\source_shot_base.png",
+  "source_multiplicity": 3,
+  "reference_image": "preproduction\\district_zero\\characters\\nara_voss\\nara_hero_ref_01.png",
+  "output_image": "out\\manual_retake_nara_scn002_shot001\\flux2_flex_v4\\flux2_flex_v4.png",
+  "prompt": "Images 1, 2, and 3 all show the same cinematic shot that must be preserved exactly. Keep the complete scene from images 1/2/3 entirely unchanged: the composition, framing, camera angle, body pose, wardrobe, scarf, wet industrial background, rain atmosphere, depth of field, lighting direction, and color grading. Only replace the woman's face with the face of the person in image 4: apply her eye shape, eyebrows, nose bridge, mouth, jaw line, and skin tone while keeping the same head position, orientation, and expression family. Photorealistic. Natural skin texture. No over-sharpening. No glamorization.",
+  "aspect_ratio": "match_input_image",
+  "resolution": "2 MP",
+  "steps": 45,
+  "guidance": 7.0,
+  "prompt_upsampling": false,
+  "output_format": "png",
+  "output_quality": 100,
+  "safety_tolerance": 5,
+  "face_similarity_score": 0.3977575898170471,
+  "latency_ms": 49435
+}

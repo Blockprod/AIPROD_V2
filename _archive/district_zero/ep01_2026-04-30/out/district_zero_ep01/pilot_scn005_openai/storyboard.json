@@ -1,0 +1,29 @@
+{
+  "title": "District Zero - Episode 1",
+  "frames": [
+    {
+      "shot_id": "SCN_005_SHOT_001",
+      "scene_id": "SCN_005",
+      "image_url": "error://generation-failed",
+      "image_b64": "",
+      "model_used": "error",
+      "latency_ms": 0,
+      "cost_usd": 0.0,
+      "prompt_used": "Wide establishing shot — immaculate civic atrium morning, polished stone and glass with authoritarian precision, monumental propaganda screens with clinical typography, controlled bright daylight through high glass ceiling, emptiness emphasising authoritarian scale. Photorealistic cinematic quality — Interior lighting, naturally contrasted chiaroscuro — 4K hyperrealistic, cinematic quality, ARRI Alexa 35 LF, anamorphic 2.39:1, film emulsion grain, cinematic depth of field",
+      "seed_used": 42,
+      "shot_type": "wide",
+      "camera_movement": "static",
+      "time_of_day_visual": "interior",
+      "dominant_sound": "ambient",
+      "characters_in_frame": [
+        "VALE",
+        "AIDE",
+        "director"
+      ],
+      "reference_image_url": ""
+    }
+  ],
+  "style_token": "photorealistic, hyperrealistic cinema, shot on ARRI Alexa 35 LF, anamorphic 2.39:1, Cooke S7i lenses, natural skin texture with visible pores, subsurface scattering, motivated practical lighting only, cinematic depth of field, color graded DI, film emulsion grain, tack sharp",
+  "total_shots": 1,
+  "generated": 0
+}

@@ -16,12 +16,13 @@ class CharacterSheetRegistry:
         self._sheets: dict[str, CharacterSheet] = {}
 
     def register(self, sheet: CharacterSheet) -> None:
-        """Store sheet only if character name not already registered."""
-        if sheet.name not in self._sheets:
-            self._sheets[sheet.name] = sheet
+        """Store sheet only if character name not already registered (case-insensitive key)."""
+        key = sheet.name.lower()
+        if key not in self._sheets:
+            self._sheets[key] = sheet
 
     def get(self, name: str) -> CharacterSheet | None:
-        return self._sheets.get(name)
+        return self._sheets.get(name.lower())
 
     def all_sheets(self) -> list[CharacterSheet]:
         return list(self._sheets.values())

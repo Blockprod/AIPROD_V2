@@ -42,7 +42,7 @@ _NOVEL = (
 _REQ = VideoRequest(
     shot_id="SH0001",
     scene_id="SC001",
-    image_url="null://storyboard/SH0001.png",
+    image_url="https://example.com/storyboard/SH0001.png",
     prompt="A man walks fast.",
     duration_sec=4,
 )

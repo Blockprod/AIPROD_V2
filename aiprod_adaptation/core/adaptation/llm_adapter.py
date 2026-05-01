@@ -103,6 +103,10 @@ class LLMAdapter(ABC):
     @abstractmethod
     def generate_json(self, prompt: str) -> dict[str, Any]: ...
 
+    def get_token_usage(self) -> tuple[int, int]:
+        """Return (input_tokens, output_tokens) accumulated since creation."""
+        return 0, 0
+
 
 class NullLLMAdapter(LLMAdapter):
     """Deterministic adapter for tests and CI.

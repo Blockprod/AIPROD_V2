@@ -1,0 +1,77 @@
+{
+  "nara": {
+    "full_name": "Nara Voss",
+    "role": "protagonist",
+    "ref_image": "C:\\Users\\averr\\AIPROD_V2\\production\\character_refs\\nara_ref.png",
+    "locked": false,
+    "canonical": "Female protagonist of a dystopian survival thriller TV series. Late 20s, facial appearance close to a top model: fine balanced features, elegant defined jawline, high cheekbones. Intense intelligent dark eyes exhausted by hardship — determination and contained vulnerability in every feature. No excessive makeup. Natural skin, no airbrushing, visible pores, wet with condensation. Dark hair loosely tied back in a loose bun, wet strands falling at temples and cheeks. She turns her head back over her shoulder, alert sideways gaze. Dark tactical neck scarf wrapped high, weathered dark utility jacket, tactical vest. Lean survival build.",
+    "portrait_brief": {
+      "camera": "ARRI Alexa 35, anamorphic lens, ISO 3200",
+      "framing": "tight portrait, shoulders to crown, figure slightly turned, head looking back over shoulder at camera — three-quarter profile, alert and watchful",
+      "lighting": "cold blue-white industrial fluorescent corridor light from behind — backlit silhouette edge. Cool teal-steel ambient fill. Deep shadow on near cheek. No warm tones. Desaturated cinematic grade.",
+      "background": "visible industrial service corridor receding behind her — dense pipes, cable trays, wet metal floor reflecting cool blue-white emergency light, haze in the distance, deep perspective",
+      "dop_ref": "Roger Deakins / Sicario corridor chase — cold survival thriller, photorealistic 4K cinematic, NOT fashion editorial"
+    },
+    "note": "Portrait seed: 333. Ref retake v10 — matched to nara_hero_ref_01.png aesthetic: cold blue industrial, over-shoulder gaze, cinematic wide corridor."
+  },
+  "mira": {
+    "full_name": "Mira Sol",
+    "role": "deuteragonist",
+    "ref_image": "C:\\Users\\averr\\AIPROD_V2\\production\\character_refs\\mira_ref.png",
+    "locked": false,
+    "canonical": "Female supporting character, mid-30s. Sharp angular face: prominent cheekbones, strong jaw with a healed hairline fracture scar on the left side. Natural dark olive complexion, no cosmetics, visible fatigue lines under eyes. Black hair cropped military-close on sides, 4cm length on top, unstyled and pressed flat by habit. Eyes: very dark brown near-black, steady and assessing — never uncertain. Lean, survival-conditioned frame. Scavenged tactical kit: dark grey ribbed thermal base layer, worn olive canvas utility vest with three flush external pockets (zero insignia), black cargo trousers with single thigh pocket. Leather tab on right wrist — improvised data-carry. Weight slightly forward on left foot when still — always ready.",
+    "portrait_brief": {
+      "camera": "ARRI Alexa 35, Cooke Anamorphic /i 50mm T2.8, ISO 1600",
+      "framing": "tight portrait, shoulders to crown, head centred at 65% height",
+      "lighting": "low neon-green emergency strip from below camera-left, amber trace from scavenged monitor glow camera-right. No overhead fill. 10:1 ratio. Cold industrial shadow fills 65% of frame.",
+      "background": "shallow-focus underground signal exchange — hacked monitors, loose wiring bundles, humid industrial air with visible particulate in light shafts",
+      "dop_ref": "Villeneuve / Blade Runner 2049 — close character lighting in underground"
+    },
+    "note": "Portrait seed: 66. Ref generated in Phase A."
+  },
+  "elian": {
+    "full_name": "Elian Voss",
+    "role": "supporting",
+    "ref_image": "C:\\Users\\averr\\AIPROD_V2\\production\\character_refs\\elian_ref.png",
+    "locked": false,
+    "canonical": "Male character, early 50s — prototype of a man ground down by complicity. Heavy weathered face: deep horizontal forehead lines, prominent nasolabial folds, strong jaw with 4-day salt-and-pepper stubble. Dark hair with a pronounced silver streak above the right temple, pushed back without product, slightly matted at neck. Pale hazel eyes: the face carries suppressed guilt — never holds direct eye contact. Ruddy Northern European complexion, broken capillaries across the nose bridge from decades of physical work. Civilian workwear worn with institutional resignation: heavyweight charcoal wool jacket with collar frayed at both edges, round-neck black thermal underneath. Large hands, knuckles enlarged by valve maintenance. Posture: permanently hunched at the upper back — the body of a man who stopped standing straight years ago.",
+    "portrait_brief": {
+      "camera": "ARRI Alexa 35, Cooke Anamorphic /i 50mm T2.8, ISO 1600",
+      "framing": "tight portrait, shoulders to crown, head centred at 65% height, slightly downcast",
+      "lighting": "single warm practical desk lamp 2700K at 30deg camera-right — key on cheek and brow, deep shadows filling left side. No fill. Amber exterior neon seeping through small window behind — minimal separation. 6:1 ratio.",
+      "background": "shallow-focus cramped apartment — stacked objects, exposed conduit, small window with condensation",
+      "dop_ref": "Cuaron / Children of Men — domestic interior close framing"
+    },
+    "note": "Portrait seed: 44. Ref generated in Phase A."
+  },
+  "vale": {
+    "full_name": "Commander Sarin Vale",
+    "role": "antagonist",
+    "ref_image": "C:\\Users\\averr\\AIPROD_V2\\production\\character_refs\\vale_ref.png",
+    "locked": false,
+    "canonical": "Military antagonist, late 40s. Face of controlled institutional menace: clean angular geometry, strong cheekbones, jaw with precisely maintained dark stubble at 1mm. Dark hair, silver-white at both temples, slicked back with visible product, immaculately maintained. Eyes: cold grey-blue irises carrying a quality of genuine absence of empathy — not cruelty, simply zero sentiment. Slightly sallow skin under cold overhead light. Posture: parade-ground rigid at all times, weight centred, arms held precisely at sides. Black tactical command uniform, no insignia except a single slim horizontal silver bar on left chest. High collar, impeccable fit. The face of a system wearing a human body.",
+    "portrait_brief": {
+      "camera": "ARRI Alexa 35, Cooke Anamorphic /i 50mm T2.8, ISO 800",
+      "framing": "tight portrait, shoulders to crown, head centred at 65% height, slight upward gaze — looking down at viewer",
+      "lighting": "cold overhead institutional fluorescent — 6500K, hard, flat on upper face. Window behind right shoulder creating cold backlight silhouette edge. No warmth anywhere. 9:1 ratio.",
+      "background": "shallow-focus security operations centre — wall of monitors in cold blue glow, analysts as blurred texture",
+      "dop_ref": "Fincher / The Social Network — cold corporate interior"
+    },
+    "note": "Portrait seed: 77. Ref generated in Phase A."
+  },
+  "rook": {
+    "full_name": "Director Halden Rook",
+    "role": "antagonist",
+    "ref_image": "C:\\Users\\averr\\AIPROD_V2\\production\\character_refs\\rook_ref.png",
+    "locked": false,
+    "canonical": "Political antagonist, mid-50s. Face of curated authority: immaculate silver hair swept back with bureaucratic precision, every strand placed. Skin maintained by institutional privilege — too smooth for his age. Narrow pale blue eyes: patient, calculating, the stillness of a predator who never needs to rush. Strong jaw, patrician nose, thin controlled smile that never reaches the eyes. High-authority navy formal wear: precision-cut coat with single polished brass button, no military markings — a civilian who outranks every soldier in the room. Posture: absolute stillness, effortless authority. Never raises voice. Never rushes.",
+    "portrait_brief": {
+      "camera": "ARRI Alexa 35, Cooke Anamorphic /i 50mm T2.8, ISO 400",
+      "framing": "tight portrait, shoulders to crown, head centred at 65% height",
+      "lighting": "clean cold institutional overhead 6500K as key, slight warm practical from a desk lamp at camera-right — 3:1 ratio of cold to warm. Suggesting dual nature: public face warm, true nature cold. 5:1 overall ratio.",
+      "background": "shallow-focus immaculate civic interior — marble and glass, public-address screen blurred behind",
+      "dop_ref": "Deakins / Skyfall — villain interior framing"
+    },
+    "note": "Portrait seed: 55. Ref generated in Phase A."
+  }
+}

@@ -18,9 +18,11 @@ class ReferenceSubject(BaseModel):
 
 
 class ReferencePack(BaseModel):
+    style_block: str = ""
     characters: dict[str, ReferenceSubject] = Field(default_factory=dict)
     locations: dict[str, ReferenceSubject] = Field(default_factory=dict)
     scene_locations: dict[str, str] = Field(default_factory=dict)
+    scene_adapters: dict[str, str] = Field(default_factory=dict)  # scene_id → adapter name
 
     @staticmethod
     def _normalize_key(value: str) -> str:
@@ -47,7 +49,10 @@ class ReferencePack(BaseModel):
 
     def character_prompt(self, character: str) -> str:
         subject = self._character_subject(character)
-        return subject.prompt if subject is not None else ""
+        prompt = subject.prompt if subject is not None else ""
+        if prompt and self.style_block:
+            return prompt.rstrip(" .") + ". " + self.style_block
+        return prompt
 
     def character_reference_url(self, character: str) -> str:
         subject = self._character_subject(character)
@@ -55,7 +60,10 @@ class ReferencePack(BaseModel):
 
     def location_prompt(self, location_key: str) -> str:
         subject = self.locations.get(location_key)
-        return subject.prompt if subject is not None else ""
+        prompt = subject.prompt if subject is not None else ""
+        if prompt and self.style_block:
+            return prompt.rstrip(" .") + ". " + self.style_block
+        return prompt
 
     def location_reference_url(self, location_key: str) -> str:
         subject = self.locations.get(location_key)

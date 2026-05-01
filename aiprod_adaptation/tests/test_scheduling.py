@@ -257,3 +257,93 @@ class TestCostReport:
         assert result.metrics.cost.video_cost_usd == pytest.approx(total_shots * 0.22)
         assert result.metrics.cost.audio_cost_usd == pytest.approx(total_shots * 0.33)
         assert result.metrics.cost.total_cost_usd == pytest.approx(total_shots * 0.66)
+
+
+# ---------------------------------------------------------------------------
+# Budget cap tests
+# ---------------------------------------------------------------------------
+
+class TestBudgetCap:
+    def test_budget_cap_stops_generation_early(self) -> None:
+        from aiprod_adaptation.image_gen.image_adapter import NullImageAdapter
+        from aiprod_adaptation.image_gen.image_request import ImageResult
+        from aiprod_adaptation.image_gen.image_request import ImageRequest
+        from aiprod_adaptation.image_gen.storyboard import StoryboardGenerator
+        from aiprod_adaptation.models.schema import AIPRODOutput, Episode, Shot
+
+        class FixedCostAdapter(NullImageAdapter):
+            def generate(self, request: ImageRequest) -> ImageResult:
+                r = super().generate(request)
+                return ImageResult(
+                    shot_id=r.shot_id,
+                    image_url=r.image_url,
+                    image_b64=r.image_b64,
+                    model_used=r.model_used,
+                    latency_ms=r.latency_ms,
+                    cost_usd=0.06,
+                )
+
+        shots = [
+            Shot(shot_id=f"S{i}", scene_id="SCN_001", prompt=f"shot {i}", duration_sec=3, emotion="neutral")
+            for i in range(3)
+        ]
+        output = AIPRODOutput(
+            title="Budget Test",
+            episodes=[Episode(episode_id="EP1", scenes=[], shots=shots)],
+        )
+
+        # Cap at exactly 1 shot's cost — should stop after 1 frame (check runs after append)
+        sb = StoryboardGenerator(
+            adapter=FixedCostAdapter(),
+            budget_cap_usd=0.06,
+        ).generate(output)
+
+        assert len(sb.frames) == 1
+
+    def test_budget_cap_none_generates_all_shots(self) -> None:
+        from aiprod_adaptation.image_gen.storyboard import StoryboardGenerator
+        from aiprod_adaptation.models.schema import AIPRODOutput, Episode, Shot
+
+        shots = [
+            Shot(shot_id=f"S{i}", scene_id="SCN_001", prompt=f"shot {i}", duration_sec=3, emotion="neutral")
+            for i in range(3)
+        ]
+        output = AIPRODOutput(
+            title="Budget Test",
+            episodes=[Episode(episode_id="EP1", scenes=[], shots=shots)],
+        )
+        sb = StoryboardGenerator(
+            adapter=NullImageAdapter(),
+            budget_cap_usd=None,
+        ).generate(output)
+        assert len(sb.frames) == 3
+
+
+# ---------------------------------------------------------------------------
+# LLM token tracking tests
+# ---------------------------------------------------------------------------
+
+class TestLLMTokenTracking:
+    def test_null_llm_adapter_get_token_usage_returns_zero(self) -> None:
+        from aiprod_adaptation.core.adaptation.llm_adapter import NullLLMAdapter
+        adapter = NullLLMAdapter()
+        assert adapter.get_token_usage() == (0, 0)
+
+    def test_claude_adapter_accumulates_token_usage(self) -> None:
+        import json
+        from unittest.mock import MagicMock, patch
+        from aiprod_adaptation.core.adaptation.claude_adapter import ClaudeAdapter
+        import os
+        with patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test-key"}):
+            adapter = ClaudeAdapter()
+        mock_message = MagicMock()
+        mock_message.content = [MagicMock(type="text", text='{"scenes": []}')]
+        mock_message.usage.input_tokens = 150
+        mock_message.usage.output_tokens = 50
+        mock_client = MagicMock()
+        mock_client.messages.create.return_value = mock_message
+        adapter._client = mock_client
+        adapter.generate_json("test prompt")
+        assert adapter.get_token_usage() == (150, 50)
+        adapter.generate_json("test prompt 2")
+        assert adapter.get_token_usage() == (300, 100)  # accumulated

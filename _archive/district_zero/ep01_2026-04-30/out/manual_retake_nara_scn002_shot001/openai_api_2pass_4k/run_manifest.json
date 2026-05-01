@@ -1,0 +1,10 @@
+{
+  "model": "gpt-image-2",
+  "size": "3840x2160",
+  "base_image": "out/manual_retake_nara_scn002_shot001/source_shot_base.png",
+  "reference_image": "out/manual_retake_nara_scn002_shot001/nara_reference_photo.png",
+  "pass1_output": "out/manual_retake_nara_scn002_shot001/openai_api_2pass_4k/pass1_reference_edit.png",
+  "pass2_output": "out/manual_retake_nara_scn002_shot001/openai_api_2pass_4k/pass2_reference_reupload.png",
+  "pass2_latency_ms": 195187,
+  "pass2_revised_prompt": null
+}
