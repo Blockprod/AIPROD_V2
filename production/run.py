@@ -7,6 +7,7 @@ PHASES DE PRODUCTION :
   Phase A : python production/run.py char-refs [--char nara] [--dry-run]    $0.15
   Phase B : python production/run.py location-refs [--dry-run]              $0.30
   Phase B2: python production/run.py benchmark [--char nara]                $0
+  Phase B3: python production/run.py location-angles [--loc X] [--angle Y]  $1.98
   Phase C : python production/run.py shots [--scene SCN_002] [--dry-run]    ~$2.80
   Phase D : python production/run.py retakes [--dry-run]                    variable
   Phase E : python production/run.py assembly [--fps 24]                    $0
@@ -27,6 +28,11 @@ def cmd_char_refs(args):
 def cmd_location_refs(args):
     from production.gen_location_refs import run
     run(filter_locs=args.loc or [], dry_run=args.dry_run)
+
+
+def cmd_location_angles(args):
+    from production.gen_location_angles import run
+    run(filter_locs=args.loc or [], filter_angles=args.angle or [], dry_run=args.dry_run)
 
 
 def cmd_benchmark(args):
@@ -97,6 +103,11 @@ if __name__ == "__main__":
     p_lr.add_argument("--loc", nargs="*")
     p_lr.add_argument("--dry-run", action="store_true")
 
+    p_la = sub.add_parser("location-angles", help="Phase B3 — génère 3 angles visual bible par lieu")
+    p_la.add_argument("--loc", nargs="*")
+    p_la.add_argument("--angle", nargs="*", choices=["wide", "medium", "detail"])
+    p_la.add_argument("--dry-run", action="store_true")
+
     p_bm = sub.add_parser("benchmark", help="Phase B2 — valide ArcFace des refs")
     p_bm.add_argument("--char", nargs="*")
     p_bm.add_argument("--verbose", action="store_true")
@@ -118,6 +129,7 @@ if __name__ == "__main__":
     dispatch = {
         "char-refs": cmd_char_refs,
         "location-refs": cmd_location_refs,
+        "location-angles": cmd_location_angles,
         "benchmark": cmd_benchmark,
         "shots": cmd_shots,
         "report": cmd_report,

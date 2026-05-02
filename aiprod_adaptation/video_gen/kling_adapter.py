@@ -8,14 +8,14 @@ from aiprod_adaptation.video_gen.video_request import VideoClipResult, VideoRequ
 
 
 class KlingAdapter(VideoAdapter):
-    """Kling v1.5 image-to-video adapter (Kuaishou Technology).
+    """Kling 3.0 image-to-video adapter (Kuaishou Technology).
 
     Requires: KLING_API_KEY + KLING_API_SECRET env vars
     Excluded from mypy and CI — integration only.
     Docs: https://docs.qingque.cn/d/home/eZQDvGXc5KZQWrWM2Y-lX5bIL
     """
 
-    MODEL: str = "kling-v1-5"
+    MODEL: str = "kling-v3"
     BASE_URL: str = "https://api.klingai.com"
 
     def __init__(
@@ -50,6 +50,7 @@ class KlingAdapter(VideoAdapter):
             "prompt": request.prompt,
             "duration": str(request.duration_sec),
             "cfg_scale": request.motion_score,
+            "camera_type": "professional",
         }
         resp = requests.post(
             f"{self.BASE_URL}/v1/videos/image2video",

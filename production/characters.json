@@ -3,7 +3,9 @@
     "full_name": "Nara Voss",
     "role": "protagonist",
     "ref_image": "C:\\Users\\averr\\AIPROD_V2\\production\\character_refs\\nara_ref.png",
-    "locked": false,
+    "locked": true,
+    "validated_source": "_archive/district_zero/ep01_2026-04-30/out/district_zero_ep01_validated/frames/Nara/SCN_003_SHOT_005.png",
+    "validated_date": "2026-05-01",
     "canonical": "Female protagonist of a dystopian survival thriller TV series. Late 20s, facial appearance close to a top model: fine balanced features, elegant defined jawline, high cheekbones. Intense intelligent dark eyes exhausted by hardship — determination and contained vulnerability in every feature. No excessive makeup. Natural skin, no airbrushing, visible pores, wet with condensation. Dark hair loosely tied back in a loose bun, wet strands falling at temples and cheeks. She turns her head back over her shoulder, alert sideways gaze. Dark tactical neck scarf wrapped high, weathered dark utility jacket, tactical vest. Lean survival build.",
     "portrait_brief": {
       "camera": "ARRI Alexa 35, anamorphic lens, ISO 3200",
@@ -18,22 +20,26 @@
     "full_name": "Mira Sol",
     "role": "deuteragonist",
     "ref_image": "C:\\Users\\averr\\AIPROD_V2\\production\\character_refs\\mira_ref.png",
-    "locked": false,
-    "canonical": "Female supporting character, mid-30s. Sharp angular face: prominent cheekbones, strong jaw with a healed hairline fracture scar on the left side. Natural dark olive complexion, no cosmetics, visible fatigue lines under eyes. Black hair cropped military-close on sides, 4cm length on top, unstyled and pressed flat by habit. Eyes: very dark brown near-black, steady and assessing — never uncertain. Lean, survival-conditioned frame. Scavenged tactical kit: dark grey ribbed thermal base layer, worn olive canvas utility vest with three flush external pockets (zero insignia), black cargo trousers with single thigh pocket. Leather tab on right wrist — improvised data-carry. Weight slightly forward on left foot when still — always ready.",
+    "locked": true,
+    "validated_seed": 750,
+    "canonical": "Female deuteragonist, Puerto Rican heritage, 30 years old. Undercut hair with shaved sides and flat top pushed back, unwashed and slightly matted. Almond-shaped green eyes, lean angular face with natural asymmetry, olive-caramel skin with uneven complexion, dark under-eye circles, no makeup. Natural skin texture with clearly visible pores, micro skin irregularities, stress lines under the eyes, real lip texture with natural chapping, faint dust in skin creases, slight redness at nostrils, naturally weathered complexion. Over-shoulder glance, suspicious and calculating, jaw slightly set. Wearing worn dark grey transit worker coverall unzipped to waist, black thermal long-sleeve underneath, signal-relay device clipped to chest strap. Underground signal broker who moves contraband data through ventilation shafts.",
     "portrait_brief": {
-      "camera": "ARRI Alexa 35, Cooke Anamorphic /i 50mm T2.8, ISO 1600",
-      "framing": "tight portrait, shoulders to crown, head centred at 65% height",
-      "lighting": "low neon-green emergency strip from below camera-left, amber trace from scavenged monitor glow camera-right. No overhead fill. 10:1 ratio. Cold industrial shadow fills 65% of frame.",
-      "background": "shallow-focus underground signal exchange — hacked monitors, loose wiring bundles, humid industrial air with visible particulate in light shafts",
-      "dop_ref": "Villeneuve / Blade Runner 2049 — close character lighting in underground"
+      "camera": "Hasselblad H6D-100c, 85mm f/2.8, shallow depth of field",
+      "framing": "portrait, face sharp from hairline to chin, over-shoulder glance",
+      "lighting": "three-point: hard cold blue-green industrial key from upper-left at 45 degrees, warm amber CRT fill from right, hair rim light from behind. 60% deep shadow. Practical motivated sources.",
+      "background": "soft dark concrete charcoal, shallow depth",
+      "dop_ref": "Steve McCurry documentary portrait realism, Anders Petersen candid film photography. Kodak Portra 400 pushed one stop — visible grain on skin, natural halation."
     },
-    "note": "Portrait seed: 66. Ref generated in Phase A."
+    "prompt_version": "v28",
+    "note": "LOCKED seed 750 — validé le 2026-05-01. Prompt restructuré selon methode_prompt.md : sujet en premier, 6 blocs ordonnés, zéro formulation négative, Hasselblad au lieu d'ARRI."
   },
   "elian": {
     "full_name": "Elian Voss",
     "role": "supporting",
     "ref_image": "C:\\Users\\averr\\AIPROD_V2\\production\\character_refs\\elian_ref.png",
-    "locked": false,
+    "locked": true,
+    "validated_seed": 400,
+    "validated_date": "2026-05-01",
     "canonical": "Male character, early 50s — prototype of a man ground down by complicity. Heavy weathered face: deep horizontal forehead lines, prominent nasolabial folds, strong jaw with 4-day salt-and-pepper stubble. Dark hair with a pronounced silver streak above the right temple, pushed back without product, slightly matted at neck. Pale hazel eyes: the face carries suppressed guilt — never holds direct eye contact. Ruddy Northern European complexion, broken capillaries across the nose bridge from decades of physical work. Civilian workwear worn with institutional resignation: heavyweight charcoal wool jacket with collar frayed at both edges, round-neck black thermal underneath. Large hands, knuckles enlarged by valve maintenance. Posture: permanently hunched at the upper back — the body of a man who stopped standing straight years ago.",
     "portrait_brief": {
       "camera": "ARRI Alexa 35, Cooke Anamorphic /i 50mm T2.8, ISO 1600",
@@ -48,7 +54,9 @@
     "full_name": "Commander Sarin Vale",
     "role": "antagonist",
     "ref_image": "C:\\Users\\averr\\AIPROD_V2\\production\\character_refs\\vale_ref.png",
-    "locked": false,
+    "locked": true,
+    "validated_seed": 500,
+    "validated_date": "2026-05-01",
     "canonical": "Military antagonist, late 40s. Face of controlled institutional menace: clean angular geometry, strong cheekbones, jaw with precisely maintained dark stubble at 1mm. Dark hair, silver-white at both temples, slicked back with visible product, immaculately maintained. Eyes: cold grey-blue irises carrying a quality of genuine absence of empathy — not cruelty, simply zero sentiment. Slightly sallow skin under cold overhead light. Posture: parade-ground rigid at all times, weight centred, arms held precisely at sides. Black tactical command uniform, no insignia except a single slim horizontal silver bar on left chest. High collar, impeccable fit. The face of a system wearing a human body.",
     "portrait_brief": {
       "camera": "ARRI Alexa 35, Cooke Anamorphic /i 50mm T2.8, ISO 800",
@@ -63,7 +71,9 @@
     "full_name": "Director Halden Rook",
     "role": "antagonist",
     "ref_image": "C:\\Users\\averr\\AIPROD_V2\\production\\character_refs\\rook_ref.png",
-    "locked": false,
+    "locked": true,
+    "validated_seed": 300,
+    "validated_date": "2026-05-01",
     "canonical": "Political antagonist, mid-50s. Face of curated authority: immaculate silver hair swept back with bureaucratic precision, every strand placed. Skin maintained by institutional privilege — too smooth for his age. Narrow pale blue eyes: patient, calculating, the stillness of a predator who never needs to rush. Strong jaw, patrician nose, thin controlled smile that never reaches the eyes. High-authority navy formal wear: precision-cut coat with single polished brass button, no military markings — a civilian who outranks every soldier in the room. Posture: absolute stillness, effortless authority. Never raises voice. Never rushes.",
     "portrait_brief": {
       "camera": "ARRI Alexa 35, Cooke Anamorphic /i 50mm T2.8, ISO 400",
