@@ -1,6 +1,8 @@
-# AIPROD ADAPTATION ENGINE v2
+# AIPROD ADAPTATION ENGINE v2 — District Zero EP01
 
-AIPROD Adaptation Engine v2 est un compilateur cinématographique complet écrit en Python qui transforme un texte brut (roman, script, synopsis) en une chaîne de production audiovisuelle bout-en-bout. Le système couvre l'intégralité du pipeline : compilation narrative déterministe en représentation intermédiaire structurée (IR), enrichissement LLM optionnel (Claude / Gemini / router adaptatif), cohérence globale de l'épisode, moteur de règles de tournage, calcul de faisabilité shot-level, contraintes de référence visuelle (VisualBible), suivi de saison multi-épisodes, génération d'images et de vidéos via adaptateurs externes (Runway, Flux, DALL·E, Kling…), post-production NLE (manifest, EDL, cue-sheet audio), et métriques de qualité broadcast calibrées sur les cibles Netflix. Le noyau reste strictement déterministe — même entrée, même sortie au niveau byte — et ne dépend d'aucune API externe obligatoire. L'IR (`AIPRODOutput`, Pydantic v2) constitue le contrat central entre toutes les couches et peut être exporté dans cinq formats de livraison (EDL JSON, Resolve Timeline, audio cue-sheet, batch generation manifest, season report).
+AIPROD Adaptation Engine v2 est un compilateur cinématographique complet écrit en Python qui transforme un texte brut (roman, script, synopsis) en une chaîne de production audiovisuelle bout-en-bout. Le système couvre l'intégralité du pipeline : compilation narrative déterministe en représentation intermédiaire structurée (IR), enrichissement LLM optionnel (Claude / Gemini / router adaptatif), cohérence globale de l'épisode, moteur de règles de tournage, calcul de faisabilité shot-level, contraintes de référence visuelle (VisualBible), suivi de saison multi-épisodes, génération d'images et de vidéos via adaptateurs externes (Runway, Flux, DALL·E, Kling, Seedance…), post-production NLE (manifest, EDL, cue-sheet audio), et métriques de qualité broadcast calibrées sur les cibles Netflix. Le noyau reste strictement déterministe — même entrée, même sortie au niveau byte — et ne dépend d'aucune API externe obligatoire. L'IR (`AIPRODOutput`, Pydantic v2) constitue le contrat central entre toutes les couches et peut être exporté dans cinq formats de livraison (EDL JSON, Resolve Timeline, audio cue-sheet, batch generation manifest, season report).
+
+**Projet actif : District Zero EP01** — série dystopique 11 scènes, 35 shots. 4 personnages lockés (Nara, Mira, Elian, Rook), 10 lieux DOP-grade générés (FLUX 1.1 Pro Ultra, seeds fixes, 3840×2160).
 
 ---
 
@@ -133,7 +135,8 @@ aiprod_adaptation/
 │   │                              + make_xlabs_ipadapter_adapter() factory
 │   ├── flux_kontext_adapter.py  — FluxKontextAdapter (Kontext Dev, background-swap)
 │   ├── runway_image_adapter.py  — Runway image adapter
-│   ├── replicate_adapter.py     — generic Replicate adapter
+│   ├── replicate_adapter.py     — generic Replicate adapter (FLUX Ultra, ESRGAN upscale)
+│   ├── huggingface_image_adapter.py — HuggingFace Inference API (FLUX.1-schnell, free tier)
 │   ├── character_sheet.py       — character reference sheet builder
 │   ├── character_prepass.py     — pre-pass character image generation
 │   ├── character_image_registry.py
@@ -152,8 +155,14 @@ aiprod_adaptation/
 │   ├── runway_prompt_formatter.py — format_runway_prompt() motion prompt builder
 │   │                              (14 camera movements → Runway i2v instructions,
 │   │                               anti-cut clause, sequential timestamps)
-│   ├── kling_adapter.py         — Kling adapter
-│   ├── smart_video_router.py    — cost/quality-aware router
+│   ├── kling_adapter.py         — Kling adapter (kling-v3, camera_type: professional)
+│   ├── seedance_adapter.py      — Seedance 2.0 adapter (bytedance/seedance-2.0 via Replicate)
+│   │                              character_reference_urls → reference_images (jusqu'à 9 refs)
+│   │                              generate_audio=False, 720p, $0.18/sec
+│   ├── smart_video_router.py    — SmartVideoRouter 3 branches :
+│   │                              character_reference_urls → Seedance 2.0
+│   │                              ≤5s sans perso → Runway
+│   │                              >5s sans perso → Kling 3.0
 │   ├── video_sequencer.py       — clip stitching sequencer
 │   │                              (propagates character_reference_urls from storyboard)
 │   ├── video_request.py         — VideoRequest + character_reference_urls field
@@ -190,8 +199,7 @@ aiprod_adaptation/
 │   ├── test_pass3_cinematic.py
 │   ├── test_pass4_cinematic.py
 │   ├── test_cinematic_integration.py
-│   ├── test_sprint9.py          — metrics + postprod + exports (68 tests)
-│   ├── test_video_sequencer.py  — VideoSequencer propagation + Aleph routing (3 tests)
+│   ├── test_sprint9.py          — metrics + postprod + exports (68 tests)│   ├── test_consistency.py      — AssetRegistry, ColorManager, ContinuityChecker, AudioNormalizer│   ├── test_video_sequencer.py  — VideoSequencer propagation + Aleph routing (3 tests)
 │   ├── test_runway_prompt_formatter.py — motion prompt + anti-cut + R09 (9 tests)
 │   └── test_comfyui_adapter.py  — ComfyUIAdapter + FluxKontext (4 tests)
 │
@@ -199,15 +207,81 @@ aiprod_adaptation/
     ├── sample.txt               — minimal narrative input (smoke test baseline)
     └── chapter1.txt             — rich input (4 characters, 3+ locations, dialogues)
 
-main.py                          — direct CLI entry point
-pyproject.toml                   — project metadata and dependencies
-stories/                         — production story files
-tasks/                           — workflow docs and audit logs
+production/
+├── characters.json              — 4 personnages lockés (Nara, Mira, Elian, Rook)
+│                                  canonical complet · portrait_brief DOP · seed fixe · validated_date
+├── locations.json               — 10 lieux · seeds 11→121 · canonical · lighting_brief · dop_ref
+│                                  colour (dominant/accent/blacks) · camera spec · ref_image path
+├── storyboard.json              — 35 shots · axes 180° par scène · shot_type · camera_spec
+│                                  composition · action_brief · lighting_context · emotion_intent
+├── grade.json                   — look transversal de l'épisode (palette · tonalité · interdits)
+├── gen_location_refs.py         — Génère master plates lieux (FLUX 1.1 Pro Ultra, 3840×2160)
+│                                  _MASTER_COMPOSITIONS : compositions dédiées text-to-image pur
+│                                  _strip_black_bands() : suppression automatique letterbox
+│                                  CLI : --loc · --ultra · --dry-run
+├── gen_location_angles.py       — Génère wide/medium/detail par lieu via FLUX Ultra + Redux
+│                                  _sanitize_canonical() : supprime toute présence humaine du prompt
+│                                  _precision_master() : 7 paramètres photographiques (IRE/µm/Kelvin)
+│                                  _creative_composition() : 30 compositions narratives (10 lieux × 3 angles)
+├── gen_character_refs.py        — Génère portraits de référence par personnage
+├── gen_shots.py                 — Génère les 35 shots EP01
+├── gen_assembly.py              — Assembly rough cut
+├── benchmark_characters.py      — Validation ArcFace des références personnages
+├── dashboard.py / dashboard.json
+├── run.py                       — CLI unifié production
+├── character_refs/              — Portraits lockés (nara_ref.png, mira_ref.png, elian_ref.png, rook_ref.png)
+└── location_refs/               — Masters + angles (10 lieux × 4 images = 40 fichiers 3840×2160)
 ```
+
+`stories/district_zero_ep01.fountain` — script source EP01  
+`tasks/` — METHODE_PRODUCTION_IA_2026.md · PRODUCTION_RULES.md · WORKFLOW.md  
+`pipeline/shot_pipeline.py` — orchestration shots (LOCKED_MODEL, LOCKED_PARAMS, LOCKED_COST)
 
 ---
 
-## Requirements
+## District Zero EP01 — État de production
+
+### Personnages lockés
+
+| Personnage | Rôle | Seed | Validé |
+|---|---|---|---|
+| Nara Voss | Protagoniste | 333 | 2026-05-01 |
+| Mira Sol | Deuteragoniste | 750 | 2026-05-01 |
+| Elian Voss | Supporting | 400 | 2026-05-01 |
+| Rook | Antagoniste | — | 2026-05-01 |
+
+### Master plates lieux (FLUX 1.1 Pro Ultra · raw=True · 16:9 · 3840×2160)
+
+| Lieu | Seed | Scènes | DOP référence |
+|---|---|---|---|
+| `ext_outer_wall_night` | 11 | SCN_001 | Deakins / Blade Runner 2049 |
+| `int_transit_corridor_night` | 22 | SCN_002 | Deakins / Sicario |
+| `int_pressure_valve_chamber_night` | 33 | SCN_003 | Lubezki / Gravity |
+| `int_voss_apartment_night` | 44 | SCN_004 | Deakins / Prisoners |
+| `int_civic_atrium_morning` | 55 | SCN_005 | Khondji / Se7en |
+| `int_black_market_sublevel_day` | 66 | SCN_006 | Van Hoytema / Her |
+| `int_security_ops_center_day` | 77 | SCN_007 | Deakins / Skyfall |
+| `int_service_spine_night` | 88 | SCN_008/010 | Prieto / Ozark |
+| `int_observation_chamber` | 99 | SCN_009 | Storaro / Apocalypse Now |
+| `int_voss_apartment_predawn` | 121 | SCN_011 | Deakins / Prisoners |
+
+### Pipeline vidéo (SmartVideoRouter)
+
+```
+character_reference_urls présents  →  Seedance 2.0  ($0.18/sec, 720p, cohérence personnage)
+≤ 5s sans personnage               →  Runway Gen-4  (i2v qualité)
+> 5s sans personnage               →  Kling 3.0     (kling-v3, camera_type: professional)
+```
+
+### Règles de production absolues
+
+- **Jamais de régénération sans GO explicite** — dry-run obligatoire avant tout run payant
+- **Empty location rule** — aucun personnage dans les masters lieux
+- **No text/signage** — aucun texte lisible sur aucune surface. Ne pas mentionner un concept interdit, même en négatif (T5-XXL l'active quand même) — reformuler sans évoquer le concept.
+- **Shot validé = définitif** — jamais régénéré sans décision DA explicite
+- **No `# type: ignore`** — toutes les erreurs de type résolues explicitement
+
+---
 
 - Python 3.11+
 - pydantic >= 2.0
@@ -376,7 +450,7 @@ Output format:
 pytest aiprod_adaptation/tests/ -q
 ```
 
-**998 passed, 4 deselected** across 22 test modules:
+**1072 passed, 4 deselected** across 23 test modules:
 
 | Module | Tests | Coverage |
 |---|---|---|
@@ -388,7 +462,8 @@ pytest aiprod_adaptation/tests/ -q
 | `test_adaptation.py` | ~30 | LLM adapters + router |
 | `test_continuity.py` | ~30 | character/location/prop registries |
 | `test_scheduling.py` | ~20 | EpisodeScheduler |
-| `test_image_gen.py` | ~40 | image adapters + storyboard |
+| `test_consistency.py` | ~30 | AssetRegistry, ColorManager, ContinuityChecker, AudioNormalizer |
+| `test_image_gen.py` | ~45 | image adapters + storyboard + HuggingFace |
 | `test_video_gen.py` | ~30 | video adapters + sequencer |
 | `test_post_prod.py` | ~30 | TTS + FFmpeg exporter |
 | `test_rule_engine.py` | ~40 | built-in rules + conflict resolver |
