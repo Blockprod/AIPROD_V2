@@ -305,8 +305,8 @@ class TestAssetRegistry:
         """AR-03: enrich_from_reference_pack() injects reference_image_id from a
         reference pack JSON with characters keyed by asset_id."""
         import json
-        import tempfile
         import os
+        import tempfile
         registry = AssetRegistry()
 
         pack_data = {

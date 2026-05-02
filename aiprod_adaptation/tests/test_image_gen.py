@@ -1086,14 +1086,14 @@ class TestHuggingFaceImageAdapter:
     def test_hf_adapter_returns_image_result_with_b64(self) -> None:
         from unittest.mock import MagicMock
 
-        PILImage = pytest.importorskip("PIL.Image")
+        pil_image_mod = pytest.importorskip("PIL.Image")
 
         from aiprod_adaptation.image_gen.huggingface_image_adapter import (
             HuggingFaceImageAdapter,
         )
 
         # Build a tiny real PIL image so the b64 round-trip works
-        pil_img = PILImage.new("RGB", (64, 36), color=(10, 20, 30))
+        pil_img = pil_image_mod.new("RGB", (64, 36), color=(10, 20, 30))
 
         mock_client = MagicMock()
         mock_client.text_to_image.return_value = pil_img
@@ -1115,11 +1115,11 @@ class TestHuggingFaceImageAdapter:
     def test_hf_adapter_schnell_uses_4_steps(self) -> None:
         from unittest.mock import MagicMock
 
-        PILImage = pytest.importorskip("PIL.Image")
+        pil_image_mod = pytest.importorskip("PIL.Image")
 
         from aiprod_adaptation.image_gen.huggingface_image_adapter import HuggingFaceImageAdapter
 
-        pil_img = PILImage.new("RGB", (64, 36))
+        pil_img = pil_image_mod.new("RGB", (64, 36))
         mock_client = MagicMock()
         mock_client.text_to_image.return_value = pil_img
 
