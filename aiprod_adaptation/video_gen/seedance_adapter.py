@@ -41,7 +41,7 @@ class SeedanceAdapter(VideoAdapter):
 
         t0 = time.monotonic()
 
-        input_params: dict = {
+        input_params: dict[str, object] = {
             "prompt": request.prompt,
             "duration": request.duration_sec,
             "resolution": self._resolution,
