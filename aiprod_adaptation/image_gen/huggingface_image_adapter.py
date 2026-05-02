@@ -68,91 +68,6 @@ def _sdxl_size(width: int, height: int) -> tuple[int, int]:
 
 
 class HuggingFaceImageAdapter(ImageAdapter):
-    """Image generation via HuggingFace Inference API.
-
-    Supports three model families with automatic parameter tuning:
-      - FLUX.1-schnell  : 4 steps, no CFG, no negative prompt (free tier)
-      - FLUX.1-dev      : 28 steps, guidance 3.5 (needs HF Pro or fal provider)
-      - SDXL-based      : 35 steps, CFG 7.0, strong negative prompt, 1024px native
-                          (Juggernaut XL, RealVisXL, DreamShaper XL…)
-
-    Environment variables:
-        HF_TOKEN         Required. Read-access token from huggingface.co/settings/tokens
-        HF_IMAGE_MODEL   Model ID (default: black-forest-labs/FLUX.1-schnell)
-    """
-
-    MODEL_NAME = "huggingface"
-
-    def generate(self, request: ImageRequest) -> ImageResult:
-        token = os.environ.get("HF_TOKEN", "")
-        if not token:
-            raise EnvironmentError(
-                "HuggingFaceImageAdapter: HF_TOKEN environment variable is not set. "
-                "Generate a free token at https://huggingface.co/settings/tokens"
-            )
-
-        model = os.environ.get("HF_IMAGE_MODEL", DEFAULT_HF_MODEL)
-        client = _build_hf_client(token)
-
-        is_schnell = "schnell" in model.lower()
-        is_sdxl = _is_sdxl(model)
-        is_dev = _is_flux_dev(model)
-
-        if is_schnell:
-            num_steps = _SCHNELL_MAX_STEPS
-            kwargs: dict[str, Any] = {
-                "num_inference_steps": num_steps,
-                "width": request.width,
-                "height": request.height,
-            }
-            # schnell: no CFG, no negative prompt
-        elif is_sdxl:
-            w, h = _sdxl_size(request.width, request.height)
-            num_steps = _SDXL_STEPS
-            kwargs = {
-                "num_inference_steps": num_steps,
-                "guidance_scale": _SDXL_GUIDANCE,
-                "width": w,
-                "height": h,
-                "negative_prompt": request.negative_prompt or _SDXL_NEGATIVE,
-            }
-        else:
-            # FLUX.1-dev or other FLUX variants
-            num_steps = _FLUX_DEV_STEPS
-            kwargs = {
-                "num_inference_steps": num_steps,
-                "guidance_scale": _FLUX_DEV_GUIDANCE,
-                "width": request.width,
-                "height": request.height,
-            }
-
-        if request.seed is not None:
-            kwargs["seed"] = request.seed
-
-        t0 = time.monotonic()
-        pil_image = client.text_to_image(
-            prompt=request.prompt,
-            model=model,
-            **kwargs,
-        )
-        latency_ms = int((time.monotonic() - t0) * 1000)
-
-        buf = io.BytesIO()
-        pil_image.save(buf, format="PNG")
-        b64 = base64.b64encode(buf.getvalue()).decode("ascii")
-
-        return ImageResult(
-            shot_id=request.shot_id,
-            image_url="",
-            image_b64=b64,
-            model_used=model,
-            latency_ms=latency_ms,
-            cost_usd=0.0,
-        )
-
-
-
-class HuggingFaceImageAdapter(ImageAdapter):
     """Free image generation via HuggingFace Inference API (FLUX.1-schnell by default).
 
     Requirements:
@@ -177,7 +92,7 @@ class HuggingFaceImageAdapter(ImageAdapter):
     def generate(self, request: ImageRequest) -> ImageResult:
         token = os.environ.get("HF_TOKEN", "")
         if not token:
-            raise EnvironmentError(
+            raise OSError(
                 "HuggingFaceImageAdapter: HF_TOKEN environment variable is not set. "
                 "Generate a free token at https://huggingface.co/settings/tokens"
             )

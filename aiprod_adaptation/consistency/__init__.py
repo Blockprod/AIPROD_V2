@@ -9,10 +9,10 @@ Modules:
     timeline_engine     — Calcule et valide les timestamps absolus
 """
 from aiprod_adaptation.consistency.asset_registry import AssetRegistry
-from aiprod_adaptation.consistency.timeline_engine import TimelineEngine
+from aiprod_adaptation.consistency.audio_normalizer import AudioNormalizer
 from aiprod_adaptation.consistency.color_manager import ColorManager
 from aiprod_adaptation.consistency.continuity_checker import ContinuityChecker
-from aiprod_adaptation.consistency.audio_normalizer import AudioNormalizer
+from aiprod_adaptation.consistency.timeline_engine import TimelineEngine
 
 __all__ = [
     "AssetRegistry",

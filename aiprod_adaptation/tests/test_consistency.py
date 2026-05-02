@@ -11,16 +11,6 @@ Covers:
 
 from __future__ import annotations
 
-import pytest
-
-from aiprod_adaptation.models.schema import (
-    AIPRODOutput,
-    Episode,
-    Scene,
-    Shot,
-    GlobalAsset,
-    Timeline,
-)
 from aiprod_adaptation.consistency import (
     AssetRegistry,
     AudioNormalizer,
@@ -28,7 +18,14 @@ from aiprod_adaptation.consistency import (
     ContinuityChecker,
     TimelineEngine,
 )
-
+from aiprod_adaptation.models.schema import (
+    AIPRODOutput,
+    Episode,
+    GlobalAsset,
+    Scene,
+    Shot,
+    Timeline,
+)
 
 # ---------------------------------------------------------------------------
 # Helpers — minimal fixtures

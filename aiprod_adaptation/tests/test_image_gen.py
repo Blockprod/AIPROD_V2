@@ -978,7 +978,6 @@ class TestCharacterPrepass:
         """REGRESSION: reference pack registers 'Nara' (Title case); IR emits 'nara' (lower).
         Prepass must NOT be skipped — generated must be 1, not 0.
         If this fails, --remove-background runs waste API credits with no face-consistency benefit."""
-        from unittest.mock import patch
 
         from aiprod_adaptation.image_gen.character_prepass import CharacterPrepass
         from aiprod_adaptation.image_gen.character_sheet import CharacterSheet, CharacterSheetRegistry

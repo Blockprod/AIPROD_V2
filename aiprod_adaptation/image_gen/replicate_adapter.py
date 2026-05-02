@@ -141,6 +141,7 @@ def _upscale_to_4k(client: Any, image_b64: str) -> str:
     """
     import base64
     import io
+
     from PIL import Image as _PILImage
 
     raw = base64.b64decode(image_b64)
@@ -149,9 +150,9 @@ def _upscale_to_4k(client: Any, image_b64: str) -> str:
     # Pre-downscale to fit within Real-ESRGAN GPU pixel budget.
     # Hardware limit: 2,096,704 px but GPU needs ~3.8 GiB at 2M px → CUDA OOM.
     # 1,440,000 px leaves enough VRAM headroom (~2.8 GiB).
-    _MAX_UPSCALE_PIXELS = 1_440_000  # ~1440×1000 — safe on 14 GiB GPU with other allocations
-    if w * h > _MAX_UPSCALE_PIXELS:
-        ratio = (_MAX_UPSCALE_PIXELS / (w * h)) ** 0.5
+    max_upscale_pixels = 1_440_000  # ~1440×1000 — safe on 14 GiB GPU with other allocations
+    if w * h > max_upscale_pixels:
+        ratio = (max_upscale_pixels / (w * h)) ** 0.5
         img = img.resize((max(1, int(w * ratio)), max(1, int(h * ratio))), _PILImage.LANCZOS)
         buf = io.BytesIO()
         img.save(buf, format="PNG")
@@ -244,8 +245,8 @@ class ReplicateAdapter(ImageAdapter):
         input_data = _build_input(model, request)
 
         # Retry on 429 with exponential backoff — Replicate throttles new/low-credit accounts
-        _MAX_RETRIES = 5
-        _BASE_WAIT = 12  # seconds — Replicate rate limit window is ~10s
+        max_retries = 5
+        base_wait = 12  # seconds — Replicate rate limit window is ~10s
         upscale = os.environ.get("REPLICATE_UPSCALE", "").lower() in ("1", "true", "yes")
         # Open local composition reference — must stay open during client.run() call
         # per official docs: open("file.jpg", "rb") is the correct approach
@@ -256,7 +257,7 @@ class ReplicateAdapter(ImageAdapter):
             input_data["image_prompt_strength"] = 0.50
         last_exc: Exception | None = None
         try:
-            for attempt in range(_MAX_RETRIES):
+            for attempt in range(max_retries):
                 try:
                     t0 = time.monotonic()
                     output = client.run(model, input=input_data)
@@ -280,10 +281,10 @@ class ReplicateAdapter(ImageAdapter):
                     last_exc = exc
                     if "429" not in str(exc) and "throttled" not in str(exc).lower():
                         raise
-                    wait = _BASE_WAIT * (2 ** attempt)
+                    wait = base_wait * (2 ** attempt)
                     time.sleep(wait)
             raise RuntimeError(
-                f"Replicate 429 after {_MAX_RETRIES} retries for {request.shot_id}"
+                f"Replicate 429 after {max_retries} retries for {request.shot_id}"
             ) from last_exc
         finally:
             if _local_fh is not None:

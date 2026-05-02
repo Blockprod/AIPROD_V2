@@ -1033,7 +1033,6 @@ class TestCLIAdapters:
         assert args.budget_cap == pytest.approx(2.50)
 
     def test_cli_schedule_dry_run_returns_zero_without_api_calls(self) -> None:
-        import sys as _sys
         with tempfile.TemporaryDirectory() as tmp:
             in_txt = Path(tmp) / "in.txt"
             ir_json = Path(tmp) / "ir.json"
@@ -1077,8 +1076,8 @@ class TestCLIAdapters:
                 )
             )
             # Build reference pack with at least one character that matches IR subjects
-            from aiprod_adaptation.image_gen.character_prepass import _unique_characters
             from aiprod_adaptation.core.io import load_output
+            from aiprod_adaptation.image_gen.character_prepass import _unique_characters
             output = load_output(str(ir_json))
             chars = _unique_characters(output)
             if not chars:
@@ -1109,7 +1108,9 @@ class TestCLIAdapters:
             assert "Prepass resolved" in captured.err
             assert first_char in captured.err
 
-    def test_cli_schedule_dry_run_remove_background_no_canonical_returns_1(self, capsys: pytest.CaptureFixture[str]) -> None:
+    def test_cli_schedule_dry_run_remove_background_no_canonical_returns_1(
+        self, capsys: pytest.CaptureFixture[str]
+    ) -> None:
         """--remove-background + --dry-run must return exit code 1 when no character
         has a canonical in the reference pack — prevents wasted paid runs."""
         import json as _json
@@ -1126,8 +1127,8 @@ class TestCLIAdapters:
                     ["pipeline", "--input", str(in_txt), "--title", "T", "--output", str(ir_json)]
                 )
             )
-            from aiprod_adaptation.image_gen.character_prepass import _unique_characters
             from aiprod_adaptation.core.io import load_output
+            from aiprod_adaptation.image_gen.character_prepass import _unique_characters
             output = load_output(str(ir_json))
             chars = _unique_characters(output)
             if not chars:

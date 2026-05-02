@@ -266,8 +266,7 @@ class TestCostReport:
 class TestBudgetCap:
     def test_budget_cap_stops_generation_early(self) -> None:
         from aiprod_adaptation.image_gen.image_adapter import NullImageAdapter
-        from aiprod_adaptation.image_gen.image_request import ImageResult
-        from aiprod_adaptation.image_gen.image_request import ImageRequest
+        from aiprod_adaptation.image_gen.image_request import ImageRequest, ImageResult
         from aiprod_adaptation.image_gen.storyboard import StoryboardGenerator
         from aiprod_adaptation.models.schema import AIPRODOutput, Episode, Shot
 
@@ -330,10 +329,10 @@ class TestLLMTokenTracking:
         assert adapter.get_token_usage() == (0, 0)
 
     def test_claude_adapter_accumulates_token_usage(self) -> None:
-        import json
-        from unittest.mock import MagicMock, patch
-        from aiprod_adaptation.core.adaptation.claude_adapter import ClaudeAdapter
         import os
+        from unittest.mock import MagicMock, patch
+
+        from aiprod_adaptation.core.adaptation.claude_adapter import ClaudeAdapter
         with patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test-key"}):
             adapter = ClaudeAdapter()
         mock_message = MagicMock()

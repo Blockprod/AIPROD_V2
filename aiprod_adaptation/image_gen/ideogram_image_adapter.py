@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import base64
-import io
 import os
 import time
 from typing import Any
@@ -72,7 +71,7 @@ class IdeogramImageAdapter(ImageAdapter):
     def generate(self, request: ImageRequest) -> ImageResult:
         api_key = os.environ.get("IDEOGRAM_API_KEY", "")
         if not api_key:
-            raise EnvironmentError(
+            raise OSError(
                 "IdeogramImageAdapter: IDEOGRAM_API_KEY environment variable is not set. "
                 "Get a free API key at https://developer.ideogram.ai"
             )
@@ -112,9 +111,9 @@ class IdeogramImageAdapter(ImageAdapter):
 
 def _call_ideogram_api(api_key: str, fields: dict[str, Any]) -> str:
     """POST multipart/form-data to Ideogram v3 API, return ephemeral image URL."""
-    import urllib.request
-    import urllib.parse
     import json
+    import urllib.parse
+    import urllib.request
 
     boundary = "----AIPRODBoundary7MA4YWxkTrZu0gW"
     body_parts: list[bytes] = []
