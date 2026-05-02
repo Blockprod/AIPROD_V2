@@ -302,35 +302,44 @@ class TestAssetRegistry:
         assert "nara" in violations[0]
 
     def test_reference_pack_injects_image_id(self) -> None:
-        """AR-03: enrich_from_reference_pack() injects reference_image_id from the
-        real preproduction/district_zero/reference_pack.json."""
+        """AR-03: enrich_from_reference_pack() injects reference_image_id from a
+        reference pack JSON with characters keyed by asset_id."""
+        import json
+        import tempfile
         import os
         registry = AssetRegistry()
 
-        # Use the real reference pack
-        pack_path = os.path.join(
-            os.path.dirname(__file__),
-            "..", "..", "preproduction", "district_zero", "reference_pack.json"
-        )
-        pack_path = os.path.normpath(pack_path)
+        pack_data = {
+            "characters": {
+                "nara": {"reference_image_urls": ["refs/nara_01.png", "refs/nara_02.png"]},
+                "vale": {"reference_image_urls": ["refs/vale_01.png"]},
+            }
+        }
+        with tempfile.NamedTemporaryFile(
+            mode="w", suffix=".json", delete=False, encoding="utf-8"
+        ) as f:
+            json.dump(pack_data, f)
+            pack_path = f.name
 
-        # Build minimal character assets matching the pack's keys
-        assets = [
-            GlobalAsset(
-                asset_id="nara",
-                asset_type="character",
-                attributes={"display_name": "Nara"},
-                first_occurrence="SCN_001_SHOT_001",
-            ),
-            GlobalAsset(
-                asset_id="vale",
-                asset_type="character",
-                attributes={"display_name": "Vale"},
-                first_occurrence="SCN_010_SHOT_001",
-            ),
-        ]
+        try:
+            assets = [
+                GlobalAsset(
+                    asset_id="nara",
+                    asset_type="character",
+                    attributes={"display_name": "Nara"},
+                    first_occurrence="SCN_001_SHOT_001",
+                ),
+                GlobalAsset(
+                    asset_id="vale",
+                    asset_type="character",
+                    attributes={"display_name": "Vale"},
+                    first_occurrence="SCN_010_SHOT_001",
+                ),
+            ]
 
-        enriched = registry.enrich_from_reference_pack(assets, pack_path)
+            enriched = registry.enrich_from_reference_pack(assets, pack_path)
+        finally:
+            os.unlink(pack_path)
 
         nara = next(a for a in enriched if a.asset_id == "nara")
         vale = next(a for a in enriched if a.asset_id == "vale")

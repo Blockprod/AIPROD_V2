@@ -1086,7 +1086,7 @@ class TestHuggingFaceImageAdapter:
     def test_hf_adapter_returns_image_result_with_b64(self) -> None:
         from unittest.mock import MagicMock
 
-        from PIL import Image as PILImage
+        PILImage = pytest.importorskip("PIL.Image")
 
         from aiprod_adaptation.image_gen.huggingface_image_adapter import (
             HuggingFaceImageAdapter,
@@ -1115,7 +1115,7 @@ class TestHuggingFaceImageAdapter:
     def test_hf_adapter_schnell_uses_4_steps(self) -> None:
         from unittest.mock import MagicMock
 
-        from PIL import Image as PILImage
+        PILImage = pytest.importorskip("PIL.Image")
 
         from aiprod_adaptation.image_gen.huggingface_image_adapter import HuggingFaceImageAdapter
 

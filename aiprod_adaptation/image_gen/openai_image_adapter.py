@@ -10,7 +10,7 @@ from aiprod_adaptation.image_gen.image_adapter import ImageAdapter
 from aiprod_adaptation.image_gen.image_request import ImageRequest, ImageResult
 
 DEFAULT_MODEL = "gpt-image-1-mini"
-DEFAULT_QUALITY = "high"
+DEFAULT_QUALITY = "low"
 OpenAIImageQuality = Literal["low", "medium", "high", "auto"]
 
 _OPENAI_IMAGE_COST_USD: dict[str, dict[str, dict[str, float]]] = {
