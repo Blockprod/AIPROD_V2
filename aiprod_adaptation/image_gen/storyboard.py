@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import structlog
 
@@ -137,7 +137,7 @@ def _condense_location(location_prompt: str) -> str:
     for tech in _LOC_TECH_STRIP:
         stripped = stripped.replace(tech, " ").replace("  ", " ")
     parts = [p.strip() for p in stripped.split(",") if p.strip() and len(p.strip()) > 4]
-    return ", ".join(parts[:5]).strip().strip(",").strip()
+    return ", ".join(parts[:12]).strip().strip(",").strip()
 
 
 def _build_shot_prompt(
@@ -145,6 +145,7 @@ def _build_shot_prompt(
     canonical_char: str,
     location_prompt: str,
     tod_visual: str,
+    portrait_footer: str = _PORTRAIT_FOOTER,
 ) -> str:
     """
     Build a structured cinematic prompt optimised for gpt-image-1.
@@ -180,7 +181,7 @@ def _build_shot_prompt(
     if is_portrait and char:
         # Portrait close-up with a character: skip location (it confuses FLUX)
         # and use photography footer for natural skin/face rendering.
-        segments.append(_PORTRAIT_FOOTER)
+        segments.append(portrait_footer)
     else:
         # Wide / medium / over-shoulder / establishing shots: inject location + lighting.
         loc = _condense_location(location_prompt)
@@ -215,6 +216,7 @@ class StoryboardGenerator:
         reference_pack: ReferencePack | None = None,
         kontext_adapter: FluxKontextAdapter | None = None,
         adapter_overrides: dict[str, ImageAdapter] | None = None,
+        character_briefs: dict[str, Any] | None = None,
         budget_cap_usd: float | None = None,
     ) -> None:
         self._adapter = adapter
@@ -226,7 +228,22 @@ class StoryboardGenerator:
         self._reference_pack = reference_pack
         self._kontext_adapter = kontext_adapter
         self._adapter_overrides: dict[str, ImageAdapter] = adapter_overrides or {}
+        self._character_briefs: dict[str, Any] = character_briefs or {}
         self._budget_cap_usd: float | None = budget_cap_usd
+
+    def _get_portrait_footer(self, character_id: str) -> str:
+        """Returns per-character DOP portrait footer from character_briefs, fallback to generic."""
+        char: Any = self._character_briefs.get(character_id)
+        if not char or "portrait_brief" not in char:
+            return _PORTRAIT_FOOTER
+        pb = char["portrait_brief"]
+        return (
+            f"Camera: {pb.get('camera', '')}. "
+            f"Framing: {pb.get('framing', '')}. "
+            f"Lighting: {pb.get('lighting', '')}. "
+            f"Background: {pb.get('background', '')}. "
+            f"DOP ref: {pb.get('dop_ref', '')}."
+        )
 
     def _location_key_for_shot(self, shot: Shot) -> str:
         if self._reference_pack is None:
@@ -408,7 +425,8 @@ class StoryboardGenerator:
                 prompt_parts.append(canonical)
             if self._style_token:
                 prompt_parts.append(self._style_token)
-            enriched_prompt = _build_shot_prompt(shot, canonical, location_prompt, tod_visual)
+            portrait_footer = self._get_portrait_footer(primary_char) if primary_char else _PORTRAIT_FOOTER
+            enriched_prompt = _build_shot_prompt(shot, canonical, location_prompt, tod_visual, portrait_footer)
 
             request = ImageRequest(
                 shot_id=shot.shot_id,

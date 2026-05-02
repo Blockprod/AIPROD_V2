@@ -25,11 +25,10 @@ import time
 import urllib.request
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
+from typing import Any, cast
 
 import cv2
 import numpy as np
-
 
 # ---------------------------------------------------------------------------
 # MODÈLES VERROUILLÉS
@@ -46,7 +45,7 @@ LOCKED_COST_TOTAL = LOCKED_COST_P1 + LOCKED_COST_P2
 # PARAMÈTRES VERROUILLÉS — NE PAS MODIFIER
 # ---------------------------------------------------------------------------
 
-LOCKED_PARAMS = {
+LOCKED_PARAMS: dict[str, Any] = {
     # PASS 1 — FLUX.2 Pro
     "p1_aspect_ratio":    "16:9",
     "p1_resolution":      "1 MP",
@@ -115,6 +114,8 @@ class SceneP1Params:
     subject_action: str                    # action précise du personnage dans ce shot
     seed:           int         = 42       # seed fixe par scène pour cohérence décor
     extra_notes:    str         = ""       # notes additionnelles (optionnel)
+    character_canonical: str   = LOCKED_NARA_CANONICAL  # canonical DOP-grade du personnage
+    emotion_intent:      str   = ""  # intention dramatique du shot (précède la desc technique)
 
     # Constantes verrouillées
     locked_dop_ref:  str = field(default="Roger Deakins / Sicario (2015)", init=False)
@@ -123,54 +124,68 @@ class SceneP1Params:
         "oval bokeh on background, T2.3 | ISO 1600 | 180° shutter | 24fps"
     ), init=False)
 
+    def __post_init__(self) -> None:
+        if not self.scene_id:
+            raise ValueError("SceneP1Params: scene_id ne peut pas être vide.")
+        if not self.character_canonical:
+            raise ValueError("SceneP1Params: character_canonical ne peut pas être vide.")
+
 
 def build_p1_prompt(p: SceneP1Params) -> str:
     """Construit le prompt JSON DOP-grade pour FLUX.2 Pro (Pass 1)."""
-    doc = {
-        "production_note": (
-            f"DISTRICT ZERO — {p.episode} — {p.scene_id}. "
-            f"Visual language: {p.locked_dop_ref} — "
-            "wide anamorphic, deep shadow architecture, single motivated practical as key, "
-            "clinical cold industrial palette with isolated warm practicals. "
-            "Shoot on " + p.locked_camera + "."
-            + (f" {p.extra_notes}" if p.extra_notes else "")
-        ),
-        "location": f"{p.location_slug}. {p.location_desc}",
-        "lighting_design": p.lighting_desc,
-        "colour_grade_intent": p.colour_desc,
-        "composition": p.composition,
-        "subject": {
-            "action": p.subject_action,
-            "costume": LOCKED_NARA_CANONICAL,
-        },
-        "technical_quality": (
-            "ARRI Alexa 35 RAW capture aesthetic. "
-            "Cooke Anamorphic /i lens character: subtle barrel distortion at edges, "
-            "oval out-of-focus highlights, horizontal lens flare streak from cage lamp. "
-            "Natural 35mm film grain structure — visible in shadow zones, "
-            "not digital noise — organic texture. "
-            "Tack-sharp focus plane on subject face and upper body. "
-            "Controlled motion blur on moving extremities. "
-            "No HDR clipping. No oversaturation. No AI artefact. "
-            "No extra fingers. No floating limbs. No duplicated subjects. "
-            "Solo figure — absolutely one person only in frame. "
-            "Feature film production quality — 2026 state of the art."
-        ),
+    doc: dict[str, object] = {}
+    if p.emotion_intent:
+        doc["dramatic_intent"] = p.emotion_intent
+    doc["production_note"] = (
+        f"DISTRICT ZERO — {p.episode} — {p.scene_id}. "
+        f"Visual language: {p.locked_dop_ref} — "
+        "wide anamorphic, deep shadow architecture, single motivated practical as key, "
+        "clinical cold industrial palette with isolated warm practicals. "
+        "Shoot on " + p.locked_camera + "."
+        + (f" {p.extra_notes}" if p.extra_notes else "")
+    )
+    doc["location"] = f"{p.location_slug}. {p.location_desc}"
+    doc["lighting_design"] = p.lighting_desc
+    doc["colour_grade_intent"] = p.colour_desc
+    doc["composition"] = p.composition
+    doc["technical_quality"] = (
+        "ARRI Alexa 35 RAW capture aesthetic. "
+        "Cooke Anamorphic /i lens character: subtle barrel distortion at edges, "
+        "oval out-of-focus highlights, horizontal lens flare streak from cage lamp. "
+        "Natural 35mm film grain structure — visible in shadow zones, "
+        "not digital noise — organic texture. "
+        "Tack-sharp focus plane on subject face and upper body. "
+        "Controlled motion blur on moving extremities. "
+        "No HDR clipping. No oversaturation. No AI artefact. "
+        "No extra fingers. No floating limbs. No duplicated subjects. "
+        "Solo figure — absolutely one person only in frame. "
+        "Feature film production quality — 2026 state of the art."
+    )
+    doc["subject"] = {
+        "action": p.subject_action,
+        "costume": p.character_canonical,
     }
     return json.dumps(doc)
 
 
-def build_p2_prompt(scene_env: str, subject_action: str) -> str:
+def build_p2_prompt(
+    scene_env: str,
+    subject_action: str,
+    character_name: str = "Nara Voss",
+    character_canonical: str = LOCKED_NARA_CANONICAL,
+) -> str:
     """Construit le prompt Flux Fill Pro (Pass 2) pour un shot donné.
 
     Args:
-        scene_env:      Description courte décor + lumière de la scène (1-3 phrases).
-        subject_action: Action précise du personnage dans ce shot.
+        scene_env:           Description courte décor + lumière de la scène (1-3 phrases).
+        subject_action:      Action précise du personnage dans ce shot.
+        character_name:      Nom du personnage (ex: "Vale Chen"). Défaut: "Nara Voss".
+        character_canonical: Description physique DOP-grade du personnage. Défaut: Nara.
     """
     return (
         f"{scene_env} "
-        f"Nara Voss {subject_action}. "
-        f"{LOCKED_NARA_CANONICAL} "
+        f"{character_name} {subject_action}. "
+        f"{character_canonical} "
         "Left forearm: matte-black polymer OLED wrist display 25x40mm, "
         "machined aluminium micro-bezel, two black nylon strap buckles, "
         "amber OLED screen active with pressure gauge readout. "
@@ -215,7 +230,7 @@ def _download(url: str) -> np.ndarray:
     return img
 
 
-def _get_largest_face(app, img_bgr):
+def _get_largest_face(app: Any, img_bgr: np.ndarray) -> Any:
     faces = app.get(img_bgr)
     if not faces:
         return None
@@ -226,7 +241,7 @@ def _get_largest_face(app, img_bgr):
     )[0]
 
 
-def _score_arcface(app, img_a: np.ndarray, img_b: np.ndarray) -> float:
+def _score_arcface(app: Any, img_a: np.ndarray, img_b: np.ndarray) -> float:
     fa = app.get(img_a)
     fb = app.get(img_b)
     if not fa or not fb:
@@ -234,11 +249,13 @@ def _score_arcface(app, img_a: np.ndarray, img_b: np.ndarray) -> float:
     return float(np.dot(fa[0].normed_embedding, fb[0].normed_embedding))
 
 
-def _sharpen_region(img_bgr: np.ndarray, bbox, strength: float = 1.0, sigma: float = 0.5) -> np.ndarray:
+def _sharpen_region(img_bgr: np.ndarray, bbox: Any, strength: float = 1.0, sigma: float = 0.5) -> np.ndarray:
     x1, y1, x2, y2 = [int(c) for c in bbox]
     pad = 15
-    x1s = max(0, x1 - pad); y1s = max(0, y1 - pad)
-    x2s = min(img_bgr.shape[1], x2 + pad); y2s = min(img_bgr.shape[0], y2 + pad)
+    x1s = max(0, x1 - pad)
+    y1s = max(0, y1 - pad)
+    x2s = min(img_bgr.shape[1], x2 + pad)
+    y2s = min(img_bgr.shape[0], y2 + pad)
     roi = img_bgr[y1s:y2s, x1s:x2s].astype(np.float32)
     blur = cv2.GaussianBlur(roi, (0, 0), sigma)
     sharp = np.clip(roi * (1 + strength) - blur * strength, 0, 255).astype(np.uint8)
@@ -247,7 +264,7 @@ def _sharpen_region(img_bgr: np.ndarray, bbox, strength: float = 1.0, sigma: flo
     return out
 
 
-def _fit_to_canvas(img_bgr: np.ndarray, w: int, h: int):
+def _fit_to_canvas(img_bgr: np.ndarray, w: int, h: int) -> tuple[np.ndarray, int, int, float]:
     sh, sw = img_bgr.shape[:2]
     scale = min(w / sw, h / sh)
     nw, nh = int(sw * scale), int(sh * scale)
@@ -258,16 +275,21 @@ def _fit_to_canvas(img_bgr: np.ndarray, w: int, h: int):
     return canvas, ox, oy, scale
 
 
-def _build_face_mask(h: int, w: int, face_bbox, scale: float, ox: int, oy: int, expand: float = 1.15) -> np.ndarray:
+def _build_face_mask(
+    h: int, w: int, face_bbox: Any, scale: float, ox: int, oy: int, expand: float = 1.15
+) -> np.ndarray:
     bx1, by1, bx2, by2 = face_bbox
-    x1 = int(bx1 * scale) + ox; y1 = int(by1 * scale) + oy
-    x2 = int(bx2 * scale) + ox; y2 = int(by2 * scale) + oy
+    x1 = int(bx1 * scale) + ox
+    y1 = int(by1 * scale) + oy
+    x2 = int(bx2 * scale) + ox
+    y2 = int(by2 * scale) + oy
     cx, cy = (x1 + x2) // 2, (y1 + y2) // 2
     fw, fh = x2 - x1, y2 - y1
-    ax = int(fw * expand * 0.55); ay = int(fh * expand * 0.65)
-    mask = np.ones((h, w), dtype=np.uint8) * 255
+    ax = int(fw * expand * 0.55)
+    ay = int(fh * expand * 0.65)
+    mask: np.ndarray = cast(np.ndarray, np.ones((h, w), dtype=np.uint8) * 255)
     cv2.ellipse(mask, (cx, cy), (ax, ay), 0, 0, 360, 0, -1)
-    mask = cv2.GaussianBlur(mask, (9, 9), 0)
+    mask = cast(np.ndarray, cv2.GaussianBlur(mask, (9, 9), 0))
     _, mask = cv2.threshold(mask, 127, 255, cv2.THRESH_BINARY)
     return mask
 
@@ -284,7 +306,11 @@ def _upscale_2x(img_bgr: np.ndarray) -> np.ndarray:
     up = cv2.resize(img_bgr, (w * 2, h * 2), interpolation=cv2.INTER_LANCZOS4)
     blur = cv2.GaussianBlur(up.astype(np.float32), (0, 0), LOCKED_PARAMS["upscale_blur_sigma"])
     gain = LOCKED_PARAMS["upscale_sharp_gain"]
-    return np.clip(up.astype(np.float32) * gain - blur * (gain - 1), 0, 255).astype(np.uint8)
+    result: np.ndarray = cast(
+        np.ndarray,
+        np.clip(up.astype(np.float32) * gain - blur * (gain - 1), 0, 255).astype(np.uint8),
+    )
+    return result
 
 
 # ---------------------------------------------------------------------------
@@ -313,7 +339,9 @@ def run_shot(
     out_dir:       Path,
     p2_scene_env:  str,
     p2_subject_action: str,
-    root:          Optional[Path] = None,
+    p2_character_name: str = "Nara Voss",
+    p2_character_canonical: str = LOCKED_NARA_CANONICAL,
+    root:          Path | None = None,
     verbose:       bool = True,
 ) -> ShotResult:
     """Lance le pipeline hybride v2 pour un shot.
@@ -389,7 +417,7 @@ def run_shot(
     # PASS 2 — Flux Fill Pro v5 : face inpainting
     # ------------------------------------------------------------------
     if verbose:
-        print(f"\n[P2] Flux Fill Pro v5 — face inpainting")
+        print("\n[P2] Flux Fill Pro v5 — face inpainting")
 
     app = FaceAnalysis(name=LOCKED_PARAMS["face_model"], providers=["CPUExecutionProvider"])
     app.prepare(ctx_id=0, det_size=LOCKED_PARAMS["face_det_size"])
@@ -403,7 +431,12 @@ def run_shot(
     canvas, ox, oy, scale = _fit_to_canvas(src_sharp, cw, ch)
     mask = _build_face_mask(ch, cw, face.bbox, scale, ox, oy, LOCKED_PARAMS["mask_expand"])
 
-    p2_prompt = build_p2_prompt(p2_scene_env, p2_subject_action)
+    p2_prompt = build_p2_prompt(
+        p2_scene_env,
+        p2_subject_action,
+        character_name=p2_character_name,
+        character_canonical=p2_character_canonical,
+    )
     t2 = time.monotonic()
     out_p2 = replicate.run(
         LOCKED_MODEL_P2,
@@ -440,7 +473,7 @@ def run_shot(
     elapsed_total = time.monotonic() - t_start
 
     if verbose:
-        print(f"\n[SCORES]")
+        print("\n[SCORES]")
         print(f"  ArcFace 1x : {score_1x:.6f}")
         print(f"  ArcFace 2x : {score_2x:.6f}")
         print(f"  Temps total : {elapsed_total:.1f}s  |  Coût : ${LOCKED_COST_TOTAL:.2f}")

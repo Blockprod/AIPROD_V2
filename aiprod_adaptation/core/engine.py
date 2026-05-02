@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import sys
-from typing import TYPE_CHECKING, Literal, cast
+from typing import TYPE_CHECKING, Any, Literal, cast
 
 import structlog
 
@@ -277,6 +277,7 @@ def run_pipeline_with_images(
     character_descriptions: dict[str, str] | None = None,
     image_adapter: ImageAdapter | None = None,
     image_base_seed: int | None = None,
+    character_briefs: dict[str, Any] | None = None,
     budget: ProductionBudget | None = None,
     require_llm: bool = False,
     pipeline_mode: PipelineMode = "auto",
@@ -297,6 +298,7 @@ def run_pipeline_with_images(
         storyboard = StoryboardGenerator(
             adapter=image_adapter,
             base_seed=image_base_seed,
+            character_briefs=character_briefs,
         ).generate(output)
         logger.info(
             "storyboard_complete", generated=storyboard.generated, total=storyboard.total_shots
@@ -330,7 +332,7 @@ def run_pipeline_with_video(
         character_descriptions,
         image_adapter,
         image_base_seed,
-        budget,
+        budget=budget,
         require_llm=require_llm,
         pipeline_mode=pipeline_mode,
     )
