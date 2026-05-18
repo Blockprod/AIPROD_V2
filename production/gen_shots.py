@@ -34,6 +34,16 @@ def build_scene_params(
     colour = location["colour"]
     state = shot.get("state_override") or "canonical appearance"
     scene_grade = grade["per_scene_grade"].get(shot["scene_id"], "")
+    char_exp = grade.get("character_exposure", {})
+    silhouette_shots: list[str] = char_exp.get("silhouette_override_shots", [])
+    if char_exp and shot["shot_id"] not in silhouette_shots and shot.get("primary_character"):
+        face_exposure = (
+            f"Key side {char_exp['face_key_ire']}% IRE, "
+            f"shadow side {char_exp['face_shadow_ire']}% IRE "
+            f"({char_exp['ratio_label']})."
+        )
+    else:
+        face_exposure = ""
     return SceneP1Params(
         scene_id=shot["scene_id"],
         episode="Episode 01",
@@ -49,6 +59,11 @@ def build_scene_params(
         subject_action=shot["action_brief"],
         seed=scene_cfg["seed"],
         emotion_intent=shot["emotion_intent"],
+        reference_exact=shot.get("reference_exact", ""),
+        off_frame_tension=shot.get("off_frame_tension", ""),
+        material_state=shot.get("material_state") or location.get("canonical", ""),
+        face_exposure=face_exposure,
+        eyeline=shot.get("eyeline", ""),
         extra_notes=(
             f"Camera spec: {shot['camera_spec']}. "
             f"Character state: {state}."
@@ -111,7 +126,7 @@ def run(filter_scene: str | None, filter_shot: str | None, dry_run: bool) -> Non
                 shot_id=shot["shot_id"],
                 ref_img=Path(ref_path),
                 out_dir=out_dir,
-                p2_scene_env=(shot.get("lighting_context") or location["lighting_brief"])[:200],
+                p2_scene_env=(shot.get("lighting_context") or location["lighting_brief"])[:400],
                 p2_subject_action=shot["action_brief"],
                 p2_character_name=char_name,
                 p2_character_canonical=char_canonical,

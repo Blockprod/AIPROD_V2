@@ -1,0 +1,869 @@
+{
+  "_meta": {
+    "version": "1.0",
+    "created": "2026-05-05",
+    "description": "Mapping 35 shots du storyboard EP01 vers animations Mixamo + config caméra Blender.",
+    "mixamo_base_url": "https://www.mixamo.com",
+    "notes": [
+      "animation_clip : nom exact du clip Mixamo à télécharger (format: FBX pour skin, 60fps, In Place si spécifié).",
+      "camera.fov_mm : focale 35mm équivalente pour Blender (sensor_width=36mm).",
+      "camera.distance_m : distance caméra-sujet en mètres.",
+      "camera.height_m : hauteur de la caméra en mètres depuis le sol.",
+      "characters_layout : position relative des personnages dans la scène (si multi-char)."
+    ]
+  },
+  "shots": {
+    "SCN_001_SHOT_001": {
+      "scene_id": "SCN_001",
+      "location_key": "ext_outer_wall_night",
+      "characters": [],
+      "animations": {},
+      "camera": {
+        "shot_type": "ultra_wide",
+        "movement": "static",
+        "fov_mm": 32,
+        "distance_m": null,
+        "height_m": 0.3,
+        "dutch_tilt_deg": 0,
+        "notes": "Tripod low 30cm, environment shot — no character placement needed"
+      }
+    },
+    "SCN_001_SHOT_002": {
+      "scene_id": "SCN_001",
+      "location_key": "ext_outer_wall_night",
+      "characters": [],
+      "animations": {},
+      "camera": {
+        "shot_type": "medium",
+        "movement": "static",
+        "fov_mm": 32,
+        "distance_m": null,
+        "height_m": 1.5,
+        "dutch_tilt_deg": 3,
+        "notes": "Slight Dutch tilt 3deg — environment shot"
+      }
+    },
+    "SCN_002_SHOT_001": {
+      "scene_id": "SCN_002",
+      "location_key": "int_transit_corridor_night",
+      "characters": ["nara"],
+      "animations": {
+        "nara": {
+          "clip": "Running",
+          "mixamo_id": "15_0",
+          "in_place": false,
+          "speed_multiplier": 1.3,
+          "notes": "Sprint — left leg forward on first frame. Right-to-left direction."
+        }
+      },
+      "camera": {
+        "shot_type": "wide",
+        "movement": "follow_handheld",
+        "fov_mm": 32,
+        "distance_m": 4.0,
+        "height_m": 1.4,
+        "dutch_tilt_deg": 0,
+        "notes": "Handheld follow at running pace. Subject lower-left third."
+      }
+    },
+    "SCN_002_SHOT_002": {
+      "scene_id": "SCN_002",
+      "location_key": "int_transit_corridor_night",
+      "characters": ["nara"],
+      "animations": {
+        "nara": {
+          "clip": "Standing React Large",
+          "mixamo_id": "01_0",
+          "in_place": true,
+          "speed_multiplier": 1.0,
+          "notes": "Stops, freezes — wrist display pulse. Sudden stop after sprint."
+        }
+      },
+      "camera": {
+        "shot_type": "close",
+        "movement": "static",
+        "fov_mm": 85,
+        "distance_m": 1.2,
+        "height_m": 1.6,
+        "dutch_tilt_deg": 0,
+        "notes": "Close-up face + wrist display pulse. Static tripod."
+      }
+    },
+    "SCN_002_SHOT_003": {
+      "scene_id": "SCN_002",
+      "location_key": "int_transit_corridor_night",
+      "characters": ["nara"],
+      "animations": {
+        "nara": {
+          "clip": "Standing Idle",
+          "mixamo_id": "07_0",
+          "in_place": true,
+          "speed_multiplier": 0.8,
+          "notes": "Paused at corridor mouth — slight weight shift. Hesitation body language."
+        }
+      },
+      "camera": {
+        "shot_type": "medium",
+        "movement": "static",
+        "fov_mm": 50,
+        "distance_m": 2.5,
+        "height_m": 1.5,
+        "dutch_tilt_deg": 0,
+        "notes": "Full figure visible, corridor mouth framing."
+      }
+    },
+    "SCN_003_SHOT_001": {
+      "scene_id": "SCN_003",
+      "location_key": "int_pressure_valve_chamber_night",
+      "characters": ["nara"],
+      "animations": {
+        "nara": {
+          "clip": "Push Button",
+          "mixamo_id": "push_button_01",
+          "in_place": true,
+          "speed_multiplier": 0.7,
+          "notes": "SUBSTITUTE: 'Push Pull Object' or 'Climbing' — arms extended turning wheel. Feet braced wide."
+        }
+      },
+      "camera": {
+        "shot_type": "medium_wide",
+        "movement": "static",
+        "fov_mm": 40,
+        "distance_m": 3.0,
+        "height_m": 1.4,
+        "dutch_tilt_deg": 0,
+        "notes": "Both hands on valve visible. Full body effort readable."
+      }
+    },
+    "SCN_003_SHOT_002": {
+      "scene_id": "SCN_003",
+      "location_key": "int_pressure_valve_chamber_night",
+      "characters": ["nara"],
+      "animations": {
+        "nara": {
+          "clip": "Standing Idle",
+          "mixamo_id": "07_0",
+          "in_place": true,
+          "speed_multiplier": 0.5,
+          "notes": "Releases valve — hands drop slowly. Looks up into chamber. Relief."
+        }
+      },
+      "camera": {
+        "shot_type": "close",
+        "movement": "static",
+        "fov_mm": 85,
+        "distance_m": 1.2,
+        "height_m": 1.6,
+        "dutch_tilt_deg": 0,
+        "notes": "Face close-up. Eyes tracking up."
+      }
+    },
+    "SCN_003_SHOT_003": {
+      "scene_id": "SCN_003",
+      "location_key": "int_pressure_valve_chamber_night",
+      "characters": ["nara"],
+      "animations": {
+        "nara": {
+          "clip": "Look Around",
+          "mixamo_id": "look_around_01",
+          "in_place": true,
+          "speed_multiplier": 0.8,
+          "notes": "Looking at wrist display then glancing at approaching worker off-frame."
+        }
+      },
+      "camera": {
+        "shot_type": "medium",
+        "movement": "static",
+        "fov_mm": 50,
+        "distance_m": 2.0,
+        "height_m": 1.5,
+        "dutch_tilt_deg": 0,
+        "notes": "Over-shoulder framing. Worker implied off-frame right."
+      }
+    },
+    "SCN_004_SHOT_001": {
+      "scene_id": "SCN_004",
+      "location_key": "int_voss_apartment_night",
+      "characters": ["nara", "elian"],
+      "animations": {
+        "nara": {
+          "clip": "Standing Idle",
+          "mixamo_id": "07_0",
+          "in_place": true,
+          "speed_multiplier": 0.7,
+          "notes": "Places map on table. Arm reaches forward, then still."
+        },
+        "elian": {
+          "clip": "Sitting Idle",
+          "mixamo_id": "sitting_idle_01",
+          "in_place": true,
+          "speed_multiplier": 0.5,
+          "notes": "Seated at table. Eyes drop to map."
+        }
+      },
+      "characters_layout": {
+        "nara": {"position": "right_of_table", "facing": "screen_left"},
+        "elian": {"position": "left_of_table", "facing": "screen_right"}
+      },
+      "camera": {
+        "shot_type": "medium",
+        "movement": "static",
+        "fov_mm": 50,
+        "distance_m": 2.5,
+        "height_m": 1.4,
+        "dutch_tilt_deg": 0,
+        "notes": "2-shot across table. Map visible on surface."
+      }
+    },
+    "SCN_004_SHOT_002": {
+      "scene_id": "SCN_004",
+      "location_key": "int_voss_apartment_night",
+      "characters": ["elian"],
+      "animations": {
+        "elian": {
+          "clip": "Sitting Talking",
+          "mixamo_id": "sitting_talking_01",
+          "in_place": true,
+          "speed_multiplier": 0.6,
+          "notes": "Seated, speaks line. Eyes averted downward — no eye contact."
+        }
+      },
+      "camera": {
+        "shot_type": "close",
+        "movement": "static",
+        "fov_mm": 85,
+        "distance_m": 1.0,
+        "height_m": 1.3,
+        "dutch_tilt_deg": 0,
+        "notes": "Close on Elian's face. Guilt in averted gaze."
+      }
+    },
+    "SCN_005_SHOT_001": {
+      "scene_id": "SCN_005",
+      "location_key": "int_civic_atrium_morning",
+      "characters": [],
+      "animations": {},
+      "camera": {
+        "shot_type": "ultra_wide",
+        "movement": "static",
+        "fov_mm": 24,
+        "distance_m": null,
+        "height_m": 1.7,
+        "dutch_tilt_deg": 0,
+        "notes": "Giant screens 10m tall. Rook's face. Environment + screen content."
+      }
+    },
+    "SCN_005_SHOT_002": {
+      "scene_id": "SCN_005",
+      "location_key": "int_civic_atrium_morning",
+      "characters": ["vale"],
+      "animations": {
+        "vale": {
+          "clip": "Reading",
+          "mixamo_id": "reading_01",
+          "in_place": true,
+          "speed_multiplier": 0.7,
+          "notes": "Aide hands tablet — Vale takes it, reads it. Controlled reaction: zero visible emotion."
+        }
+      },
+      "camera": {
+        "shot_type": "medium",
+        "movement": "static",
+        "fov_mm": 50,
+        "distance_m": 2.0,
+        "height_m": 1.6,
+        "dutch_tilt_deg": 0,
+        "notes": "Profile shot — Vale at balcony, looking down at tablet."
+      }
+    },
+    "SCN_006_SHOT_001": {
+      "scene_id": "SCN_006",
+      "location_key": "int_black_market_sublevel_day",
+      "characters": ["mira", "nara"],
+      "animations": {
+        "mira": {
+          "clip": "Kneeling Pointing",
+          "mixamo_id": "kneeling_pointing_01",
+          "in_place": true,
+          "speed_multiplier": 0.8,
+          "notes": "Bent over display surface, pointing at data. Active, analytical."
+        },
+        "nara": {
+          "clip": "Standing Idle",
+          "mixamo_id": "07_0",
+          "in_place": true,
+          "speed_multiplier": 0.7,
+          "notes": "Standing opposite, watching Mira work."
+        }
+      },
+      "characters_layout": {
+        "mira": {"position": "left_of_display", "facing": "screen_right"},
+        "nara": {"position": "right_of_display", "facing": "screen_left"}
+      },
+      "camera": {
+        "shot_type": "medium",
+        "movement": "static",
+        "fov_mm": 50,
+        "distance_m": 2.5,
+        "height_m": 1.5,
+        "dutch_tilt_deg": 0,
+        "notes": "2-shot. Display surface as focal point between characters."
+      }
+    },
+    "SCN_006_SHOT_002": {
+      "scene_id": "SCN_006",
+      "location_key": "int_black_market_sublevel_day",
+      "characters": ["mira", "nara"],
+      "animations": {
+        "mira": {
+          "clip": "Talking",
+          "mixamo_id": "talking_01",
+          "in_place": true,
+          "speed_multiplier": 0.9,
+          "notes": "Delivers line to Nara. Slight challenge in body language."
+        },
+        "nara": {
+          "clip": "Standing React Small",
+          "mixano_id": "react_small_01",
+          "in_place": true,
+          "speed_multiplier": 0.8,
+          "notes": "Holds Mira's gaze. Micro-reaction but composed."
+        }
+      },
+      "camera": {
+        "shot_type": "close",
+        "movement": "static",
+        "fov_mm": 85,
+        "distance_m": 1.2,
+        "height_m": 1.55,
+        "dutch_tilt_deg": 0,
+        "notes": "OTS Mira to close on Nara. Eye contact held."
+      }
+    },
+    "SCN_007_SHOT_001": {
+      "scene_id": "SCN_007",
+      "location_key": "int_security_ops_center_day",
+      "characters": [],
+      "animations": {},
+      "camera": {
+        "shot_type": "wide",
+        "movement": "static",
+        "fov_mm": 35,
+        "distance_m": null,
+        "height_m": 1.7,
+        "dutch_tilt_deg": 0,
+        "notes": "Screen wall schematic. Live movement signature. No character needed."
+      }
+    },
+    "SCN_007_SHOT_002": {
+      "scene_id": "SCN_007",
+      "location_key": "int_security_ops_center_day",
+      "characters": ["vale"],
+      "animations": {
+        "vale": {
+          "clip": "Talking",
+          "mixamo_id": "talking_01",
+          "in_place": true,
+          "speed_multiplier": 0.7,
+          "notes": "Delivers order. Cold. Minimal movement — the less he moves, the more menacing."
+        }
+      },
+      "camera": {
+        "shot_type": "close",
+        "movement": "static",
+        "fov_mm": 85,
+        "distance_m": 1.1,
+        "height_m": 1.65,
+        "dutch_tilt_deg": 0,
+        "notes": "Tight on Vale's face. Screen glow behind. Controlled menace."
+      }
+    },
+    "SCN_008_SHOT_001": {
+      "scene_id": "SCN_008",
+      "location_key": "int_service_spine_night",
+      "characters": ["nara", "mira"],
+      "animations": {
+        "nara": {
+          "clip": "Walking",
+          "mixamo_id": "walking_01",
+          "in_place": false,
+          "speed_multiplier": 0.9,
+          "notes": "Nara first, one hand on pipe bundle at wall. Cautious pace."
+        },
+        "mira": {
+          "clip": "Walking",
+          "mixamo_id": "walking_01",
+          "in_place": false,
+          "speed_multiplier": 0.9,
+          "notes": "Mira behind Nara. Same pace. 1.5m separation."
+        }
+      },
+      "characters_layout": {
+        "nara": {"position": "foreground_left", "facing": "depth"},
+        "mira": {"position": "midground_left", "facing": "depth"}
+      },
+      "camera": {
+        "shot_type": "wide",
+        "movement": "static",
+        "fov_mm": 35,
+        "distance_m": 5.0,
+        "height_m": 1.4,
+        "dutch_tilt_deg": 0,
+        "notes": "Static. Characters move left-to-right into tunnel depth."
+      }
+    },
+    "SCN_008_SHOT_002": {
+      "scene_id": "SCN_008",
+      "location_key": "int_service_spine_night",
+      "characters": ["mira"],
+      "animations": {
+        "mira": {
+          "clip": "Crouching",
+          "mixamo_id": "crouching_idle_01",
+          "in_place": true,
+          "speed_multiplier": 0.8,
+          "notes": "Kneeling at buried control panel. Powers it up — hands working."
+        }
+      },
+      "camera": {
+        "shot_type": "close",
+        "movement": "static",
+        "fov_mm": 85,
+        "distance_m": 1.0,
+        "height_m": 0.9,
+        "dutch_tilt_deg": 0,
+        "notes": "Low angle close on Mira's face + hands + panel glow."
+      }
+    },
+    "SCN_008_SHOT_003": {
+      "scene_id": "SCN_008",
+      "location_key": "int_service_spine_night",
+      "characters": ["nara"],
+      "animations": {
+        "nara": {
+          "clip": "Look Around",
+          "mixamo_id": "look_around_01",
+          "in_place": true,
+          "speed_multiplier": 0.6,
+          "notes": "Watching dark passage. Counting seconds. Tense stillness."
+        }
+      },
+      "camera": {
+        "shot_type": "close",
+        "movement": "static",
+        "fov_mm": 85,
+        "distance_m": 1.2,
+        "height_m": 1.6,
+        "dutch_tilt_deg": 0,
+        "notes": "Close on Nara's face in darkness. Eyes scanning."
+      }
+    },
+    "SCN_008_SHOT_004": {
+      "scene_id": "SCN_008",
+      "location_key": "int_service_spine_night",
+      "characters": ["mira"],
+      "animations": {
+        "mira": {
+          "clip": "Crouching",
+          "mixamo_id": "crouching_idle_01",
+          "in_place": true,
+          "speed_multiplier": 0.7,
+          "notes": "Still kneeling — reads identifier on screen. Reacts with controlled surprise."
+        }
+      },
+      "camera": {
+        "shot_type": "close",
+        "movement": "static",
+        "fov_mm": 85,
+        "distance_m": 1.0,
+        "height_m": 0.9,
+        "dutch_tilt_deg": 0,
+        "notes": "Amber glow of panel on Mira's face."
+      }
+    },
+    "SCN_009_SHOT_001": {
+      "scene_id": "SCN_009",
+      "location_key": "int_observation_chamber",
+      "characters": ["nara", "mira"],
+      "animations": {
+        "nara": {
+          "clip": "Standing Idle",
+          "mixamo_id": "07_0",
+          "in_place": true,
+          "speed_multiplier": 0.5,
+          "notes": "Watches shutters open. Arms slightly raised — instinctive covering gesture."
+        },
+        "mira": {
+          "clip": "Standing Idle",
+          "mixamo_id": "07_0",
+          "in_place": true,
+          "speed_multiplier": 0.5,
+          "notes": "Beside Nara. Both frozen in awe."
+        }
+      },
+      "characters_layout": {
+        "nara": {"position": "centre_left", "facing": "screen_right"},
+        "mira": {"position": "centre_right", "facing": "screen_right"}
+      },
+      "camera": {
+        "shot_type": "wide",
+        "movement": "static",
+        "fov_mm": 35,
+        "distance_m": 4.0,
+        "height_m": 1.4,
+        "dutch_tilt_deg": 0,
+        "notes": "Wide — both chars tiny vs. opening shutters. Scale contrast."
+      }
+    },
+    "SCN_009_SHOT_002": {
+      "scene_id": "SCN_009",
+      "location_key": "int_observation_chamber",
+      "characters": ["nara"],
+      "animations": {
+        "nara": {
+          "clip": "Look Around",
+          "mixamo_id": "look_around_01",
+          "in_place": true,
+          "speed_multiplier": 0.4,
+          "notes": "Sees organised lights far beyond wall. Eyes wide. Disbelief becoming certainty."
+        }
+      },
+      "camera": {
+        "shot_type": "close",
+        "movement": "static",
+        "fov_mm": 85,
+        "distance_m": 1.2,
+        "height_m": 1.6,
+        "dutch_tilt_deg": 0,
+        "notes": "Close on Nara's face — city light catching her eyes."
+      }
+    },
+    "SCN_009_SHOT_003": {
+      "scene_id": "SCN_009",
+      "location_key": "int_observation_chamber",
+      "characters": ["nara"],
+      "animations": {
+        "nara": {
+          "clip": "Look Around",
+          "mixamo_id": "look_around_01",
+          "in_place": true,
+          "speed_multiplier": 0.4,
+          "notes": "Looks down at industrial pumps in wall structure. Eyes tracking downward."
+        }
+      },
+      "camera": {
+        "shot_type": "medium",
+        "movement": "static",
+        "fov_mm": 50,
+        "distance_m": 2.0,
+        "height_m": 1.5,
+        "dutch_tilt_deg": 0,
+        "notes": "Nara + pump infrastructure visible. Her eyeline toward floor/pipes."
+      }
+    },
+    "SCN_009_SHOT_004": {
+      "scene_id": "SCN_009",
+      "location_key": "int_observation_chamber",
+      "characters": ["nara", "mira"],
+      "animations": {
+        "nara": {
+          "clip": "Standing React Large",
+          "mixamo_id": "01_0",
+          "in_place": true,
+          "speed_multiplier": 1.2,
+          "notes": "Alarm floods chamber red. Startles — then snaps to action mode."
+        },
+        "mira": {
+          "clip": "Grabbing",
+          "mixamo_id": "grabbing_01",
+          "in_place": true,
+          "speed_multiplier": 1.2,
+          "notes": "Grabs Nara's arm. Urgency — 'We need to go.'"
+        }
+      },
+      "characters_layout": {
+        "nara": {"position": "right", "facing": "screen_left"},
+        "mira": {"position": "left", "facing": "screen_right"}
+      },
+      "camera": {
+        "shot_type": "medium",
+        "movement": "static",
+        "fov_mm": 50,
+        "distance_m": 2.5,
+        "height_m": 1.5,
+        "dutch_tilt_deg": 0,
+        "notes": "Red alarm wash. Both characters. Mira's hand on Nara's arm."
+      }
+    },
+    "SCN_010_SHOT_001": {
+      "scene_id": "SCN_010",
+      "location_key": "int_service_spine_night",
+      "characters": ["nara", "mira"],
+      "animations": {
+        "nara": {
+          "clip": "Running",
+          "mixamo_id": "15_0",
+          "in_place": false,
+          "speed_multiplier": 1.4,
+          "notes": "Full sprint. Left-to-right away from pursuit."
+        },
+        "mira": {
+          "clip": "Running",
+          "mixamo_id": "15_0",
+          "in_place": false,
+          "speed_multiplier": 1.4,
+          "notes": "Running beside/behind Nara. Same pace."
+        }
+      },
+      "characters_layout": {
+        "nara": {"position": "foreground", "facing": "screen_right"},
+        "mira": {"position": "behind_nara", "facing": "screen_right"}
+      },
+      "camera": {
+        "shot_type": "wide_handheld",
+        "movement": "follow_handheld_fast",
+        "fov_mm": 32,
+        "distance_m": 4.0,
+        "height_m": 1.3,
+        "dutch_tilt_deg": 0,
+        "notes": "Handheld fast — shutter slams chasing them. Direction: left-to-right."
+      }
+    },
+    "SCN_010_SHOT_002": {
+      "scene_id": "SCN_010",
+      "location_key": "int_service_spine_night",
+      "characters": [],
+      "animations": {},
+      "camera": {
+        "shot_type": "wide",
+        "movement": "static",
+        "fov_mm": 32,
+        "distance_m": null,
+        "height_m": 1.5,
+        "dutch_tilt_deg": 0,
+        "notes": "Armed units entering shaft entrance — not named characters. Environment + extras."
+      }
+    },
+    "SCN_010_SHOT_003": {
+      "scene_id": "SCN_010",
+      "location_key": "int_service_spine_night",
+      "characters": ["mira"],
+      "animations": {
+        "mira": {
+          "clip": "Crouching Crawl",
+          "mixamo_id": "crouching_crawl_01",
+          "in_place": false,
+          "speed_multiplier": 1.2,
+          "notes": "Finds side duct — ducks, enters. Knows this infrastructure."
+        }
+      },
+      "camera": {
+        "shot_type": "medium",
+        "movement": "static",
+        "fov_mm": 50,
+        "distance_m": 2.0,
+        "height_m": 1.0,
+        "dutch_tilt_deg": 0,
+        "notes": "Mira at duct entrance. Low angle — she descends into frame."
+      }
+    },
+    "SCN_010_SHOT_004": {
+      "scene_id": "SCN_010",
+      "location_key": "int_service_spine_night",
+      "characters": ["nara"],
+      "animations": {
+        "nara": {
+          "clip": "Dive Roll",
+          "mixamo_id": "dive_roll_01",
+          "in_place": false,
+          "speed_multiplier": 1.5,
+          "notes": "Dives through closing blast door — barely makes it. Falls forward."
+        }
+      },
+      "camera": {
+        "shot_type": "medium",
+        "movement": "static",
+        "fov_mm": 50,
+        "distance_m": 2.0,
+        "height_m": 1.2,
+        "dutch_tilt_deg": 0,
+        "notes": "Blast door closing. Nara diving under it. Weapon fire reflected in door surface."
+      }
+    },
+    "SCN_011_SHOT_001": {
+      "scene_id": "SCN_011",
+      "location_key": "int_voss_apartment_night",
+      "characters": ["nara"],
+      "animations": {
+        "nara": {
+          "clip": "Walking Slow",
+          "mixamo_id": "walking_slow_01",
+          "in_place": false,
+          "speed_multiplier": 0.6,
+          "notes": "Returns home wet and shaken. Closes door quietly. Movement: exhausted, changed."
+        }
+      },
+      "camera": {
+        "shot_type": "medium",
+        "movement": "static",
+        "fov_mm": 50,
+        "distance_m": 2.5,
+        "height_m": 1.4,
+        "dutch_tilt_deg": 0,
+        "notes": "Same axis as SCN_004. Door at screen-left. CRITICAL: match SCN_004 layout."
+      }
+    },
+    "SCN_011_SHOT_002": {
+      "scene_id": "SCN_011",
+      "location_key": "int_voss_apartment_night",
+      "characters": ["elian"],
+      "animations": {
+        "elian": {
+          "clip": "Sitting Idle",
+          "mixamo_id": "sitting_idle_01",
+          "in_place": true,
+          "speed_multiplier": 0.4,
+          "notes": "Seated. Sees her face — knows. No words. Controlled grief."
+        }
+      },
+      "camera": {
+        "shot_type": "close",
+        "movement": "static",
+        "fov_mm": 85,
+        "distance_m": 1.0,
+        "height_m": 1.3,
+        "dutch_tilt_deg": 0,
+        "notes": "Close on Elian's face. The recognition of a secret becoming known."
+      }
+    },
+    "SCN_011_SHOT_003": {
+      "scene_id": "SCN_011",
+      "location_key": "int_voss_apartment_night",
+      "characters": ["nara"],
+      "animations": {
+        "nara": {
+          "clip": "Standing Idle",
+          "mixamo_id": "07_0",
+          "in_place": true,
+          "speed_multiplier": 0.3,
+          "notes": "Absolute stillness. Gaze does not move. Extended hold. Weight of knowledge."
+        }
+      },
+      "camera": {
+        "shot_type": "close",
+        "movement": "static",
+        "fov_mm": 85,
+        "distance_m": 1.1,
+        "height_m": 1.6,
+        "dutch_tilt_deg": 0,
+        "notes": "Close on Nara's face. Light does not change. Stillness held."
+      }
+    },
+    "SCN_011_SHOT_004": {
+      "scene_id": "SCN_011",
+      "location_key": "int_voss_apartment_night",
+      "characters": ["elian"],
+      "animations": {
+        "elian": {
+          "clip": "Handing Object",
+          "mixamo_id": "handing_object_01",
+          "in_place": true,
+          "speed_multiplier": 0.6,
+          "notes": "Gives encrypted drive. Unsteady hands. Line: 'If they take me, it means they already know.'"
+        }
+      },
+      "camera": {
+        "shot_type": "medium",
+        "movement": "static",
+        "fov_mm": 50,
+        "distance_m": 1.8,
+        "height_m": 1.3,
+        "dutch_tilt_deg": 0,
+        "notes": "Elian's hands + face. Drive visible in frame. Axis: screen-left."
+      }
+    },
+    "SCN_011_SHOT_005": {
+      "scene_id": "SCN_011",
+      "location_key": "int_voss_apartment_night",
+      "characters": ["nara", "elian"],
+      "animations": {
+        "nara": {
+          "clip": "Standing Idle",
+          "mixamo_id": "07_0",
+          "in_place": true,
+          "speed_multiplier": 0.4,
+          "notes": "Receiving drive. Still. Listening."
+        },
+        "elian": {
+          "clip": "Talking",
+          "mixamo_id": "talking_01",
+          "in_place": true,
+          "speed_multiplier": 0.6,
+          "notes": "Gives instructions. Voice low. Line: 'Go to the freight tunnels...'"
+        }
+      },
+      "characters_layout": {
+        "nara": {"position": "right_side", "facing": "screen_left"},
+        "elian": {"position": "left_side", "facing": "screen_right"}
+      },
+      "camera": {
+        "shot_type": "medium",
+        "movement": "static",
+        "fov_mm": 50,
+        "distance_m": 2.5,
+        "height_m": 1.4,
+        "dutch_tilt_deg": 0,
+        "notes": "2-shot. CRITICAL axis match with SCN_004. Nara right / Elian left."
+      }
+    },
+    "SCN_011_SHOT_006": {
+      "scene_id": "SCN_011",
+      "location_key": "int_voss_apartment_night",
+      "characters": [],
+      "animations": {},
+      "camera": {
+        "shot_type": "close",
+        "movement": "static",
+        "fov_mm": 85,
+        "distance_m": 0.3,
+        "height_m": 0.05,
+        "dutch_tilt_deg": 0,
+        "notes": "Extreme low: boots under door gap. Shadow confirmed. No characters — environment insert."
+      }
+    },
+    "SCN_011_SHOT_007": {
+      "scene_id": "SCN_011",
+      "location_key": "int_voss_apartment_night",
+      "characters": ["nara", "elian"],
+      "animations": {
+        "nara": {
+          "clip": "Standing React Large",
+          "mixamo_id": "01_0",
+          "in_place": true,
+          "speed_multiplier": 1.5,
+          "notes": "Door forced open. White overexposure. Hands instinctively raised."
+        },
+        "elian": {
+          "clip": "Standing React Large",
+          "mixamo_id": "01_0",
+          "in_place": true,
+          "speed_multiplier": 1.2,
+          "notes": "Seated or rising — door forced open. Resigned body language."
+        }
+      },
+      "characters_layout": {
+        "nara": {"position": "right_side", "facing": "screen_left"},
+        "elian": {"position": "left_side", "facing": "screen_right"}
+      },
+      "camera": {
+        "shot_type": "wide",
+        "movement": "static",
+        "fov_mm": 32,
+        "distance_m": 4.0,
+        "height_m": 1.4,
+        "dutch_tilt_deg": 0,
+        "notes": "FINAL SHOT EP01. Wide — door at screen-left. White overexposure. Then black."
+      }
+    }
+  }
+}

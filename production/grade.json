@@ -17,6 +17,13 @@
       "HDR-style blown highlights"
     ]
   },
+  "character_exposure": {
+    "face_key_ire": 55,
+    "face_shadow_ire": 8,
+    "ratio_label": "7:1 — face key to shadow side",
+    "silhouette_override_shots": ["SCN_009_SHOT_001", "SCN_010_SHOT_002", "SCN_011_SHOT_001"],
+    "note": "Applicable à tous les personnages. Dérogatoire uniquement sur shots de silhouette intentionnels."
+  },
   "per_scene_grade": {
     "SCN_001": "Cold and near-black — searchbeam only warm exception. Dominant #0A1520.",
     "SCN_002": "Amber warm dominant — single cage lamp in distance. Dominant #1C2B35.",

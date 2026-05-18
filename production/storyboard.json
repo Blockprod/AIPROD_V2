@@ -2,17 +2,50 @@
   "title": "District Zero EP01 — Storyboard DOP-grade v1.0",
   "total_shots": 35,
   "scenes_axis": {
-    "SCN_001": {"axis": "N/A — no characters", "note": ""},
-    "SCN_002": {"axis": "Nara moves right-to-left (toward camera)", "note": "Single character — axis fixed by movement direction"},
-    "SCN_003": {"axis": "Nara faces valve panel (screen-right)", "note": ""},
-    "SCN_004": {"axis": "Nara right / Elian left — 180° line on table between them", "note": "Do NOT cross for 2-shot cuts"},
-    "SCN_005": {"axis": "Vale on upper balcony faces atrium floor (screen-down)", "note": "POV from balcony down = OK. POV from floor up = OK. No crossing."},
-    "SCN_006": {"axis": "Mira left / Nara right — 180° line on the display between them", "note": ""},
-    "SCN_007": {"axis": "Vale faces display wall (screen-left)", "note": "Analyst POVs: all facing screen = same direction"},
-    "SCN_008": {"axis": "Characters move left-to-right (into tunnel depth)", "note": ""},
-    "SCN_009": {"axis": "Shutters at screen-right — characters face right toward exterior light", "note": "Cutaway to exterior: match eyeline direction"},
-    "SCN_010": {"axis": "Sprint direction: left-to-right away from pursuit (pursuit enters from screen-right)", "note": "CRITICAL: maintain for chase logic. Nara always escaping screen-left."},
-    "SCN_011": {"axis": "Nara right / Elian left — IDENTICAL to SCN_004", "note": "CRITICAL: same apartment, same axis. Door at screen-left. Match SCN_004 for continuity."}
+    "SCN_001": {
+      "axis": "N/A — no characters",
+      "note": ""
+    },
+    "SCN_002": {
+      "axis": "Nara moves right-to-left (toward camera)",
+      "note": "Single character — axis fixed by movement direction"
+    },
+    "SCN_003": {
+      "axis": "Nara faces valve panel (screen-right)",
+      "note": ""
+    },
+    "SCN_004": {
+      "axis": "Nara right / Elian left — 180° line on table between them",
+      "note": "Do NOT cross for 2-shot cuts"
+    },
+    "SCN_005": {
+      "axis": "Vale on upper balcony faces atrium floor (screen-down)",
+      "note": "POV from balcony down = OK. POV from floor up = OK. No crossing."
+    },
+    "SCN_006": {
+      "axis": "Mira left / Nara right — 180° line on the display between them",
+      "note": ""
+    },
+    "SCN_007": {
+      "axis": "Vale faces display wall (screen-left)",
+      "note": "Analyst POVs: all facing screen = same direction"
+    },
+    "SCN_008": {
+      "axis": "Characters move left-to-right (into tunnel depth)",
+      "note": ""
+    },
+    "SCN_009": {
+      "axis": "Shutters at screen-right — characters face right toward exterior light",
+      "note": "Cutaway to exterior: match eyeline direction"
+    },
+    "SCN_010": {
+      "axis": "Sprint direction: left-to-right away from pursuit (pursuit enters from screen-right)",
+      "note": "CRITICAL: maintain for chase logic. Nara always escaping screen-left."
+    },
+    "SCN_011": {
+      "axis": "Nara right / Elian left — IDENTICAL to SCN_004",
+      "note": "CRITICAL: same apartment, same axis. Door at screen-left. Match SCN_004 for continuity."
+    }
   },
   "shots": [
     {
@@ -30,7 +63,11 @@
       "emotion_intent": "Dread as beauty. The apocalypse has already happened and nobody announced it.",
       "duration_sec": 4,
       "state_override": null,
-      "audio_brief": "Black water against concrete — low, constant, massive. Searchbeam motor: faint mechanical rotation above. Wind across open water. No music."
+      "audio_brief": "Black water against concrete — low, constant, massive. Searchbeam motor: faint mechanical rotation above. Wind across open water. No music.",
+      "reference_exact": "Blade Runner 2049 (Deakins, 2017) — 0:02:10, opening dry lake establishing shot. Empty frame held long enough to feel geological. The camera finds scale before it finds anything human. The architecture is the subject.",
+      "off_frame_tension": "The functioning city on the other side of the wall — warm, organised, hidden. The wall is not protecting anyone inside; it is hiding something outside.",
+      "material_state": "Salt-crusted concrete face, 25m high. Rebar tips emerging through wall base — oxidised red-brown, tips blunted by 20 years of salt corrosion. Black oily water at base: iridescent surface film, white foam churning at impact zone. Drowned tower facades above: dark tide-mark stain at mid-height, salt line. Broken window frames visible — steel lintels rusted through, glass gone. Each tower individually distinct.",
+      "eyeline": "N/A — environment shot, no character"
     },
     {
       "shot_id": "SCN_001_SHOT_002",
@@ -47,13 +84,19 @@
       "emotion_intent": "The city is a prison and the guards don't need to see faces to maintain control.",
       "duration_sec": 3,
       "state_override": null,
-      "audio_brief": "Searchbeam motor cycling. Water surface. Distant structural groaning of the seawall."
+      "audio_brief": "Searchbeam motor cycling. Water surface. Distant structural groaning of the seawall.",
+      "reference_exact": "Blade Runner 2049 (Deakins, 2017) — 0:55:20, exterior patrol sweep sequence. The beam as the state's indifferent eye — it finds nothing, it was never looking for anything. The light source is the only subject in the frame.",
+      "off_frame_tension": "The mechanical operator of the searchbeam — unseen, above. The thousands below who have learned not to look up when the beam passes.",
+      "material_state": "Concrete wall face and black water surface. Water: oily, beam reflection breaking into horizontal streaks on wave crests, specular at normal incidence. 3-degree Dutch tilt reveals: concrete erosion line at frame base, rebar corrosion running diagonally. Between beam passes: absolute black water surface, no reflected light.",
+      "eyeline": "N/A — environment shot, no character"
     },
     {
       "shot_id": "SCN_002_SHOT_001",
       "scene_id": "SCN_002",
       "location_key": "int_transit_corridor_night",
-      "characters": ["nara"],
+      "characters": [
+        "nara"
+      ],
       "primary_character": "nara",
       "shot_type": "wide",
       "camera_movement": "follow_handheld",
@@ -64,13 +107,19 @@
       "emotion_intent": "Controlled competence in motion. This is her environment — she runs here, she knows this floor.",
       "duration_sec": 5,
       "state_override": null,
-      "audio_brief": "Boots on steel grating at run pace. Distant mechanical hum of corridor systems. Wrist display amber beep — once, twice, then gone."
+      "audio_brief": "Boots on steel grating at run pace. Distant mechanical hum of corridor systems. Wrist display amber beep — once, twice, then gone.",
+      "reference_exact": "Sicario (Deakins, 2015) — 0:17:45, opening corridor approach, FBI. The corridor depth as dread geometry — movement toward camera compresses the space rather than opening it. The vanishing point is the threat.",
+      "off_frame_tension": "The sealed route that blinks and disappears — visible on her wrist display but not yet in the frame. The system that sealed it, somewhere above, already aware she found it.",
+      "material_state": "Corroded riveted steel walls — each rivet head with rust bloom radiating 3-5cm, orange-brown against black oxide base. Cable tray bundles overhead: dense black PVC conduit, corrosion at metal saddle contact points. Wet concrete floor: standing puddles 2-5mm deep, light oil sheen, boot tread marks visible in the grime. Pipe joints: white mineral deposits at seams, rust streaks below each joint.",
+      "eyeline": "screen-right toward vanishing point — focused, not looking at camera"
     },
     {
       "shot_id": "SCN_002_SHOT_002",
       "scene_id": "SCN_002",
       "location_key": "int_transit_corridor_night",
-      "characters": ["nara"],
+      "characters": [
+        "nara"
+      ],
       "primary_character": "nara",
       "shot_type": "close",
       "camera_movement": "static",
@@ -81,13 +130,19 @@
       "emotion_intent": "The moment of discovery. She notices what she wasn't meant to notice — and she knows immediately.",
       "duration_sec": 4,
       "state_override": null,
-      "audio_brief": "Run comes to a stop — footsteps cut. System beep of the wrist display. Her breathing, controlled. Then silence."
+      "audio_brief": "Run comes to a stop — footsteps cut. System beep of the wrist display. Her breathing, controlled. Then silence.",
+      "reference_exact": "Arrival (Villeneuve / Bradford Young, 2016) — 0:42:00, close on Louise's hands with the heptapod material. The information held in human hands that changes everything — the moment of comprehension before action. The object is the subject.",
+      "off_frame_tension": "The sealed route that just disappeared — visible to us on the display, already erased from the official system. The gap between what she saw and what the record will show.",
+      "material_state": "Wrist display: matte-black polymer housing, machined aluminium micro-bezel, OLED panel — 0.5mm pixel pitch, amber emission. Nara's forearm: weathered skin, faint salt residue from running sweat, tendon visible under tension. Display strap: worn nylon, slight fraying at buckle edge.",
+      "eyeline": "downward — toward wrist display, brow slightly furrowed"
     },
     {
       "shot_id": "SCN_002_SHOT_003",
       "scene_id": "SCN_002",
       "location_key": "int_transit_corridor_night",
-      "characters": ["nara"],
+      "characters": [
+        "nara"
+      ],
       "primary_character": "nara",
       "shot_type": "medium",
       "camera_movement": "static",
@@ -95,16 +150,22 @@
       "composition": "Nara left third, pausing at junction. The unmapped corridor entrance dark at right two-thirds. Threshold composition: she is at the edge of the known world.",
       "action_brief": "She pauses at the mouth of an unmapped access corridor. One step forward, one hand on the wall edge. Looking into darkness. Then she steps through.",
       "lighting_context": "Corridor cage lamp from behind — creates her silhouette against the unmapped darkness ahead. Zero light in the unmapped section. Threshold lighting.",
-      "emotion_intent": "The choice. She could turn back. She doesn't.",
+      "emotion_intent": "The choice. She could turn back. She doesn't. Determination.",
       "duration_sec": 4,
       "state_override": null,
-      "audio_brief": "Her hand on the corroded wall edge — metal resonance. A single footstep into the unmapped space. Then the darkness takes sound with her."
+      "audio_brief": "Her hand on the corroded wall edge — metal resonance. A single footstep into the unmapped space. Then the darkness takes sound with her.",
+      "reference_exact": "Children of Men (Lubezki / Cuarón, 2006) — 0:52:00, Bexhill checkpoint threshold. The decision to cross into forbidden space captured at the last moment before commitment — the foot already forward, the body's weight already committed.",
+      "off_frame_tension": "What is in the unmapped corridor — the system does not know, which means nobody has mapped it, which means something is there that was not meant to be found. The darkness is not empty.",
+      "material_state": "Steel wall edge at threshold: cold-rolled steel, mill scale surface, edge rust starting at cut face, no protective coating. Unmapped corridor entrance: absolute darkness, zero reflective surfaces readable. Her jacket: damp at collar from run sweat, fabric pulled slightly by the hand on the wall edge.",
+      "eyeline": "screen-right into unmapped corridor — looking into darkness, not at camera"
     },
     {
       "shot_id": "SCN_003_SHOT_001",
       "scene_id": "SCN_003",
       "location_key": "int_pressure_valve_chamber_night",
-      "characters": ["nara"],
+      "characters": [
+        "nara"
+      ],
       "primary_character": "nara",
       "shot_type": "medium_wide",
       "camera_movement": "static",
@@ -115,13 +176,19 @@
       "emotion_intent": "Physical competence against overwhelming scale. She is small in this space but she knows what to do.",
       "duration_sec": 5,
       "state_override": null,
-      "audio_brief": "ALARM: 110dB industrial klaxon cycling at 0.5Hz. Hydraulic pressure groaning through the manifolds. Steam jet hiss at mid-register. Metal valve wheel grinding under load. Then the alarm CUTS — sudden silence hits like a physical impact."
+      "audio_brief": "ALARM: 110dB industrial klaxon cycling at 0.5Hz. Hydraulic pressure groaning through the manifolds. Steam jet hiss at mid-register. Metal valve wheel grinding under load. Then the alarm CUTS — sudden silence hits like a physical impact.",
+      "reference_exact": "Sicario (Deakins, 2015) — 1:23:15, sub-tunnel approach with night vision. The figure made small against overwhelming architecture — the human being as a detail in an industrial composition. The scale is the argument.",
+      "off_frame_tension": "The cause of the alarm — not yet visible, in the pipes themselves, deeper in the system. The thing that is wrong is already happening. Solving this valve changes nothing about the source.",
+      "material_state": "Cast iron manifold surfaces: 30 years of industrial oxide accumulation — black carbon layer over dark brown rust. Flanged pipes: bolt-head rust halos, white mineral deposits at gasket seams, bolt faces showing tool-mark wear. Valve wheels: orange rust streaks at spokes, grip arcs worn to bare metal. Floor: oil-stained concrete, pooled condensation, boot tread marks in accumulated grime.",
+      "eyeline": "downward toward valve wheel — effort, not looking up"
     },
     {
       "shot_id": "SCN_003_SHOT_002",
       "scene_id": "SCN_003",
       "location_key": "int_pressure_valve_chamber_night",
-      "characters": ["nara"],
+      "characters": [
+        "nara"
+      ],
       "primary_character": "nara",
       "shot_type": "close",
       "camera_movement": "static",
@@ -129,16 +196,22 @@
       "composition": "Tight on Nara's face — centre-frame. The moment the alarm cuts. Her head rising, expression changing.",
       "action_brief": "The alarm dies. Silence. Her hands release the valve. She looks up. The chamber returns to white fluorescent work light. She checks the wrist display.",
       "lighting_context": "Post-alarm: white overhead fluorescent — harsh, flat, institutional. The colour warmth of the alarm is gone. Cold industrial white.",
-      "emotion_intent": "From crisis to clarity. The immediate danger is gone. The deeper problem just became visible.",
+      "emotion_intent": "From crisis to clarity. The immediate danger is gone. The deeper problem just became visible. Exhaustion.",
       "duration_sec": 4,
       "state_override": null,
-      "audio_brief": "Alarm cuts — total silence for 1 second. Then: fluorescent hum returns. Distant steam. Workers exhaling. Her fingers on the wrist display."
+      "audio_brief": "Alarm cuts — total silence for 1 second. Then: fluorescent hum returns. Distant steam. Workers exhaling. Her fingers on the wrist display.",
+      "reference_exact": "Sicario (Deakins, 2015) — 0:19:50, close on Kate Macer's face after the highway operation. The moment when the crisis ends and the deeper dread begins — the face absorbing what just happened before it decides what it means.",
+      "off_frame_tension": "The valve chamber continuing to operate behind her — problem solved, system unchanged. Whatever was sealed is still sealed. The alarm was the symptom, not the disease.",
+      "material_state": "Her face: sweat on forehead and upper lip, strobe-flash revealing individual pore texture under hard light, salt residue from exertion visible at hairline. Hands: dark rust transfer on palms from the valve wheel grip, visible on skin. Eyes: iris detail accessible in hard strobe — pupils contracting to adjust.",
+      "eyeline": "upward, straight ahead — just released valve, head lifting"
     },
     {
       "shot_id": "SCN_003_SHOT_003",
       "scene_id": "SCN_003",
       "location_key": "int_pressure_valve_chamber_night",
-      "characters": ["nara"],
+      "characters": [
+        "nara"
+      ],
       "primary_character": "nara",
       "shot_type": "medium",
       "camera_movement": "static",
@@ -149,30 +222,43 @@
       "emotion_intent": "The realisation. The maintenance error was not an error.",
       "duration_sec": 4,
       "state_override": null,
-      "audio_brief": "Worker's voice, flat and routine. Her silence in response. The ambient machinery in the background — always present, never noticed."
+      "audio_brief": "Worker's voice, flat and routine. Her silence in response. The ambient machinery in the background — always present, never noticed.",
+      "reference_exact": "Prisoners (Deakins, 2013) — 0:31:00, interrogation room realisation shot. The cold institutional light that transforms a routine moment into evidence of something enormous. The flat white that leaves nowhere to hide.",
+      "off_frame_tension": "The worker walking away — unaware of what he just said. The Central Authority office somewhere above, where the maintenance update was signed. The person who signed it.",
+      "material_state": "Institutional overhead fluorescent: flat white 5000K, revealing the chamber's mundane reality — ordinary maintenance space, not the emergency zone. Her jacket: wet patches at armpits and lower back from physical effort, jacket fabric darkened at contact points. Wrist display: the only warm surface in the cold white space.",
+      "eyeline": "downward toward wrist display — processing, not engaging worker"
     },
     {
       "shot_id": "SCN_004_SHOT_001",
       "scene_id": "SCN_004",
       "location_key": "int_voss_apartment_night",
-      "characters": ["nara", "elian"],
-      "primary_character": "nara",
+      "characters": [
+        "nara",
+        "elian"
+      ],
+      "primary_character": "elian",
       "shot_type": "medium",
       "camera_movement": "static",
       "camera_spec": "50mm anamorphic, T2.8, ISO 1600, tripod",
       "composition": "Nara right, Elian left. Wrist display between them catching both faces in amber glow. Cramped apartment filling the space around them. Both in profile — facing each other across the small table.",
       "action_brief": "Nara places the captured map route in front of her father. His eyes drop to it. He freezes. A long beat. Then his jaw tightens.",
       "lighting_context": "Desk lamp as key — amber 2700K, from right. Wrist display additional amber fill between them. Deep shadow filling apartment behind. Both faces partly lit, partly in shadow.",
-      "emotion_intent": "He recognises what he's seeing. He has seen this before, under different circumstances.",
+      "emotion_intent": "He recognises what he's seeing. He has seen this before, under different circumstances. Distrust.",
       "duration_sec": 5,
       "state_override": null,
-      "audio_brief": "The apartment's small sounds — a distant pipe, the neon buzz outside. The wrist display placed on the surface. His breath catching."
+      "audio_brief": "The apartment's small sounds — a distant pipe, the neon buzz outside. The wrist display placed on the surface. His breath catching.",
+      "reference_exact": "Blade Runner 2049 (Deakins, 2017) — 0:23:00, Joe in the apartment with Joi. The cramped domestic space under amber practical light — intimacy as a kind of trap. The warmth that makes the cold truth worse when it arrives.",
+      "off_frame_tension": "Elian's past — outside the frame, in what he does not say yet. The apartment door at left — what will come through it later tonight.",
+      "material_state": "Cramped apartment: worn laminate table surface — edge peeling, water ring stains from years of mugs. Amber desk lamp: yellowed plastic shade, warm-orange light with visible heat discolouration at the shade crown. Apartment walls: condensation staining at ceiling corners, paint flaking at window frame. Table surface: objects of a shared life, placed too close together.",
+      "eyeline": "screen-left toward Elian, slightly downward toward the map on the table"
     },
     {
       "shot_id": "SCN_004_SHOT_002",
       "scene_id": "SCN_004",
       "location_key": "int_voss_apartment_night",
-      "characters": ["elian"],
+      "characters": [
+        "elian"
+      ],
       "primary_character": "elian",
       "shot_type": "close",
       "camera_movement": "static",
@@ -180,10 +266,14 @@
       "composition": "Tight on Elian's face — centre-frame. The dialogue is over. He is looking slightly left of camera — not at her, at the wall. The weight of the secret.",
       "action_brief": "He says: 'Because in this city, hidden doors are never just doors.' He doesn't look at her when he says it. He looks away. He has always known this moment would come.",
       "lighting_context": "Desk lamp from right — amber key on his cheek and brow. Left side in deep shadow. The broken capillaries on his nose visible under the warm light.",
-      "emotion_intent": "Suppressed knowledge breaking to the surface. He has been carrying this for years.",
+      "emotion_intent": "Suppressed knowledge breaking to the surface. He has been carrying this for years. Grief.",
       "duration_sec": 4,
       "state_override": null,
-      "audio_brief": "His voice, low. The line delivered to the wall, not to her. Then silence."
+      "audio_brief": "His voice, low. The line delivered to the wall, not to her. Then silence.",
+      "reference_exact": "Prisoners (Deakins, 2013) — 1:47:00, Hugh Jackman looking away when he delivers the moral reckoning line. Looking away because he cannot look at what he's done — the eyes finding the wall, not the person who deserves the answer.",
+      "off_frame_tension": "Nara — at right, out of frame, receiving this. Her face deciding what it means. The years of the secret that is now in the room between them.",
+      "material_state": "Elian's face: broken capillaries at nose bridge and cheeks — years of whatever he drinks in this apartment. Desk lamp edge-light: revealing skin texture, follicle detail at jaw, the small signs of a life lived in regret. His collar: fraying at the seam. Shoulder: a slight forward set that has become permanent.",
+      "eyeline": "screen-left toward wall — not at Nara, not at camera"
     },
     {
       "shot_id": "SCN_005_SHOT_001",
@@ -200,13 +290,19 @@
       "emotion_intent": "Scale as control. The citizen is made small by design.",
       "duration_sec": 5,
       "state_override": null,
-      "audio_brief": "Rook's amplified voice — calm, paternal, impenetrable. Marble reverb. Hundreds of footsteps below as diffuse texture. No individual voice audible in the crowd."
+      "audio_brief": "Rook's amplified voice — calm, paternal, impenetrable. Marble reverb. Hundreds of footsteps below as diffuse texture. No individual voice audible in the crowd.",
+      "reference_exact": "1984 (1984, Michael Radford / Roger Deakins) — party rally sequence. The single figure dwarfed by the projected leader — scale as political argument, architecture as ideology made concrete. The citizen reduced to texture.",
+      "off_frame_tension": "Nara — invisible somewhere in this crowd, unaware she is already under passive watch. The anonymous mass that she will soon have to choose to act for, or abandon.",
+      "material_state": "Marble atrium floor: polished pale grey — reflective surface showing inverted citizen movement below, cold cyan-blue cast from the screen wall above. Screen wall: institutional aluminium frame, flat-panel emissive surface, cold cyan wash on all upturned faces below it. Citizens: hundreds of dark coats, heads slightly down — the posture of compliance.",
+      "eyeline": "N/A — environment shot, no character"
     },
     {
       "shot_id": "SCN_005_SHOT_002",
       "scene_id": "SCN_005",
       "location_key": "int_civic_atrium_morning",
-      "characters": ["vale"],
+      "characters": [
+        "vale"
+      ],
       "primary_character": "vale",
       "shot_type": "medium",
       "camera_movement": "static",
@@ -217,13 +313,20 @@
       "emotion_intent": "A predator identifying a thread. No urgency — he has time. He has all the time.",
       "duration_sec": 5,
       "state_override": null,
-      "audio_brief": "Rook's voice continues below — distant, reverberant. The tablet handed over: minimal. Vale's voice: flat, no inflection. The aide's hesitation audible in the pause before footsteps retreating."
+      "audio_brief": "Rook's voice continues below — distant, reverberant. The tablet handed over: minimal. Vale's voice: flat, no inflection. The aide's hesitation audible in the pause before footsteps retreating.",
+      "reference_exact": "Zero Dark Thirty (Chastain / Bigelow, 2012) — surveillance screen sequence, 0:44:00. The predator watching from above who has already made the decision before speaking it. The calm that precedes a very long game.",
+      "off_frame_tension": "Nara — in the crowd below, the thread he has just identified. Already committed to letting her run. The aide who is about to hear 'don't stop her' and understand for the first time that Vale has a different agenda.",
+      "material_state": "Glass balcony railing: tempered structural glass, 15mm thick, clean — bureaucratic cleanliness that signals power through the absence of wear. Vale's suit: dark charcoal fine weave, no visible wear. Tablet: brushed aluminium edge, matte screen. His hands: completely still, no micro-movement.",
+      "eyeline": "downward toward atrium floor — not at aide, not at camera"
     },
     {
       "shot_id": "SCN_006_SHOT_001",
       "scene_id": "SCN_006",
       "location_key": "int_black_market_sublevel_day",
-      "characters": ["mira", "nara"],
+      "characters": [
+        "mira",
+        "nara"
+      ],
       "primary_character": "mira",
       "shot_type": "medium",
       "camera_movement": "static",
@@ -234,13 +337,20 @@
       "emotion_intent": "Mira is reading the city the way engineers read structural drawings. This is her language.",
       "duration_sec": 5,
       "state_override": null,
-      "audio_brief": "Market ambient — dozens of low voices, signal static, equipment hum. Mira's finger on the display surface. The display sound as the new route appears."
+      "audio_brief": "Market ambient — dozens of low voices, signal static, equipment hum. Mira's finger on the display surface. The display sound as the new route appears.",
+      "reference_exact": "Blade Runner 2049 (Deakins, 2017) — 1:10:40, underground archive sequence. The person reading information that changes the map of the world — the table as a site of revelation. The data as a physical object with weight.",
+      "off_frame_tension": "The market vendors who can see this — and who know better than to look. The surveillance camera at the upper corner, just out of focus. Vale's passive watch, already in place.",
+      "material_state": "Market table surface: scratched clear acrylic over illuminated base, amber underglow through years of surface abrasion — each scratch catching and scattering the amber light. Mira's hands: oil stains at fingernail bases, callus on right index fingertip from circuit work, skin dry from solvents. Archived data: projected cyan line-weight infrastructure drawings on table surface.",
+      "eyeline": "downward toward display surface — tracing the route"
     },
     {
       "shot_id": "SCN_006_SHOT_002",
       "scene_id": "SCN_006",
       "location_key": "int_black_market_sublevel_day",
-      "characters": ["mira", "nara"],
+      "characters": [
+        "mira",
+        "nara"
+      ],
       "primary_character": "nara",
       "shot_type": "close",
       "camera_movement": "static",
@@ -251,7 +361,11 @@
       "emotion_intent": "Two people calculating each other's risk. Both reaching the same conclusion at the same speed.",
       "duration_sec": 4,
       "state_override": null,
-      "audio_brief": "Market ambient drops slightly — subjective focus narrowing. Mira's line, delivered level. The silence after. Market returns."
+      "audio_brief": "Market ambient drops slightly — subjective focus narrowing. Mira's line, delivered level. The silence after. Market returns.",
+      "reference_exact": "Sicario (Deakins, 2015) — 1:02:00, Kate and Alejandro in the car at the border. Two people calculating mutual risk, the camera holding them in equal frame without choosing a side. The calculation is the scene.",
+      "off_frame_tension": "The surveillance question — whether they are being watched right now, by Vale's passive watch order. What that moment of observation looks like from the security operations centre.",
+      "material_state": "Cold blue infrastructure map between them: projected light source casting blue shadows under their jawlines, removing the warmth from both faces. Both faces: the blue is flattening — it makes the calculation visible, removes the human ambiguity. Market depth behind: amber and cyan practicals, atmospheric haze from a hundred other conversations.",
+      "eyeline": "screen-right toward Mira — level, holding eye contact, not blinking"
     },
     {
       "shot_id": "SCN_007_SHOT_001",
@@ -268,13 +382,19 @@
       "emotion_intent": "The watcher watching. He chooses not to act — which is itself an action.",
       "duration_sec": 4,
       "state_override": null,
-      "audio_brief": "Data terminal sounds — soft, continuous. No speech. The HVAC of the ops centre. Vale's shoes on the floor — one step, stopping."
+      "audio_brief": "Data terminal sounds — soft, continuous. No speech. The HVAC of the ops centre. Vale's shoes on the floor — one step, stopping.",
+      "reference_exact": "Zero Dark Thirty (2012) — CIA operations room sequence, 0:44:00. The space of strategic observation — the room where watching is the action. The near-silhouette against screens as the ultimate expression of institutional power.",
+      "off_frame_tension": "Nara and Mira in the tunnel system below — represented as two data points on the schematic, not yet identified as individuals. The city they are moving through, invisible from this room.",
+      "material_state": "Display wall: dozens of LCD panels flush-mounted, black bezels, cold cyan-blue emission washing all analyst faces from the front. Console desks: brushed aluminium trim, wire management visible underneath, analyst personal items absent — institutional space that discourages personhood. Floor: dark grey linoleum, perfectly maintained, reflective under display light.",
+      "eyeline": "N/A — environment shot, no character"
     },
     {
       "shot_id": "SCN_007_SHOT_002",
       "scene_id": "SCN_007",
       "location_key": "int_security_ops_center_day",
-      "characters": ["vale"],
+      "characters": [
+        "vale"
+      ],
       "primary_character": "vale",
       "shot_type": "close",
       "camera_movement": "static",
@@ -285,13 +405,20 @@
       "emotion_intent": "Calculation wearing a face. He is not suppressing emotion — he genuinely has none about this.",
       "duration_sec": 4,
       "state_override": null,
-      "audio_brief": "His voice: completely flat, no rise or fall. The pause between the two sentences is deliberate — he is not uncertain, he is precise. Then analyst keyboards resuming."
+      "audio_brief": "His voice: completely flat, no rise or fall. The pause between the two sentences is deliberate — he is not uncertain, he is precise. Then analyst keyboards resuming.",
+      "reference_exact": "Zero Dark Thirty (2012) — CIA director cold-light scene, 0:58:00. The face that does not perform emotion because emotion is not relevant to the decision being made. The cold blue that reads as absence.",
+      "off_frame_tension": "The analyst who will hear 'don't stop her' and understand what it implies. The decision Vale has already made before this scene begins — Nara as a tool he intends to use.",
+      "material_state": "Vale's face: angular bone structure, no softness. Cold display-blue fills the frontal plane — no shadow side, no warmth. Clean-shaven, no texture, no history visible on the skin. His tie: perfectly knotted, unmoved. The display wall behind: dozens of data points, each one a life.",
+      "eyeline": "screen-left toward display wall — slightly off-axis from camera"
     },
     {
       "shot_id": "SCN_008_SHOT_001",
       "scene_id": "SCN_008",
       "location_key": "int_service_spine_night",
-      "characters": ["nara", "mira"],
+      "characters": [
+        "nara",
+        "mira"
+      ],
       "primary_character": "nara",
       "shot_type": "wide",
       "camera_movement": "static",
@@ -302,13 +429,19 @@
       "emotion_intent": "Two people descending into the city's hidden skeleton. The tunnel has been here for decades — waiting.",
       "duration_sec": 5,
       "state_override": null,
-      "audio_brief": "Tunnel ambient — low, organic, the sound of the earth above. Their footsteps on old concrete and track bed. Distant water drip. Mira's kit, faint clink of gear."
+      "audio_brief": "Tunnel ambient — low, organic, the sound of the earth above. Their footsteps on old concrete and track bed. Distant water drip. Mira's kit, faint clink of gear.",
+      "reference_exact": "The Road (Javier Aguirresarobe, 2009) — underground passage sequence. Two figures in a space the world has forgotten — the tunnel as the world's discarded past. Low-angle green light making the familiar grotesque.",
+      "off_frame_tension": "The surface city directly above — the weight of the entire district pressing down on this forgotten space. The people above who do not know this exists beneath them. The system that forgot to seal it.",
+      "material_state": "Old concrete tunnel walls: 50+ years of mineral accumulation — white calcium carbonate deposits at every crack, brown iron oxide vertical streaks. Track bed: ballast gravel, abandoned decades, moss growing in damp zones. Green emergency strip casing: cracked yellow-aged plastic, corrosion at mounting brackets. Pipe bundles on wall: asbestos lagging on older sections, newer PVC on repairs.",
+      "eyeline": "screen-right toward tunnel depth — leading, not looking back"
     },
     {
       "shot_id": "SCN_008_SHOT_002",
       "scene_id": "SCN_008",
       "location_key": "int_service_spine_night",
-      "characters": ["mira"],
+      "characters": [
+        "mira"
+      ],
       "primary_character": "mira",
       "shot_type": "close",
       "camera_movement": "static",
@@ -319,13 +452,19 @@
       "emotion_intent": "She's talked to machines like this her whole life. This one is just older.",
       "duration_sec": 4,
       "state_override": null,
-      "audio_brief": "Capacitor whine — 4kHz rising tone. Relay click — sharp, mechanical. Gauges powering up — each one a faint indicator beep. The system waking from decades of sleep."
+      "audio_brief": "Capacitor whine — 4kHz rising tone. Relay click — sharp, mechanical. Gauges powering up — each one a faint indicator beep. The system waking from decades of sleep.",
+      "reference_exact": "Children of Men (Lubezki / Cuarón, 2006) — generator scene in the hideout, 1:05:00. Hands that know machinery — the tactile relationship with old technology in an emergency. The confidence of someone who has always talked to machines.",
+      "off_frame_tension": "The mechanism behind the wall — the access it is about to unlock. The thing on the other side that does not know it is about to be opened. Decades of whatever has been accumulating in that chamber.",
+      "material_state": "Control panel face: Bakelite housing, cracked at corner from decades of thermal cycling — brown plastic gone yellow-beige with age. Toggle switches: chrome plating pitted, black plastic knobs worn smooth at contact. OLED gauges: anachronistic modern display installed into original housing — new amber light through old apertures. Mira's hands on the panel: her oil stains transferred to the Bakelite surface.",
+      "eyeline": "downward toward control panel — reading gauges, intent"
     },
     {
       "shot_id": "SCN_008_SHOT_003",
       "scene_id": "SCN_008",
       "location_key": "int_service_spine_night",
-      "characters": ["nara"],
+      "characters": [
+        "nara"
+      ],
       "primary_character": "nara",
       "shot_type": "close",
       "camera_movement": "static",
@@ -333,16 +472,22 @@
       "composition": "Tight on Nara — facing camera, watching the dark passage behind them. Her face in green under-light. The darkness behind her is the threat.",
       "action_brief": "Nara watches the dark passage while Mira works. She says nothing. She is counting something — footsteps, seconds. She doesn't like being in the open.",
       "lighting_context": "Green floor strips as key — cold from below, long shadows upward. Amber panel glow as very faint warm bounce from behind.",
-      "emotion_intent": "Tactical awareness. She is providing overwatch while Mira works. Professional.",
+      "emotion_intent": "Tactical awareness. She is providing overwatch while Mira works. Professional. Alert.",
       "duration_sec": 3,
       "state_override": null,
-      "audio_brief": "Mira working behind her — gauges, relays. Nara's breathing, controlled. Silence from the dark passage. That silence is the threat."
+      "audio_brief": "Mira working behind her — gauges, relays. Nara's breathing, controlled. Silence from the dark passage. That silence is the threat.",
+      "reference_exact": "Sicario (Deakins, 2015) — 1:23:15, overwatch position, tunnel approach. The figure providing professional stillness against the threat of the dark. The silence of an expert waiting — not frozen, ready.",
+      "off_frame_tension": "The armed unit already in motion — not yet in the tunnel, audible as radio clicks. The silence of the dark passage is the form the threat takes before it has a face.",
+      "material_state": "Her face in green emergency light: skin appears cold and blue-green — the natural warmth reversed. Wet hair: individual strands catching green reflection at the tips. The dark passage behind her: absolute black, no surface texture visible, no depth cue. The contrast is the threat.",
+      "eyeline": "screen-left toward dark passage — overwatch, unblinking"
     },
     {
       "shot_id": "SCN_008_SHOT_004",
       "scene_id": "SCN_008",
       "location_key": "int_service_spine_night",
-      "characters": ["mira"],
+      "characters": [
+        "mira"
+      ],
       "primary_character": "mira",
       "shot_type": "close",
       "camera_movement": "static",
@@ -350,16 +495,23 @@
       "composition": "On Mira's hands at the panel, then pulling to her face as the gate-unlock mechanism sounds.",
       "action_brief": "The system identifies an external containment access route. Mira reads the identifier. Her expression shifts — this is not what she expected. She unlocks the gate. A deep mechanical clunk.",
       "lighting_context": "Panel amber glow. The gate-unlock indicator light: a single green LED point-source adding a cold green catch-light in her eyes.",
-      "emotion_intent": "She expected a maintenance access. What she's found is something that shouldn't exist.",
+      "emotion_intent": "She expected a maintenance access. What she's found is something that shouldn't exist. Disbelief.",
       "duration_sec": 4,
       "state_override": null,
-      "audio_brief": "System identifier display — a soft data chirp. Her pause. Then: gate unlock mechanism — deep, massive, mechanical clunk resonating through the tunnel walls. The sound of something sealed for decades being opened."
+      "audio_brief": "System identifier display — a soft data chirp. Her pause. Then: gate unlock mechanism — deep, massive, mechanical clunk resonating through the tunnel walls. The sound of something sealed for decades being opened.",
+      "reference_exact": "Ex Machina (Rob Hardy, 2014) — 0:35:00, access panel discovery. The moment of comprehension when a system reveals something it was designed to conceal — the face reading the information faster than it can process the implications.",
+      "off_frame_tension": "The gate itself — somewhere in the wall beyond this tunnel, heavy steel, sealed for decades. What is in the access chamber it guards. The identifier that should not exist in any official system.",
+      "material_state": "Panel display: old CRT-era UI conventions on the new OLED — green phosphor character aesthetic on amber hardware. Gate unlock indicator: single green LED, 3mm diameter point-source, casting a tiny hard shadow of itself on the panel face. Her face: amber panel glow now joined by the cold green point — mixed-light moment, two temperatures competing on one cheek.",
+      "eyeline": "downward toward panel, then lifting to middle distance as gate unlocks"
     },
     {
       "shot_id": "SCN_009_SHOT_001",
       "scene_id": "SCN_009",
       "location_key": "int_observation_chamber",
-      "characters": ["nara", "mira"],
+      "characters": [
+        "nara",
+        "mira"
+      ],
       "primary_character": "nara",
       "shot_type": "wide",
       "camera_movement": "static",
@@ -370,13 +522,19 @@
       "emotion_intent": "The world they were told was dead is lighting up in front of them. The revelation is not dramatic — it is quiet and devastating.",
       "duration_sec": 5,
       "state_override": null,
-      "audio_brief": "Shutter motor — massive, strained, decade-old mechanism. Steel groan as the slats separate. Then: through the gap — wind from outside. The sound of an exterior world. The first sound not filtered through the city's systems."
+      "audio_brief": "Shutter motor — massive, strained, decade-old mechanism. Steel groan as the slats separate. Then: through the gap — wind from outside. The sound of an exterior world. The first sound not filtered through the city's systems.",
+      "reference_exact": "Children of Men (Lubezki / Cuarón, 2006) — 1:37:00, ship revelation at end. The light growing through an industrial structure — the world outside arriving as a physical presence before it becomes legible. Two small figures against the scale of the discovery.",
+      "off_frame_tension": "The functioning city beyond the wall — not yet visible, present only as growing light through the gap. The decades of suppressed knowledge about its existence. The people who built the lie and are still maintaining it.",
+      "material_state": "Observation chamber walls: cast iron rib structure, heavy industrial paint over 40 years of thermal cycles — blistered at heat sources, cracked at stress points, dark red oxide showing through failed paint. Mechanical shutters: layered steel slats, each surface corroded and salt-pitted from exterior exposure. The opening gap: raw weathered steel edge, condensation staining at the sill from years of temperature differential.",
+      "eyeline": "screen-right toward opening shutters — both characters silhouetted"
     },
     {
       "shot_id": "SCN_009_SHOT_002",
       "scene_id": "SCN_009",
       "location_key": "int_observation_chamber",
-      "characters": ["nara"],
+      "characters": [
+        "nara"
+      ],
       "primary_character": "nara",
       "shot_type": "close",
       "camera_movement": "static",
@@ -384,16 +542,22 @@
       "composition": "Tight on Nara's face — centre-frame. The exterior light source at camera-right, cold and growing. Her expression transitioning from caution to disbelief.",
       "action_brief": "She sees organised lights far beyond the wall. Ordered grid. Moving vehicles. She says 'They lied.' She says it very quietly, like a diagnosis.",
       "lighting_context": "Cold grey-blue exterior light from right as key — 7000K, hard edge on right cheek. Red alarm wash from above as fill — very faint, orange-red bounce. The exterior light wins.",
-      "emotion_intent": "The specific, precise texture of realising your entire life was built on a lie. Not anger — not yet.",
+      "emotion_intent": "The specific, precise texture of realising your entire life was built on a lie. Not anger — not yet. Disbelief.",
       "duration_sec": 4,
       "state_override": null,
-      "audio_brief": "Exterior world sounds through the opening — wind, distant traffic, industrial hum of a functioning city. Her line: delivered barely above a whisper. 'They lied.' The two words barely audible over the outside world."
+      "audio_brief": "Exterior world sounds through the opening — wind, distant traffic, industrial hum of a functioning city. Her line: delivered barely above a whisper. 'They lied.' The two words barely audible over the outside world.",
+      "reference_exact": "Children of Men (Lubezki / Cuarón, 2006) — 1:38:20, Kee's face during the ceasefire. The face receiving information that rewrites the entire context of a life — not the dramatic reaction, the quiet one. The diagnosis before the feeling.",
+      "off_frame_tension": "The functioning city directly to camera-right — the lights, the vehicles, the organised life she was told was dead. Present in the light on her face before it becomes a visible subject.",
+      "material_state": "Nara's face: wet, cold — water drops on skin catching the new exterior light. This light quality is different from anything she has been lit by before — harder, bluer, coming from distance rather than a practical. Eyes: iris catching the cold exterior grey-blue, pupils beginning to adjust from the tunnel dark. Her jaw: still carrying the tension of the sprint.",
+      "eyeline": "screen-right toward exterior light — wide eyes, not blinking"
     },
     {
       "shot_id": "SCN_009_SHOT_003",
       "scene_id": "SCN_009",
       "location_key": "int_observation_chamber",
-      "characters": ["nara"],
+      "characters": [
+        "nara"
+      ],
       "primary_character": "nara",
       "shot_type": "medium",
       "camera_movement": "static",
@@ -401,16 +565,23 @@
       "composition": "Nara at right, the pumping machinery at left filling half the frame. She is looking down at what the machinery is connected to — the pipe bundles leading down through the floor.",
       "action_brief": "She sees industrial pumps in the wall structure. The pipes lead down — down to the lower sectors. She understands what the infrastructure is for. Poison in the water. Hidden in plain sight.",
       "lighting_context": "Red alarm ceiling wash — machinery all red. Cold exterior through shutters behind her. Her face: caught between both sources.",
-      "emotion_intent": "The second blow. The first was discovering the lie. The second is understanding the crime.",
+      "emotion_intent": "The second blow. The first was discovering the lie. The second is understanding the crime. Calculation.",
       "duration_sec": 4,
       "state_override": null,
-      "audio_brief": "Pump machinery — low, constant, the sound of poison being delivered. She makes no sound. The hum of the pumps is the sound of the crime."
+      "audio_brief": "Pump machinery — low, constant, the sound of poison being delivered. She makes no sound. The hum of the pumps is the sound of the crime.",
+      "reference_exact": "Chinatown (Vilmos Zsigmond, 1974) — 1:30:00, water infrastructure reveal. The industrial machinery of a systemic crime, in plain sight, running continuously. The horror is not dramatic — it is mundane. The machinery just runs.",
+      "off_frame_tension": "The lower sectors — where these pipes terminate. The people there who are receiving what these pumps deliver. The slow accumulation of what this infrastructure has been doing for decades.",
+      "material_state": "Industrial pump housings: heavy grey cast iron, mounting bolts showing orange rust halos, grease fittings black with accumulated grime, drain plugs seized. Pipe bundles descending through floor: 15cm diameter flanged steel, corrosion at every flange joint, old paint cracking away in sheets. Floor grating: diamond-plate steel, rust visible in the raised diamond texture, water pooled in the low points.",
+      "eyeline": "downward toward pump machinery — following the pipes"
     },
     {
       "shot_id": "SCN_009_SHOT_004",
       "scene_id": "SCN_009",
       "location_key": "int_observation_chamber",
-      "characters": ["nara", "mira"],
+      "characters": [
+        "nara",
+        "mira"
+      ],
       "primary_character": "mira",
       "shot_type": "medium",
       "camera_movement": "static",
@@ -421,13 +592,20 @@
       "emotion_intent": "The urgency is Mira's — cold and tactical. The grief is Nara's — she hasn't finished looking.",
       "duration_sec": 4,
       "state_override": null,
-      "audio_brief": "Silent alarm activates — visual only, no klaxon. Shutter motor reversing — the exterior sound beginning to close off. Mira's grip on Nara's arm. Nara's last breath before the shutters seal."
+      "audio_brief": "Silent alarm activates — visual only, no klaxon. Shutter motor reversing — the exterior sound beginning to close off. Mira's grip on Nara's arm. Nara's last breath before the shutters seal.",
+      "reference_exact": "Sicario (Deakins, 2015) — 0:18:30, team extraction after the house. Tactical urgency in red light — the movement that cannot be hesitated over. One person not ready to leave. One person already leaving.",
+      "off_frame_tension": "The exterior world now closing off behind the reversing shutters — the last seconds of seeing it. The security unit already dispatched to their location, now minutes away.",
+      "material_state": "Red alarm wash: all metal surfaces now crimson — the same corroded iron and paint transformed by single-frequency red light. Their jackets: wet fabric appearing dark crimson under the wash, texture suppressed. Shutter motors: visible in background beginning to reverse — heavy mechanical motion, steel slats moving against decades of static corrosion.",
+      "eyeline": "screen-right — last look toward exterior, being pulled left"
     },
     {
       "shot_id": "SCN_010_SHOT_001",
       "scene_id": "SCN_010",
       "location_key": "int_service_spine_night",
-      "characters": ["nara", "mira"],
+      "characters": [
+        "nara",
+        "mira"
+      ],
       "primary_character": "nara",
       "shot_type": "wide_handheld",
       "camera_movement": "follow_handheld_fast",
@@ -438,7 +616,11 @@
       "emotion_intent": "Pursuit. The machinery of the state, now in motion.",
       "duration_sec": 5,
       "state_override": null,
-      "audio_brief": "Blast doors slamming — each one a massive percussive impact, 1 second apart, getting closer. Their sprinting footsteps. Red alarm pulse — low, rhythmic. Then: armed unit comms in the distance."
+      "audio_brief": "Blast doors slamming — each one a massive percussive impact, 1 second apart, getting closer. Their sprinting footsteps. Red alarm pulse — low, rhythmic. Then: armed unit comms in the distance.",
+      "reference_exact": "Sicario (Deakins, 2015) — 1:24:00, extraction sprint under fire. Handheld that does not lose axis — urgency without chaos. The blast doors as the percussive rhythm of pursuit, one per second.",
+      "off_frame_tension": "The armed unit behind — not yet visible, audible as radio clicks and boot cadence. The blast doors sealing behind them one by one, eliminating retreat. The only direction is forward.",
+      "material_state": "Service spine under alarm: corroded tunnel now transformed by red light and blast door impact dust — mineral wall deposits catching red, blast door sparks showing raw iron interior on each slam. Smoke: fine concrete particulate hanging in red ambient, visibility 8-10 metres. Their jackets: dust accumulation on shoulders from the impacts.",
+      "eyeline": "straight ahead toward camera — sprint, forward urgency"
     },
     {
       "shot_id": "SCN_010_SHOT_002",
@@ -455,13 +637,19 @@
       "emotion_intent": "The state's precision against human panic. They are not rushing — they've already won, they just don't know it yet.",
       "duration_sec": 4,
       "state_override": null,
-      "audio_brief": "Unit radio clicks — tactical comms, no words audible. Boot cadence — disciplined, unhurried. Vale's voice over comms: clean, almost gentle. 'The truth is not what you think it is.' — the most chilling line in the episode."
+      "audio_brief": "Unit radio clicks — tactical comms, no words audible. Boot cadence — disciplined, unhurried. Vale's voice over comms: clean, almost gentle. 'The truth is not what you think it is.' — the most chilling line in the episode.",
+      "reference_exact": "Sicario (Deakins, 2015) — 1:20:00, cartel roadblock silhouettes. Figures reduced to tactical geometry by backlight — threat without face, power without identity. The silhouette as the ultimate expression of institutional force.",
+      "off_frame_tension": "Nara and Mira ahead — already through the blast door, already gone. The unit does not know this yet. Vale's voice over comms is already at odds with the unit's mission.",
+      "material_state": "Armed unit tactical kit: all light-absorbing surfaces — matte black equipment, no reflective material visible. Weapon lights: 3000-lumen tungsten-equivalent, cutting through dust as solid beams with visible particulate scatter in the light column. Dust cloud: fine concrete powder suspended in the tunnel atmosphere, 2-3 metres of effective visibility reduction.",
+      "eyeline": "N/A — environment shot, no character"
     },
     {
       "shot_id": "SCN_010_SHOT_003",
       "scene_id": "SCN_010",
       "location_key": "int_service_spine_night",
-      "characters": ["mira"],
+      "characters": [
+        "mira"
+      ],
       "primary_character": "mira",
       "shot_type": "medium",
       "camera_movement": "static",
@@ -472,30 +660,42 @@
       "emotion_intent": "She's not abandoning Nara — she's covering a different escape route. She expects Nara to understand.",
       "duration_sec": 3,
       "state_override": null,
-      "audio_brief": "Her footsteps stopping. One look back — her breath. Then: into the duct. The sound of her body entering the vent space. Then she is gone."
+      "audio_brief": "Her footsteps stopping. One look back — her breath. Then: into the duct. The sound of her body entering the vent space. Then she is gone.",
+      "reference_exact": "Heat (Dante Spinotti, 1995) — split extraction sequence. Two people executing separate escape routes with zero communication — the professional trust that requires no goodbye. The decision made and executed without a word.",
+      "off_frame_tension": "Where the duct leads — Mira's exit route, the one she mapped that Nara does not know about. Whether they will meet again. What Mira knows about the duct system that makes her certain this works.",
+      "material_state": "Side duct opening: 60x60cm galvanised steel duct, 20 years of condensation and dust at the opening — dark moisture ring staining the wall around the aperture. Duct interior: absolute dark, no reflective surface readable. Mira's jacket: dark fabric showing the duct edge contact as a grey dust transfer on her shoulder as she enters.",
+      "eyeline": "screen-left — one look back before entering duct"
     },
     {
       "shot_id": "SCN_010_SHOT_004",
       "scene_id": "SCN_010",
-      "location_key": "int_service_spine_night",
-      "characters": ["nara"],
+      "location_key": "int_service_spine_access_shaft_night",
+      "characters": [
+        "nara"
+      ],
       "primary_character": "nara",
       "shot_type": "medium",
       "camera_movement": "static",
       "camera_spec": "32mm anamorphic, T2.3, ISO 3200, tripod",
-      "composition": "Nara at a blast door that is closing — she slips through the narrowing gap as weapon lights reach her position. The door closes. She is gone.",
-      "action_brief": "She dives through the closing blast door — barely. The door slams. The weapon lights reach the door surface — too late.",
-      "lighting_context": "Red alarm. Weapon lights from behind. The closing blast door: sparks at the seam. Then dark.",
-      "emotion_intent": "Escape. By the minimum possible margin.",
+      "composition": "Nara at a blast door that is closing — she slips through the narrowing gap as weapon lights reach her position. The door seals. She stands up in the access shaft: open to the city sky, cold rain already falling on her.",
+      "action_brief": "She dives through the closing blast door — barely. The door slams. The weapon lights reach the door surface — too late. On her side: an access shaft open to the exterior. She surfaces into rain — cold, immediate, city-scale. She stands up, soaked in seconds.",
+      "lighting_context": "Red alarm light extinguished by the sealing door. On her side: near-darkness, then the faint ambient glow of the city above the shaft opening. Rain catching that ambient light as it falls.",
+      "emotion_intent": "Escape. By the minimum possible margin. The rain as the first sensation of the outside world.",
       "duration_sec": 3,
-      "state_override": null,
-      "audio_brief": "The blast door mechanism — hydraulic, massive. Her body through the gap — fabric on steel. The door sealing — final, absolute. Weapon lights on the door surface — then silence on her side."
+      "state_override": "Rain immediately wetting hair and jacket as she surfaces through the shaft. Cold water on hot skin. Hair beginning to plaster to temples and neck.",
+      "audio_brief": "The blast door mechanism — hydraulic, massive. Her body through the gap — fabric on steel. The door sealing — final, absolute. Weapon lights on the door surface — then silence on her side. Then: rain. Immediate, full, the sound of the city above.",
+      "reference_exact": "Sicario (Deakins, 2015) — 1:25:10, blast door final. The escape by exactly the minimum possible margin — the door sealing as the frame closes. The threat contained not by distance but by one centimetre of armoured steel.",
+      "off_frame_tension": "The armed unit on the other side — four seconds behind. The silence on her side of the door after it seals. Whatever Vale is saying into the comms that the unit cannot hear.",
+      "material_state": "Blast door: heavy armoured steel, hydraulic seals, door face showing decades of use — scored metal at the edge where it seats, hydraulic fluid traces at the seam. The narrowing gap: raw steel edge, sparks at the friction point. Her jacket: fabric-on-steel contact leaving a grey smear on the door edge as she passes through.",
+      "eyeline": "straight ahead — diving through closing door, no time to look anywhere"
     },
     {
       "shot_id": "SCN_011_SHOT_001",
       "scene_id": "SCN_011",
       "location_key": "int_voss_apartment_predawn",
-      "characters": ["nara"],
+      "characters": [
+        "nara"
+      ],
       "primary_character": "nara",
       "shot_type": "medium",
       "camera_movement": "static",
@@ -503,16 +703,22 @@
       "composition": "Nara entering through the apartment door — centre-frame, backlit by the faint pre-dawn blue from the window. Soaked, shaking slightly. The apartment in near-darkness around her.",
       "action_brief": "She returns home — wet, shaken, changed. She closes the door quietly behind her. She is carrying something enormous and trying not to show it.",
       "lighting_context": "Pre-dawn cold blue from window — the only source. Lighting her silhouette edge, not her face. Her face in near-total darkness.",
-      "emotion_intent": "She has just seen the world she lives in for what it actually is. Everything that comes next begins here.",
+      "emotion_intent": "She has just seen the world she lives in for what it actually is. Everything that comes next begins here. Exhaustion.",
       "duration_sec": 5,
       "state_override": "Dark hair wet and plastered to neck and temples. Jacket soaked through at shoulders and back. Skin: water drops catching blue light. Fatigue in jaw and shoulders. Slight visible tremor.",
-      "audio_brief": "Door latch — barely audible. Distant city ambient bleeding through walls. Her breathing, slowing."
+      "audio_brief": "Door latch — barely audible. Distant city ambient bleeding through walls. Her breathing, slowing.",
+      "reference_exact": "Blade Runner 2049 (Deakins, 2017) — 0:08:30, Joe returns to his apartment at predawn. The figure lit only at the edge by cold ambient blue — face in shadow, carrying what cannot be put down. The apartment as a place that will never be the same again.",
+      "off_frame_tension": "The tactical unit in the corridor outside — not yet arrived. The predawn silence that is actually a countdown. Elian, awake, waiting in the dark behind her.",
+      "material_state": "Nara's jacket: soaked at shoulders and upper back — fabric darkened, dripping at the hem. Hair: matted wet to temples and neck, water running along the jawline. Skin: water drops catching the cold blue window light as point-source highlights. The apartment door: worn paint at lock height, use marks around the handle — a door that has been opened thousands of times.",
+      "eyeline": "downward — head slightly bowed, carrying the weight of what she saw"
     },
     {
       "shot_id": "SCN_011_SHOT_002",
       "scene_id": "SCN_011",
       "location_key": "int_voss_apartment_predawn",
-      "characters": ["elian"],
+      "characters": [
+        "elian"
+      ],
       "primary_character": "elian",
       "shot_type": "close",
       "camera_movement": "static",
@@ -520,33 +726,45 @@
       "composition": "Tight on Elian's face as he sees her. He has been awake, waiting. His expression when he reads her face.",
       "action_brief": "Elian sees her face and knows. He doesn't speak. He doesn't need to. The secret he has carried for years has just walked through the door.",
       "lighting_context": "Cold pre-dawn window light from frame-right. His face: cool blue edge on the left cheek, near-darkness on the right.",
-      "emotion_intent": "Recognition. He always knew this day was coming. He hoped it wouldn't be this soon.",
+      "emotion_intent": "Recognition. He always knew this day was coming. He hoped it wouldn't be this soon. Grief.",
       "duration_sec": 4,
       "state_override": null,
-      "audio_brief": "Silence. His breath. Nothing else."
+      "audio_brief": "Silence. His breath. Nothing else.",
+      "reference_exact": "No Country for Old Men (Deakins, 2007) — 1:45:00, Sheriff Bell in the hotel room. The face of a man who has arrived at the place he always feared he would arrive — the recognition of an inevitability. Cold ambient. Near-dark. No warmth.",
+      "off_frame_tension": "What Elian has been carrying for years — the knowledge she has just confirmed. The apartment chair he has been sitting in all night, waiting for her to either come back or not come back.",
+      "material_state": "Elian's face: cold predawn blue making his age visible in a way the amber desk lamp did not — deeper hollows under the eyes, the grey in his temples visible. He has been awake all night: the slight inflation of the lower eyelid, the jaw held slightly open with fatigue. His collar: rumpled, the night showing on him.",
+      "eyeline": "screen-left toward Nara — reading her face, not speaking"
     },
     {
       "shot_id": "SCN_011_SHOT_003",
       "scene_id": "SCN_011",
       "location_key": "int_voss_apartment_predawn",
-      "characters": ["nara"],
+      "characters": [
+        "nara"
+      ],
       "primary_character": "nara",
       "shot_type": "close",
       "camera_movement": "static",
       "camera_spec": "50mm anamorphic, T2.8, ISO 3200, tripod",
-      "composition": "Tight on Nara — she has just heard it. The revelation about her father's role. Her face absorbing it.",
-      "action_brief": "She recoils — not physically, internally. He says 'I helped design part of the flow control system.' The truth lands between them. She doesn't look away.",
+      "composition": "Tight close-up — Nara. Her face filling the frame. Cold blue window light from left.",
+      "action_brief": "She holds still. Her gaze does not move. The light does not change. The moment extends.",
       "lighting_context": "Cold blue from window. Both faces in the same cold light. No warmth. The warmth is gone.",
-      "emotion_intent": "Betrayal and love fighting at the same moment. She doesn't know which will win.",
+      "emotion_intent": "Internal shift. Stillness. Face as landscape.",
       "duration_sec": 4,
-      "state_override": "Still wet — jacket darkened at shoulders. Hair beginning to separate from wet press, single strands catching the cold blue light.",
-      "audio_brief": "His voice delivering the confession. Then silence in which she processes it. The apartment's small sounds — distant pipe, neon. Not a score cue. Just her face in the blue light."
+      "state_override": "Jacket darkened at shoulders from rain. Hair beginning to separate, single strands at temples catching cold blue edge light.",
+      "audio_brief": "His voice delivering the confession. Then silence in which she processes it. The apartment's small sounds — distant pipe, neon. Not a score cue. Just her face in the blue light.",
+      "reference_exact": "Terrence Malick / Tree of Life (Lubezki, 2011) — interior close-up, cold window light on face. Single-source motivated ambient. Internal state on surface only.",
+      "off_frame_tension": "Second figure at left, out of frame. The silence between two people after a significant exchange.",
+      "material_state": "Cold blue edge light catching individual hair strands at temples. Face: cold blue ambient only, shadow side deep. No warm source.",
+      "eyeline": "screen-right, sustained direct gaze, static"
     },
     {
       "shot_id": "SCN_011_SHOT_004",
       "scene_id": "SCN_011",
       "location_key": "int_voss_apartment_predawn",
-      "characters": ["elian"],
+      "characters": [
+        "elian"
+      ],
       "primary_character": "elian",
       "shot_type": "medium",
       "camera_movement": "static",
@@ -554,27 +772,38 @@
       "composition": "Elian producing an encrypted drive from inside his jacket — holds it out to her. His face: this is the only act of courage he has left.",
       "action_brief": "He gives her the encrypted drive. His hands are not steady. He says: 'If they take me, this is the only thing that proves the system was built this way.'",
       "lighting_context": "Cold pre-dawn blue. His hands in slightly better light than his face — the drive in a thin cold beam.",
-      "emotion_intent": "Atonement, not absolution. He knows it's too late for forgiveness. He's doing it anyway.",
+      "emotion_intent": "Atonement, not absolution. He knows it's too late for forgiveness. He's doing it anyway. Grief.",
       "duration_sec": 4,
       "state_override": null,
-      "audio_brief": "His jacket opening — fabric. The drive placed in his palm — small, dense, plastic and metal. His hands not steady — the drive trembles slightly. His voice, lower than before."
+      "audio_brief": "His jacket opening — fabric. The drive placed in his palm — small, dense, plastic and metal. His hands not steady — the drive trembles slightly. His voice, lower than before.",
+      "reference_exact": "Munich (Janusz Kaminski / Spielberg, 2005) — 1:20:00, the document handoff. The physical transfer of evidence as a moral act — the hands that carry the object are carrying the consequence. Cold light. No ceremony.",
+      "off_frame_tension": "What is on the drive — the proof, the names, the crime documented. The weight of it in his unsteady hands. The moment he decided to keep it rather than destroy it.",
+      "material_state": "Elian's hands: unsteady — the slight tremor visible in the cold blue light, joint knuckles showing age, veins prominent under thin skin. The encrypted drive: hard matte-black polymer, machined aluminium contacts, 50x25mm, government-spec construction — dense, heavy for its size. His jacket interior lining: worn at the pocket seam where the drive has lived for however long he has been carrying it.",
+      "eyeline": "downward toward his own hands — shame, offering the drive without looking up"
     },
     {
       "shot_id": "SCN_011_SHOT_005",
       "scene_id": "SCN_011",
       "location_key": "int_voss_apartment_predawn",
-      "characters": ["nara", "elian"],
+      "characters": [
+        "nara",
+        "elian"
+      ],
       "primary_character": "nara",
       "shot_type": "medium",
       "camera_movement": "static",
       "camera_spec": "50mm anamorphic, T2.8, ISO 3200, tripod",
       "composition": "Two-shot — Elian giving the instructions, Nara receiving them. The space between them: the width of what cannot be repaired.",
-      "action_brief": "He says: 'Go to the freight tunnels. Find the relay called Lantern. Ask for Mira Sol. Open the city.' She takes the drive. Holds it. Her face: this is not what she wanted from him.",
+      "action_brief": "He says: 'When this breaks open — and it will — go back to Mira. The Lantern relay. She'll know what to do with what you found. Finish what I started.' She takes the drive. Holds it. Her face: this is not what she wanted from him — she wanted him to come with her.",
       "lighting_context": "Cold pre-dawn shared light. Equal on both faces. Neither in shadow — no one hiding from the other now.",
-      "emotion_intent": "The handoff of a mission that will consume what remains of both their lives.",
+      "emotion_intent": "The handoff of a mission that will consume what remains of both their lives. He is sending her forward alone into what comes next. Grief.",
       "duration_sec": 5,
       "state_override": "Nara still wet. The drive in her wet hands.",
-      "audio_brief": "His voice — the four instructions, spoken as if memorised for years. Her hands closing around the drive — the sound of the cold plastic against her wet fingers. Then: silence."
+      "audio_brief": "His voice — the instructions spoken once, as if he has been holding them for years waiting for this exact moment. Her hands closing around the drive — the cold plastic against her wet fingers. Then: the silence of a decision that cannot be unmade.",
+      "reference_exact": "Blade Runner 2049 (Deakins, 2017) — 1:55:00, K and Ana Stelline. The handoff between two people who understand they will not see each other again — the object as the only possible form of what cannot be said.",
+      "off_frame_tension": "The unit outside — minutes away. The life they had before tonight, in this apartment, already ended without a formal moment of ending. The four instructions she will carry out of here.",
+      "material_state": "Two faces in equal cold blue — the apartment's warmth architecturally neutralised by the predawn light. The space between them: the width of the table, the width of what cannot be repaired. The drive in her wet hands: water transferring from her skin to the polymer surface, marking it.",
+      "eyeline": "screen-right toward Elian — receiving the instructions, not yet responding"
     },
     {
       "shot_id": "SCN_011_SHOT_006",
@@ -591,24 +820,35 @@
       "emotion_intent": "The last seconds. The knock that doesn't knock.",
       "duration_sec": 3,
       "state_override": null,
-      "audio_brief": "Total silence inside. Then: footsteps in the corridor — heavy, tactical, boot soles. Getting closer. Stopping outside the door. The silence after they stop is worse than the footsteps."
+      "audio_brief": "Total silence inside. Then: footsteps in the corridor — heavy, tactical, boot soles. Getting closer. Stopping outside the door. The silence after they stop is worse than the footsteps.",
+      "reference_exact": "No Country for Old Men (Deakins, 2007) — 1:20:00, motel corridor floor, the shadow under the door. The threat that has already arrived, present as geometry before it becomes physical. The most frightening thing Deakins ever filmed is a shadow.",
+      "off_frame_tension": "The people casting the shadow — the tactical unit, their equipment, their intention. They are already at the door. They have already decided what they are doing.",
+      "material_state": "Door lock housing: brushed aluminium face plate, worn finish at thumb-contact areas, mounting screw heads slightly corroded. Door base gap: thin — institutional grey corridor tile visible, cold white unit tactical lighting casting a bright stripe. The shadow on that stripe: darker than the gap around it, a precise geometric interruption.",
+      "eyeline": "N/A — object shot, no character present"
     },
     {
       "shot_id": "SCN_011_SHOT_007",
       "scene_id": "SCN_011",
       "location_key": "int_voss_apartment_predawn",
-      "characters": ["nara", "elian"],
+      "characters": [
+        "nara",
+        "elian"
+      ],
       "primary_character": "nara",
       "shot_type": "wide",
       "camera_movement": "static",
       "camera_spec": "32mm anamorphic, T2.3, ISO 3200, tripod wide, capturing both figures and the door",
       "composition": "Wide — both characters frame-right, door frame-left. The scale of the threat against the intimacy of the people. Then the door detonates.",
-      "action_brief": "The door explodes inward. White flash. SMASH CUT TO BLACK. End of Episode 1.",
-      "lighting_context": "Pre-dawn blue throughout. Then: door detonation — white flash, 1/24sec, burning out the frame. Then absolute black.",
+      "action_brief": "The door opens with force. A white light overexposes the entire frame. Then absolute black.",
+      "lighting_context": "Pre-dawn cold blue. Then: single violent overexposure flash, white 5600K, 1/24sec. Then black.",
       "emotion_intent": "End of the world they knew. Beginning of everything that follows.",
       "duration_sec": 3,
       "state_override": null,
-      "audio_brief": "SILENCE — 2 seconds of absolute silence before the breach. Then: DOOR DETONATION — shaped charge, immediate and overwhelming. White noise. SMASH CUT TO BLACK — silence again, total. End of episode."
+      "audio_brief": "Two seconds of silence. Then a sudden loud impact. White noise. Then silence and black.",
+      "reference_exact": "Stanley Kubrick / 2001 A Space Odyssey — the final white frame held before cut to black. Overexposure as narrative event. The light as ending, not illumination.",
+      "off_frame_tension": "The next episode — everything that will follow from this moment.",
+      "material_state": "Wide apartment: all surfaces in cold blue silhouette. Door: closed, institutional. Then: violent overexposure — single white frame burning out all material information.",
+      "eyeline": "screen-left toward door — both characters, the last look before breach"
     }
   ]
 }

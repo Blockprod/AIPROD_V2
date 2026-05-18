@@ -116,6 +116,11 @@ class SceneP1Params:
     extra_notes:    str         = ""       # notes additionnelles (optionnel)
     character_canonical: str   = LOCKED_NARA_CANONICAL  # canonical DOP-grade du personnage
     emotion_intent:      str   = ""  # intention dramatique du shot (précède la desc technique)
+    reference_exact:     str   = ""  # référence plan précis : film + timecode + pourquoi ce plan
+    off_frame_tension:   str   = ""  # ce qui n'est pas dans le cadre mais doit se sentir
+    material_state:      str   = ""  # matières dominantes + état de dégradation
+    face_exposure:       str   = ""  # ex: "Key side 55% IRE, shadow 8% IRE, ratio 7:1"
+    eyeline:             str   = ""  # direction du regard du personnage principal
 
     # Constantes verrouillées
     locked_dop_ref:  str = field(default="Roger Deakins / Sicario (2015)", init=False)
@@ -144,10 +149,16 @@ def build_p1_prompt(p: SceneP1Params) -> str:
         "Shoot on " + p.locked_camera + "."
         + (f" {p.extra_notes}" if p.extra_notes else "")
     )
+    if p.reference_exact:
+        doc["dop_reference"] = p.reference_exact
+    if p.material_state:
+        doc["material_condition"] = p.material_state
     doc["location"] = f"{p.location_slug}. {p.location_desc}"
     doc["lighting_design"] = p.lighting_desc
     doc["colour_grade_intent"] = p.colour_desc
     doc["composition"] = p.composition
+    if p.face_exposure:
+        doc["face_exposure_target"] = p.face_exposure
     doc["technical_quality"] = (
         "ARRI Alexa 35 RAW capture aesthetic. "
         "Cooke Anamorphic /i lens character: subtle barrel distortion at edges, "
@@ -161,10 +172,15 @@ def build_p1_prompt(p: SceneP1Params) -> str:
         "Solo figure — absolutely one person only in frame. "
         "Feature film production quality — 2026 state of the art."
     )
-    doc["subject"] = {
+    subject_block: dict[str, str] = {
         "action": p.subject_action,
         "costume": p.character_canonical,
     }
+    if p.eyeline:
+        subject_block["eyeline"] = p.eyeline
+    doc["subject"] = subject_block
+    if p.off_frame_tension:
+        doc["off_frame_tension"] = p.off_frame_tension
     return json.dumps(doc)
 
 
