@@ -30,7 +30,6 @@ import json
 import os
 import subprocess
 import sys
-import time
 from pathlib import Path
 from typing import Any
 
@@ -62,6 +61,7 @@ def run_all(
     skip_qg: bool = False,
     fps: int = _DEFAULT_FPS,
     dry_run: bool = False,
+    budget_cap: float = _BUDGET_ALERT_USD,
 ) -> dict[str, Any]:
     """Traite une liste de shots en séquence avec checkpoint et suivi budget.
 
@@ -81,6 +81,23 @@ def run_all(
     checkpoint = _load_checkpoint()
     total_cost = checkpoint.get("total_cost_usd", 0.0)
     processed = checkpoint.get("processed", [])
+
+    # Pre-execution budget guard: estimate total remaining cost upfront
+    if backend == "replicate" and not dry_run and not skip_stylize:
+        remaining_ids = [s for s in shot_ids if s not in processed]
+        total_estimated = sum(
+            _count_frames(RENDERS_DIR / sid / "frames") * _COST_PER_FRAME_REPLICATE
+            for sid in remaining_ids
+        ) + total_cost
+        if total_estimated > budget_cap:
+            print(
+                f"[gen_shots_v4] BUDGET CAP ATTEINT : coût estimé total "
+                f"${total_estimated:.2f} > cap ${budget_cap:.2f}.\n"
+                f"  Relancer avec --budget-cap {total_estimated:.0f} pour dépasser ce seuil.\n"
+                f"  Aucun appel API n'a été lancé.",
+                file=sys.stderr,
+            )
+            sys.exit(1)
 
     summary: list[dict[str, Any]] = []
     python_exe = sys.executable
@@ -107,7 +124,7 @@ def run_all(
             )
             shot_result["steps"]["blender"] = {"ok": blender_ok, "info": blender_info}
             if not blender_ok and not dry_run:
-                print(f"  [FAIL] Blender render echoue -- shot ignore")
+                print("  [FAIL] Blender render echoue -- shot ignore")
                 shot_result["passed_qg"] = False
                 summary.append(shot_result)
                 continue
@@ -117,10 +134,10 @@ def run_all(
             frame_count = _count_frames(RENDERS_DIR / shot_id / "frames")
             estimated_cost = frame_count * _COST_PER_FRAME_REPLICATE if backend == "replicate" else 0.0
 
-            if not dry_run and total_cost + estimated_cost > _BUDGET_ALERT_USD:
+            if not dry_run and total_cost + estimated_cost > budget_cap:
                 print(
-                    f"  [STOP] BUDGET ALERT : {total_cost + estimated_cost:.2f}$ > {_BUDGET_ALERT_USD}$. "
-                    f"Arrêt automatique. Relancer avec --execute pour continuer manuellement."
+                    f"  [STOP] BUDGET CAP : {total_cost + estimated_cost:.2f}$ > {budget_cap:.2f}$. "
+                    f"Arrêt automatique. Relancer avec --budget-cap {total_cost + estimated_cost:.0f} pour continuer."
                 )
                 break
 
@@ -180,11 +197,11 @@ def run_all(
         "passed_qg": passed_qg,
         "failed_qg": failed_qg,
         "total_cost_usd": round(total_cost, 2),
-        "budget_ok": total_cost <= _BUDGET_ALERT_USD,
+        "budget_ok": total_cost <= budget_cap,
     }
 
     print(f"\n{'='*60}")
-    print(f"[gen_shots_v4] RÉSUMÉ")
+    print("[gen_shots_v4] RÉSUMÉ")
     print(f"  Shots traités    : {final['processed']}")
     print(f"  Quality gate [OK] : {final['passed_qg']}")
     print(f"  Quality gate [KO] : {final['failed_qg']}")
@@ -228,7 +245,8 @@ def _count_frames(frames_dir: Path) -> int:
 def _load_checkpoint() -> dict[str, Any]:
     if CHECKPOINT_FILE.exists():
         try:
-            return json.loads(CHECKPOINT_FILE.read_text(encoding="utf-8"))
+            data: dict[str, Any] = json.loads(CHECKPOINT_FILE.read_text(encoding="utf-8"))
+            return data
         except (json.JSONDecodeError, OSError):
             pass
     return {"processed": [], "total_cost_usd": 0.0}
@@ -300,6 +318,13 @@ def main() -> int:
         action="store_true",
         help="Supprimer le checkpoint et recommencer depuis le début",
     )
+    parser.add_argument(
+        "--budget-cap",
+        type=float,
+        default=_BUDGET_ALERT_USD,
+        metavar="USD",
+        help=f"Seuil de coût USD au-delà duquel l'exécution est bloquée (défaut: {_BUDGET_ALERT_USD}$)",
+    )
 
     args = parser.parse_args()
     _load_env()
@@ -331,6 +356,7 @@ def main() -> int:
         skip_qg=args.skip_qg,
         fps=args.fps,
         dry_run=args.dry_run,
+        budget_cap=args.budget_cap,
     )
     print(json.dumps(result, indent=2))
     return 0 if result.get("budget_ok", True) else 1

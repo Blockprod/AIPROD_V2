@@ -566,6 +566,62 @@ def _extract_primary_character_from_text(raw_text: str) -> str | None:
 # --- Public API ---
 # ===========================================================================
 
+_VALID_INTENSITIES: frozenset[str] = frozenset({"subtle", "mid", "explosive"})
+
+
+def _validate_pass2_output(scenes: list[VisualScene]) -> None:
+    """Contract check: verify critical fields are populated on every VisualScene.
+
+    Called at the end of visual_rewrite() to catch silent failures early,
+    before Pass 3 consumes the output.
+
+    Raises
+    ------
+    ValueError
+        If any scene is missing a required cinematic field.
+    """
+    for vs in scenes:
+        sid = vs.get("scene_id", "?")
+
+        # emotion must be a non-empty string — Pass 3 uses it for body-language lookups
+        emotion = vs.get("emotion", "")
+        if not emotion:
+            raise ValueError(
+                f"PASS 2 contract: scene '{sid}' has empty emotion field."
+            )
+
+        # visual_actions must not be empty — belt-and-suspenders before Pass 3
+        if not vs.get("visual_actions"):
+            raise ValueError(
+                f"PASS 2 contract: scene '{sid}' has empty visual_actions."
+            )
+
+        # emotional_beat_index must be in [0.0, 1.0]
+        ebi = vs.get("emotional_beat_index")
+        if ebi is not None and not (0.0 <= ebi <= 1.0):
+            raise ValueError(
+                f"PASS 2 contract: scene '{sid}' emotional_beat_index={ebi!r} "
+                f"is out of range [0.0, 1.0]."
+            )
+
+        # action_intensity must be one of the three canonical tiers
+        ai = vs.get("action_intensity")
+        if ai is not None and ai not in _VALID_INTENSITIES:
+            raise ValueError(
+                f"PASS 2 contract: scene '{sid}' has invalid action_intensity "
+                f"'{ai}'. Expected one of {sorted(_VALID_INTENSITIES)}."
+            )
+
+        # body_language_states must contain at least one entry when characters exist
+        characters: list[str] = list(vs.get("characters", []))
+        bls: list[object] = list(vs.get("body_language_states", []))
+        if characters and not bls:
+            raise ValueError(
+                f"PASS 2 contract: scene '{sid}' has characters {characters} "
+                f"but no body_language_states."
+            )
+
+
 def visual_rewrite(
     scenes: list[RawScene],
     visual_bible: VisualBible | None = None,
@@ -754,7 +810,7 @@ def visual_rewrite(
             "body_language_states":       body_language_states,
             "scene_tone":                 scene_tone,
             "beat_type":                  beat_type,
-            "emotional_beat_index":       adjusted_arc,
+            "emotional_beat_index":       max(0.0, min(1.0, adjusted_arc)),
         }
 
         # Propagate Pass-1 provenance fields
@@ -778,6 +834,7 @@ def visual_rewrite(
 
         output.append(vs)
 
+    _validate_pass2_output(output)
     return output
 
 

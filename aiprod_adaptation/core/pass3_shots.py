@@ -597,6 +597,17 @@ def simplify_shots(scenes: list[VisualScene]) -> list[ShotDict]:
         if not visual_actions:
             raise ValueError(f"PASS 3: scene '{scene_id}' has empty visual_actions.")
 
+        # Contract: emotion must be populated — used in EMOTION_BODY_LANGUAGE lookups
+        if not emotion:
+            raise ValueError(f"PASS 3: scene '{scene_id}' has empty emotion field.")
+
+        # Contract: action_intensity must be a canonical tier when present
+        if action_intensity is not None and action_intensity not in {"subtle", "mid", "explosive"}:
+            raise ValueError(
+                f"PASS 3: scene '{scene_id}' has invalid action_intensity "
+                f"'{action_intensity}'. Expected 'subtle', 'mid' or 'explosive'."
+            )
+
         lens_mm:     int = resolve_lens_mm(beat_type, scene_tone)
         color_grade: str = resolve_color_grade(scene_tone, tod_visual if tod_visual != "day" else None)
         lighting_dir: str | None = _resolve_lighting_directive(scene_tone, tod_visual)
