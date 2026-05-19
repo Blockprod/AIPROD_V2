@@ -49,6 +49,7 @@ Pour la **correction d'erreurs statiques** (mypy · ruff · type errors), un pip
 | 7 | [Master](#7--master) | Audit complet toutes dimensions | Agent |
 | 8 | [IR & Maturité Conceptuelle](#8--ir--maturité-conceptuelle) | Maturité IR · Gaps architecturaux · Qualité prompt vs vrai IR · Risques à l'échelle | Agent |
 | 9 | [Fix Errors](#9--fix-errors) | Scan mypy/ruff · Plan batches · Correction · Vérification · Final QA | Agent |
+| 10 | [System Architect](#10--system-architect) | Classification système · Flaws S/A/B · Contradictions déterminisme/stochastique · Scalabilité · Redesign next-gen | Agent |
 
 ---
 
@@ -295,6 +296,32 @@ Valide les corrections appliquées. Ne modifie rien.
 ```
 #file:tasks/audits/fix_errors/P5_FINAL_QA_prompt.md
 Valide la readiness complète avant merge.
+```
+
+---
+
+## `10 · SYSTEM ARCHITECT`
+
+> Classification système · Flaws S/A/B · Contradictions déterminisme/stochastique · Scalabilité industrielle · Redesign next-gen
+
+**Produit A** : `tasks/audits/resultats/audit_system_architect_aiprod.md`
+
+**A — Audit**
+```
+#file:tasks/audits/code/audit_system_architect_prompt.md
+Lance cet audit sur le workspace.
+```
+
+**B — Plan d'action**
+```
+#file:tasks/corrections/generate_action_plan_prompt.md
+Génère le plan d'action depuis l'audit disponible.
+```
+
+**C — Exécution**
+```
+#file:tasks/corrections/execute_corrections_prompt.md
+Démarre l'exécution du plan d'action disponible.
 ```
 
 ---
