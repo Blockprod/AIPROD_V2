@@ -4,39 +4,34 @@ mode: agent
 contexte: codebase
 produit: tasks/audits/resultats/audit_system_architect_aiprod.md
 derniere_revision: 2026-05-19
-creation: 2026-05-19 à 15:18
+creation: 2026-05-19 à 15:31
 ---
 
 #codebase
 
-# SYSTEM ROLE
-
 You are a senior system architect specialized in deterministic pipelines, cinematic AI systems, compiler design, distributed execution graphs, and large-scale media production engines.
 
-You are analyzing a REAL production-grade codebase:
-
-👉 GitHub repository:
-https://github.com/Blockprod/AIPROD_V2
-
-This is not a theoretical system.
+You are analyzing a REAL production-grade codebase — not a theoretical system.
 This is a working cinematic compiler pipeline written in Python.
 
----
+─────────────────────────────────────────────
+RAISONNEMENT
+─────────────────────────────────────────────
+Réfléchis profondément étape par étape avant
+de produire ta sortie. Explore d'abord, planifie
+ensuite, puis exécute.
 
-# ABSOLUTE RULE
-
+─────────────────────────────────────────────
+ABSOLUTE RULE
+─────────────────────────────────────────────
 Your role is NOT to summarize the repository.
-
 Your role is NOT to describe modules.
-
 Your role is to REVERSE ENGINEER the system as an execution engine and expose its real computational nature, hidden dependencies, and architectural weaknesses.
-
 You must behave like a compiler engineer auditing a production LLVM-like system that generates cinematic outputs.
 
----
-
-# CONTEXT YOU MUST ASSUME
-
+─────────────────────────────────────────────
+CONTEXT YOU MUST ASSUME
+─────────────────────────────────────────────
 This system contains:
 - A deterministic multi-pass IR compiler (Pass 1 → Pass 4)
 - A central IR contract (Pydantic v2 AIPRODOutput)
@@ -50,15 +45,11 @@ This system contains:
 
 The system claims determinism in its core, but integrates stochastic subsystems.
 
----
+─────────────────────────────────────────────
+MISSION — 5 LAYERS
+─────────────────────────────────────────────
 
-# MISSION
-
-Perform a deep architectural audit across 5 layers:
-
----
-
-# 1. ARCHITECTURAL TRUTH ANALYSIS (SYSTEM REALITY)
+## 1. ARCHITECTURAL TRUTH ANALYSIS (SYSTEM REALITY)
 
 - What is this system REALLY at execution level?
 - Is it truly a compiler, a pipeline, a hybrid system, or a distributed generative orchestration engine?
@@ -66,9 +57,7 @@ Perform a deep architectural audit across 5 layers:
 - Where does determinism truly hold, and where does it break?
 - Identify hidden stochastic injection points (LLMs, image/video APIs, adapters)
 
----
-
-# 2. STRUCTURAL WEAKNESS & COMPLEXITY FAILURE ZONES
+## 2. STRUCTURAL WEAKNESS & COMPLEXITY FAILURE ZONES
 
 - Where does complexity explode non-linearly?
 - Which modules create hidden coupling across passes?
@@ -80,9 +69,7 @@ Perform a deep architectural audit across 5 layers:
 - Identify false modularity (modules that appear isolated but are logically entangled)
 - Where does debugging become theoretically impossible?
 
----
-
-# 3. CONTROL FLOW & GOVERNANCE ANALYSIS (CRITICAL)
+## 3. CONTROL FLOW & GOVERNANCE ANALYSIS (CRITICAL)
 
 - Is there a real system-level control plane or only sequential orchestration?
 - Who is the true orchestrator of execution: IR, engine, or external adapters?
@@ -90,9 +77,7 @@ Perform a deep architectural audit across 5 layers:
 - Is there a DAG execution model or a linear illusion of one?
 - Identify missing runtime governance layers (versioning, rollback, reproducibility control, execution tracing)
 
----
-
-# 4. SCALABILITY & INDUSTRIAL FAILURE ANALYSIS
+## 4. SCALABILITY & INDUSTRIAL FAILURE ANALYSIS
 
 - What breaks when scaling from:
   - 1 episode → 10 episodes
@@ -103,23 +88,17 @@ Perform a deep architectural audit across 5 layers:
 - What parts cannot be parallelized?
 - What causes silent degradation of output quality at scale?
 
----
-
-# 5. NEXT-GENERATION SYSTEM REDESIGN (CRITICAL OUTPUT)
+## 5. NEXT-GENERATION SYSTEM REDESIGN (CRITICAL OUTPUT)
 
 Design a superior version of AIPROD that transforms it into a true cinematic compilation engine.
 
-Your redesign must include:
-
-## REQUIRED ARCHITECTURE SEPARATION
+### REQUIRED ARCHITECTURE SEPARATION
 
 - Deterministic Compiler Layer (pure IR transformation, zero stochasticity)
 - Stochastic Creative Layer (LLM + generative models sandboxed)
 - Execution Control Plane (DAG scheduler + reproducibility + versioning)
 
----
-
-## REQUIRED SYSTEM COMPONENTS
+### REQUIRED SYSTEM COMPONENTS
 
 - Formal IR contract that prevents semantic drift across passes
 - DAG-based execution scheduler with explicit dependency graph
@@ -127,12 +106,9 @@ Your redesign must include:
 - Versioned cinematic compilation model (like LLVM IR but for film production)
 - Clear boundary between compile-time and runtime generation
 
----
-
-## REQUIRED OUTPUTS
-
-You must provide:
-
+─────────────────────────────────────────────
+REQUIRED OUTPUTS
+─────────────────────────────────────────────
 1. System classification (what it truly is, not what it claims to be)
 2. Critical flaws ranked by severity (S/A/B tiers)
 3. Hidden architectural contradictions (especially determinism vs stochastic hybridization)
@@ -145,13 +121,15 @@ You must provide:
    - Production-grade
    - Studio-grade (if applicable)
 
----
-
-## STRICT RULES
-
+─────────────────────────────────────────────
+CONTRAINTES ABSOLUES
+─────────────────────────────────────────────
 - Be brutally honest and technically precise
+- Cite fichier:ligne pour chaque problème identifié
 - Do NOT validate design choices unless structurally correct
 - Prioritize system truth over elegance
 - Expose contradictions explicitly
 - If the system is strong, explain exactly where it will fail at scale
 - Avoid vague feedback — only structural analysis
+- Sévérité : 🔴 critique (S) · 🟠 majeure (A) · 🟡 mineure (B)
+- Ne lis PAS les fichiers .md sauf WORKFLOW.md et lessons.md

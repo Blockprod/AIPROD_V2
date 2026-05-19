@@ -49,7 +49,7 @@ Pour la **correction d'erreurs statiques** (mypy · ruff · type errors), un pip
 | 7 | [Master](#7--master) | Audit complet toutes dimensions | Agent |
 | 8 | [IR & Maturité Conceptuelle](#8--ir--maturité-conceptuelle) | Maturité IR · Gaps architecturaux · Qualité prompt vs vrai IR · Risques à l'échelle | Agent |
 | 9 | [Fix Errors](#9--fix-errors) | Scan mypy/ruff · Plan batches · Correction · Vérification · Final QA | Agent |
-| 10 | [System Architect](#10--system-architect) | Classification système · Flaws S/A/B · Contradictions déterminisme/stochastique · Scalabilité · Redesign next-gen | Agent |
+| 10 | [System Architect](#10--system-architect) | Vérité architecturale · Gouvernance runtime · Scalabilité industrielle · Redesign next-gen | Agent |
 
 ---
 
@@ -302,7 +302,7 @@ Valide la readiness complète avant merge.
 
 ## `10 · SYSTEM ARCHITECT`
 
-> Classification système · Flaws S/A/B · Contradictions déterminisme/stochastique · Scalabilité industrielle · Redesign next-gen
+> Vérité architecturale · Déterminisme réel vs stochastique · Gouvernance runtime · Scalabilité industrielle · Redesign next-gen
 
 **Produit A** : `tasks/audits/resultats/audit_system_architect_aiprod.md`
 
