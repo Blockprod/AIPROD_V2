@@ -1,455 +1,592 @@
 ---
-type: audit
 audit: system_architect
-projet: AIPROD_V2
-modele: sonnet-4.6
-creation: 2026-05-19 à 15:25
-derniere_revision: 2026-05-19
+version: 1.0
+date: 2026-05-19
+modele: claude-sonnet-4.6
+perimetre: aiprod_adaptation/ · pipeline/ · production/
 ---
 
 # AUDIT SYSTEM ARCHITECT — AIPROD_V2
-## Reverse-engineering de l'exécution réelle du pipeline cinématique
+## Deep Architectural Analysis — Cinematic Compiler Pipeline
+
+> Produit par : `tasks/audits/code/audit_system_architect_prompt.md`
+> Codebase explorée : `C:\Users\averr\AIPROD_V2` (commit `aa68ab2`)
 
 ---
 
-## CLASSIFICATION SYSTÈME (VÉRITÉ D'EXÉCUTION)
+## CLASSIFICATION SYSTÈME (VERDICT PRÉALABLE)
 
-**Ce que le système prétend être :** un compilateur cinématique déterministe (texte → IR structuré).
+**Ce système est** : un **compilateur cinématographique déterministe hybridé** avec une couche générative optionnelle et un runtime d'orchestration de production.
 
-**Ce que le système EST réellement :**
+Il ne se comporte pas comme un pipeline naïf. Il ne se comporte pas comme un système agent pur. Il se comporte comme **un compilateur à passes multiples avec un backend génératif sandboxé et un système d'orchestration de production séparé**.
 
-> Un compilateur déterministe à 4 passes (Pass1–Pass4) embarqué dans une enveloppe d'orchestration stochastique multi-backends non gouvernée.
-
-Plus précisément :
-
-| Couche | Nature réelle | Déterminisme |
-|---|---|---|
-| Pass1 `segment()` | Compilateur pur — règles R01–R12, zéro état externe | ✅ byte-level |
-| Pass2 `visual_rewrite()` | Compilateur pur — tables de règles, zéro LLM | ✅ byte-level |
-| Pass3 `simplify_shots()` | Compilateur pur — plans déclaratifs, résolution déterministe | ✅ byte-level |
-| Pass4 `compile_episode()` | Compilateur + rule engine (9 règles P1–P5) | ✅ byte-level |
-| `engine.py` mode `generative` | Agent LLM déguisé en pipeline | ❌ stochastique |
-| `engine.py:_enrich_script_scenes()` | Pass implicite hors contrat (heuristiques inline) | ✅ mais invisible |
-| `EpisodeScheduler` | Orchestrateur séquentiel API payantes | ❌ stochastique |
-| `gen_shots_v4.py` | Orchestrateur subprocess sans DAG | ⚠️ linéaire |
-| Adapters image/vidéo/audio | 10+ APIs externes | ❌ stochastique |
-
-Le système possède **trois orchestrateurs distincts** pour la même production, sans plan de contrôle unifié :
-1. `engine.py:run_pipeline()` — pour le core Pass1–Pass4
-2. `cli.py schedule → EpisodeScheduler` — pour la génération image/vidéo/audio
-3. `production/gen_shots_v4.py` — pour le rendu frame-par-frame EP01
-
-Ces trois orchestrateurs ne partagent ni état, ni trace, ni contrat de versioning.
+Analogie exacte :
+```
+AIPROD_V2 ≅ LLVM (IR compiler) + CMake (build orchestration) + CUDA runtime (stochastic execution)
+                ↑ deterministic           ↑ production scripting      ↑ GPU/API calls
+```
 
 ---
 
-## 1. ANALYSE ARCHITECTURALE — VÉRITÉ D'EXÉCUTION
+## 1. ANALYSE DE VÉRITÉ ARCHITECTURALE
 
-### Graphe de contrôle réel
+### 1.1 Graphe de contrôle réel
 
 ```
-INPUT TEXT
-   │
-   ├─[mode=deterministic]──────────────────────────────────────────┐
-   │                                                                │
-   ├─[type=script]──► _enrich_script_scenes()  ◄── PASS CACHÉE   │
-   │                  (heuristiques inline,                        │
-   │                   mimique P1+P2 sans passer par P1/P2)        │
-   │                          │                                     │
-   │  [type=novel]            ▼                                     │
-   │     │           VisualScene[] (P2 output simulé)               │
-   │     ▼                    │                                     │
-   │  segment()  ──►  visual_rewrite()                              │
-   │  [PASS 1]        [PASS 2]                                      │
-   │                          │                                     │
-   └────────────────────────► │                                     │
-                              ▼                                     │
-                     StoryValidator.validate_all()                  │
-                     [LLM optionnel en mode auto]                   │
-                              │                                     │
-                              ▼                                     │
-                     simplify_shots()                               │
-                     [PASS 3]                                       │
-                              │                                     │
-                              ▼                                     │
-                     compile_episode()                              │
-                     [PASS 4]                                       │
-                     ├─ RuleEngine × 9 règles/shot                 │
-                     ├─ ConsistencyChecker R01–R04                 │
-                     ├─ PacingAnalyzer                             │
-                     └─ PromptFinalizer                            │
-                              │                                     │
-                              ▼                                     │
-                     AIPRODOutput (Pydantic v2)                     │
-                     ◄──────────────────────────────────────────────┘
-                              │
-          ┌───────────────────┼─────────────────────┐
-          ▼                   ▼                      ▼
-  CLI pipeline          CLI schedule           gen_shots_v4.py
-  (pure IR)         (StoryboardGenerator       (subprocess chain)
-                    + VideoSequencer           Blender → Stylize
-                    + AudioSynchronizer)       → Video → QG
-                    [STOCHASTIQUE]             [SÉQUENTIEL]
+TEXT INPUT
+    │
+    ▼
+[InputClassifier.classify()]  ──────── DETERMINISTIC (regex)
+    │
+    ├─► input_type == "script"
+    │       └─► ScriptParser.parse()  ──── DETERMINISTIC
+    │               └─► list[VisualScene] (skip P1+P2)
+    │
+    └─► input_type == "novel"
+            │
+            ├─► pipeline_mode == "generative" OR "auto"
+            │       └─► StoryExtractor.extract_all(llm)  ⚠️ STOCHASTIC
+            │               └─► list[VisualScene] via LLM
+            │
+            └─► pipeline_mode == "deterministic" OR llm fallback
+                    ├─► segment(text)          [PASS 1] DETERMINISTIC
+                    └─► visual_rewrite(scenes) [PASS 2] DETERMINISTIC
+
+                            │
+                            ▼
+                    StoryValidator.validate_all()   DETERMINISTIC
+                            │
+                            ▼
+                    simplify_shots(scenes)          [PASS 3] DETERMINISTIC
+                            │
+                            ▼
+                    compile_episode(scenes, shots)  [PASS 4] DETERMINISTIC
+                    ├─► check_and_enrich()          (R01–R04)
+                    ├─► RuleEvaluator.evaluate()    (9 rules, P1–P5)
+                    ├─► ConflictResolutionEngine    (HARD/SOFT)
+                    └─► finalize_prompts()          (R05–R09)
+                            │
+                            ▼
+                    AIPRODOutput (Pydantic v2 IR)
+                            │
+            ┌───────────────┼──────────────────────┐
+            ▼               ▼                      ▼
+    image generation   video generation       post-prod exports
+    (Flux, Seedream,   (Runway, Kling,        (EDL, Resolve,
+     ComfyUI, …)        Seedance, …)           audio cues)
+    ⚠️ STOCHASTIC      ⚠️ STOCHASTIC           DETERMINISTIC
 ```
 
-### Points d'injection stochastique
+### 1.2 Où le déterminisme tient réellement
 
-| Localisation | Vecteur | Visible dans l'IR ? |
-|---|---|---|
-| `engine.py:234` — `StoryExtractor.extract_all()` | Claude/Gemini | Non — remplace Pass1+Pass2 entièrement |
-| `engine.py:264` — `StoryValidator.validate_all()` | LLM optionnel | Non — filtre des scènes sans trace |
-| `cli.py:_load_llm_adapter()` — router | Cooldown/quarantine runtime | Non |
-| `storyboard.py:StoryboardGenerator` | 9+ image APIs | Non — résultat non tracé dans l'IR |
-| `video_sequencer.py:VideoSequencer` | Runway/Kling | Non |
-| `audio_synchronizer.py:AudioSynchronizer` | ElevenLabs/OpenAI/Runway | Non |
-| `shot_pipeline_v4.py` | Replicate ControlNet ($0.04/frame) | Non |
+| Composant | Déterministe | Fichier | Preuve |
+|---|:---:|---|---|
+| Pass 1 — segmentation | ✅ | `pass1_segment.py` | Règles R01–R12, tables de phrases, zero LLM |
+| Pass 2 — visual rewrite | ✅ | `pass2_visual.py` | `EMOTION_BODY_LANGUAGE`, `EMOTION_RULES`, zero LLM |
+| Pass 3 — shot atomization | ✅ | `pass3_shots.py` | `INTENSITY_SHOT_SEQUENCES`, `CAMERA_MOVEMENT_RULES_V3` |
+| Pass 4 — rule engine | ✅ | `pass4_compile.py` + `rule_engine/` | Evaluation triée `(priority ASC, id ASC)` |
+| Conflict resolution | ✅ | `conflict_resolver.py:45–61` | `_MOVEMENT_DOWNGRADE_CHAIN` pure lookup |
+| JSON output | ✅ | `schema.py` | Pydantic v2 `.model_dump_json()` stable |
+| Métriques qualité | ✅ | `metrics/engine.py` | Formules pures, zero randomness |
 
-**Conclusion critique :** le Core IR (Pass1–Pass4) est genuinement déterministe. Mais il est **entouré d'une couche opaque stochastique** sans traçabilité, sans versioning, et sans isolation formelle.
+### 1.3 Points d'injection stochastique réels
+
+| Point d'injection | Fichier | Ligne | Contrôle |
+|---|---|:---:|---|
+| StoryExtractor LLM call | `core/adaptation/story_extractor.py` | ~L62 | Gated par `pipeline_mode != "deterministic"` |
+| ClaudeAdapter | `core/adaptation/claude_adapter.py` | L56 | Optionnel, `NullLLMAdapter` par défaut |
+| GeminiAdapter | `core/adaptation/gemini_adapter.py` | L127 | Optionnel, retry backoff exponentiel |
+| Image gen (Flux, Seedream…) | `image_gen/` adapters | — | Hors AIPRODOutput, couche production |
+| Video gen (Kling, Runway…) | `video_gen/` adapters | — | Hors AIPRODOutput, couche production |
+| ComfyUI (shot_pipeline_v4) | `pipeline/shot_pipeline_v4.py` | L174 | uuid client ID (non-IR) |
+
+**Conclusion** : Le déterminisme est **réel et correctement borné**. Les LLMs sont des entrées optionnelles dans la couche d'extraction narrative, pas des décideurs à l'intérieur du compilateur IR. La frontière `pipeline_mode` est le vrai garde-fou.
 
 ---
 
 ## 2. ZONES DE FAIBLESSE STRUCTURELLE
 
-### Flaw S1 — La Pass Cachée (Sévérité : CRITIQUE)
+### 🔴 S-01 — Coupling VisualBible × 4 passes simultanées
+**Sévérité : S (critique)**
 
-`engine.py:_enrich_script_scenes()` est une **cinquième passe non documentée** qui s'applique uniquement aux inputs de type `script`. Elle reconstruit manuellement `beat_type`, `action_intensity`, `emotional_beat_index`, `continuity_flags`, `reference_location_id` via des heuristiques inline (`_EMOTION_TO_BEAT`, `_ACTION_KEYWORDS_HIGH/MID`, `_beat_from_position()`).
+`VisualBible` est injectée dans les 4 passes sans contrat formel :
+- `pass1_segment.py:L285–316` : slug matching
+- `pass2_visual.py:L465–477` : wardrobe + lighting fragments
+- `pass3_shots.py:L198–210` : lighting directives + composition
+- `pass4_compile.py (prompt_finalizer.py:L61–98)` : prompt enrichment
 
-**Problème structurel :**
-- Cette passe ne passe PAS par `segment()` ni `visual_rewrite()` — elle bypasse le contrat de validation de Pass1 et Pass2
-- Elle produit un `VisualScene[]` **sans que `_validate_pass2_output()` soit appelé**
-- Les heuristiques inline (lignes 61–147 de `engine.py`) dupliquent la logique des règles R01–R12 sans partager de code
-- Résultat : deux code paths vers Pass3 avec des garanties différentes, invisible à l'extérieur
+**Problème** : Si une entrée VisualBible change (format, champ manquant, slug renommé), la propagation du bug est silencieuse. Il n'y a pas de contrat de version sur `VisualBible`. Un slug modifié en P1 produit `reference_anchor_strength = 0.5` au lieu de `0.9` en P3 — dégradation qualité non détectée.
 
-### Flaw S2 — IR TypedDict avec 17 champs NotRequired (Sévérité : ÉLEVÉE)
+**Preuve** : `pass3_shots.py` ligne ~L603 :
+```python
+anchor_strength: float = 0.9 if reference_location_id else 0.5
+```
+Un slug manquant tombe en silence à 0.5. Aucun warning. Aucune erreur.
 
-`VisualScene` possède 17 champs `NotRequired`. Pass3 y accède via `.get()` avec des valeurs par défaut silencieuses :
+---
+
+### 🔴 S-02 — TypedDict NotRequired = surface d'erreur silencieuse
+**Sévérité : S (critique)**
+
+`CinematicScene`, `VisualScene`, `ShotDict` utilisent des `TypedDict` avec `NotRequired`. Les passes suivantes accèdent à ces champs via `.get()` avec fallback :
 
 ```python
-action_intensity: str | None = scene.get("action_intensity")   # → None si absent
-emotional_layer: str | None  = scene.get("emotional_layer")    # → None si absent
-beat_type: str | None        = scene.get("beat_type")          # → None si absent
+# pass3_shots.py ~L580
+beat_type:      str | None = scene.get("beat_type")
+action_intensity: str | None = scene.get("action_intensity")
+emotional_layer:  str | None = scene.get("emotional_layer")
 ```
 
-**Problème :** Pass3 opère en **mode dégradé silencieux** quand les champs cinématiques sont absents. Il n'y a aucune distinction au niveau du type entre un `VisualScene` produit par Pass2 (complet) et un `RawScene` minimal compatible. La dégradation est invisible dans les logs et les tests.
+**Problème** : Si Pass 2 ne produit pas `action_intensity` (bug, edge case), Pass 3 reçoit `None`, et les lookups dans `INTENSITY_SHOT_SEQUENCES[(beat_type, action_intensity)]` dégradent silencieusement vers les fallbacks. Pas d'exception, pas de log — comportement altéré non détectable.
 
-Le contrat de données inter-passes est un **contrat de type**, non un **contrat sémantique**. Nos additions A1/A2 commencent à corriger ce point mais ne couvrent pas tous les chemins (notamment la pass cachée).
-
-### Flaw S3 — Fausse Modularité des Adapters (Sévérité : MOYENNE)
-
-Chaque adapter (image, vidéo, audio) implémente une interface ABC. En apparence propre. Mais :
-
-- `_load_image_adapter()` dans `cli.py` contient 9 branches `if/elif` avec instanciation directe — couplage fort entre CLI et implémentations concrètes
-- `SmartVideoRouter` (video_gen) prend des décisions runtime de composition Runway/Kling — logique d'orchestration embarquée dans un adapter
-- Les coûts sont hardcodés dans `cli.py` (`_DRY_RUN_COST_PER_SHOT`, etc.) — pas dans les adapters eux-mêmes — rupture du principe d'encapsulation
-
-### Flaw S4 — Explosion de Complexité dans les Tables de Règles (Sévérité : MOYENNE)
-
-La logique cinématique est dispersée dans 11 fichiers de règles :
-
-| Fichier | Rôle |
-|---|---|
-| `body_language_rules.py` | Templates corps × émotion × tier |
-| `cinematography_rules_v3.py` | Séquences shots |
-| `dop_style_rules.py` | Mapping beat/émotion/ton |
-| `duration_rules.py` | Durées par beat+intensité |
-| `emotion_rules.py` | Détection émotion |
-| `visual_transformation_rules_v3.py` | Actions visuelles |
-| + 5 autres | ... |
-
-Ajouter une nouvelle émotion implique de modifier **4 à 6 fichiers simultanément** sans outil de cohérence. Il n'y a pas de source de vérité unique pour le vocabulaire émotionnel du système.
-
-### Flaw S5 — SeasonCoherenceTracker hors contrat Pydantic (Sévérité : FAIBLE)
-
-`season/models.py` utilise des `dataclass` Python natifs, pas Pydantic, contrairement au reste du système. Il n'y a pas de validation des contraintes sur `mean_feasibility_score`, `consistency_score`, etc. Divergence de contrat non détectée.
-
-### Zone de Debugging Théoriquement Impossible
-
-Scénario : un shot en sortie de `gen_shots_v4.py` a un prompt incohérent avec le `storyboard.json`. Retracer l'origine :
-
-1. Le shot vient de `storyboard.json` → lequel vient de `CLI schedule` → qui appelle `StoryboardGenerator`
-2. `StoryboardGenerator` appelle l'image adapter → résultat non tracé dans l'IR
-3. Le prompt a été modifié par `PromptFinalizer` en Pass4 → enrichissement non versionné
-4. La scène d'origine peut avoir été produite par `_enrich_script_scenes()` → pass cachée
-
-**Aucun mécanisme ne permet de rejouer un run identique** ni de pinpointer la transformation fautive.
+**Note** : Le `_validate_pass2_output()` ajouté en session courante atténue ce risque pour `action_intensity`, `emotion`, `emotional_beat_index`, `body_language_states`. Mais les autres champs `NotRequired` restent sans contrat.
 
 ---
 
-## 3. ANALYSE GOUVERNANCE ET FLUX DE CONTRÔLE
+### 🟠 A-01 — VisualBible est un singleton implicite partagé
+**Sévérité : A (majeure)**
 
-### Qui est le vrai orchestrateur ?
+`VisualBible` est passé comme argument optionnel à chaque passe. Si `visual_bible=None`, les enrichissements sont silencieusement skippés avec des résultats dégradés. Il n'existe pas de "VisualBible vide" explicite — la distinction `None` vs `VisualBible({})` n'est pas formalisée.
 
-| Scénario | Orchestrateur effectif | Nature |
-|---|---|---|
-| `python main.py` | `engine.py:run_pipeline()` | Compilateur pur |
-| `aiprod schedule --input ...` | `cli.py → EpisodeScheduler` | Séquenceur API |
-| `python production/gen_shots_v4.py --all` | `gen_shots_v4.py` | Subprocess runner |
-
-**Trois orchestrateurs distincts, zéro état partagé, zéro protocole commun.**
-
-### DAG ou illusion linéaire ?
-
-Le système prétend être un pipeline en passes. En réalité :
-
-- **Pass1→Pass2→Pass3→Pass4 :** vrai DAG (données uniquement, pas de boucles) ✅
-- **EpisodeScheduler :** séquenceur linéaire avec NullBackend fallback implicite ⚠️
-- **gen_shots_v4.py :** boucle `for shot_id in shot_ids:` — linéaire, bloquante, zero parallelisme ❌
-
-Il n'existe pas de **graphe d'exécution déclaratif**. Le DAG est implicite dans le code, non matérialisé comme structure de données.
-
-### Gouvernance runtime manquante
-
-| Fonctionnalité | Statut |
-|---|---|
-| Versioning des sorties IR par pass | ❌ Absent |
-| Trace ID par run (corrélation cross-pass) | ❌ Absent |
-| Rollback d'une passe | ❌ Absent (checkpoint only tracks "processed") |
-| Replay déterministe d'un run complet | ❌ Impossible (inputs LLM/API non archivés) |
-| Hash de validation du contrat IR entre passes | ❌ Absent |
-| Mode lock (prevent accidental stochastic execution) | ⚠️ Partiel (mode="deterministic" flag mais non enforced at runtime) |
-| Audit log des mutations par rule engine | ✅ Présent (RuleEngineReport) — mais non persisté |
+**Impact à l'échelle** : Avec 10 épisodes en parallèle, chaque run pourrait utiliser une version différente de VisualBible (si mutée entre runs). Pas de versioning.
 
 ---
 
-## 4. ANALYSE SCALABILITÉ ET DÉFAILLANCES INDUSTRIELLES
+### 🟠 A-02 — Règles métier dispersées dans 6 modules
+**Sévérité : A (majeure)**
 
-### 1 épisode → 10 épisodes
+Les règles cinématographiques sont réparties dans :
+- `pass1_segment.py` : R01–R12 (segmentation rules)
+- `pass2_visual.py` : `EMOTION_RULES`, `EMOTION_BODY_LANGUAGE`, `SCENE_TYPE_ACTION_MODIFIERS`
+- `pass3_shots.py` : `INTENSITY_SHOT_SEQUENCES`, `CAMERA_MOVEMENT_RULES_V3`, `FEASIBILITY_BASE_SCORES`
+- `pass4_compile.py` → `rule_engine/builtin_rules.py` : 9 règles P1–P5
+- `global_coherence/consistency_checker.py` : R01–R04
+- `global_coherence/prompt_finalizer.py` : R05–R09
 
-| Point de rupture | Impact |
-|---|---|
-| `SeasonCoherenceTracker` — state en mémoire uniquement | Perte état entre runs |
-| Visual Bible — fichier JSON unique partagé | Contention R/W en équipe |
-| `storyboard.json` — output monolithique | Merge conflicts en équipe |
-| Rule engine — O(shots × rules) par épisode | Acceptable à 35 shots, linéaire à 350 |
-| Checkpoint — liste JSON de shot_ids | Aucune validation d'intégrité |
-| metrics_v4.jsonl — append sans rotation | Croissance illimitée |
-
-### 35 shots → 10 000 shots
-
-| Point de rupture | Impact | Complexité |
-|---|---|---|
-| `gen_shots_v4.py` — subprocess séquentiel | 10 000 shots × ~3min = 500h CPU | O(n) mais non parallélisable |
-| Replicate API — zero concurrence | ~$400 + queue rate-limit | Bloquant |
-| ComfyUI — single request | ~250h de rendu GPU | Bloquant |
-| Checkpoint JSON — lecture complète à chaque shot | O(n²) total I/O | Critique à >1000 shots |
-| `_count_frames()` — `glob("frame_*.png")` par shot | O(shots × frames) à chaque run | Coûteux |
-
-**Coût réel à 10 000 shots (Replicate) :**
-- ~85 frames/shot moyen × $0.04 = **$34 000** — aucun mécanisme de batch discount ni de cache d'images similaires
-
-### Développeur seul → Studio (équipe)
-
-| Point de rupture | Impact |
-|---|---|
-| CLI-only, pas d'API REST | Impossible à intégrer dans des workflows studio |
-| Checkpoint — aucun lock fichier | Corruption si deux processus tournent en parallèle |
-| storyboard.json — pas de namespace multi-utilisateur | Collision de shot_id entre projets |
-| Secrets — `.env` fichier plat | Non compatible avec secrets management (Vault, etc.) |
-| Aucune interface de monitoring | Impossible de suivre N runs simultanés |
-
-### Dégradation silencieuse de qualité à l'échelle
-
-1. **Drift émotionnel** : `emotion` détectée en Pass1 par first-match keyword, sans contextualisation narrative. À grande échelle, des scènes complexes auront des émotions mal classifiées, propageant silencieusement de mauvais paramètres corps/pose en Pass2 et Pass3.
-
-2. **Feasibility score falsement élevé** : `_compute_feasibility_score()` en Pass3 est un calcul de table (shot_type × camera_movement × intensity). Il ne tient pas compte des contraintes de continuité inter-shots — un score de 80 par shot ne garantit pas la cohérence de séquence.
-
-3. **PromptFinalizer sans validation sémantique** : `finalize_prompts()` enrichit les prompts avec des invariants visuels sans vérifier la compatibilité sémantique. À 10 000 shots, des combinaisons conflictuelles passeront inaperçues.
+**Problème** : Modifier une règle cinématographique (ex: "une scène de climax devrait toujours avoir un plan large d'ouverture") nécessite de chercher dans 6 fichiers. Il n'y a pas de registre de règles unifié. Cela produit de la fausse modularité — les passes semblent indépendantes mais partagent les mêmes domaines de règles.
 
 ---
 
-## 5. ARCHITECTURE NEXT-GENERATION — REDESIGN
+### 🟠 A-03 — Fausse modularité : pass3_shots.py intègre de la logique P4
+**Sévérité : A (majeure)**
 
-### Séparation requise en 3 couches formelles
+`pass3_shots.py` contient :
+- `resolve_lens_mm()` — logique de direction photographique
+- `resolve_color_grade()` — logique de post-production
+- `_resolve_lighting_directive()` — logique de direction artistique
 
+Ces fonctions appartiennent conceptuellement à la couche P4 (compilation épisode + VisualBible enrichment), mais sont exécutées en P3. La conséquence : un changement de règle de `color_grade` pour une tonalité de scène doit être fait dans `pass3_shots.py`, pas dans `pass4`.
+
+---
+
+### 🟡 B-01 — ScriptParser bypasse P1+P2 sans vérification de contrat
+**Sévérité : B (mineure)**
+
+Quand `input_type == "script"`, `engine.py:L229` appelle `ScriptParser.parse()` qui retourne directement `list[VisualScene]`, skippant Pass 1 et Pass 2 complètement. `_validate_pass2_output()` n'est jamais appelé sur ce chemin. Les champs P2 (`physical_actions`, `body_language_states`, `emotional_beat_index`) peuvent être absents ou incorrects sans détection.
+
+---
+
+### 🟡 B-02 — LLMRouter : cooldown global, pas par endpoint
+**Sévérité : B (mineure)**
+
+`llm_router.py:L153–178` implémente un cooldown global par provider. Si Claude rate sur une requête longue (timeout réseau), il est mis en cooldown pour 300 secondes — même pour des requêtes courtes qui auraient réussi. Pas de distinction par type de request/endpoint.
+
+---
+
+## 3. ANALYSE GOUVERNANCE & FLUX DE CONTRÔLE
+
+### 3.1 Y a-t-il un vrai control plane ?
+
+**Réponse courte : non — il y a une orchestration séquentielle linéaire, pas un control plane.**
+
+`engine.py:run_pipeline()` est le "chef d'orchestre" actuel. Il fait :
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│  LAYER 1 — DETERMINISTIC COMPILER                                   │
-│  ──────────────────────────────                                     │
-│  Input: raw text | fountain script | fountain XML                   │
-│                                                                     │
-│  IR₀: RawText                                                       │
-│    │  [Pass1: segment()] + hash(IR₀→IR₁)                          │
-│  IR₁: CinematicScene[]                                             │
-│    │  [Pass2: visual_rewrite()] + hash(IR₁→IR₂)                   │
-│  IR₂: VisualScene[]                                                │
-│    │  [Pass3: simplify_shots()] + hash(IR₂→IR₃)                   │
-│  IR₃: ShotDict[]                                                   │
-│    │  [Pass4: compile_episode()] + hash(IR₃→IR₄)                  │
-│  IR₄: AIPRODOutput (Pydantic v2, sealed)                           │
-│                                                                     │
-│  Invariants :                                                       │
-│  • Chaque IRₙ est sérialisé + hashé (SHA-256) avant de passer     │
-│  • Aucun appel LLM/API dans cette couche                           │
-│  • Chaque passe expose un PassContract (champs requis en sortie)   │
-│  • _enrich_script_scenes() devient Pass0 (explicite, tracée)       │
-└─────────────────────────────────────────────────────────────────────┘
-                               │ IR₄ sealed + run_id
-                               ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│  LAYER 2 — STOCHASTIC CREATIVE LAYER (sandboxed)                   │
-│  ───────────────────────────────────────────────                    │
-│  Input: IR₄ sealed + run_id                                        │
-│                                                                     │
-│  ┌─────────────────────────────────────────────────────┐           │
-│  │ Image Worker Pool (N workers, async)                 │           │
-│  │  • character_prepass (1 job/character)              │           │
-│  │  • per-shot stylization (N jobs, parallel)          │           │
-│  └─────────────────────────────────────────────────────┘           │
-│                                                                     │
-│  ┌─────────────────────────────────────────────────────┐           │
-│  │ Video Worker Pool                                    │           │
-│  │  • per-shot clip generation                         │           │
-│  └─────────────────────────────────────────────────────┘           │
-│                                                                     │
-│  ┌─────────────────────────────────────────────────────┐           │
-│  │ Audio Worker Pool                                    │           │
-│  │  • TTS per dialogue line                            │           │
-│  │  • Score/SFX per scene                             │           │
-│  └─────────────────────────────────────────────────────┘           │
-│                                                                     │
-│  Invariants :                                                       │
-│  • Chaque résultat est associé au run_id + shot_id                 │
-│  • Les seeds sont déterministes (extraits de l'IR₄)                │
-│  • Les réponses API sont archivées (résultat binaire + metadata)    │
-│  • Aucune mutation de IR₄ dans cette couche                        │
-└─────────────────────────────────────────────────────────────────────┘
-                               │ results + run_id
-                               ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│  LAYER 3 — EXECUTION CONTROL PLANE (MANQUANT ACTUELLEMENT)         │
-│  ────────────────────────────────────────────────────────           │
-│                                                                     │
-│  AIPRODExecutor                                                     │
-│  ├── DAGScheduler                                                   │
-│  │   • Graphe d'exécution déclaratif (nodes = pass outputs)        │
-│  │   • Dépendances explicites (shot B dépend de character_prepass) │
-│  │   • Parallélisme Layer 2 (async workers, N concurrent shots)    │
-│  │                                                                  │
-│  ├── ExecutionStore (SQLite ou fichier JSONL indexé)               │
-│  │   • run_id UUID + timestamp + mode + input_hash                 │
-│  │   • IR snapshot par passe (IR₁, IR₂, IR₃, IR₄)                │
-│  │   • hash chain validation (IR₀ → ... → IR₄)                    │
-│  │   • résultats Layer 2 associés au run_id                        │
-│  │                                                                  │
-│  ├── ReplayEngine                                                   │
-│  │   • Rejouer depuis IRₙ d'un run précédent                      │
-│  │   • Partial replay (re-stylize shot X uniquement)               │
-│  │   • Diff entre deux runs (IR₄ A vs IR₄ B)                      │
-│  │                                                                  │
-│  ├── BudgetController                                               │
-│  │   • Cap configurable par couche (image, vidéo, audio)           │
-│  │   • Estimation upfront depuis IR₄ (frame count × coût)         │
-│  │   • Circuit breaker (arrêt si dépassement mid-run)              │
-│  │                                                                  │
-│  └── ModeEnforcer                                                   │
-│      • DETERMINISTIC_ONLY — Layer 2 désactivée                    │
-│      • CREATIVE_ONLY — Layer 1 skip si IR₄ déjà en store          │
-│      • HYBRID — orchestration explicite des deux couches           │
-└─────────────────────────────────────────────────────────────────────┘
+classify → [LLM extract | segment → visual_rewrite] → validate → simplify_shots → compile_episode
 ```
 
-### Composants requis (détail)
+C'est une **chaîne séquentielle linéaire**, pas un DAG. Il n'y a pas de :
+- Dépendances explicites entre passes (graphe)
+- Rollback sur échec de passe
+- Cache intermédiaire (si P3 échoue, il faut re-exécuter P1+P2)
+- Versioning de l'IR entre passes
+- Replay d'une passe isolée
 
-#### PassContract formel
+### 3.2 Qui est le vrai orchestrateur ?
 
-Remplacer les TypedDict NotRequired par un contrat de sortie validé :
+| Contexte | Orchestrateur |
+|---|---|
+| Text → AIPRODOutput (IR) | `engine.py:run_pipeline()` |
+| AIPRODOutput → shots stylisés | `production/gen_shots_v4.py:run_all()` |
+| Shot → clip vidéo | `pipeline/shot_pipeline_v4.py` |
+| Clip → épisode assemblé | `pipeline/assembly.py` |
+
+**Problème** : Ces 4 orchestrateurs sont **découplés**. Il n'existe pas de coordinateur qui les lie. Si `run_all()` est interrompu à mi-chemin, le checkpoint reprend depuis le dernier shot — mais aucun mécanisme ne vérifie que l'IR `AIPRODOutput` n'a pas changé entre les runs.
+
+### 3.3 DAG ou illusion linéaire ?
+
+**Illusion linéaire.** L'exécution est P1→P2→P3→P4 sans dépendances déclarées. En réalité :
+
+- P3 dépend de P2 (via `visual_actions`, `emotion`, `action_intensity`)
+- P4 dépend de P3 (via `feasibility_score`, `reference_anchor_strength`)
+- P4/prompt_finalizer dépend de VisualBible (external state)
+- gen_shots_v4 dépend de AIPRODOutput **et** de Blender renders **et** des frames PNG
+
+Ces dépendances existent mais ne sont pas modélisées. Un DAG formel exposerait :
+```
+text → P1 → P2 → P3 → P4 → AIPRODOutput
+                              ↓
+              VisualBible ──→ P4/prompt_finalizer
+              Blender ──────→ gen_shots_v4/stylize
+              ComfyUI ───────→ gen_shots_v4/stylize
+```
+
+### 3.4 Gouvernance runtime manquante (classée par priorité)
+
+| Manque | Impact | Coût d'implémentation |
+|---|---|:---:|
+| **IR versioning** : aucune version sur AIPRODOutput entre runs | Si `storyboard.json` change, les runs précédents sont invalides sans le savoir | Moyen |
+| **Execution trace** : aucun log structuré des décisions de passes | Debugging d'une anomalie shot requiert relancer le pipeline complet | Faible |
+| **Inter-pass cache** : P1/P2 recalculés même si text n'a pas changé | Coût CPU inutile en développement itératif | Faible |
+| **Rollback de shot** : un shot KO quality gate → re-run sans reprendre depuis P3 | Shot échoué = re-run complet du pipeline de stylisation | Élevé |
+| **Dry-run IR only** : pas de mode "compile sans générer" différent du null backend | `--backend null` simule le chemin mais ne produit pas de vrai coût | Faible |
+
+---
+
+## 4. ANALYSE SCALABILITÉ & DÉFAILLANCES INDUSTRIELLES
+
+### 4.1 1 épisode → 10 épisodes
+
+**Ce qui casse :**
+
+🔴 **Cohérence inter-épisodes** : `consistency/asset_registry.py` et `season/` existent mais la cohérence saisonnière n'est pas vérifiée automatiquement dans le pipeline de production (`gen_shots_v4.py` ne consulte pas le `SeasonEngine`). La cohérence saison est une couche optionnelle déconnectée du runtime.
+
+🟠 **VisualBible partagée** : Avec 10 épisodes, la VisualBible évolue (nouveaux personnages, nouvelles locations). Si le slug d'une location change entre EP01 et EP05, les `reference_location_id` des épisodes précédents sont silencieusement invalides.
+
+🟠 **Checkpoint unique** : `checkpoint_v4.json` est un fichier plat. Avec 10 épisodes × 35 shots = 350 shots, les collisions de checkpoint entre workers parallèles sont possibles.
+
+### 4.2 35 shots → 10 000 shots
+
+**Ce qui casse :**
+
+🔴 **Séquentialité forcée de gen_shots_v4** : `run_all()` est une boucle `for shot_id in shot_ids`. Zéro parallélisme. 10 000 shots × ~30s/shot (Blender + ComfyUI) = ~83 heures de rendu séquentiel.
+
+🔴 **Budget cap pré-exécution non scalable** : Le guard pre-loop fait `_count_frames()` pour **tous** les shots restants avant de commencer. Pour 10 000 shots × `os.listdir()` = 10 000 appels filesystem. Coût O(n) avant premier shot.
+
+🔴 **AIPRODOutput non streamable** : L'IR entier est chargé en mémoire d'un coup. Pour 10 000 shots × ~5KB/shot de métadonnées Pydantic = ~50MB — acceptable maintenant, problématique à 100K shots.
+
+🟠 **metrics_v4.jsonl** : Écriture en append, pas d'index. Relire `metrics_v4.jsonl` pour trouver les shots KO quality gate = scan linéaire O(n).
+
+🟠 **ComfyUI polling synchrone** : `shot_pipeline_v4.py` poll ComfyUI avec `time.sleep(2)` entre requêtes. 10 000 shots × polling overhead = gaspillage significatif de temps.
+
+### 4.3 Développeur solo → équipe studio
+
+**Ce qui casse :**
+
+🔴 **Pas de locking sur storyboard.json** : Si deux développeurs modifient `storyboard.json` simultanément, les merges Git sont manuels. Pas de système de verrouillage de production.
+
+🔴 **Pas de séparation dev/prod des configurations** : `_BUDGET_ALERT_USD = 250.0` est hardcodé. Pas de profils d'environnement. Un développeur qui teste peut déclencher 250$ de coûts Replicate par inadvertance.
+
+🟠 **Rule engine non extensible sans code** : Ajouter une nouvelle règle cinématographique nécessite de modifier `builtin_rules.py` (code Python). Dans un studio, les DoP/superviseurs VFX ne peuvent pas contribuer des règles sans développeur.
+
+🟠 **Pas de visualisation du graphe de décision** : Quand un shot a `feasibility_score < 40` et que le camera_movement est dégradé vers `static`, il n'y a pas de rapport lisible pour le réalisateur. `RuleEngineReport` existe mais n'est pas rendu en format humain.
+
+### 4.4 Zones de coût exponentiel
+
+| Zone | Cause | Coût actuel | À 100 épisodes |
+|---|---|---|---|
+| Image gen (Replicate) | 0.04$/frame × frames | $139.20/EP01 | ~$13,920 |
+| Re-génération IR | Pas de cache P1-P4 | CPU only | ~50× si itératif |
+| Quality gate re-runs | Shot KO = re-stylize complet | 1 shot coût | ×3–5 si KO rate = 20% |
+| VisualBible enrichment | O(shots × characters × locations) | Négligeable | Quadratique si non indexé |
+
+### 4.5 Ce qui ne peut pas être parallélisé
+
+- **Passes P1→P4** : séquentielles par design (P2 dépend P1, etc.)
+- **180-degree guard** (P3) : dépend de l'ordre des shots dans la scène
+- **ConflictResolutionEngine** : dépend de l'ordre d'évaluation des règles
+- **Checkpoint I/O** : écriture fichier unique non thread-safe
+
+### 4.6 Dégradation silencieuse de la qualité à l'échelle
+
+**Cas le plus dangereux :** `reference_anchor_strength` tombe à `0.5` si un slug VisualBible n'est pas trouvé. À l'échelle, si 40% des shots ont des slugs invalides, l'ensemble du rendu a `reference_anchor_strength = 0.5` sans aucune alerte. Le résultat visuel perd la cohérence de référence DoP sans que personne ne le sache.
+
+---
+
+## 5. REDESIGN NEXT-GENERATION
+
+### 5.1 Architecture cible (AIPROD_V3 conceptuel)
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                     AIPROD CONTROL PLANE v1                             │
+│  (DAG scheduler · IR versioning · Execution trace · Mode governance)    │
+└──────────────────────────┬──────────────────────────────────────────────┘
+                           │ orchestrates
+         ┌─────────────────┼──────────────────────┐
+         ▼                 ▼                      ▼
+┌────────────────┐  ┌─────────────────┐  ┌────────────────────────┐
+│  COMPILER      │  │  CREATIVE       │  │  PRODUCTION            │
+│  LAYER (pure)  │  │  SANDBOX        │  │  RUNTIME               │
+│                │  │  (gated)        │  │  (orchestration)       │
+│  Pass 1–4      │  │                 │  │                        │
+│  Rule Engine   │  │  LLM adapters   │  │  Blender render        │
+│  VisualBible   │  │  Image gen      │  │  ComfyUI/Replicate     │
+│  Metrics       │  │  Video gen      │  │  FFmpeg assembly       │
+│  Quality Gate  │  │  Audio gen      │  │  Quality gate          │
+│                │  │                 │  │                        │
+│  ZERO APIs     │  │  ALL stochastic │  │  DAG-scheduled         │
+│  ZERO I/O      │  │  SANDBOXED      │  │  checkpoint-aware      │
+│  ZERO time     │  │  versioned      │  │  budget-gated          │
+└────────┬───────┘  └────────┬────────┘  └───────────┬────────────┘
+         │                   │                        │
+         └───────────────────┴────────────────────────┘
+                             │
+                    ┌────────▼────────┐
+                    │  VERSIONED IR   │
+                    │  AIPRODOutput   │
+                    │  v{hash}        │
+                    │  + trace log    │
+                    └─────────────────┘
+```
+
+### 5.2 Composants requis (par priorité)
+
+#### PRIORITÉ 1 — Contrat IR formel avec versioning (faible coût, impact élevé)
 
 ```python
 @dataclass(frozen=True)
-class Pass2Contract:
-    """Contrat de sortie garanti de visual_rewrite()."""
-    scene_id: str
-    emotion: str                    # non-vide, valeur canonique
-    action_intensity: Literal["subtle", "mid", "explosive"]
-    emotional_beat_index: float     # ∈ [0.0, 1.0]
-    visual_actions: list[str]       # len ≥ 1
-    body_language_states: list[BodyLanguageState]  # len ≥ 1 si characters non-vide
-    pass_hash: str                  # SHA-256 de la sérialisation
+class IRVersion:
+    compiler_version: str    # "3.1.0"
+    visual_bible_hash: str   # sha256 du JSON VisualBible
+    rules_hash: str          # sha256 de builtin_rules.py + rule tables
+    text_hash: str           # sha256 du texte source
 
-# Pass3 reçoit list[Pass2Contract], plus list[VisualScene] avec get() silencieux
+class AIPRODOutput(BaseModel):
+    ir_version: IRVersion    # Nouveau champ
+    # ... champs existants
 ```
 
-#### DAG déclaratif minimal
+**Bénéfice** : Détecter automatiquement quand un re-run de production utilise un IR obsolète (VisualBible modifiée, règles changées).
+
+#### PRIORITÉ 2 — Execution trace par shot (faible coût, debugging x10)
 
 ```python
-dag = ExecutionDAG()
-dag.add_node("pass1", fn=segment, inputs=["raw_text"])
-dag.add_node("pass2", fn=visual_rewrite, inputs=["pass1.output"])
-dag.add_node("pass3", fn=simplify_shots, inputs=["pass2.output"])
-dag.add_node("pass4", fn=compile_episode, inputs=["pass2.output", "pass3.output"])
-dag.add_node("char_prepass", fn=character_prepass, inputs=["pass4.output"],
-             parallel=True, workers=4)
-dag.add_node("stylize", fn=stylize_frames, inputs=["char_prepass.output"],
-             parallel=True, workers=N, depends_on=["char_prepass"])
-dag.execute(run_id=uuid4(), mode=ModeEnforcer.HYBRID)
+@dataclass
+class ShotTrace:
+    shot_id: str
+    pass3_rules_fired: list[str]      # ex: ["INTENSITY_SHOT_SEQUENCES:climax+explosive"]
+    pass4_rules_resolved: list[str]   # ex: ["CHR-01: crane_up→tilt_up"]
+    visual_bible_injections: list[str]
+    anchor_strength_resolved: float
+    feasibility_raw: int
+    final_camera_movement: str        # après résolution
+    drift_detected: bool              # emotional_beat_index vs final emotion
 ```
 
-### Modèle de cycle de vie d'exécution (step-by-step)
+**Bénéfice** : Quand un shot produit un résultat inattendu, la trace permet de remonter à la règle exacte sans re-run.
+
+#### PRIORITÉ 3 — DAG explicite pour gen_shots_v4 (coût moyen, scalabilité ×N)
+
+Remplacer la boucle linéaire `for shot_id in shot_ids` par un graphe de dépendances :
+
+```python
+dag = ProductionDAG()
+for shot in shots:
+    blender_node = dag.add(BlenderRenderTask(shot))
+    stylize_node = dag.add(StyleTask(shot), depends_on=[blender_node])
+    video_node   = dag.add(VideoTask(shot),  depends_on=[stylize_node])
+    qg_node      = dag.add(QGTask(shot),     depends_on=[video_node])
+
+dag.execute(max_parallel=4, budget_cap=args.budget_cap)
+```
+
+**Bénéfice** : Blender renders de shots indépendants en parallèle. À 4 workers RTX 5080, le throughput × 4.
+
+#### PRIORITÉ 4 — VisualBible versionnée et validée
+
+```python
+class VisualBible(BaseModel):
+    version: str                     # "1.0.0"
+    series_id: str                   # "district_zero"
+    checksum: str                    # sha256 du JSON complet
+    
+    def validate_slugs(self, ir: AIPRODOutput) -> list[str]:
+        """Retourne les slugs référencés dans l'IR mais absents de la Bible."""
+```
+
+**Bénéfice** : Détection en amont des `reference_anchor_strength` silencieux à 0.5.
+
+#### PRIORITÉ 5 — Rule DSL externalisé (coût élevé, bénéfice long-terme)
+
+```yaml
+# rules/spc_crane_overhead.yaml
+id: SPC-01-overhead-crane-up
+priority: P3
+description: "Interdire crane_up depuis vue overhead"
+condition:
+  operator: AND
+  conditions:
+    - field: ref_invariants.camera_height_class
+      operator: EQ
+      value: overhead
+    - field: shot.camera_movement
+      operator: EQ
+      value: crane_up
+action:
+  type: DOWNGRADE_MOVEMENT
+  target_field: shot.camera_movement
+  value: tilt_up
+```
+
+**Bénéfice** : Les superviseurs VFX/DoP peuvent contribuer des règles sans toucher au code Python.
+
+### 5.3 Modèle de cycle de vie d'exécution (v3 cible)
 
 ```
-1. AIPRODExecutor.run(input_text, config)
-   ├─ générer run_id (UUID)
-   ├─ hash input → input_hash
-   ├─ vérifier ExecutionStore (run déjà existant pour cet input_hash ?)
-   │
-2. LAYER 1 — Compiler
-   ├─ Pass0: _enrich_or_segment() → IR₀ + hash
-   ├─ Pass1: segment() → IR₁ + hash
-   ├─ Pass2: visual_rewrite() + _validate_pass2_output() → IR₂ + hash
-   ├─ Pass3: simplify_shots() → IR₃ + hash
-   ├─ Pass4: compile_episode() → IR₄ + hash
-   ├─ Valider hash chain : hash(IR₃) ∈ IR₄.metadata
-   ├─ Persister IR₁..IR₄ dans ExecutionStore (run_id)
-   │
-3. LAYER 3 — Control Plane : BudgetController.estimate(IR₄, config)
-   ├─ Calculer coût total (frame_count × cost_per_frame)
-   ├─ Si coût > budget_cap → SystemExit avec détail
-   │
-4. LAYER 2 — Creative (parallel)
-   ├─ DAGScheduler.submit_graph(IR₄, run_id)
-   ├─ character_prepass × N_characters (parallel, bloquant avant stylize)
-   ├─ stylize_frames × N_shots (parallel, N workers)
-   ├─ video_gen × N_shots (parallel, après stylize)
-   ├─ audio_gen × N_scenes (parallel, indépendant)
-   │
-5. LAYER 3 — Control Plane : AssemblyEngine
-   ├─ assembly.assemble_episode(clips, audio, storyboard)
-   ├─ QualityGate.check(output) → QualityReport
-   ├─ Archiver tous les résultats (run_id → assets)
-   │
-6. ExecutionStore.finalize(run_id, status, metrics)
+ÉTAPE 1 — COMPILE (pur, déterministe)
+  Input: text + VisualBible v{hash}
+  → InputClassifier.classify()
+  → Pass 1–4 (rules-only)
+  → AIPRODOutput + IRVersion{hash}
+  → ShotTrace[] (trace complète)
+  OUTPUT: ir_{hash}.json (immuable, versionnée)
+
+ÉTAPE 2 — PLAN (déterministe)
+  Input: ir_{hash}.json
+  → Calculer DAG de production (dépendances shot)
+  → Estimer coût total (frames × cost_per_frame)
+  → Présenter plan à l'utilisateur avec budget
+  OUTPUT: production_plan_{hash}.json
+
+ÉTAPE 3 — CREATIVE ENRICHMENT (sandboxé, optionnel)
+  Input: ir_{hash}.json + creative_config.json
+  → LLM story enrichment (si mode generative)
+  → Seed image references (depuis character_refs/)
+  → Location master plates (gen_location_refs --local)
+  OUTPUT: creative_assets_{hash}/
+
+ÉTAPE 4 — RENDER PIPELINE (orchestré, parallèle)
+  Input: ir_{hash}.json + creative_assets_{hash}/
+  → DAGScheduler.execute(max_parallel=N, budget_cap=X)
+  → Pour chaque shot (parallèle par groupes indépendants):
+      Blender render → ComfyUI/Replicate stylize → FFmpeg clip
+  → QualityGate par shot (SSIM, ArcFace, luminance)
+  → Checkpoint auto par shot
+  OUTPUT: clips/{shot_id}.mp4
+
+ÉTAPE 5 — ASSEMBLY & POST-PROD (déterministe)
+  Input: clips/ + ir_{hash}.json
+  → assembly.py (FFmpeg concat)
+  → EDL export / Resolve XML / audio cues
+  OUTPUT: {episode_id}_master.mp4 + deliverables/
 ```
 
 ---
 
-## VERDICT FINAL
+## 6. FLAWS CLASSÉS PAR SÉVÉRITÉ
 
-### Scores par couche
+### Tier S — Critique (bloquant production à l'échelle)
 
-| Couche | Score | Grade |
-|---|---|---|
-| Core compiler Pass1–Pass4 | 8.5/10 | **Production-grade** |
-| Rule engine DSL (9 règles P1–P5) | 7.5/10 | **Production-grade** |
-| IR contracts (Pydantic v2) | 6.5/10 | Pre-production (NotRequired drift) |
-| Adapter surface (image/vidéo/audio) | 6/10 | Research-grade (pas de sandboxing) |
-| Orchestration globale | 3.5/10 | Prototype (3 orchestrateurs, zéro DAG) |
-| Scalabilité industrielle | 2/10 | Prototype (séquentiel, sans parallélisme) |
-| Gouvernance runtime | 2/10 | Prototype (pas de versioning ni replay) |
+| ID | Flaw | Fichier | Ligne | Impact |
+|---|---|---|---|---|
+| **S-01** | VisualBible sans versioning ni validation de slugs | `pass3_shots.py` | ~L603 | Dégradation silencieuse `anchor_strength` à 0.5 |
+| **S-02** | TypedDict NotRequired sans contrat complet | `models/intermediate.py` | — | Fallbacks silencieux en P3 pour tous champs non validés |
+| **S-03** | gen_shots_v4 séquentiel, non parallélisable | `gen_shots_v4.py` | L84 | Throughput × 1 peu importe le hardware |
+| **S-04** | Pas d'IR versioning entre runs | `engine.py`, `gen_shots_v4.py` | — | Run de production sur IR obsolète non détectable |
 
-### Classification finale
+### Tier A — Majeure (dette technique significative)
 
-> **PRE-PRODUCTION GRADE — Avancé**
+| ID | Flaw | Fichier | Impact |
+|---|---|---|---|
+| **A-01** | VisualBible singleton sans immutabilité garantie | `visual_bible.py` | Mutation possible entre passes |
+| **A-02** | Règles métier dispersées dans 6 modules | Multiple | Maintenance O(n modules) pour 1 règle |
+| **A-03** | P3 intègre logique P4 (lens_mm, color_grade) | `pass3_shots.py` | Couplage conceptuel P3/P4 |
+| **A-04** | ScriptParser bypasse P1+P2 sans validation | `engine.py:L229` | Pas de `_validate_pass2_output` sur chemin script |
+| **A-05** | Orchestrateurs découplés (engine/gen_shots/assembly) | Multiple | Pas de coordinateur global |
+| **A-06** | Pas d'execution trace par shot | — | Debugging anomalies impossible sans re-run |
 
-Le cœur compilateur (Pass1–Pass4) est **production-grade**. Il peut générer un épisode de haute qualité de manière fiable avec supervision humaine.
+### Tier B — Mineure (amélioration qualité)
 
-L'enveloppe d'exécution (orchestration, adapters, production pipeline) est **research/pre-production-grade**. Elle peut produire EP01/35 shots avec supervision manuelle, mais ne peut pas fonctionner autonomement à l'échelle d'une saison (S1 = 10 épisodes, 350+ shots) sans les trois composants manquants :
-
-1. **Control Plane** (DAG + versioning + replay)
-2. **Parallélisme Layer 2** (async workers)
-3. **PassContracts formels** (hash chain, typage fort)
-
-Le système n'est pas encore **Studio-grade** — ce qui nécessiterait en plus : API REST, multi-tenancy, monitoring temps-réel, et intégration avec les outils DCC (DaVinci, Nuke, Maya).
+| ID | Flaw | Fichier | Impact |
+|---|---|---|---|
+| **B-01** | LLMRouter cooldown global (pas par endpoint) | `llm_router.py:L153` | Faux positifs de cooldown |
+| **B-02** | Budget cap pre-loop O(n) filesystem scan | `gen_shots_v4.py:L85–100` | Ralentissement à 10K shots |
+| **B-03** | `metrics_v4.jsonl` sans index | `gen_shots_v4.py:L263` | Scan linéaire pour KO shots |
+| **B-04** | ComfyUI polling synchrone (`time.sleep(2)`) | `shot_pipeline_v4.py` | Overhead polling × 10K shots |
+| **B-05** | RuleEngineReport pas rendu en format humain | `pass4_compile.py` | Superviseur ne peut pas lire les décisions |
 
 ---
 
-*Audit réalisé le 2026-05-19 à 15:25 — sonnet-4.6 — sur base codebase réel `C:\Users\averr\AIPROD_V2` (commit `bc66f01`)*
+## 7. CONTRADICTIONS ARCHITECTURALES CACHÉES
+
+### Contradiction #1 — "Déterministe" mais dépend du filesystem
+
+Le déterminisme du core est réel. Mais `gen_shots_v4.py` fait :
+```python
+frame_count = _count_frames(RENDERS_DIR / shot_id / "frames")
+```
+Si les frames Blender ne sont pas présentes (premier run), `estimated_cost = 0.0`. Le budget guard est trompé : il estime $0 alors que le coût réel sera >$0 après le render.
+
+### Contradiction #2 — "Pipeline" mais pas de gestion des effets de bord
+
+Pass 4 mute les shots (`validated_shots`) in-place via ConflictResolutionEngine. Ce n'est pas une transformation pure — les `Shot` Pydantic sont modifiés. Si une erreur survient après la 5ème mutation, l'état intermédiaire est perdu.
+
+### Contradiction #3 — "Module séparé" mais LLMRouter connaît les détails des adapters
+
+`llm_router.py` importe et instancie directement `ClaudeAdapter` et `GeminiAdapter`. Ce n'est pas une vraie inversion de dépendance — c'est une factory couplée. Si un 3ème provider est ajouté, `LLMRouter` doit être modifié.
+
+### Contradiction #4 — "IR central" mais 2 représentations IR simultanées
+
+Le système maintient **deux** représentations IR en parallèle :
+1. `TypedDict` (CinematicScene, VisualScene, ShotDict) — intermediate passes
+2. `Pydantic BaseModel` (Scene, Shot, Episode, AIPRODOutput) — final validated output
+
+La conversion TypedDict → Pydantic se fait en P4. Entre P1 et P4, le "IR" n'est pas validé par Pydantic — c'est un TypedDict non contraint.
+
+---
+
+## 8. VERDICT FINAL
+
+### Classification système
+
+> **AIPROD_V2 est un compilateur cinématographique déterministe de grade Research/Production, avec une couche de génération stochastique optionnelle et un runtime d'orchestration de production fonctionnel mais non scalable.**
+
+### Score par dimension
+
+| Dimension | Score | Justification |
+|---|:---:|---|
+| Déterminisme core (P1–P4) | 9/10 | Réel, prouvé, gated correctement |
+| Architecture IR | 7/10 | TypedDict + Pydantic dual-IR, NotRequired non contractualisé |
+| Rule engine | 8/10 | DSL propre, résolution déterministe, mais non externalisé |
+| Scalabilité runtime | 4/10 | Séquentiel, pas de DAG, pas de parallélisme |
+| Gouvernance runtime | 3/10 | Pas de versioning IR, pas de trace, pas de rollback |
+| Qualité code | 8/10 | ruff/mypy clean, 1072 tests, no type:ignore |
+| Maintenabilité | 6/10 | Règles dispersées, fausse modularité P3/P4 |
+
+### Verdict de maturité
+
+```
+╔══════════════════════════════════════════════════════════════════════╗
+║  PROTOTYPE-GRADE    ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░   ║
+║  RESEARCH-GRADE     ████████████████████████████░░░░░░░░░░░░░░░░░░  ║  ← ACTUEL
+║  PRODUCTION-GRADE   ████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  ║  ← core IR
+║  STUDIO-GRADE       ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  ║
+╚══════════════════════════════════════════════════════════════════════╝
+```
+
+**Le core IR (P1–P4 + rule engine) est production-grade.**
+**Le runtime d'orchestration (gen_shots_v4 + assembly) est research-grade.**
+**La gouvernance (versioning IR, DAG, trace) est à construire.**
+
+### Prochaines étapes recommandées (par ROI)
+
+1. **[Immédiat]** Valider tous les slugs VisualBible avant run de production (`validate_slugs()`) — 30 lignes
+2. **[Court terme]** Ajouter `ShotTrace` minimal dans P4 — 50 lignes, debugging ×10
+3. **[Moyen terme]** IRVersion + hash dans AIPRODOutput — 20 lignes, sécurité re-run
+4. **[Long terme]** DAG parallèle dans gen_shots_v4 — scalabilité ×N workers
+5. **[Futur]** Rule DSL YAML externalisé — contribution sans code
+
+---
+
+*Audit généré le 2026-05-19 par GitHub Copilot (Claude Sonnet 4.6)*
+*Codebase commit : `aa68ab2` — 1072 tests verts · ruff clean · mypy strict clean*
