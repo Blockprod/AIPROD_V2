@@ -2,6 +2,20 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field, field_validator
 
+
+class IRVersion(BaseModel):
+    """Fingerprint of the compiler state that produced an AIPRODOutput.
+
+    Allows detecting stale IR usage: if any of these hashes differ between
+    the last compile run and the current production run, re-compilation is needed.
+    All fields default to empty string for backward compatibility with outputs
+    produced before this field was introduced.
+    """
+    compiler_version: str = ""    # e.g. "3.1.0"
+    visual_bible_hash: str = ""   # sha256[:16] of serialised VisualBible, or "no_vb"
+    rules_hash: str = ""          # sha256[:16] of builtin_rules source, or "builtin_v1"
+    text_hash: str = ""           # sha256[:16] of raw text input
+
 _VALID_SHOT_TYPES: frozenset[str] = frozenset({
     "wide", "medium", "close_up", "pov",
     # v3.0 cinematic extensions
@@ -317,6 +331,8 @@ class AIPRODOutput(BaseModel):
     global_assets: list[GlobalAsset] = Field(default_factory=list)
     master_timeline: Timeline = Field(default_factory=Timeline)
     color_luts: dict[str, str] = Field(default_factory=dict)
+    # v5.1 IR versioning — None on legacy outputs
+    ir_version: IRVersion | None = None
 
 
 class SeasonCoherenceMetrics(BaseModel):

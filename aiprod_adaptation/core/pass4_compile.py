@@ -101,6 +101,11 @@ def compile_episode(
         raise ValueError("PASS 4: scenes list must not be empty.")
     if not shots:
         raise ValueError("PASS 4: shots list must not be empty.")
+    if visual_bible is None:
+        warnings.warn(
+            "PASS 4: visual_bible is None — prompt enrichment and DoP invariants disabled.",
+            stacklevel=2,
+        )
 
     known_scene_ids = {s["scene_id"] for s in scenes}
     for shot in shots:

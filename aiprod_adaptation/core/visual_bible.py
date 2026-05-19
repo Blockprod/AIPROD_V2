@@ -158,6 +158,29 @@ class VisualBible:
     def get_location(self, slug: str) -> LocationInvariant | None:
         return self._data["locations"].get(slug.lower().replace(" ", "_"))
 
+    def validate_slugs(self, scenes: list[Any]) -> list[str]:
+        """Return reference_location_id values referenced in scenes but absent from this VisualBible.
+
+        Parameters
+        ----------
+        scenes : list of scene dicts (VisualScene / CinematicScene)
+            Any dicts that may carry a ``reference_location_id`` key.
+
+        Returns
+        -------
+        list[str]
+            Unique slugs that are referenced but not present in ``self.locations``.
+            Empty list means all slugs are valid.
+        """
+        missing: list[str] = []
+        seen: set[str] = set()
+        for scene in scenes:
+            ref_id: str | None = scene.get("reference_location_id")
+            if ref_id and ref_id not in self._data["locations"] and ref_id not in seen:
+                missing.append(ref_id)
+                seen.add(ref_id)
+        return missing
+
     def get_character_prompt_fragment(self, name: str) -> str:
         """Return a prompt fragment describing a character's visual invariants."""
         inv = self.get_character(name)

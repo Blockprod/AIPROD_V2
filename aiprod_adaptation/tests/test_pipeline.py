@@ -132,9 +132,9 @@ class TestBackwardCompatAliases:
             aliased = compile_output("Title", [self._SCENE], shots, "EP01")
 
         direct = compile_episode([self._SCENE], shots, "Title", "EP01")
-        assert len(captured) == 1
-        assert issubclass(captured[0].category, DeprecationWarning)
-        assert "compile_episode" in str(captured[0].message)
+        dep_warnings = [w for w in captured if issubclass(w.category, DeprecationWarning)]
+        assert len(dep_warnings) == 1
+        assert "compile_episode" in str(dep_warnings[0].message)
         assert aliased.model_dump() == direct.model_dump()
 
 

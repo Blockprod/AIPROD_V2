@@ -1,12 +1,14 @@
 from __future__ import annotations
 
+import hashlib
+import json
 import sys
 from typing import TYPE_CHECKING, Any, Literal, cast
 
 import structlog
 
 from aiprod_adaptation.models.intermediate import VisualScene
-from aiprod_adaptation.models.schema import AIPRODOutput
+from aiprod_adaptation.models.schema import AIPRODOutput, IRVersion
 
 if TYPE_CHECKING:
     from aiprod_adaptation.core.adaptation.llm_adapter import LLMAdapter
@@ -191,7 +193,7 @@ def run_pipeline(
     from aiprod_adaptation.core.adaptation.story_extractor import StoryExtractor
     from aiprod_adaptation.core.adaptation.story_validator import StoryValidator
     from aiprod_adaptation.core.pass1_segment import segment
-    from aiprod_adaptation.core.pass2_visual import visual_rewrite
+    from aiprod_adaptation.core.pass2_visual import _validate_pass2_output, visual_rewrite
     from aiprod_adaptation.core.pass3_shots import simplify_shots
     from aiprod_adaptation.core.pass4_compile import compile_episode
     from aiprod_adaptation.core.production_budget import ProductionBudget
@@ -218,6 +220,7 @@ def run_pipeline(
         logger.debug("pass1_start", path="script")
         scenes_pass2 = ScriptParser().parse(text)
         _enrich_script_scenes(scenes_pass2, visual_bible)
+        _validate_pass2_output(scenes_pass2)
         logger.info("pass1_complete", scene_count=len(scenes_pass2), path="script")
     else:
         logger.debug("pass1_start", path="novel")
@@ -246,6 +249,13 @@ def run_pipeline(
         raise ValueError("PASS 2: StoryValidator produced no filmable scenes after validation.")
     logger.info("story_validator_complete", valid_scene_count=len(scenes_pass2))
 
+    if visual_bible is not None:
+        missing_slugs = visual_bible.validate_slugs(scenes_pass2)
+        if missing_slugs:
+            raise ValueError(
+                f"VisualBible: slugs manquants dans les scenes : {missing_slugs}"
+            )
+
     logger.debug("pass3_start")
     shots_pass3 = simplify_shots(scenes_pass2)
     logger.info("pass3_complete", shot_count=len(shots_pass3))
@@ -261,6 +271,22 @@ def run_pipeline(
         episode_index=episode_index,
     )
     logger.info("pipeline_complete", episode_count=len(output.episodes))
+
+    # Inject IRVersion fingerprint so production runs can detect stale IR
+    _text_hash = hashlib.sha256(text.encode()).hexdigest()[:16]
+    _vb_hash: str
+    if visual_bible is not None:
+        _vb_hash = hashlib.sha256(
+            json.dumps(visual_bible.data, sort_keys=True, default=str).encode()
+        ).hexdigest()[:16]
+    else:
+        _vb_hash = "no_vb"
+    output.ir_version = IRVersion(
+        compiler_version="3.1.0",
+        visual_bible_hash=_vb_hash,
+        rules_hash="builtin_v1",
+        text_hash=_text_hash,
+    )
 
     if character_descriptions:
         output = _apply_continuity_enrichment(output, character_descriptions)

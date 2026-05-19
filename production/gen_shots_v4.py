@@ -43,7 +43,10 @@ CLIPS_DIR = ROOT / "production/clips"
 METRICS_FILE = ROOT / "production/metrics_v4.jsonl"
 CHECKPOINT_FILE = ROOT / "production/checkpoint_v4.json"
 
-_BUDGET_ALERT_USD = 250.0
+# Read from environment so dev and prod can have different caps.
+# Default 0.0 ensures any run without explicit configuration is blocked
+# before spending API budget. Set AIPROD_BUDGET_CAP_USD=250 in production.
+_BUDGET_ALERT_USD: float = float(os.environ.get("AIPROD_BUDGET_CAP_USD", "0.0"))
 _DEFAULT_FPS = 24
 _COST_PER_FRAME_REPLICATE = 0.04
 

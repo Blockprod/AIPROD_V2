@@ -617,6 +617,9 @@ class TestProcessNarrativeWithReference:
 
             def get_location_prompt_fragment(self, _loc_id: str) -> str | None:
                 return None
+
+            def validate_slugs(self, scenes: list) -> list:
+                return []
         return _MockVB()
 
     def test_returns_aiprods_output(self):

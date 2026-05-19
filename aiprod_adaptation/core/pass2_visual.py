@@ -621,6 +621,14 @@ def _validate_pass2_output(scenes: list[VisualScene]) -> None:
                 f"but no body_language_states."
             )
 
+        # beat_type must be present — used as primary key in INTENSITY_SHOT_SEQUENCES (P3)
+        beat_type = vs.get("beat_type")
+        if not beat_type:
+            raise ValueError(
+                f"PASS 2 contract: scene '{sid}' manque beat_type "
+                f"(requis par P3 INTENSITY_SHOT_SEQUENCES)."
+            )
+
 
 def visual_rewrite(
     scenes: list[RawScene],
@@ -650,6 +658,12 @@ def visual_rewrite(
     ------
     ValueError if scenes is empty or any scene has empty raw_text.
     """
+    if visual_bible is None:
+        import warnings
+        warnings.warn(
+            "PASS 2: visual_bible is None — VisualBible enrichments disabled.",
+            stacklevel=2,
+        )
     if not scenes:
         raise ValueError("PASS 2: scenes list must not be empty.")
 
