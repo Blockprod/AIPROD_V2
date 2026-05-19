@@ -160,16 +160,40 @@ class ComfyUIBackend(StylizationBackend):
         seed: int,
         shot_type: str,
     ) -> bytes:
-        """Envoie le workflow ComfyUI et attend le résultat."""
+        """Stylise une frame via ComfyUI local.
+
+        Protocole :
+          1. Résout le normals EXR si disponible (meilleur guidage ControlNet Normal)
+             sinon utilise depth EXR converti en PNG 8-bit.
+          2. Upload control image + char ref via /upload/image.
+          3. Soumet le workflow et attend le résultat via polling /history.
+        """
         import urllib.request
-        import urllib.parse
         import uuid
 
         client_id = str(uuid.uuid4())
+        uid = client_id[:8]
+
+        # Résoudre normals EXR (produit par blender_render.py)
+        frame_num = depth_exr.stem.split("_")[-1]
+        normals_exr = depth_exr.parent.parent / "normals" / f"normals_{frame_num}.exr"
+        if normals_exr.exists():
+            control_bytes = _exr_normals_to_png(normals_exr)
+            control_name = f"normals_{uid}.png"
+        else:
+            control_bytes = _exr_depth_to_png(depth_exr)
+            control_name = f"depth_{uid}.png"
+
+        char_bytes = char_ref_png.read_bytes()
+        char_name = f"charref_{uid}.png"
+
+        # Upload vers ComfyUI input store
+        uploaded_control = _upload_to_comfyui(self._url, control_bytes, control_name)
+        uploaded_char = _upload_to_comfyui(self._url, char_bytes, char_name)
+
         workflow = _build_comfyui_workflow(
-            frame_png=frame_png,
-            depth_exr=depth_exr,
-            char_ref_png=char_ref_png,
+            control_image_filename=uploaded_control,
+            char_ref_filename=uploaded_char,
             prompt=prompt,
             seed=seed,
         )
@@ -739,6 +763,67 @@ def _exr_depth_to_png(depth_exr: Path) -> bytes:
         return depth_exr_bytes
 
 
+def _exr_normals_to_png(normals_exr: Path) -> bytes:
+    """Convertit un EXR normals RGB (Blender Normal Pass) en PNG 8-bit pour ControlNet Normal.
+
+    Blender exporte les normales en camera space, range [-1, 1] par canal (float32).
+    La convention ControlNet Normal (normalbae) attend une image RGB [0, 255] où
+    R=X, G=Y, B=Z, chaque composante mappée de [-1, 1] → [0, 255].
+    """
+    try:
+        import cv2
+        import numpy as np
+
+        img = cv2.imread(str(normals_exr), cv2.IMREAD_UNCHANGED)
+        if img is None:
+            raise ValueError(f"Impossible de lire {normals_exr}")
+        # Float32 [-1, 1] → uint8 [0, 255]
+        img_mapped = ((img.astype(np.float32) * 0.5 + 0.5) * 255.0).clip(0, 255).astype(np.uint8)
+        ok, buf = cv2.imencode(".png", img_mapped)
+        if not ok:
+            raise ValueError("imencode failed")
+        return buf.tobytes()
+    except ImportError:
+        return normals_exr.read_bytes()
+
+
+def _upload_to_comfyui(url: str, img_bytes: bytes, filename: str) -> str:
+    """Upload une image vers ComfyUI via POST /upload/image (multipart/form-data).
+
+    Returns:
+        Nom de fichier tel qu'enregistré dans le store ComfyUI (à utiliser dans les workflows).
+    Raises:
+        RuntimeError: si l'upload échoue.
+    """
+    import urllib.request
+
+    boundary = "----AIPRODFormBoundary" + filename[:8]
+    CRLF = b"\r\n"
+    body = (
+        f"--{boundary}\r\n"
+        f'Content-Disposition: form-data; name="image"; filename="{filename}"\r\n'
+        f"Content-Type: image/png\r\n\r\n"
+    ).encode("ascii") + img_bytes + CRLF
+    body += (
+        f"--{boundary}\r\n"
+        f'Content-Disposition: form-data; name="overwrite"\r\n\r\n'
+        f"true\r\n"
+        f"--{boundary}--\r\n"
+    ).encode("ascii")
+
+    req = urllib.request.Request(
+        f"{url}/upload/image",
+        data=body,
+        headers={"Content-Type": f"multipart/form-data; boundary={boundary}"},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            result = json.loads(resp.read())
+        return result["name"]
+    except Exception as exc:
+        raise RuntimeError(f"ComfyUI upload échoué pour {filename}: {exc}") from exc
+
+
 def _img_to_b64(path: Path) -> str:
     import base64
     return "data:image/png;base64," + base64.b64encode(path.read_bytes()).decode()
@@ -761,75 +846,119 @@ def _find_shot(storyboard: dict[str, Any], shot_id: str) -> dict[str, Any] | Non
 
 
 def _build_comfyui_workflow(
-    frame_png: Path,
-    depth_exr: Path,
-    char_ref_png: Path,
+    control_image_filename: str,
+    char_ref_filename: str,
     prompt: str,
     seed: int,
 ) -> dict[str, Any]:
-    """Workflow ComfyUI minimaliste : ControlNet depth + FLUX.
+    """Workflow ComfyUI production : SD1.5 + ControlNet Normal + IP-Adapter.
 
-    À adapter selon la configuration ComfyUI locale (nodes disponibles).
+    Reproduit fidèlement le pipeline Replicate jagilley/controlnet-normal (SD1.5 base).
+
+    Modèles requis dans ComfyUI/models/ :
+      checkpoints/ : v1-5-pruned-emaonly.safetensors
+      controlnet/  : control_v11p_sd15_normalbae.safetensors
+      ipadapter/   : ip-adapter-plus_sd15.safetensors
+      clip_vision/ : CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors
+
+    Extensions ComfyUI requises :
+      ComfyUI-IPAdapter-plus (https://github.com/cubiq/ComfyUI_IPAdapter_plus)
     """
+    negative_prompt = (
+        "worst quality, low quality, blurry, jpeg artifacts, watermark, text, "
+        "signature, extra fingers, fused limbs, malformed hands, deformed anatomy, "
+        "cartoon, anime, painting, illustration, digital art, nsfw"
+    )
     return {
+        # --- Checkpoint SD1.5 ---
         "1": {
-            "class_type": "LoadImage",
-            "inputs": {"image": str(frame_png)},
+            "class_type": "CheckpointLoaderSimple",
+            "inputs": {"ckpt_name": "v1-5-pruned-emaonly.safetensors"},
         },
+        # --- Prompts ---
         "2": {
-            "class_type": "LoadImage",
-            "inputs": {"image": str(char_ref_png)},
+            "class_type": "CLIPTextEncode",
+            "inputs": {"text": prompt, "clip": ["1", 1]},
         },
         "3": {
             "class_type": "CLIPTextEncode",
-            "inputs": {
-                "text": prompt,
-                "clip": ["4", 1],
-            },
+            "inputs": {"text": negative_prompt, "clip": ["1", 1]},
         },
+        # --- Images d'entrée ---
         "4": {
-            "class_type": "CheckpointLoaderSimple",
-            "inputs": {"ckpt_name": "flux1-dev.safetensors"},
+            "class_type": "LoadImage",
+            "inputs": {"image": control_image_filename},
         },
         "5": {
-            "class_type": "ControlNetLoader",
-            "inputs": {"control_net_name": "controlnet-depth.safetensors"},
+            "class_type": "LoadImage",
+            "inputs": {"image": char_ref_filename},
         },
+        # --- ControlNet Normal ---
         "6": {
-            "class_type": "ControlNetApply",
-            "inputs": {
-                "conditioning": ["3", 0],
-                "control_net": ["5", 0],
-                "image": ["1", 0],
-                "strength": 0.8,
-            },
+            "class_type": "ControlNetLoader",
+            "inputs": {"control_net_name": "control_v11p_sd15_normalbae.safetensors"},
         },
         "7": {
-            "class_type": "KSampler",
+            "class_type": "ControlNetApplyAdvanced",
             "inputs": {
-                "model": ["4", 0],
-                "positive": ["6", 0],
+                "positive": ["2", 0],
                 "negative": ["3", 0],
-                "latent_image": ["8", 0],
-                "seed": seed,
-                "steps": 28,
-                "cfg": 7.5,
-                "sampler_name": "euler",
-                "scheduler": "normal",
-                "denoise": 0.75,
+                "control_net": ["6", 0],
+                "image": ["4", 0],
+                "strength": 0.85,
+                "start_percent": 0.0,
+                "end_percent": 1.0,
             },
         },
+        # --- IP-Adapter (cohérence personnage) ---
         "8": {
+            "class_type": "CLIPVisionLoader",
+            "inputs": {"clip_name": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors"},
+        },
+        "9": {
+            "class_type": "IPAdapterModelLoader",
+            "inputs": {"ipadapter_file": "ip-adapter-plus_sd15.safetensors"},
+        },
+        "10": {
+            "class_type": "IPAdapter",
+            "inputs": {
+                "model": ["1", 0],
+                "ipadapter": ["9", 0],
+                "image": ["5", 0],
+                "clip_vision": ["8", 0],
+                "weight": 0.6,
+                "start_at": 0.0,
+                "end_at": 1.0,
+            },
+        },
+        # --- Latent + sampling ---
+        "11": {
             "class_type": "EmptyLatentImage",
             "inputs": {"width": 1920, "height": 1080, "batch_size": 1},
         },
-        "9": {
-            "class_type": "VAEDecode",
-            "inputs": {"samples": ["7", 0], "vae": ["4", 2]},
+        "12": {
+            "class_type": "KSampler",
+            "inputs": {
+                "model": ["10", 0],
+                "positive": ["7", 0],
+                "negative": ["7", 1],
+                "latent_image": ["11", 0],
+                "seed": seed,
+                "steps": 28,
+                "cfg": 7.5,
+                "sampler_name": "dpmpp_2m",
+                "scheduler": "karras",
+                "denoise": 0.75,
+            },
         },
-        "10": {
+        # --- Decode + save ---
+        "13": {
+            "class_type": "VAEDecode",
+            "inputs": {"samples": ["12", 0], "vae": ["1", 2]},
+        },
+        "14": {
             "class_type": "SaveImage",
-            "inputs": {"images": ["9", 0], "filename_prefix": "stylized_"},
+            "inputs": {"images": ["13", 0], "filename_prefix": "stylized"},
         },
     }
 

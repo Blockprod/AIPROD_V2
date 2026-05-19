@@ -2,7 +2,7 @@
 
 AIPROD Adaptation Engine v2 est un compilateur cinématographique complet écrit en Python qui transforme un texte brut (roman, script, synopsis) en une chaîne de production audiovisuelle bout-en-bout. Le système couvre l'intégralité du pipeline : compilation narrative déterministe en représentation intermédiaire structurée (IR), enrichissement LLM optionnel (Claude / Gemini / router adaptatif), cohérence globale de l'épisode, moteur de règles de tournage, calcul de faisabilité shot-level, contraintes de référence visuelle (VisualBible), suivi de saison multi-épisodes, génération d'images et de vidéos via adaptateurs externes (Runway, Flux, DALL·E, Kling, Seedance…), post-production NLE (manifest, EDL, cue-sheet audio), et métriques de qualité broadcast calibrées sur les cibles Netflix. Le noyau reste strictement déterministe — même entrée, même sortie au niveau byte — et ne dépend d'aucune API externe obligatoire. L'IR (`AIPRODOutput`, Pydantic v2) constitue le contrat central entre toutes les couches et peut être exporté dans cinq formats de livraison (EDL JSON, Resolve Timeline, audio cue-sheet, batch generation manifest, season report).
 
-**Projet actif : District Zero EP01** — série dystopique 11 scènes, 35 shots. 4 personnages lockés (Nara, Mira, Elian, Rook), 10 lieux DOP-grade générés (FLUX 1.1 Pro Ultra, seeds fixes, 3840×2160).
+**Projet actif : District Zero EP01** — série dystopique 11 scènes, 35 shots, 3 480 frames @ 24 fps (2 min 25 s). 5 personnages lockés (Nara, Mira, Elian, Vale, Rook), 10 lieux DOP-grade générés (FLUX 1.1 Pro Ultra, seeds fixes, 3840×2160).
 
 ---
 
@@ -129,7 +129,7 @@ aiprod_adaptation/
 │
 ├── image_gen/                   — image generation adapters
 │   ├── image_adapter.py         — ImageAdapter base
-│   ├── openai_image_adapter.py  — DALL·E adapter
+│   ├── openai_image_adapter.py  — DALL·E / GPT Image 2 adapter
 │   ├── flux_adapter.py          — Flux adapter (A1111 + IP-Adapter)
 │   ├── comfyui_adapter.py       — ComfyUIAdapter base (workflow JSON + polling)
 │   │                              + make_xlabs_ipadapter_adapter() factory
@@ -137,9 +137,15 @@ aiprod_adaptation/
 │   ├── runway_image_adapter.py  — Runway image adapter
 │   ├── replicate_adapter.py     — generic Replicate adapter (FLUX Ultra, ESRGAN upscale)
 │   ├── huggingface_image_adapter.py — HuggingFace Inference API (FLUX.1-schnell, free tier)
+│   ├── ideogram_image_adapter.py — Ideogram v3 adapter
+│   ├── seedream_adapter.py      — Seedream 4.5 adapter (Replicate, $0.04/image)
+│   ├── meshy_adapter.py         — Meshy 3D asset generation adapter
+│   ├── tripo3d_adapter.py       — Tripo3D API adapter (mesh from image)
+│   ├── triposg_adapter.py       — TripoSG local adapter (triposg/ third_party)
 │   ├── character_sheet.py       — character reference sheet builder
 │   ├── character_prepass.py     — pre-pass character image generation
 │   ├── character_image_registry.py
+│   ├── character_mask.py        — background removal + edit mask (remove_background, build_edit_mask)
 │   ├── reference_pack.py        — reference image packing
 │   ├── storyboard.py            — storyboard assembly (+ kontext_adapter param)
 │   ├── image_request.py
@@ -169,10 +175,16 @@ aiprod_adaptation/
 │   └── __init__.py
 │
 ├── post_prod/                   — audio & video post adapters
-│   ├── audio_adapter.py
-│   ├── elevenlabs_adapter.py    — ElevenLabs TTS
-│   ├── openai_tts_adapter.py    — OpenAI TTS
-│   ├── runway_tts_adapter.py    — Runway audio
+│   ├── audio_adapter.py         — AudioAdapter abstract interface + NullAudioAdapter
+│   ├── elevenlabs_adapter.py    — ElevenLabs TTS (cloud)
+│   ├── openai_tts_adapter.py    — OpenAI TTS (cloud)
+│   ├── runway_tts_adapter.py    — Runway audio (cloud)
+│   ├── f5tts_adapter.py         — F5-TTS local (flow-matching, clonage vocal, $0.00)
+│   │                              F5TTSAdapter + generate_to_file() ; auto-detect CUDA
+│   ├── audiocraft_adapter.py    — Meta AudioCraft local ($0.00)
+│   │                              MusicGenAdapter (musicgen-stereo-large)
+│   │                              AudioGenAdapter (audiogen-medium, SFX)
+│   │                              make_local_audio_adapter("musicgen"|"audiogen")
 │   ├── audio_synchronizer.py
 │   ├── ssml_builder.py
 │   ├── audio_utils.py
@@ -208,34 +220,92 @@ aiprod_adaptation/
     └── chapter1.txt             — rich input (4 characters, 3+ locations, dialogues)
 
 production/
-├── characters.json              — 4 personnages lockés (Nara, Mira, Elian, Rook)
+├── characters.json              — 5 personnages lockés (Nara, Mira, Elian, Vale, Rook)
 │                                  canonical complet · portrait_brief DOP · seed fixe · validated_date
 ├── locations.json               — 10 lieux · seeds 11→121 · canonical · lighting_brief · dop_ref
 │                                  colour (dominant/accent/blacks) · camera spec · ref_image path
-├── storyboard.json              — 35 shots · axes 180° par scène · shot_type · camera_spec
+├── storyboard.json              — 35 shots EP01 · axes 180° par scène · shot_type · camera_spec
 │                                  composition · action_brief · lighting_context · emotion_intent
-├── grade.json                   — look transversal de l'épisode (palette · tonalité · interdits)
+│                                  12 emotion_intent augmentés (B3) · primary_character DOP-grade (N1)
+├── grade.json                   — look transversal épisode (palette Roger Deakins · interdits · DOP refs)
+├── shot_animations.json         — config caméra + animations Blender par shot (fov_mm, clip_start…)
+├── metrics_v4.jsonl             — log des métriques qualité par run (SSIM · ArcFace · luminance)
+│
 ├── gen_location_refs.py         — Génère master plates lieux (FLUX 1.1 Pro Ultra, 3840×2160)
 │                                  _MASTER_COMPOSITIONS : compositions dédiées text-to-image pur
 │                                  _strip_black_bands() : suppression automatique letterbox
-│                                  CLI : --loc · --ultra · --dry-run
-├── gen_location_angles.py       — Génère wide/medium/detail par lieu via FLUX Ultra + Redux
+│                                  CLI : --loc · --ultra · --gpt2 · --local · --dry-run
+│                                  --local : FLUX.1-schnell local via diffusers ($0.00, 4 steps)
+├── gen_location_angles.py       — Génères wide/medium/detail par lieu via FLUX Ultra + Redux
 │                                  _sanitize_canonical() : supprime toute présence humaine du prompt
 │                                  _precision_master() : 7 paramètres photographiques (IRE/µm/Kelvin)
 │                                  _creative_composition() : 30 compositions narratives (10 lieux × 3 angles)
-├── gen_character_refs.py        — Génère portraits de référence par personnage
-├── gen_shots.py                 — Génère les 35 shots EP01
+├── gen_location_coverage.py     — Planches multi-angles coverage (wide/medium/detail, $0.20/lieu)
+│
+├── gen_character_refs.py        — Génère portraits de référence par personnage (Phase A)
+├── gen_character_faces.py       — Corpus Phase B : 7 angles + 14 expressions par personnage
+│                                  Modèle : Seedream 4.5 ($0.04/image) · 5 chars × 21 = 105 fichiers
+│                                  Nomenclature : angle_NN_*.png / expr_NN_*.png
+├── gen_character_bodies.py      — Corpus Phase B : 8 turnarounds + 7 poses par personnage
+│                                  Modèle : Seedream 4.5 ($0.04/image) · 5 chars × 15 = 75 fichiers
+│                                  Nomenclature : turn_NN_*.png / pose_NN_*.png
+├── gen_character_sheets.py      — Planches multi-angles V4 (character sheets, $1.60/char)
+├── gen_character_meshes.py      — Meshes 3D TripoSG V4 depuis character sheets
+├── gen_metahuman_rigs.py        — Import FBX MetaHuman UE5 → Blender (nettoyage rig + export .blend)
+│
+├── gen_shots.py                 — Orchestrateur Phase A (Replicate FLUX/Seedream)
+├── gen_shots_v4.py              — Orchestrateur Phase C · 35 shots · --backend replicate|comfyui|null
+│                                  Budget alert $250 · dry-run obligatoire · coût Replicate $139.20
 ├── gen_assembly.py              — Assembly rough cut
+├── gen_3d_assets.py             — Génère assets 3D lieux via Meshy (depuis location_sheets/)
+│
+├── quality_gate_v4.py           — Quality gate shot-level broadcast
+│                                  SSIM inter-frames ≥ 0.85 · ArcFace identité ≥ 0.85
+│                                  Luminance std ≤ 15.0 · log → metrics_v4.jsonl
 ├── benchmark_characters.py      — Validation ArcFace des références personnages
 ├── dashboard.py / dashboard.json
 ├── run.py                       — CLI unifié production
-├── character_refs/              — Portraits lockés (nara_ref.png, mira_ref.png, elian_ref.png, rook_ref.png)
-└── location_refs/               — Masters + angles (10 lieux × 4 images = 40 fichiers 3840×2160)
+│
+├── character_faces/             — Corpus Phase B visages (5 slugs × 21 = 105 PNG)
+│   └── {slug}/                    nara/ mira/ elian/ vale/ rook/
+├── character_bodies/            — Corpus Phase B corps (5 slugs × 15 = 75 PNG)
+│   └── {slug}/                    nara/ mira/ elian/ vale/ rook/
+├── character_refs/              — Phase A portraits lockés par personnage
+├── location_refs/               — 10 master plates (10 PNG 3840×2160, seeds déterministes)
+├── assets_3d/                   — Assets 3D générés (Meshy / TripoSG)
+├── metahumans/                  — FBX MetaHuman UE5 + statuts JSON
+└── shots/                       — Shots générés Phase A
 ```
 
 `stories/district_zero_ep01.fountain` — script source EP01  
 `tasks/` — METHODE_PRODUCTION_IA_2026.md · PRODUCTION_RULES.md · WORKFLOW.md  
-`pipeline/shot_pipeline.py` — orchestration shots (LOCKED_MODEL, LOCKED_PARAMS, LOCKED_COST)
+
+```
+pipeline/
+├── shot_pipeline.py     — VERROUILLÉ v2 (2026-04-30) · LOCKED_MODEL flux-2-pro · LOCKED_COST $0.03+$0.05
+│                          SceneP1Params · build_p1_prompt() · build_p2_prompt() · _download() · ArcFace
+├── shot_pipeline_v4.py  — Pipeline Phase C production · StylizationBackend ABC
+│                          ReplicateBackend   : jagilley/controlnet-normal ($0.04/frame)
+│                          ComfyUIBackend     : SD1.5 + ControlNet Normal + IP-Adapter (local, $0.00)
+│                            upload /image · normals EXR (→ normalbae) · polling /history
+│                            Modèles : v1-5-pruned-emaonly · control_v11p_sd15_normalbae
+│                                      ip-adapter-plus_sd15 · CLIP-ViT-H-14
+│                          NullStylizationBackend : CI stub
+│                          _build_stylization_prompt() : 12 tokens ordonnés (DOP → émotion)
+│                          _resolve_char_ref() : 3 niveaux (corps/expressions/angle)
+│                          _emotion_matches() : word-boundary + négation
+├── blender_render.py    — Rendu Blender Cycles headless
+│                          Outputs : frames/frame_{N:04d}.png · depth/depth_{N:04d}.exr
+│                                    normals/normals_{N:04d}.exr
+│                          Entrée  : shot_animations.json (fov_mm, clip_start…)
+├── video_pipeline.py    — frames PNG → clips MP4/MOV via FFmpeg
+│                          frames_to_clip()       : H.264 CRF18 yuv420p (1080p)
+│                          frames_to_clip_hevc()  : HEVC 4K HDR10 10-bit · BT.2020 · SMPTE ST 2084
+│                                                   Lanczos4 1920→3840 · x265 HDR10 master display
+│                          frames_to_prores()     : ProRes 422 HQ (~220 Mbps) mezzanine broadcast
+│                          add_audio() · concat_clips() · process_shot()
+└── assembly.py          — assemble_episode() : clips → master MP4 via FFmpeg concat
+```
 
 ---
 
@@ -243,27 +313,32 @@ production/
 
 ### Personnages lockés
 
-| Personnage | Rôle | Seed | Validé |
+| Personnage | Slug | Rôle | Validé |
 |---|---|---|---|
-| Nara Voss | Protagoniste | 333 | 2026-05-01 |
-| Mira Sol | Deuteragoniste | 750 | 2026-05-01 |
-| Elian Voss | Supporting | 400 | 2026-05-01 |
-| Rook | Antagoniste | — | 2026-05-01 |
+| Nara Voss | `nara` | Protagoniste | 2026-05-01 |
+| Mira Sol | `mira` | Deuteragoniste | 2026-05-01 |
+| Elian Voss | `elian` | Supporting | 2026-05-01 |
+| Commander Sarin Vale | `vale` | Antagoniste secondaire | 2026-05-01 |
+| Director Halden Rook | `rook` | Antagoniste principal | 2026-05-01 |
 
-### Master plates lieux (FLUX 1.1 Pro Ultra · raw=True · 16:9 · 3840×2160)
+**Corpus Phase B** (génération Seedream 4.5 · $0.04/image) :
+- `character_faces/{slug}/` — 7 angles + 14 expressions = **21 PNG × 5 = 105 fichiers**
+- `character_bodies/{slug}/` — 8 turnarounds + 7 poses = **15 PNG × 5 = 75 fichiers**
+
+### Master plates lieux (FLUX 1.1 Pro Ultra · raw=True · 16:9 · 3840×2160 · 10/10 générés)
 
 | Lieu | Seed | Scènes | DOP référence |
 |---|---|---|---|
-| `ext_outer_wall_night` | 11 | SCN_001 | Deakins / Blade Runner 2049 |
-| `int_transit_corridor_night` | 22 | SCN_002 | Deakins / Sicario |
-| `int_pressure_valve_chamber_night` | 33 | SCN_003 | Lubezki / Gravity |
-| `int_voss_apartment_night` | 44 | SCN_004 | Deakins / Prisoners |
-| `int_civic_atrium_morning` | 55 | SCN_005 | Khondji / Se7en |
-| `int_black_market_sublevel_day` | 66 | SCN_006 | Van Hoytema / Her |
-| `int_security_ops_center_day` | 77 | SCN_007 | Deakins / Skyfall |
-| `int_service_spine_night` | 88 | SCN_008/010 | Prieto / Ozark |
-| `int_observation_chamber` | 99 | SCN_009 | Storaro / Apocalypse Now |
-| `int_voss_apartment_predawn` | 121 | SCN_011 | Deakins / Prisoners |
+| `ext_outer_wall_night` | 11 | SCN_001 | Roger Deakins / Blade Runner 2049 (2017) |
+| `int_transit_corridor_night` | 22 | SCN_002 | Roger Deakins / Sicario (2015) |
+| `int_pressure_valve_chamber_night` | 33 | SCN_003 | Denis Villeneuve / Arrival (2016) |
+| `int_voss_apartment_night` | 44 | SCN_004 | Denis Villeneuve / Prisoners (2013) |
+| `int_civic_atrium_morning` | 55 | SCN_005 | Roger Deakins / Skyfall (2012) |
+| `int_black_market_sublevel_day` | 66 | SCN_006 | Denis Villeneuve / Blade Runner 2049 (2017) |
+| `int_security_ops_center_day` | 77 | SCN_007 | David Fincher / The Social Network (2010) |
+| `int_service_spine_night` | 88 | SCN_008/010 | Roger Deakins / Sicario (2015) |
+| `int_observation_chamber` | 99 | SCN_009 | Alfonso Cuarón / Children of Men (2006) |
+| `int_voss_apartment_predawn` | 121 | SCN_011 | Roger Deakins / No Country for Old Men (2007) |
 
 ### Pipeline vidéo (SmartVideoRouter)
 
@@ -271,6 +346,61 @@ production/
 character_reference_urls présents  →  Seedance 2.0  ($0.18/sec, 720p, cohérence personnage)
 ≤ 5s sans personnage               →  Runway Gen-4  (i2v qualité)
 > 5s sans personnage               →  Kling 3.0     (kling-v3, camera_type: professional)
+```
+
+### Phase C — Stylisation frame-par-frame (en attente GO)
+
+| | Cloud (Replicate) | Local (ComfyUI) |
+|---|---|---|
+| Modèle | `jagilley/controlnet-normal` (SD1.5) | SD1.5 + ControlNet Normal + IP-Adapter |
+| Coût | **$139.20** (3 480 frames × $0.04) | **$0.00** |
+| Pré-requis | `REPLICATE_API_TOKEN` | ComfyUI sur localhost:8188 · RTX ≥ 12 GB VRAM |
+
+```powershell
+# Dry-run (aucun appel API)
+python production/gen_shots_v4.py --all --backend replicate --dry-run
+
+# Phase C — cloud (GO DA requis)
+python production/gen_shots_v4.py --all --backend replicate --execute
+
+# Phase C — local ComfyUI (gratuit)
+python production/gen_shots_v4.py --all --backend comfyui --execute
+```
+
+**ComfyUI — modèles requis** (`ComfyUI/models/`) :
+- `checkpoints/v1-5-pruned-emaonly.safetensors`
+- `controlnet/control_v11p_sd15_normalbae.safetensors`
+- `ipadapter/ip-adapter-plus_sd15.safetensors`
+- `clip_vision/CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors`
+- Extension : [ComfyUI-IPAdapter-plus](https://github.com/cubiq/ComfyUI_IPAdapter_plus)
+
+### Phase C — Audio local (F5-TTS + AudioCraft)
+
+```python
+from aiprod_adaptation.post_prod.f5tts_adapter import F5TTSAdapter
+from aiprod_adaptation.post_prod.audiocraft_adapter import make_local_audio_adapter
+
+# TTS vocal (clonage voix)
+tts = F5TTSAdapter(ref_audio="production/audio/voice_refs/nara_ref.wav")
+result = tts.generate(AudioRequest(shot_id="SCN_001_SHOT_001", text="..."))
+
+# Score cinématique (MusicGen stereo large)
+music = make_local_audio_adapter("musicgen", duration=10.0)
+
+# SFX (AudioGen medium)
+sfx = make_local_audio_adapter("audiogen", duration=5.0)
+```
+
+### Phase 3 — Vidéo broadcast 4K HDR10 (post-MSI Vector 17)
+
+```python
+from pipeline.video_pipeline import frames_to_clip_hevc, frames_to_prores
+
+# HEVC 4K HDR10 10-bit (BT.2020 · SMPTE ST 2084 · 1000 nits)
+frames_to_clip_hevc(frames_dir, upscale_4k=True, crf=18)
+
+# ProRes 422 HQ mezzanine (~220 Mbps) pour grade DaVinci Resolve
+frames_to_prores(frames_dir, profile=3)
 ```
 
 ### Règles de production absolues
@@ -287,7 +417,14 @@ character_reference_urls présents  →  Seedance 2.0  ($0.18/sec, 720p, cohére
 - pydantic >= 2.0
 - structlog >= 21.0
 - anthropic, google-generativeai *(optionnel — requis pour les adaptateurs LLM)*
-- ffmpeg *(optionnel — requis pour `ffmpeg_exporter`)*
+- ffmpeg *(requis pour `video_pipeline`, `ffmpeg_exporter`, `assembly`)*
+
+**Pipeline local (optionnel — Phase C/2/3) :**
+- `torch` + `diffusers` + `transformers` + `accelerate` — FLUX.1-schnell local (`gen_location_refs.py --local`)
+- `f5-tts` + `soundfile` — TTS vocal local (`f5tts_adapter.py`)
+- `audiocraft` + `torchaudio` — score + SFX local (`audiocraft_adapter.py`)
+- `opencv-python` (`cv2`) — conversion EXR depth/normals → PNG pour ComfyUI
+- ComfyUI + RTX ≥ 12 GB VRAM — backend stylisation local
 
 ---
 

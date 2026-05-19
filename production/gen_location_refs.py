@@ -292,11 +292,90 @@ def run(filter_locs: list[str], dry_run: bool, ultra: bool = False, gpt2: bool =
     print(f"\nTerminé. {len(targets)} master plates. Coût : ${total_cost:.2f}")
 
 
+def run_local(filter_locs: list[str], dry_run: bool) -> None:
+    """Génère les master plates localement via diffusers + FLUX.1-schnell (gratuit, ~6 sec/image).
+
+    Requiert :
+      pip install diffusers transformers accelerate sentencepiece protobuf
+      Modèle téléchargé automatiquement depuis HuggingFace : black-forest-labs/FLUX.1-schnell
+      VRAM recommandée : ≥ 16 GB (flux1-schnell bf16) — fonctionne aussi en CPU (lent).
+    """
+    locs_data = json.loads((ROOT / "production/locations.json").read_text(encoding="utf-8"))
+    targets = filter_locs if filter_locs else list(locs_data.keys())
+    targets = [loc for loc in targets if loc in locs_data]
+    s2l = _scene_to_location_map(ROOT)
+
+    print(f"\nMaster plates locales (FLUX.1-schnell) : {len(targets)} lieux — coût : $0.00")
+
+    if dry_run:
+        for lk in targets:
+            loc = locs_data[lk]
+            print(f"  {lk} | seed={loc['seed']}")
+        print("\n[DRY-RUN] Aucun appel local.")
+        return
+
+    try:
+        import torch
+        from diffusers import FluxPipeline
+    except ImportError as exc:
+        raise ImportError(
+            "diffusers + torch manquants. "
+            "Installer : pip install diffusers transformers accelerate torch"
+        ) from exc
+
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    dtype = torch.bfloat16 if device == "cuda" else torch.float32
+    print(f"  Device : {device} | dtype : {dtype}")
+
+    pipe: FluxPipeline = FluxPipeline.from_pretrained(
+        "black-forest-labs/FLUX.1-schnell",
+        torch_dtype=dtype,
+    ).to(device)
+    pipe.enable_attention_slicing()
+
+    out_dir = ROOT / "production/location_refs"
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    for lk in targets:
+        loc = locs_data[lk]
+        prompt = build_master_prompt_dop(lk, loc)
+        print(f"\n[{lk}] — inférence locale FLUX.1-schnell...")
+        t0 = time.monotonic()
+
+        generator = torch.Generator(device=device).manual_seed(loc["seed"])
+        image = pipe(
+            prompt=prompt,
+            width=1920,
+            height=1080,
+            num_inference_steps=4,
+            guidance_scale=0.0,
+            generator=generator,
+        ).images[0]
+
+        elapsed = time.monotonic() - t0
+        out_path = out_dir / f"{lk}_master.png"
+        image.save(str(out_path))
+
+        if lk in s2l:
+            update_master_plate_path(s2l[lk], str(out_path))
+        locs_data[lk]["ref_image"] = str(out_path)
+        (ROOT / "production/locations.json").write_text(
+            json.dumps(locs_data, indent=2, ensure_ascii=False), encoding="utf-8"
+        )
+        print(f"  Sauvegardé : {out_path.name} (1920×1080) — {elapsed:.1f}s — $0.00")
+
+    print(f"\nTerminé. {len(targets)} master plates locales. Coût : $0.00")
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--loc",      nargs="*", default=[])
-    parser.add_argument("--ultra",    action="store_true", help="FLUX Ultra + DOP-grade + 4K")
-    parser.add_argument("--gpt2",     action="store_true", help="GPT Image 2 high quality (test, $0.128)")
+    parser.add_argument("--ultra",    action="store_true", help="FLUX Ultra + DOP-grade + 4K (Replicate)")
+    parser.add_argument("--gpt2",     action="store_true", help="GPT Image 2 high quality (Replicate, $0.128)")
+    parser.add_argument("--local",    action="store_true", help="FLUX.1-schnell local via diffusers ($0.00)")
     parser.add_argument("--dry-run",  action="store_true")
     args = parser.parse_args()
-    run(args.loc, args.dry_run, args.ultra, args.gpt2)
+    if args.local:
+        run_local(args.loc, args.dry_run)
+    else:
+        run(args.loc, args.dry_run, args.ultra, args.gpt2)

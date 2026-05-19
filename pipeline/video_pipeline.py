@@ -179,6 +179,147 @@ def concat_clips(
     return out_path
 
 
+def frames_to_clip_hevc(
+    frames_dir: Path,
+    fps: int = _DEFAULT_FPS,
+    out_path: Path | None = None,
+    crf: int = 18,
+    upscale_4k: bool = True,
+    ffmpeg_exe: str | None = None,
+) -> Path:
+    """Convertit des frames PNG en clip HEVC 4K HDR10 10-bit pour diffusion broadcast/streaming.
+
+    Pipeline :
+      1920×1080 PNG → (optionnel Real-ESRGAN x4+ → 3840×2160) → libx265 yuv420p10le
+      Colorimétrie : BT.2020, transfer SMPTE ST 2084 (PQ), primaires BT.2020.
+      Bitrate cible : ~80 Mbps (CRF 18 avec preset slow).
+
+    Note : Si upscale_4k=True et Real-ESRGAN n'est pas disponible, upscale
+    via Lanczos4 (ffmpeg -vf scale=3840:2160:flags=lanczos). Pour un upscale
+    IA de qualité broadcast, pré-traiter les frames avec Real-ESRGAN x4+ d'abord.
+
+    Args:
+        frames_dir: Répertoire des frames PNG source (1920×1080 ou plus).
+        fps:        Framerate.
+        out_path:   Clip de sortie (.mp4). Défaut : {frames_dir.parent}/clip_4k_hdr10.mp4
+        crf:        Qualité libx265 (18 = broadcast, 23 = streaming web).
+        upscale_4k: Si True, upscale en 3840×2160 via ffmpeg Lanczos4.
+        ffmpeg_exe: Chemin vers ffmpeg.
+
+    Returns:
+        Path vers le clip HEVC généré.
+
+    Raises:
+        FileNotFoundError: si aucune frame trouvée.
+        RuntimeError:      si FFmpeg échoue.
+    """
+    frames = sorted(frames_dir.glob("frame_*.png"))
+    if not frames:
+        raise FileNotFoundError(f"Aucune frame PNG dans {frames_dir}")
+
+    if out_path is None:
+        suffix = "_4k_hdr10" if upscale_4k else "_hdr10"
+        out_path = frames_dir.parent / f"clip{suffix}.mp4"
+
+    exe = ffmpeg_exe or _get_ffmpeg()
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+
+    input_pattern = str(frames_dir / "frame_%04d.png")
+
+    # Paramètres HDR10 : master display P3-D65 → BT.2020 (valeurs SMPTE ST 2086)
+    # Mastering display : DCI-P3 D65 white point, 1000 nits peak
+    hdr10_master_display = (
+        "G(13250,34500)B(7500,3000)R(34000,16000)"
+        "WP(15635,16450)L(10000000,50)"
+    )
+    hdr10_max_cll = "1000,400"  # MaxCLL=1000 nits, MaxFALL=400 nits
+
+    vf_scale = "scale=3840:2160:flags=lanczos,format=yuv420p10le" if upscale_4k else "format=yuv420p10le"
+
+    cmd = [
+        exe, "-y",
+        "-framerate", str(fps),
+        "-i", input_pattern,
+        "-vf", vf_scale,
+        "-c:v", "libx265",
+        "-pix_fmt", "yuv420p10le",
+        "-crf", str(crf),
+        "-preset", "slow",
+        "-color_primaries", "bt2020",
+        "-color_trc", "smpte2084",
+        "-colorspace", "bt2020nc",
+        "-x265-params",
+        f"hdr10=1:hdr10-opt=1:master-display={hdr10_master_display}:max-cll={hdr10_max_cll}",
+        "-movflags", "+faststart",
+        str(out_path),
+    ]
+    _run(cmd, f"frames_to_clip_hevc (HDR10{'  4K' if upscale_4k else ''}) → {out_path.name}")
+    return out_path
+
+
+def frames_to_prores(
+    frames_dir: Path,
+    fps: int = _DEFAULT_FPS,
+    out_path: Path | None = None,
+    profile: int = 3,
+    ffmpeg_exe: str | None = None,
+) -> Path:
+    """Convertit des frames PNG en fichier ProRes 422 HQ (mezzanine broadcast).
+
+    Format mezzanine pour post-production : DaVinci Resolve, Avid, Final Cut.
+    Pas de perte générationnelle — conserve toute l'information pour le grade HDR.
+
+    Profils ProRes :
+      0 = ProRes 422 Proxy    (~45 Mbps)
+      1 = ProRes 422 LT       (~102 Mbps)
+      2 = ProRes 422          (~147 Mbps)
+      3 = ProRes 422 HQ       (~220 Mbps)  ← défaut production
+      4 = ProRes 4444         (~330 Mbps, alpha channel)
+      5 = ProRes 4444 XQ      (~500 Mbps, alpha + HDR)
+
+    Args:
+        frames_dir: Répertoire des frames PNG source.
+        fps:        Framerate.
+        out_path:   Clip de sortie (.mov). Défaut : {frames_dir.parent}/clip_prores.mov
+        profile:    Profil ProRes (3 = 422 HQ, recommandé pour grade HDR10).
+        ffmpeg_exe: Chemin vers ffmpeg.
+
+    Returns:
+        Path vers le fichier ProRes .mov généré.
+
+    Raises:
+        FileNotFoundError: si aucune frame trouvée.
+        RuntimeError:      si FFmpeg échoue.
+    """
+    frames = sorted(frames_dir.glob("frame_*.png"))
+    if not frames:
+        raise FileNotFoundError(f"Aucune frame PNG dans {frames_dir}")
+
+    if out_path is None:
+        out_path = frames_dir.parent / "clip_prores.mov"
+
+    exe = ffmpeg_exe or _get_ffmpeg()
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+
+    input_pattern = str(frames_dir / "frame_%04d.png")
+
+    profile_names = {0: "Proxy", 1: "LT", 2: "422", 3: "422 HQ", 4: "4444", 5: "4444 XQ"}
+    profile_label = profile_names.get(profile, str(profile))
+
+    cmd = [
+        exe, "-y",
+        "-framerate", str(fps),
+        "-i", input_pattern,
+        "-c:v", "prores_ks",
+        "-profile:v", str(profile),
+        "-vendor", "apl0",
+        "-pix_fmt", "yuv422p10le",
+        str(out_path),
+    ]
+    _run(cmd, f"frames_to_prores (ProRes {profile_label}) → {out_path.name}")
+    return out_path
+
+
 # ------------------------------------------------------------------
 # Shot-level helper
 # ------------------------------------------------------------------
