@@ -44,7 +44,7 @@ class KlingAdapter(VideoAdapter):
             "Authorization": f"Bearer {self._jwt_token()}",
             "Content-Type": "application/json",
         }
-        payload = {
+        payload: dict[str, str | float] = {
             "model_name": self.MODEL,
             "image": request.image_url,
             "prompt": request.prompt,
