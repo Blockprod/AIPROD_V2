@@ -38,7 +38,6 @@ import os
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any
 
 # Racine du workspace (remonte de image_gen/ -> aiprod_adaptation/ -> workspace/)
 _WORKSPACE_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -98,7 +97,7 @@ class TripoSGAdapter:
             cmd += ["--faces", str(num_faces)]
 
         print(f"    [TripoSG] Inference : {image_path.name} -> {output_path.name}")
-        print(f"    [TripoSG] GPU VRAM requise : 8 Go min (RTX 5080 optimal)")
+        print("    [TripoSG] GPU VRAM requise : 8 Go min (RTX 5080 optimal)")
 
         result = subprocess.run(
             cmd,

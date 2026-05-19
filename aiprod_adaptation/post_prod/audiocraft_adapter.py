@@ -131,8 +131,8 @@ class MusicGenAdapter(AudioAdapter):
         return m
 
     def _generate_music(self, model: Any, prompt: str, duration: float) -> bytes:
-        import torchaudio  # type: ignore[import-untyped]
         import torch
+        import torchaudio  # type: ignore[import-untyped]
 
         model.set_generation_params(duration=duration)
         with torch.inference_mode():
@@ -236,8 +236,8 @@ class AudioGenAdapter(AudioAdapter):
         return m
 
     def _generate_sfx(self, model: Any, prompt: str, duration: float) -> bytes:
-        import torchaudio  # type: ignore[import-untyped]
         import torch
+        import torchaudio  # type: ignore[import-untyped]
 
         model.set_generation_params(duration=duration)
         with torch.inference_mode():
