@@ -1,21 +1,10 @@
-﻿from aiprod_adaptation.core.cost_report import CostReport
-from aiprod_adaptation.core.io import (
-    load_output,
-    load_production,
-    load_storyboard,
-    load_video,
-    save_output,
-    save_production,
-    save_storyboard,
-    save_video,
-)
+from __future__ import annotations
+
+from aiprod_adaptation.core.cost_report import CostReport
 from aiprod_adaptation.core.production_budget import ProductionBudget
 from aiprod_adaptation.core.run_metrics import RunMetrics
 
-__all__ = [
-    "CostReport",
-    "ProductionBudget",
-    "RunMetrics",
+_IO_EXPORTS = {
     "save_output",
     "load_output",
     "save_storyboard",
@@ -24,5 +13,19 @@ __all__ = [
     "load_video",
     "save_production",
     "load_production",
+}
+
+__all__ = [
+    "CostReport",
+    "ProductionBudget",
+    "RunMetrics",
+    *_IO_EXPORTS,
 ]
 
+
+def __getattr__(name: str) -> object:
+    if name in _IO_EXPORTS:
+        from aiprod_adaptation.core import io
+
+        return getattr(io, name)
+    raise AttributeError(f"module 'aiprod_adaptation.core' has no attribute {name!r}")

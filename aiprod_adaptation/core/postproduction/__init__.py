@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import dataclasses
 from collections.abc import Callable
-from datetime import UTC, datetime
 
 from aiprod_adaptation.core.postproduction.audio_directives import AudioDirectivesBuilder
 from aiprod_adaptation.core.postproduction.continuity import ContinuityBuilder
@@ -37,12 +36,14 @@ __all__ = [
     "build_manifest_for_episode",
 ]
 
+_DETERMINISTIC_CREATED_AT = "1970-01-01T00:00:00+00:00"
+
 
 def build_manifest_for_episode(
     output: AIPRODOutput,
     fps: float = 24.0,
     *,
-    clock: Callable[[], str] = lambda: datetime.now(UTC).isoformat(),
+    clock: Callable[[], str] = lambda: _DETERMINISTIC_CREATED_AT,
 ) -> PostProductionManifest:
     """
     Build a complete PostProductionManifest from the first episode in *output*.

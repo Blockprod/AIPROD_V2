@@ -292,11 +292,14 @@ class QualityGate:
         never added to the scene's character list.
         """
         ep_id = episode.episode_id
-        # Build set of characters declared per scene
-        chars_per_scene: dict[str, set[str]] = {
-            scene.scene_id: set(c.strip() for c in scene.characters)
-            for scene in episode.scenes
-        }
+        chars_per_scene: dict[str, list[str]] = {}
+        for scene in episode.scenes:
+            declared_characters: list[str] = []
+            for character in scene.characters:
+                stripped = character.strip()
+                if stripped and stripped not in declared_characters:
+                    declared_characters.append(stripped)
+            chars_per_scene[scene.scene_id] = declared_characters
 
         for shot in episode.shots:
             if shot.action is None:
@@ -304,12 +307,13 @@ class QualityGate:
             subject_id = shot.action.subject_id
             if subject_id in {"unknown_subject", "unknown", ""}:
                 continue
-            declared = chars_per_scene.get(shot.scene_id, set())
+            declared = chars_per_scene.get(shot.scene_id, [])
             # subject_id is a slug (lower-case, underscores) — normalise declared names
-            declared_slugs = {
-                c.lower().replace(" ", "_").replace("-", "_")
-                for c in declared
-            }
+            declared_slugs: list[str] = []
+            for character in declared:
+                slug = character.lower().replace(" ", "_").replace("-", "_")
+                if slug not in declared_slugs:
+                    declared_slugs.append(slug)
             if subject_id not in declared_slugs and declared:
                 report.warnings.append(QualityIssue(
                     code="UNDECLARED_SUBJECT",

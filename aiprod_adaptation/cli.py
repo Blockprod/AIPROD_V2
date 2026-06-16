@@ -15,7 +15,7 @@ from aiprod_adaptation.core.adaptation.llm_adapter import (
 )
 from aiprod_adaptation.core.production_budget import ProductionBudget
 from aiprod_adaptation.image_gen.image_adapter import ImageAdapter, NullImageAdapter
-from aiprod_adaptation.models.schema import AIPRODOutput
+from aiprod_adaptation.models.schema import AIPRODOutput, validated_model_update
 from aiprod_adaptation.post_prod.audio_adapter import AudioAdapter, NullAudioAdapter
 from aiprod_adaptation.video_gen.video_adapter import NullVideoAdapter, VideoAdapter
 
@@ -183,17 +183,16 @@ def _select_output_subset(
         kept_shot_ids = {shot.shot_id for shot in kept_shots}
         kept_scene_ids = {shot.scene_id for shot in kept_shots}
         kept_scenes = [
-            scene.model_copy(
-                update={
-                    "shot_ids": [shot_id for shot_id in scene.shot_ids if shot_id in kept_shot_ids]
-                }
+            validated_model_update(
+                scene,
+                shot_ids=[shot_id for shot_id in scene.shot_ids if shot_id in kept_shot_ids],
             )
             for scene in episode.scenes
             if scene.scene_id in kept_scene_ids
         ]
-        episodes.append(episode.model_copy(update={"scenes": kept_scenes, "shots": kept_shots}))
+        episodes.append(validated_model_update(episode, scenes=kept_scenes, shots=kept_shots))
 
-    return output.model_copy(update={"episodes": episodes})
+    return validated_model_update(output, episodes=episodes)
 
 
 def _add_pipeline_mode_option(parser: argparse.ArgumentParser) -> None:
@@ -527,6 +526,34 @@ def build_parser() -> argparse.ArgumentParser:
         dest="series_title",
         help="Series title for season-report export",
     )
+
+    p_migrate = sub.add_parser("migrate-ir", help="migrate a legacy IR JSON to strict v6")
+    p_migrate.add_argument("--input", required=True)
+    p_migrate.add_argument("--output", required=True)
+
+    p_production = sub.add_parser("production", help="safe production orchestration")
+    production_sub = p_production.add_subparsers(dest="production_command", required=True)
+    p_preflight = production_sub.add_parser("preflight", help="create a 24-hour execution receipt")
+    p_preflight.add_argument("--ir", required=True)
+    p_preflight.add_argument("--storyboard", required=True)
+    p_preflight.add_argument("--receipt", required=True)
+    p_preflight.add_argument("--backend", choices=["replicate", "comfyui", "null"], default="null")
+    p_preflight.add_argument("--shot-id", action="append", default=None)
+    p_preflight.add_argument("--budget-cap", type=float, required=True)
+
+    p_execute = production_sub.add_parser("execute", help="execute an authorized production run")
+    p_execute.add_argument("--ir", required=True)
+    p_execute.add_argument("--storyboard", required=True)
+    p_execute.add_argument("--receipt", required=True)
+    p_execute.add_argument("--backend", choices=["replicate", "comfyui", "null"], default="null")
+    p_execute.add_argument("--shot-id", action="append", default=None)
+    p_execute.add_argument("--budget-cap", type=float, required=True)
+    p_execute.add_argument("--skip-blender", action="store_true")
+    p_execute.add_argument("--skip-stylize", action="store_true")
+    p_execute.add_argument("--skip-video", action="store_true")
+    p_certify = production_sub.add_parser("certify", help="write offline capability certification status")
+    p_certify.add_argument("--output", required=True)
+    p_certify.add_argument("--smoke-budget", type=float, default=25.0)
 
     return parser
 
@@ -887,6 +914,112 @@ def cmd_export(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_migrate_ir(args: argparse.Namespace) -> int:
+    from aiprod_adaptation.core.engine import _rules_hash
+    from aiprod_adaptation.models.migration import migrate_ir_file
+
+    try:
+        migrate_ir_file(Path(args.input), Path(args.output), _rules_hash())
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        print(f"IR migration failed: {exc}", file=sys.stderr)
+        return 1
+    print(f"IR v6 written: {args.output}", file=sys.stderr)
+    return 0
+
+
+def _production_shot_ids(storyboard_path: Path, requested: list[str] | None) -> list[str]:
+    payload = json.loads(storyboard_path.read_text(encoding="utf-8"))
+    available = [
+        str(shot["shot_id"])
+        for shot in payload.get("shots", [])
+        if isinstance(shot, dict) and "shot_id" in shot
+    ]
+    if requested is None:
+        return available
+    unknown = [shot_id for shot_id in requested if shot_id not in available]
+    if unknown:
+        raise ValueError(f"Unknown storyboard shot ids: {unknown}")
+    return requested
+
+
+def _estimate_production_cost(storyboard_path: Path, shot_ids: list[str], backend: str) -> float:
+    if backend != "replicate":
+        return 0.0
+    payload = json.loads(storyboard_path.read_text(encoding="utf-8"))
+    durations = [
+        int(shot.get("duration_sec", 0))
+        for shot in payload.get("shots", [])
+        if isinstance(shot, dict) and shot.get("shot_id") in shot_ids
+    ]
+    return sum(max(0, duration) * 24 * 0.04 for duration in durations)
+
+
+def cmd_production(args: argparse.Namespace) -> int:
+    if args.production_command == "certify":
+        from aiprod_adaptation.production.certification import write_certification
+
+        certification = write_certification(
+            Path(args.output),
+            smoke_budget_usd=args.smoke_budget,
+        )
+        print(json.dumps(certification, indent=2, sort_keys=True))
+        return 0
+
+    from aiprod_adaptation.production.receipt import (
+        ReceiptValidationError,
+        build_receipt,
+        validate_receipt,
+    )
+
+    root = Path.cwd()
+    ir_path = Path(args.ir)
+    storyboard_path = Path(args.storyboard)
+    receipt_path = Path(args.receipt)
+    try:
+        shot_ids = _production_shot_ids(storyboard_path, args.shot_id)
+        estimate = _estimate_production_cost(storyboard_path, shot_ids, args.backend)
+        if args.production_command == "preflight":
+            receipt = build_receipt(
+                root=root,
+                ir_path=ir_path,
+                storyboard_path=storyboard_path,
+                shot_ids=shot_ids,
+                backend=args.backend,
+                budget_cap_usd=args.budget_cap,
+                estimated_cost_usd=estimate,
+            )
+            receipt_path.parent.mkdir(parents=True, exist_ok=True)
+            receipt_path.write_text(json.dumps(receipt, indent=2), encoding="utf-8")
+            print(f"Production receipt written: {receipt_path}", file=sys.stderr)
+            return 0
+
+        authorization = validate_receipt(
+            receipt_path,
+            root=root,
+            ir_path=ir_path,
+            storyboard_path=storyboard_path,
+            shot_ids=shot_ids,
+            backend=args.backend,
+            budget_cap_usd=args.budget_cap,
+        )
+        from production.gen_shots_v4 import run_all
+
+        result = run_all(
+            shot_ids,
+            backend=args.backend,
+            skip_blender=args.skip_blender,
+            skip_stylize=args.skip_stylize,
+            skip_video=args.skip_video,
+            budget_cap=args.budget_cap,
+            authorization=authorization,
+        )
+        print(json.dumps(result, indent=2))
+        return 0 if result.get("budget_ok") and result.get("failed_qg") == 0 else 1
+    except (OSError, ValueError, ReceiptValidationError) as exc:
+        print(f"Production blocked: {exc}", file=sys.stderr)
+        return 1
+
+
 def main() -> None:
     _load_env_file()
     parser = build_parser()
@@ -903,6 +1036,10 @@ def main() -> None:
         sys.exit(cmd_metrics(args))
     elif args.command == "export":
         sys.exit(cmd_export(args))
+    elif args.command == "migrate-ir":
+        sys.exit(cmd_migrate_ir(args))
+    elif args.command == "production":
+        sys.exit(cmd_production(args))
     else:
         parser.print_help()
         sys.exit(1)

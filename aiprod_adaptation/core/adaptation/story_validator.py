@@ -13,6 +13,15 @@ class SceneValidationResult:
     issues: list[str] = field(default_factory=list)
 
 
+class StoryValidationError(ValueError):
+    def __init__(self, failures: list[SceneValidationResult]) -> None:
+        self.failures = failures
+        details = "; ".join(
+            f"{failure.scene_id}: {', '.join(failure.issues)}" for failure in failures
+        )
+        super().__init__(f"Story validation failed: {details}")
+
+
 class StoryValidator:
     """
     Validates each VisualScene for filmability before Pass 3.
@@ -74,4 +83,8 @@ class StoryValidator:
         scenes: list[VisualScene],
         threshold: float = 0.5,
     ) -> list[VisualScene]:
-        return [s for s in scenes if self.validate(s).score >= threshold]
+        results = [self.validate(scene) for scene in scenes]
+        failures = [result for result in results if result.score < threshold]
+        if failures:
+            raise StoryValidationError(failures)
+        return scenes

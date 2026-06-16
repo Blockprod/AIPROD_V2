@@ -24,10 +24,9 @@ def _location_preview(episode: Episode | None, limit: int = 4) -> list[str]:
 
 def _ordered_difference(left: list[str], right: list[str], *, casefold: bool = False) -> list[str]:
     if casefold:
-        right_keys = {item.casefold() for item in right}
+        right_keys = [item.casefold() for item in right]
         return [item for item in left if item.casefold() not in right_keys]
-    right_keys = set(right)
-    return [item for item in left if item not in right_keys]
+    return [item for item in left if item not in right]
 
 
 def _scene_ids(episode: Episode | None) -> list[str]:
@@ -40,7 +39,7 @@ def _known_locations(episode: Episode | None) -> list[str]:
     if episode is None:
         return []
     locations: list[str] = []
-    seen: set[str] = set()
+    seen: list[str] = []
     for scene in episode.scenes:
         location = scene.location.strip()
         if not location or location.casefold() == "unknown":
@@ -48,7 +47,7 @@ def _known_locations(episode: Episode | None) -> list[str]:
         key = location.casefold()
         if key in seen:
             continue
-        seen.add(key)
+        seen.append(key)
         locations.append(location)
     return locations
 
@@ -74,14 +73,23 @@ def _preview_items(items: list[str], limit: int = 6) -> str:
     return f"{visible} | +{len(items) - limit} more"
 
 
-def _tokenize(text: str) -> set[str]:
-    return set(re.findall(r"[a-z0-9]+", text.casefold()))
+def _tokenize(text: str) -> list[str]:
+    tokens: list[str] = []
+    for token in re.findall(r"[a-z0-9]+", text.casefold()):
+        if token not in tokens:
+            tokens.append(token)
+    return tokens
 
 
-def _jaccard_similarity(left: set[str], right: set[str]) -> float:
+def _jaccard_similarity(left: list[str], right: list[str]) -> float:
     if not left or not right:
         return 0.0
-    return len(left & right) / len(left | right)
+    intersection_count = sum(1 for item in left if item in right)
+    union = list(left)
+    for item in right:
+        if item not in union:
+            union.append(item)
+    return intersection_count / len(union)
 
 
 _MIN_ALIGNMENT_SIMILARITY = 0.1
@@ -180,8 +188,8 @@ class AlignedSceneDiff:
 def _scene_similarity(rules_scene: Scene, llm_scene: Scene) -> float:
     rules_location_tokens = _tokenize(rules_scene.location)
     llm_location_tokens = _tokenize(llm_scene.location)
-    rules_character_tokens = {name.casefold() for name in rules_scene.characters}
-    llm_character_tokens = {name.casefold() for name in llm_scene.characters}
+    rules_character_tokens = _tokenize(" ".join(rules_scene.characters))
+    llm_character_tokens = _tokenize(" ".join(llm_scene.characters))
     rules_action_tokens = _tokenize(_first_action(rules_scene))
     llm_action_tokens = _tokenize(_first_action(llm_scene))
     location_score = _jaccard_similarity(rules_location_tokens, llm_location_tokens)

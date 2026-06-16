@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from aiprod_adaptation.models.schema import AIPRODOutput, Shot
+from aiprod_adaptation.models.schema import AIPRODOutput, Scene, Shot
 
 _FORBIDDEN_GRADES: frozenset[str] = frozenset({"orange_teal"})
 _RESTRICTED_GRADES: frozenset[str] = frozenset({"desaturated", "monochrome"})
@@ -82,7 +82,7 @@ class ColorManager:
 
         return ColorValidationResult(valid=len(errors) == 0, errors=errors, warnings=warnings)
 
-    def _resolve_location_id(self, shot: Shot, scenes: list) -> str | None:
+    def _resolve_location_id(self, shot: Shot, scenes: list[Scene]) -> str | None:
         for scene in scenes:
             if scene.scene_id == shot.scene_id:
                 return scene.location_id or None

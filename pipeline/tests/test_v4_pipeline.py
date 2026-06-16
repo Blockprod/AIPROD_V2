@@ -24,9 +24,8 @@ from __future__ import annotations
 
 import json
 import sys
-import tempfile
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -34,6 +33,10 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT))
 
 # ── imports des modules V4
+from pipeline.assembly import (
+    _resolve_clip,
+    assemble_episode,
+)
 from pipeline.shot_pipeline_v4 import (
     NullStylizationBackend,
     _build_stylization_prompt,
@@ -46,20 +49,14 @@ from pipeline.video_pipeline import (
     frames_to_clip,
     process_shot,
 )
-from pipeline.assembly import (
-    _resolve_clip,
-    assemble_episode,
-)
-from production.quality_gate_v4 import (
-    _make_result,
-    evaluate_shot,
-)
 from production.gen_shots_v4 import (
     _load_checkpoint,
     _save_checkpoint,
     run_all,
 )
-
+from production.quality_gate_v4 import (
+    evaluate_shot,
+)
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -488,12 +485,16 @@ class TestEvaluateShotSSIM:
     def test_ssim_above_threshold_passes(self, tmp_path: Path, minimal_storyboard: Path) -> None:
         """Avec SSIM mock = 0.95 → passed=True."""
         self._make_stylized_frames(tmp_path, "SCN_001_SHOT_001")
+        char_ref = tmp_path / "nara_ref.png"
+        char_ref.write_bytes(b"reference")
         with patch("production.quality_gate_v4.STORYBOARD_FILE", minimal_storyboard), patch(
             "production.quality_gate_v4._compute_ssim_sequence", return_value=[0.95, 0.96, 0.94, 0.97]
         ), patch(
             "production.quality_gate_v4._compute_luminance_stability", return_value=[2.0, 3.0, 1.5, 2.5]
         ), patch(
-            "production.quality_gate_v4._compute_arcface_sequence", return_value=[]
+            "production.quality_gate_v4._resolve_char_ref", return_value=char_ref
+        ), patch(
+            "production.quality_gate_v4._compute_arcface_sequence", return_value=[0.95, 0.96]
         ):
             result = evaluate_shot(
                 shot_id="SCN_001_SHOT_001",
@@ -502,6 +503,23 @@ class TestEvaluateShotSSIM:
             )
         assert result["passed"] is True
         assert result["ssim_mean"] >= 0.85
+
+    def test_missing_arcface_measurement_fails(
+        self, tmp_path: Path, minimal_storyboard: Path
+    ) -> None:
+        self._make_stylized_frames(tmp_path, "SCN_001_SHOT_001")
+        with patch("production.quality_gate_v4.STORYBOARD_FILE", minimal_storyboard), patch(
+            "production.quality_gate_v4._compute_ssim_sequence", return_value=[0.95] * 4
+        ), patch(
+            "production.quality_gate_v4._compute_luminance_stability", return_value=[2.0] * 4
+        ):
+            result = evaluate_shot(
+                shot_id="SCN_001_SHOT_001",
+                stylized_dir=tmp_path,
+                write_metrics=False,
+            )
+        assert result["passed"] is False
+        assert any("Reference personnage" in issue for issue in result["issues"])
 
     def test_ssim_below_threshold_fails(self, tmp_path: Path, minimal_storyboard: Path) -> None:
         """Avec SSIM mock = 0.60 → passed=False (flickering détecté)."""

@@ -27,6 +27,7 @@ from typing import Any
 
 from aiprod_adaptation.image_gen.comfyui_adapter import ComfyUIAdapter
 from aiprod_adaptation.image_gen.image_request import ImageRequest, ImageResult
+from aiprod_adaptation.models.schema import validated_model_update
 
 # ---------------------------------------------------------------------------
 # Flux Kontext workflow template (ComfyUI API format)
@@ -146,7 +147,7 @@ class FluxKontextAdapter(ComfyUIAdapter):
         prompt = request.prompt
         if _KONTEXT_PRESERVATION_CLAUSE not in prompt:
             prompt = f"{prompt.rstrip('. ')}. {_KONTEXT_PRESERVATION_CLAUSE}."
-        patched = request.model_copy(update={"prompt": prompt})
+        patched = validated_model_update(request, prompt=prompt)
         return super().generate(patched)
 
     @staticmethod

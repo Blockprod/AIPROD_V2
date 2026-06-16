@@ -27,6 +27,7 @@ from .models import (
     FieldOperator,
     LeafCondition,
     RuleAction,
+    RulePhase,
     RuleSpec,
 )
 
@@ -39,6 +40,7 @@ BUILTIN_RULES: list[RuleSpec] = [
     RuleSpec(
         id="CHR-01-feasibility-gate",
         priority=1,
+        phase=RulePhase.FINAL_GATE,
         description=(
             "P1: Shots with feasibility_score < 40 and non-static camera movement "
             "are physically infeasible given the reference constraints. "

@@ -31,7 +31,10 @@ import os
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from aiprod_adaptation.production.receipt import ExecutionAuthorization
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
@@ -65,6 +68,7 @@ def run_all(
     fps: int = _DEFAULT_FPS,
     dry_run: bool = False,
     budget_cap: float = _BUDGET_ALERT_USD,
+    authorization: ExecutionAuthorization | None = None,
 ) -> dict[str, Any]:
     """Traite une liste de shots en séquence avec checkpoint et suivi budget.
 
@@ -81,9 +85,15 @@ def run_all(
     Returns:
         dict {"processed", "passed_qg", "failed_qg", "total_cost_usd", "budget_ok"}.
     """
+    if backend == "replicate" and not dry_run and authorization is None:
+        raise RuntimeError("Paid backend blocked: a validated production receipt is required.")
+    if skip_qg and not dry_run:
+        raise RuntimeError("Quality gate cannot be skipped during production execution.")
+
     checkpoint = _load_checkpoint()
     total_cost = checkpoint.get("total_cost_usd", 0.0)
     processed = checkpoint.get("processed", [])
+    states: dict[str, str] = dict(checkpoint.get("states", {}))
 
     # Pre-execution budget guard: estimate total remaining cost upfront
     if backend == "replicate" and not dry_run and not skip_stylize:
@@ -129,6 +139,8 @@ def run_all(
             if not blender_ok and not dry_run:
                 print("  [FAIL] Blender render echoue -- shot ignore")
                 shot_result["passed_qg"] = False
+                states[shot_id] = "retryable"
+                _save_checkpoint({"processed": processed, "states": states, "total_cost_usd": total_cost})
                 summary.append(shot_result)
                 continue
 
@@ -159,6 +171,7 @@ def run_all(
             if stylize_ok and not dry_run:
                 shot_cost += estimated_cost
                 total_cost += estimated_cost
+                states[shot_id] = "generated"
 
         # ─── Étape 3 : Clip vidéo
         if not skip_video:
@@ -187,8 +200,17 @@ def run_all(
         summary.append(shot_result)
 
         if not dry_run:
-            processed.append(shot_id)
-            _save_checkpoint({"processed": processed, "total_cost_usd": total_cost})
+            if qg_passed:
+                states[shot_id] = "approved"
+                if shot_id not in processed:
+                    processed.append(shot_id)
+            else:
+                states[shot_id] = "quality_failed"
+            _save_checkpoint({
+                "processed": processed,
+                "states": states,
+                "total_cost_usd": total_cost,
+            })
 
         _append_run_metrics(shot_result)
 
@@ -329,6 +351,10 @@ def main() -> int:
         help=f"Seuil de coût USD au-delà duquel l'exécution est bloquée (défaut: {_BUDGET_ALERT_USD}$)",
     )
 
+    parser.add_argument("--receipt", help="Preflight receipt required for paid execution")
+    parser.add_argument("--ir", help="Strict IR v6 bound to the receipt")
+    parser.add_argument("--storyboard", default=str(STORYBOARD_FILE))
+
     args = parser.parse_args()
     _load_env()
 
@@ -350,6 +376,26 @@ def main() -> int:
     else:
         shot_ids = all_shot_ids  # --all ou défaut
 
+    authorization = None
+    if args.execute and args.backend == "replicate":
+        if not args.receipt or not args.ir:
+            print("Paid execution requires --receipt and --ir.", file=sys.stderr)
+            return 1
+        from aiprod_adaptation.production.receipt import ReceiptValidationError, validate_receipt
+        try:
+            authorization = validate_receipt(
+                Path(args.receipt),
+                root=ROOT,
+                ir_path=Path(args.ir),
+                storyboard_path=Path(args.storyboard),
+                shot_ids=shot_ids,
+                backend=args.backend,
+                budget_cap_usd=args.budget_cap,
+            )
+        except ReceiptValidationError as exc:
+            print(f"Paid execution blocked: {exc}", file=sys.stderr)
+            return 1
+
     result = run_all(
         shot_ids=shot_ids,
         backend=args.backend,
@@ -360,6 +406,7 @@ def main() -> int:
         fps=args.fps,
         dry_run=args.dry_run,
         budget_cap=args.budget_cap,
+        authorization=authorization,
     )
     print(json.dumps(result, indent=2))
     return 0 if result.get("budget_ok", True) else 1

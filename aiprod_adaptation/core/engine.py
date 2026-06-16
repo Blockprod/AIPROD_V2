@@ -3,11 +3,12 @@ from __future__ import annotations
 import hashlib
 import json
 import sys
-from typing import TYPE_CHECKING, Any, Literal, cast
+from pathlib import Path
+from typing import TYPE_CHECKING, Any, Literal
 
 import structlog
 
-from aiprod_adaptation.models.intermediate import VisualScene
+from aiprod_adaptation.models.intermediate import CinematicScene, RawScene, VisualScene
 from aiprod_adaptation.models.schema import AIPRODOutput, IRVersion
 
 if TYPE_CHECKING:
@@ -30,6 +31,35 @@ structlog.configure(
 logger = structlog.get_logger()
 
 PipelineMode = Literal["auto", "deterministic", "generative"]
+
+
+def _external_scenes_to_pass1(scenes: list[VisualScene]) -> list[RawScene]:
+    pass1: list[RawScene] = []
+    for scene in scenes:
+        actions = list(scene.get("visual_actions", []))
+        dialogues = [f'"{dialogue}"' for dialogue in scene.get("dialogues", [])]
+        raw_text = " ".join(actions + dialogues).strip()
+        if not raw_text:
+            raise ValueError(f"PASS 1: external scene {scene.get('scene_id')} has no source text.")
+        pass1.append(
+            RawScene(
+                scene_id=scene["scene_id"],
+                characters=list(scene.get("characters", [])),
+                location=scene.get("location", "Unknown"),
+                time_of_day=scene.get("time_of_day"),
+                raw_text=raw_text,
+            )
+        )
+    return pass1
+
+
+def _rules_hash() -> str:
+    rules_root = Path(__file__).resolve().parent / "rules"
+    digest = hashlib.sha256()
+    for path in sorted(rules_root.glob("*.py"), key=lambda item: item.name):
+        digest.update(path.name.encode("utf-8"))
+        digest.update(path.read_bytes())
+    return digest.hexdigest()[:16]
 
 
 def _validate_pipeline_mode(pipeline_mode: str) -> PipelineMode:
@@ -191,13 +221,9 @@ def run_pipeline(
     from aiprod_adaptation.core.adaptation.llm_adapter import NullLLMAdapter
     from aiprod_adaptation.core.adaptation.script_parser import ScriptParser
     from aiprod_adaptation.core.adaptation.story_extractor import StoryExtractor
-    from aiprod_adaptation.core.adaptation.story_validator import StoryValidator
+    from aiprod_adaptation.core.compiler import compile_pass1
     from aiprod_adaptation.core.pass1_segment import segment
-    from aiprod_adaptation.core.pass2_visual import _validate_pass2_output, visual_rewrite
-    from aiprod_adaptation.core.pass3_shots import simplify_shots
-    from aiprod_adaptation.core.pass4_compile import compile_episode
     from aiprod_adaptation.core.production_budget import ProductionBudget
-    from aiprod_adaptation.models.intermediate import RawScene
 
     logger.info("pipeline_start", input_length=len(text), title=title)
 
@@ -216,12 +242,11 @@ def run_pipeline(
             "Generative mode requires a non-null LLM adapter for novel extraction."
         )
 
+    scenes_pass1: list[RawScene] | list[CinematicScene]
     if input_type == "script":
         logger.debug("pass1_start", path="script")
-        scenes_pass2 = ScriptParser().parse(text)
-        _enrich_script_scenes(scenes_pass2, visual_bible)
-        _validate_pass2_output(scenes_pass2)
-        logger.info("pass1_complete", scene_count=len(scenes_pass2), path="script")
+        scenes_pass1 = _external_scenes_to_pass1(ScriptParser().parse(text))
+        logger.info("pass1_complete", scene_count=len(scenes_pass1), path="script")
     else:
         logger.debug("pass1_start", path="novel")
         use_llm_path = resolved_mode != "deterministic"
@@ -230,8 +255,8 @@ def run_pipeline(
         else:
             scenes_llm = []
         if scenes_llm:
-            scenes_pass2 = scenes_llm
-            logger.info("pass1_complete", scene_count=len(scenes_pass2), path="novel_llm")
+            scenes_pass1 = _external_scenes_to_pass1(scenes_llm)
+            logger.info("pass1_complete", scene_count=len(scenes_pass1), path="novel_llm")
         else:
             if require_llm or resolved_mode == "generative":
                 raise ValueError(
@@ -240,37 +265,6 @@ def run_pipeline(
             # Fallback: rule-based pipeline (NullLLMAdapter path / CI)
             scenes_pass1 = segment(text)
             logger.info("pass1_complete", scene_count=len(scenes_pass1), path="novel_rules")
-            logger.debug("pass2_start")
-            scenes_pass2 = visual_rewrite(cast("list[RawScene]", scenes_pass1))
-            logger.info("pass2_complete", scene_count=len(scenes_pass2))
-
-    scenes_pass2 = StoryValidator().validate_all(scenes_pass2, threshold=0.5)
-    if not scenes_pass2:
-        raise ValueError("PASS 2: StoryValidator produced no filmable scenes after validation.")
-    logger.info("story_validator_complete", valid_scene_count=len(scenes_pass2))
-
-    if visual_bible is not None:
-        missing_slugs = visual_bible.validate_slugs(scenes_pass2)
-        if missing_slugs:
-            raise ValueError(
-                f"VisualBible: slugs manquants dans les scenes : {missing_slugs}"
-            )
-
-    logger.debug("pass3_start")
-    shots_pass3 = simplify_shots(scenes_pass2)
-    logger.info("pass3_complete", shot_count=len(shots_pass3))
-
-    logger.debug("pass4_start")
-    output = compile_episode(
-        scenes_pass2,
-        shots_pass3,
-        title,
-        episode_id,
-        visual_bible=visual_bible,
-        ref_invariants=ref_invariants,
-        episode_index=episode_index,
-    )
-    logger.info("pipeline_complete", episode_count=len(output.episodes))
 
     # Inject IRVersion fingerprint so production runs can detect stale IR
     _text_hash = hashlib.sha256(text.encode()).hexdigest()[:16]
@@ -281,12 +275,22 @@ def run_pipeline(
         ).hexdigest()[:16]
     else:
         _vb_hash = "no_vb"
-    output.ir_version = IRVersion(
-        compiler_version="3.1.0",
+    ir_version = IRVersion(
+        compiler_version="6.0.0",
         visual_bible_hash=_vb_hash,
-        rules_hash="builtin_v1",
+        rules_hash=_rules_hash(),
         text_hash=_text_hash,
     )
+    output = compile_pass1(
+        scenes_pass1,
+        title,
+        episode_id=episode_id,
+        visual_bible=visual_bible,
+        ref_invariants=ref_invariants,
+        episode_index=episode_index,
+        ir_version=ir_version,
+    )
+    logger.info("pipeline_complete", episode_count=len(output.episodes))
 
     if character_descriptions:
         output = _apply_continuity_enrichment(output, character_descriptions)

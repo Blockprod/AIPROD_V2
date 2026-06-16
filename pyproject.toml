@@ -22,6 +22,30 @@ dev = [
     "mypy>=1.0",
     "ruff>=0.1",
 ]
+quality = [
+    "numpy>=1.24",
+    "opencv-python-headless>=4.8",
+    "scikit-image>=0.21",
+]
+cloud = [
+    "anthropic",
+    "google-genai",
+    "replicate",
+    "runwayml",
+    "PyJWT",
+    "openai",
+    "elevenlabs",
+]
+local-image = [
+    "Pillow>=10.0",
+    "requests>=2.28",
+]
+local-audio = [
+    "soundfile>=0.12",
+]
+local-all = [
+    "aiprod-adaptation[local-image,local-audio]",
+]
 llm = [
     "anthropic",
     "google-genai",
@@ -53,6 +77,7 @@ include = ["aiprod_adaptation*"]
 [tool.mypy]
 python_version = "3.11"
 strict = true
+exclude = ["^aiprod_adaptation/tests/"]
 
 [[tool.mypy.overrides]]
 module = [
@@ -70,6 +95,13 @@ module = [
     "PIL.*",
     "rembg",
     "rembg.*",
+    "f5_tts.*",
+    "soundfile.*",
+    "audiocraft.*",
+    "torchaudio.*",
+    "torch",
+    "torch.*",
+    "huggingface_hub.*",
 ]
 ignore_missing_imports = true
 
@@ -88,6 +120,28 @@ markers = [
 [tool.ruff]
 target-version = "py311"
 line-length = 120
+extend-exclude = [
+    "_archive",
+    "_tools",
+    "pipeline/test_*.py",
+    "production/benchmark_characters.py",
+    "production/dashboard.py",
+    "production/gen_3d_assets.py",
+    "production/gen_assembly.py",
+    "production/gen_character_bodies.py",
+    "production/gen_character_faces.py",
+    "production/gen_character_meshes.py",
+    "production/gen_character_refs.py",
+    "production/gen_character_sheets.py",
+    "production/gen_location_angles.py",
+    "production/gen_location_coverage.py",
+    "production/gen_location_refs.py",
+    "production/gen_metahuman_rigs.py",
+    "third_party",
+]
 
 [tool.ruff.lint]
 select = ["E", "W", "F", "I", "N", "UP"]
+
+[tool.ruff.lint.per-file-ignores]
+"pipeline/tests/*.py" = ["E402", "N806"]

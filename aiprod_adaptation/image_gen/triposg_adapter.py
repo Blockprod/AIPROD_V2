@@ -39,10 +39,13 @@ import subprocess
 import sys
 from pathlib import Path
 
+import structlog
+
 # Racine du workspace (remonte de image_gen/ -> aiprod_adaptation/ -> workspace/)
 _WORKSPACE_ROOT = Path(__file__).resolve().parent.parent.parent
 
 _DEFAULT_TRIPOSG_DIR = _WORKSPACE_ROOT / "third_party" / "triposg"
+logger = structlog.get_logger(__name__)
 
 
 class TripoSGError(RuntimeError):
@@ -96,8 +99,13 @@ class TripoSGAdapter:
         if num_faces is not None:
             cmd += ["--faces", str(num_faces)]
 
-        print(f"    [TripoSG] Inference : {image_path.name} -> {output_path.name}")
-        print("    [TripoSG] GPU VRAM requise : 8 Go min (RTX 5080 optimal)")
+        logger.info(
+            "triposg_inference_start",
+            image=image_path.name,
+            output=output_path.name,
+            min_vram_gb=8,
+            recommended_gpu="RTX 5080",
+        )
 
         result = subprocess.run(
             cmd,

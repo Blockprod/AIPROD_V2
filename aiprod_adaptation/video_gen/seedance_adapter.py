@@ -3,6 +3,11 @@ from __future__ import annotations
 import os
 import time
 
+from aiprod_adaptation.adapters.errors import (
+    AdapterError,
+    AdapterFailureCategory,
+    require_http_url,
+)
 from aiprod_adaptation.video_gen.video_adapter import VideoAdapter
 from aiprod_adaptation.video_gen.video_request import VideoClipResult, VideoRequest
 
@@ -62,8 +67,16 @@ class SeedanceAdapter(VideoAdapter):
             if request.last_frame_hint_url:
                 input_params["last_frame_image"] = request.last_frame_hint_url
 
-        out = replicate.run(self.MODEL, input=input_params)
-        video_url = str(out)
+        try:
+            out = replicate.run(self.MODEL, input=input_params)
+        except TimeoutError as exc:
+            raise AdapterError(
+                "Seedance request timed out.", provider="seedance",
+                category=AdapterFailureCategory.TIMEOUT, retryable=True,
+                request_id=request.shot_id,
+            ) from exc
+        candidate = out[0] if isinstance(out, (list, tuple)) and out else out
+        video_url = require_http_url(candidate, provider="seedance", request_id=request.shot_id)
 
         latency = int((time.monotonic() - t0) * 1000)
         cost = _SEEDANCE_COST_PER_SEC.get(self._resolution, 0.18) * request.duration_sec

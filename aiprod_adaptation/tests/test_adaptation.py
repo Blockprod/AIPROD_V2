@@ -572,7 +572,7 @@ class TestStoryValidator:
         result = StoryValidator().validate(scene)
         assert any("invalid_emotion" in i for i in result.issues)
 
-    def test_validate_all_filters_below_threshold(self) -> None:
+    def test_validate_all_rejects_below_threshold(self) -> None:
         valid = self._make_scene()
         invalid = self._make_scene(
             scene_id="SCN_002",
@@ -581,9 +581,8 @@ class TestStoryValidator:
             emotion="bad",
             characters=["A", "B", "C"],
         )
-        result = StoryValidator().validate_all([valid, invalid], threshold=0.5)
-        assert len(result) == 1
-        assert result[0]["scene_id"] == "SCN_001"
+        with pytest.raises(ValueError, match="SCN_002"):
+            StoryValidator().validate_all([valid, invalid], threshold=0.5)
 
     def test_validate_all_returns_all_valid_scenes(self) -> None:
         s1 = self._make_scene(scene_id="SCN_001")

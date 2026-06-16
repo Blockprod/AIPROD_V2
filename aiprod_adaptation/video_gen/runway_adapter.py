@@ -4,6 +4,11 @@ import os
 import time
 from typing import Any
 
+from aiprod_adaptation.adapters.errors import (
+    AdapterError,
+    AdapterFailureCategory,
+    require_http_url,
+)
 from aiprod_adaptation.video_gen.video_adapter import VideoAdapter
 from aiprod_adaptation.video_gen.video_request import VideoClipResult, VideoRequest
 
@@ -96,12 +101,26 @@ class RunwayAdapter(VideoAdapter):
             create_kwargs["seed"] = request.seed
 
         task = client.image_to_video.create(**create_kwargs)
-        result = task.wait_for_task_output()
+        try:
+            result = task.wait_for_task_output(timeout=300)
+        except TypeError:
+            result = task.wait_for_task_output()
+        except TimeoutError as exc:
+            raise AdapterError(
+                "Runway request timed out.", provider="runway",
+                category=AdapterFailureCategory.TIMEOUT, retryable=True,
+                request_id=request.shot_id,
+            ) from exc
+        output = getattr(result, "output", None)
+        video_url = require_http_url(
+            output[0] if isinstance(output, list) and output else None,
+            provider="runway", request_id=request.shot_id,
+        )
 
         latency = int((time.monotonic() - t0) * 1000)
         return VideoClipResult(
             shot_id=request.shot_id,
-            video_url=result.output[0],
+            video_url=video_url,
             duration_sec=request.duration_sec,
             model_used=self._model,
             latency_ms=latency,
@@ -127,12 +146,26 @@ class RunwayAdapter(VideoAdapter):
             create_kwargs["seed"] = request.seed
 
         task = client.video_to_video.create(**create_kwargs)
-        result = task.wait_for_task_output()
+        try:
+            result = task.wait_for_task_output(timeout=300)
+        except TypeError:
+            result = task.wait_for_task_output()
+        except TimeoutError as exc:
+            raise AdapterError(
+                "Runway Aleph request timed out.", provider="runway",
+                category=AdapterFailureCategory.TIMEOUT, retryable=True,
+                request_id=request.shot_id,
+            ) from exc
+        output = getattr(result, "output", None)
+        video_url = require_http_url(
+            output[0] if isinstance(output, list) and output else None,
+            provider="runway", request_id=request.shot_id,
+        )
 
         latency = int((time.monotonic() - t0) * 1000)
         return VideoClipResult(
             shot_id=request.shot_id,
-            video_url=result.output[0],
+            video_url=video_url,
             duration_sec=request.duration_sec,
             model_used="gen4_aleph",
             latency_ms=latency,

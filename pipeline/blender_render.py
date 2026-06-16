@@ -355,7 +355,7 @@ def _position_character(
     position_key = layout.get("position", "centre")
     facing = layout.get("facing", "screen_right")
 
-    _POSITION_MAP: dict[str, tuple[float, float, float]] = {
+    position_map: dict[str, tuple[float, float, float]] = {
         "centre": (0.0, 0.0, 0.0),
         "centre_left": (-0.8, 0.0, 0.0),
         "centre_right": (0.8, 0.0, 0.0),
@@ -372,14 +372,14 @@ def _position_character(
         "left_of_display": (-0.5, 0.2, 0.0),
         "right_of_display": (0.5, 0.2, 0.0),
     }
-    _FACING_MAP: dict[str, float] = {
+    facing_map: dict[str, float] = {
         "screen_right": 0.0,
         "screen_left": 3.14159,
         "depth": 1.5708,
     }
 
-    pos = _POSITION_MAP.get(position_key, (0.0, 0.0, 0.0))
-    rot_z = _FACING_MAP.get(facing, 0.0)
+    pos = position_map.get(position_key, (0.0, 0.0, 0.0))
+    rot_z = facing_map.get(facing, 0.0)
 
     # L'armature importée par FBX est l'objet actif
     obj = bpy.context.active_object

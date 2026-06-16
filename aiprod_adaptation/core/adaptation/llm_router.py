@@ -167,7 +167,7 @@ class LLMRouter(LLMAdapter):
         token_estimate: int,
         prompt: str,
         base_order: tuple[str, str],
-        final_order: tuple[str, str],
+        final_order: tuple[str, ...],
         availability: dict[str, bool],
         penalties: dict[str, float],
     ) -> str:
@@ -231,7 +231,7 @@ class LLMRouter(LLMAdapter):
         else:
             self._provider_profile_last_failure_at[name][profile] = self._time_fn()
 
-    def _provider_order(self, token_estimate: int, prompt: str) -> tuple[str, str]:
+    def _provider_order(self, token_estimate: int, prompt: str) -> tuple[str, ...]:
         primary_name, secondary_name = self._base_provider_order(token_estimate, prompt)
         profile = self._prompt_profile(token_estimate, prompt)
         primary_available = self._is_provider_available(primary_name)
@@ -243,16 +243,16 @@ class LLMRouter(LLMAdapter):
                 return (secondary_name, primary_name)
             return (primary_name, secondary_name)
         if primary_available:
-            return (primary_name, secondary_name)
+            return (primary_name,)
         if secondary_available:
-            return (secondary_name, primary_name)
-        return (primary_name, secondary_name)
+            return (secondary_name,)
+        return ()
 
     def generate_json(self, prompt: str) -> dict[str, Any]:
         token_estimate = len(prompt) // 4
         profile = self._prompt_profile(token_estimate, prompt)
         base_order = self._base_provider_order(token_estimate, prompt)
-        primary_name, secondary_name = self._provider_order(token_estimate, prompt)
+        provider_order = self._provider_order(token_estimate, prompt)
         availability = {
             provider: self._is_provider_available(provider)
             for provider in self.PROVIDERS
@@ -261,11 +261,19 @@ class LLMRouter(LLMAdapter):
             provider: self._provider_health_penalty(provider, profile)
             for provider in self.PROVIDERS
         }
+        if not provider_order:
+            raise LLMProviderError(
+                "LLMRouter has no available provider; all providers are in cooldown or quarantine.",
+                category=LLMFailureCategory.TRANSIENT,
+            )
+
+        primary_name = provider_order[0]
+        secondary_name = provider_order[1] if len(provider_order) > 1 else None
         current_trace = {
             "token_estimate": token_estimate,
             "prompt_profile": profile,
             "base_order": list(base_order),
-            "final_order": [primary_name, secondary_name],
+            "final_order": list(provider_order),
             "provider_availability": availability,
             "health_penalties": penalties,
             "selected_provider": None,
@@ -275,7 +283,7 @@ class LLMRouter(LLMAdapter):
                 token_estimate,
                 prompt,
                 base_order,
-                (primary_name, secondary_name),
+                provider_order,
                 availability,
                 penalties,
             ),
@@ -283,7 +291,6 @@ class LLMRouter(LLMAdapter):
         }
         self._last_trace = current_trace
         primary = self._provider_for_name(primary_name)
-        secondary = self._provider_for_name(secondary_name)
         try:
             result = primary.generate_json(prompt)
             self._mark_provider_healthy(primary_name, profile)
@@ -294,6 +301,16 @@ class LLMRouter(LLMAdapter):
         except LLMProviderError as primary_exc:
             self._mark_provider_failed(primary_name, profile, primary_exc.category)
             current_trace["failure_category"] = primary_exc.category.value
+            if secondary_name is None:
+                current_trace["result"] = "failed"
+                self._trace_history.append(deepcopy(current_trace))
+                raise LLMProviderError(
+                    "LLMRouter failed on the only available provider: "
+                    f"provider={primary_name}[{primary_exc.category.value}]={primary_exc}",
+                    category=primary_exc.category,
+                    failures=(primary_exc,),
+                ) from primary_exc
+            secondary = self._provider_for_name(secondary_name)
             try:
                 result = secondary.generate_json(prompt)
                 self._mark_provider_healthy(secondary_name, profile)

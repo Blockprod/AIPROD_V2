@@ -612,6 +612,12 @@ class TestProcessNarrativeWithReference:
             characters: dict = {}
             locations: dict = {}
 
+            def get_character(self, _char_name: str) -> None:
+                return None
+
+            def get_location(self, _loc_id: str) -> None:
+                return None
+
             def get_character_prompt_fragment(self, _char_name: str) -> str | None:
                 return None
 

@@ -516,15 +516,18 @@ class TestEpisodePacingProfile:
 
     def test_pacing_profile_shot_count(self):
         out = compile_episode([_MINIMAL_SCENE], [_MINIMAL_SHOT], "TestTitle")
-        assert out.episodes[0].pacing_profile.shot_count == 1  # type: ignore[union-attr]
+        assert out.episodes[0].pacing_profile is not None
+        assert out.episodes[0].pacing_profile.shot_count == 1
 
     def test_pacing_profile_total_duration(self):
         out = compile_episode([_MINIMAL_SCENE], [_MINIMAL_SHOT], "TestTitle")
-        assert out.episodes[0].pacing_profile.total_duration_sec == 5  # type: ignore[union-attr]
+        assert out.episodes[0].pacing_profile is not None
+        assert out.episodes[0].pacing_profile.total_duration_sec == 5
 
     def test_pacing_profile_label_is_string(self):
         out = compile_episode([_MINIMAL_SCENE], [_MINIMAL_SHOT], "TestTitle")
-        label = out.episodes[0].pacing_profile.pacing_label  # type: ignore[union-attr]
+        assert out.episodes[0].pacing_profile is not None
+        label = out.episodes[0].pacing_profile.pacing_label
         assert isinstance(label, str)
         assert label in {"montage", "fast", "medium", "slow"}
 
@@ -547,24 +550,29 @@ class TestConsistencyReportOnEpisode:
 
     def test_consistency_score_in_range(self):
         out = compile_episode([_MINIMAL_SCENE], [_MINIMAL_SHOT], "TestTitle")
-        score = out.episodes[0].consistency_report.consistency_score  # type: ignore[union-attr]
+        assert out.episodes[0].consistency_report is not None
+        score = out.episodes[0].consistency_report.consistency_score
         assert 0.0 <= score <= 1.0
 
     def test_tone_conflicts_is_list(self):
         out = compile_episode([_MINIMAL_SCENE], [_MINIMAL_SHOT], "TestTitle")
-        assert isinstance(out.episodes[0].consistency_report.tone_conflicts, list)  # type: ignore[union-attr]
+        assert out.episodes[0].consistency_report is not None
+        assert isinstance(out.episodes[0].consistency_report.tone_conflicts, list)
 
     def test_continuity_warnings_is_list(self):
         out = compile_episode([_MINIMAL_SCENE], [_MINIMAL_SHOT], "TestTitle")
-        assert isinstance(out.episodes[0].consistency_report.continuity_warnings, list)  # type: ignore[union-attr]
+        assert out.episodes[0].consistency_report is not None
+        assert isinstance(out.episodes[0].consistency_report.continuity_warnings, list)
 
     def test_movement_simplifications_is_list(self):
         out = compile_episode([_MINIMAL_SCENE], [_MINIMAL_SHOT], "TestTitle")
-        assert isinstance(out.episodes[0].consistency_report.movement_simplifications, list)  # type: ignore[union-attr]
+        assert out.episodes[0].consistency_report is not None
+        assert isinstance(out.episodes[0].consistency_report.movement_simplifications, list)
 
     def test_prompt_enrichments_is_int(self):
         out = compile_episode([_MINIMAL_SCENE], [_MINIMAL_SHOT], "TestTitle")
-        assert isinstance(out.episodes[0].consistency_report.prompt_enrichments, int)  # type: ignore[union-attr]
+        assert out.episodes[0].consistency_report is not None
+        assert isinstance(out.episodes[0].consistency_report.prompt_enrichments, int)
 
 
 # ===========================================================================

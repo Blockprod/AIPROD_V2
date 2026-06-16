@@ -11,6 +11,9 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
 
+import pytest
+
+from aiprod_adaptation.adapters.errors import AdapterError
 from aiprod_adaptation.image_gen.comfyui_adapter import ComfyUIAdapter
 from aiprod_adaptation.image_gen.flux_kontext_adapter import (
     _KONTEXT_PRESERVATION_CLAUSE,
@@ -32,6 +35,18 @@ _REQUEST = ImageRequest(
     reference_image_url="http://example.com/char.png",
     seed=1234,
 )
+
+
+def _object_info_response(adapter: ComfyUIAdapter) -> MagicMock:
+    response = MagicMock()
+    response.status_code = 200
+    response.raise_for_status = MagicMock()
+    response.json.return_value = {
+        str(node["class_type"]): {}
+        for node in adapter._template.values()
+        if isinstance(node, dict) and "class_type" in node
+    }
+    return response
 
 
 # ---------------------------------------------------------------------------
@@ -71,7 +86,9 @@ class TestComfyUIAdapterSuccess:
 
         with patch("aiprod_adaptation.image_gen.comfyui_adapter._requests") as mock_req:
             mock_req.post.return_value = submit_response
-            mock_req.get.side_effect = [history_response, image_response]
+            mock_req.get.side_effect = [
+                _object_info_response(adapter), history_response, image_response
+            ]
 
             result = adapter.generate(_REQUEST)
 
@@ -88,7 +105,7 @@ class TestComfyUIAdapterSuccess:
 
 
 class TestComfyUIAdapterTimeout:
-    def test_timeout_returns_error_result(self) -> None:
+    def test_timeout_raises_adapter_error(self) -> None:
         adapter = ComfyUIAdapter(
             workflow_template=_MINIMAL_WORKFLOW,
             api_url="http://localhost:8188",
@@ -108,13 +125,10 @@ class TestComfyUIAdapterTimeout:
 
         with patch("aiprod_adaptation.image_gen.comfyui_adapter._requests") as mock_req:
             mock_req.post.return_value = submit_response
-            mock_req.get.return_value = history_response
+            mock_req.get.side_effect = [_object_info_response(adapter), history_response]
 
-            result = adapter.generate(_REQUEST)
-
-        assert result.model_used == "error"
-        assert result.image_url == "error://comfyui-timeout"
-        assert result.shot_id == "SH0001"
+            with pytest.raises(AdapterError, match="timed out"):
+                adapter.generate(_REQUEST)
 
 
 # ---------------------------------------------------------------------------
@@ -160,7 +174,9 @@ class TestFluxKontextAdapterPrompt:
 
         with patch("aiprod_adaptation.image_gen.comfyui_adapter._requests") as mock_req:
             mock_req.post.return_value = submit_response
-            mock_req.get.side_effect = [history_response, image_response]
+            mock_req.get.side_effect = [
+                _object_info_response(adapter), history_response, image_response
+            ]
 
             result = adapter.generate(req)
 

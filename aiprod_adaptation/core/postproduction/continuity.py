@@ -59,8 +59,11 @@ class ContinuityBuilder:
                     )
 
             # ---- LIGHTING consistency ----
-            lighting_dirs = [s.lighting_directives for s in sc_shots if s.lighting_directives]
-            if len(set(lighting_dirs)) > 1:
+            lighting_dirs: list[str] = []
+            for shot in sc_shots:
+                if shot.lighting_directives and shot.lighting_directives not in lighting_dirs:
+                    lighting_dirs.append(shot.lighting_directives)
+            if len(lighting_dirs) > 1:
                 counter += 1
                 notes.append(
                     ContinuityNote(
@@ -69,7 +72,7 @@ class ContinuityBuilder:
                         scene_id=scene.scene_id,
                         continuity_type="lighting",
                         note=(
-                            f"Scene {scene.scene_id}: {len(set(lighting_dirs))} distinct "
+                            f"Scene {scene.scene_id}: {len(lighting_dirs)} distinct "
                             "lighting directives detected. Verify key light consistency."
                         ),
                         severity="info",
@@ -77,10 +80,12 @@ class ContinuityBuilder:
                 )
 
             # ---- COLOR GRADE consistency ----
-            color_grades = [
-                g for s in sc_shots if (g := s.metadata.get("color_grade_hint"))
-            ]
-            distinct_grades = set(color_grades)
+            distinct_grades: list[str] = []
+            for shot in sc_shots:
+                grade = shot.metadata.get("color_grade_hint")
+                grade_text = str(grade) if grade else ""
+                if grade_text and grade_text not in distinct_grades:
+                    distinct_grades.append(grade_text)
             if len(distinct_grades) > 1:
                 counter += 1
                 notes.append(

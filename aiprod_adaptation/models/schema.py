@@ -1,9 +1,25 @@
-from typing import Any, Literal
+from typing import Any, Literal, TypeVar
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
+
+from aiprod_adaptation.core.rules.cinematography_catalog import (
+    CAMERA_MOVEMENTS,
+    SHOT_TYPES,
+)
 
 
-class IRVersion(BaseModel):
+class StrictModel(BaseModel):
+    model_config = ConfigDict(strict=True, extra="forbid", frozen=True)
+
+
+ModelT = TypeVar("ModelT", bound=BaseModel)
+
+
+def validated_model_update(model: ModelT, **updates: object) -> ModelT:
+    return type(model).model_validate({**model.model_dump(mode="python"), **updates})
+
+
+class IRVersion(StrictModel):
     """Fingerprint of the compiler state that produced an AIPRODOutput.
 
     Allows detecting stale IR usage: if any of these hashes differ between
@@ -11,26 +27,14 @@ class IRVersion(BaseModel):
     All fields default to empty string for backward compatibility with outputs
     produced before this field was introduced.
     """
+    schema_version: Literal["6.0"] = "6.0"
     compiler_version: str = ""    # e.g. "3.1.0"
     visual_bible_hash: str = ""   # sha256[:16] of serialised VisualBible, or "no_vb"
     rules_hash: str = ""          # sha256[:16] of builtin_rules source, or "builtin_v1"
     text_hash: str = ""           # sha256[:16] of raw text input
 
-_VALID_SHOT_TYPES: frozenset[str] = frozenset({
-    "wide", "medium", "close_up", "pov",
-    # v3.0 cinematic extensions
-    "extreme_wide", "extreme_close_up", "two_shot", "over_shoulder", "insert",
-    # v3.1 cinematic refinements
-    "medium_wide", "medium_close",
-})
-_VALID_CAMERA_MOVEMENTS: frozenset[str] = frozenset({
-    "static", "follow", "pan",
-    # v3.0 cinematic extensions
-    "dolly_in", "dolly_out", "tilt_up", "tilt_down", "crane_up", "crane_down",
-    "tracking", "handheld",
-    # v3.1 cinematic extensions
-    "steadicam", "rack_focus", "whip_pan",
-})
+_VALID_SHOT_TYPES: frozenset[str] = frozenset(SHOT_TYPES)
+_VALID_CAMERA_MOVEMENTS: frozenset[str] = frozenset(CAMERA_MOVEMENTS)
 _VALID_TOD_VISUAL: frozenset[str] = frozenset({"dawn", "day", "dusk", "night", "interior"})
 _VALID_DOMINANT_SOUND: frozenset[str] = frozenset({"dialogue", "ambient", "silence"})
 _VALID_SCENE_TONES: frozenset[str] = frozenset({
@@ -51,12 +55,13 @@ _ALLOWED_METADATA_KEYS: frozenset[str] = frozenset({
     # v3.0 cinematic extensions
     "lens_mm", "depth_of_field", "color_grade_hint", "framing_note",
     "scene_tone", "beat_type", "emotional_beat_index", "ref_anchor_id",
+    "action_intensity",
     # v3.1 cinematic extensions
     "lighting_directives", "composition_description", "rhythm_purpose",
 })
 
 
-class Scene(BaseModel):
+class Scene(StrictModel):
     scene_id: str
     characters: list[str]
     character_ids: list[str] = Field(default_factory=list)
@@ -74,7 +79,7 @@ class Scene(BaseModel):
     emotional_beat_index: float | None = None  # cumulative dramatic intensity [0.0, 1.0]
 
 
-class ActionSpec(BaseModel):
+class ActionSpec(StrictModel):
     subject_id: str
     action_type: str
     target: str | None = None
@@ -84,7 +89,7 @@ class ActionSpec(BaseModel):
     source_text: str
 
 
-class Shot(BaseModel):
+class Shot(StrictModel):
     shot_id: str
     scene_id: str
     prompt: str
@@ -102,6 +107,7 @@ class Shot(BaseModel):
     rhythm_purpose: str | None = None
     visual_invariants_applied: list[str] = Field(default_factory=list)
     feasibility_score: int = 100
+    feasibility_breakdown: dict[str, int] = Field(default_factory=dict)
     reference_anchor_strength: float = 1.0
 
     @field_validator("duration_sec")
@@ -209,6 +215,13 @@ class Shot(BaseModel):
                 f"Must be one of {sorted(_VALID_BEAT_TYPES)}"
             )
 
+        action_intensity = value.get("action_intensity")
+        if action_intensity is not None and action_intensity not in {"subtle", "mid", "explosive"}:
+            raise ValueError(
+                "Invalid metadata.action_intensity: "
+                f"{action_intensity!r}. Must be subtle, mid, or explosive."
+            )
+
         color_grade_hint = value.get("color_grade_hint")
         if color_grade_hint is not None and color_grade_hint not in _VALID_COLOR_GRADES:
             raise ValueError(
@@ -238,7 +251,7 @@ class Shot(BaseModel):
         return value
 
 
-class PacingProfile(BaseModel):
+class PacingProfile(StrictModel):
     """Episode-level pacing metrics computed by Pass 4 pacing_analyzer."""
     total_duration_sec: int
     mean_shot_duration: float
@@ -246,7 +259,7 @@ class PacingProfile(BaseModel):
     pacing_label: str  # "slow" | "medium" | "fast" | "montage"
 
 
-class ConsistencyReport(BaseModel):
+class ConsistencyReport(StrictModel):
     """Coherence validation report produced by Pass 4 consistency_checker."""
     consistency_score: float = 1.0
     tone_conflicts: list[str] = Field(default_factory=list)            # scene_ids
@@ -255,7 +268,7 @@ class ConsistencyReport(BaseModel):
     prompt_enrichments: int = 0
 
 
-class RuleEngineReport(BaseModel):
+class RuleEngineReport(StrictModel):
     """
     Aggregated execution metrics from the Rule Engine loop in Pass 4.
 
@@ -272,9 +285,10 @@ class RuleEngineReport(BaseModel):
     total_shots_modified: int = 0
     conflict_shot_ids: list[str] = Field(default_factory=list)
     rule_ids_fired: list[str] = Field(default_factory=list)
+    resolution_records: list[dict[str, Any]] = Field(default_factory=list)
 
 
-class Episode(BaseModel):
+class Episode(StrictModel):
     episode_id: str
     scenes: list[Scene]
     shots: list[Shot]
@@ -285,7 +299,7 @@ class Episode(BaseModel):
     rule_engine_report: RuleEngineReport | None = None
 
 
-class GlobalAsset(BaseModel):
+class GlobalAsset(StrictModel):
     """
     Persistent cross-episode asset entry (v5.0 consistency framework).
 
@@ -304,7 +318,7 @@ class GlobalAsset(BaseModel):
     canon_locked: bool = False
 
 
-class Timeline(BaseModel):
+class Timeline(StrictModel):
     """
     Master timeline for an episode (v5.0 consistency framework).
 
@@ -320,7 +334,7 @@ class Timeline(BaseModel):
     absolute_timestamps: list[dict[str, Any]] = Field(default_factory=list)
 
 
-class AIPRODOutput(BaseModel):
+class AIPRODOutput(StrictModel):
     title: str
     episodes: list[Episode]
     # v4.0 cinematic fields (all Optional — backward compatible)
@@ -335,7 +349,7 @@ class AIPRODOutput(BaseModel):
     ir_version: IRVersion | None = None
 
 
-class SeasonCoherenceMetrics(BaseModel):
+class SeasonCoherenceMetrics(StrictModel):
     """
     Visual coherence metrics computed across all episodes of a season.
 
@@ -351,7 +365,7 @@ class SeasonCoherenceMetrics(BaseModel):
     character_continuity_flags: list[str] = Field(default_factory=list)
 
 
-class AIPRODSeason(BaseModel):
+class AIPRODSeason(StrictModel):
     """
     Multi-episode container for a full season of AIPROD_Cinematic output.
 

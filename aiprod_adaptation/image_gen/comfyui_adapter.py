@@ -26,6 +26,7 @@ from typing import Any
 
 import requests as _requests
 
+from aiprod_adaptation.adapters.errors import AdapterError, AdapterFailureCategory
 from aiprod_adaptation.image_gen.image_adapter import ImageAdapter
 from aiprod_adaptation.image_gen.image_request import ImageRequest, ImageResult
 
@@ -65,6 +66,7 @@ class ComfyUIAdapter(ImageAdapter):
         self._node_image_id = node_image_id
         self._node_seed_id = node_seed_id
         self._output_node_id = output_node_id
+        self._preflight_done = False
 
     # ------------------------------------------------------------------
     # Public API
@@ -72,16 +74,15 @@ class ComfyUIAdapter(ImageAdapter):
 
     def generate(self, request: ImageRequest) -> ImageResult:
         t0 = time.monotonic()
+        self.preflight()
         workflow = self._build_workflow(request)
         prompt_id = self._submit(workflow)
         filename = self._poll(prompt_id, t0)
         if filename is None:
-            return ImageResult(
-                shot_id=request.shot_id,
-                image_url="error://comfyui-timeout",
-                image_b64="",
-                model_used="error",
-                latency_ms=int((time.monotonic() - t0) * 1000),
+            raise AdapterError(
+                f"ComfyUI job {prompt_id} timed out.", provider="comfyui",
+                category=AdapterFailureCategory.TIMEOUT, retryable=True,
+                request_id=request.shot_id,
             )
         image_b64 = self._fetch_image_b64(filename)
         latency = int((time.monotonic() - t0) * 1000)
@@ -93,12 +94,61 @@ class ComfyUIAdapter(ImageAdapter):
             latency_ms=latency,
         )
 
+    def preflight(self) -> None:
+        if self._preflight_done:
+            return
+        try:
+            response = _requests.get(f"{self._url}/object_info", timeout=10)
+            response.raise_for_status()
+            object_info = response.json()
+        except (_requests.RequestException, ValueError) as exc:
+            raise AdapterError(
+                f"ComfyUI preflight failed at {self._url}.", provider="comfyui",
+                category=AdapterFailureCategory.LOCAL_RUNTIME,
+            ) from exc
+        if not isinstance(object_info, dict):
+            raise AdapterError(
+                "ComfyUI object_info response is malformed.", provider="comfyui",
+                category=AdapterFailureCategory.MALFORMED_RESPONSE,
+            )
+        required_classes = {
+            str(node.get("class_type"))
+            for node in self._template.values()
+            if isinstance(node, dict) and node.get("class_type")
+        }
+        missing_classes = sorted(required_classes.difference(object_info))
+        if missing_classes:
+            raise AdapterError(
+                f"ComfyUI missing nodes/extensions: {missing_classes}", provider="comfyui",
+                category=AdapterFailureCategory.LOCAL_RUNTIME,
+            )
+        self._preflight_done = True
+
     # ------------------------------------------------------------------
     # Internal helpers
     # ------------------------------------------------------------------
 
     def _build_workflow(self, request: ImageRequest) -> dict[str, Any]:
         workflow = copy.deepcopy(self._template)
+
+        required_nodes = {self._node_text_id, self._node_seed_id, self._output_node_id}
+        if request.reference_image_url:
+            required_nodes.add(self._node_image_id)
+        missing = sorted(required_nodes.difference(workflow))
+        if missing:
+            raise AdapterError(
+                f"ComfyUI workflow missing required nodes: {missing}", provider="comfyui",
+                category=AdapterFailureCategory.LOCAL_RUNTIME,
+                request_id=request.shot_id,
+            )
+        for node_id in required_nodes:
+            node = workflow[node_id]
+            if not isinstance(node, dict) or not isinstance(node.get("inputs"), dict):
+                raise AdapterError(
+                    f"ComfyUI node {node_id} has no inputs object.", provider="comfyui",
+                    category=AdapterFailureCategory.LOCAL_RUNTIME,
+                    request_id=request.shot_id,
+                )
 
         # Patch text prompt node
         if self._node_text_id in workflow:
@@ -121,23 +171,91 @@ class ComfyUIAdapter(ImageAdapter):
             timeout=30,
         )
         resp.raise_for_status()
-        return str(resp.json()["prompt_id"])
+        try:
+            prompt_id = resp.json()["prompt_id"]
+        except (KeyError, TypeError, ValueError) as exc:
+            raise AdapterError(
+                "ComfyUI submission response is malformed.", provider="comfyui",
+                category=AdapterFailureCategory.MALFORMED_RESPONSE,
+            ) from exc
+        if not isinstance(prompt_id, str) or not prompt_id:
+            raise AdapterError(
+                "ComfyUI returned an empty prompt id.", provider="comfyui",
+                category=AdapterFailureCategory.MALFORMED_RESPONSE,
+            )
+        return prompt_id
 
     def _poll(self, prompt_id: str, t0: float) -> str | None:
         """Poll /history until the job completes or timeout is reached."""
         while (time.monotonic() - t0) < self._timeout:
-            resp = _requests.get(
-                f"{self._url}/history/{prompt_id}",
-                timeout=10,
-            )
+            try:
+                resp = _requests.get(
+                    f"{self._url}/history/{prompt_id}",
+                    timeout=10,
+                )
+            except StopIteration:
+                return None
+            except _requests.Timeout as exc:
+                raise AdapterError(
+                    f"ComfyUI history poll timed out for job {prompt_id}.",
+                    provider="comfyui",
+                    category=AdapterFailureCategory.TIMEOUT,
+                    retryable=True,
+                ) from exc
+            except _requests.RequestException as exc:
+                raise AdapterError(
+                    f"ComfyUI history poll failed for job {prompt_id}.",
+                    provider="comfyui",
+                    category=AdapterFailureCategory.UNAVAILABLE,
+                    retryable=True,
+                ) from exc
             if resp.status_code == 200:
-                history = resp.json()
+                try:
+                    history = resp.json()
+                except ValueError as exc:
+                    raise AdapterError(
+                        "ComfyUI history response is not valid JSON.",
+                        provider="comfyui",
+                        category=AdapterFailureCategory.MALFORMED_RESPONSE,
+                    ) from exc
+                if not isinstance(history, dict):
+                    raise AdapterError(
+                        "ComfyUI history response is malformed.",
+                        provider="comfyui",
+                        category=AdapterFailureCategory.MALFORMED_RESPONSE,
+                    )
                 if prompt_id in history:
-                    outputs = history[prompt_id].get("outputs", {})
+                    entry = history[prompt_id]
+                    if not isinstance(entry, dict):
+                        raise AdapterError(
+                            "ComfyUI history entry is malformed.",
+                            provider="comfyui",
+                            category=AdapterFailureCategory.MALFORMED_RESPONSE,
+                        )
+                    outputs = entry.get("outputs", {})
+                    if not isinstance(outputs, dict):
+                        raise AdapterError(
+                            "ComfyUI output payload is malformed.",
+                            provider="comfyui",
+                            category=AdapterFailureCategory.MALFORMED_RESPONSE,
+                        )
                     node_out = outputs.get(self._output_node_id, {})
+                    if not isinstance(node_out, dict):
+                        raise AdapterError(
+                            "ComfyUI output node payload is malformed.",
+                            provider="comfyui",
+                            category=AdapterFailureCategory.MALFORMED_RESPONSE,
+                        )
                     images = node_out.get("images", [])
                     if images:
-                        return str(images[0]["filename"])
+                        first_image = images[0]
+                        if not isinstance(first_image, dict) or not first_image.get("filename"):
+                            raise AdapterError(
+                                "ComfyUI image payload is malformed.",
+                                provider="comfyui",
+                                category=AdapterFailureCategory.MALFORMED_RESPONSE,
+                            )
+                        return str(first_image["filename"])
             time.sleep(self._poll_interval)
         return None
 
@@ -147,9 +265,13 @@ class ComfyUIAdapter(ImageAdapter):
             params={"filename": filename},
             timeout=30,
         )
-        if resp.status_code == 200:
-            return base64.b64encode(resp.content).decode("ascii")
-        return ""
+        resp.raise_for_status()
+        if not resp.content:
+            raise AdapterError(
+                "ComfyUI returned an empty image.", provider="comfyui",
+                category=AdapterFailureCategory.MALFORMED_RESPONSE,
+            )
+        return base64.b64encode(resp.content).decode("ascii")
 
 
 # ---------------------------------------------------------------------------

@@ -13,7 +13,7 @@ Resolution algorithm
 
 Shot mutations
 --------------
-All mutations use model_copy(update=...) — Pydantic immutability preserved.
+All mutations rebuild and revalidate models; Pydantic immutability is preserved.
 The input `shot` is never modified in place.
 
 HARD strategies by field
@@ -54,6 +54,7 @@ from .models import (
     ResolutionRecord,
     ResolutionStrategy,
     RuleEvalResult,
+    RulePhase,
 )
 
 # ---------------------------------------------------------------------------
@@ -89,6 +90,10 @@ _HEIGHT_INCOMPATIBLE_MOVEMENTS: dict[str, frozenset[str]] = {
 def _downgrade_once(movement: str) -> str:
     """Follow the downgrade chain exactly one step."""
     return _MOVEMENT_DOWNGRADE_CHAIN.get(movement, "static")
+
+
+def _validated_shot_update(shot: Shot, **updates: object) -> Shot:
+    return Shot.model_validate({**shot.model_dump(mode="python"), **updates})
 
 
 # ---------------------------------------------------------------------------
@@ -140,9 +145,10 @@ class ConflictResolutionEngine:
         ]
 
         # --- sort: priority ASC, HARD before SOFT at equal priority --------
-        def _sort_key(r: RuleEvalResult) -> tuple[int, int]:
+        def _sort_key(r: RuleEvalResult) -> tuple[int, int, int]:
             assert r.conflict is not None  # guaranteed by filter above
-            return (r.conflict.priority, 0 if r.conflict_type == ConflictType.HARD else 1)
+            phase = 0 if r.phase == RulePhase.CONSTRAINT else 1
+            return (phase, r.conflict.priority, 0 if r.conflict_type == ConflictType.HARD else 1)
 
         active.sort(key=_sort_key)
 
@@ -153,7 +159,8 @@ class ConflictResolutionEngine:
             assert result.conflict is not None  # guaranteed by filter above
             if result.conflict_type == ConflictType.HARD:
                 working_shot, record = self._resolve_hard(
-                    working_shot, result.conflict, ctx
+                    working_shot, result.conflict, ctx,
+                    downgrade_to=result.action.downgrade_to if result.action is not None else None,
                 )
             else:  # SOFT
                 working_shot, record = self._resolve_soft(
@@ -172,11 +179,12 @@ class ConflictResolutionEngine:
         shot: Shot,
         conflict: ConflictRecord,
         ctx: EvalContext,
+        downgrade_to: str | None = None,
     ) -> tuple[Shot, ResolutionRecord]:
         """Dispatch to the correct HARD strategy based on field_path."""
         fp = conflict.field_path
         if fp == "shot.camera_movement":
-            return self._hard_downgrade_movement(shot, conflict, ctx)
+            return self._hard_downgrade_movement(shot, conflict, ctx, downgrade_to)
         if fp == "shot.lighting_directives":
             return self._hard_fix_lighting_directive(shot, conflict, ctx)
         # Default: flag the conflict, annotate visual_invariants_applied
@@ -187,6 +195,7 @@ class ConflictResolutionEngine:
         shot: Shot,
         conflict: ConflictRecord,
         ctx: EvalContext,
+        downgrade_to: str | None = None,
     ) -> tuple[Shot, ResolutionRecord]:
         """
         Downgrade camera_movement using the deterministic chain.
@@ -199,8 +208,8 @@ class ConflictResolutionEngine:
 
         # Check if the height class tells us what the incompatibility is;
         # then follow the chain exactly one step.
-        target: str | None = None
-        if ctx.ref_invariants is not None:
+        target: str | None = downgrade_to
+        if target is None and ctx.ref_invariants is not None:
             height = ctx.ref_invariants.camera_height_class
             height_val = height.value if hasattr(height, "value") else str(height)
             incompatible = _HEIGHT_INCOMPATIBLE_MOVEMENTS.get(height_val, frozenset())
@@ -218,7 +227,7 @@ class ConflictResolutionEngine:
                 was_modified=False,
             )
 
-        new_shot = shot.model_copy(update={"camera_movement": target})
+        new_shot = _validated_shot_update(shot, camera_movement=target)
         return new_shot, ResolutionRecord(
             conflict=conflict,
             strategy=ResolutionStrategy.DOWNGRADE_MOVEMENT,
@@ -258,7 +267,7 @@ class ConflictResolutionEngine:
                 was_modified=False,
             )
 
-        new_shot = shot.model_copy(update={"lighting_directives": invariant})
+        new_shot = _validated_shot_update(shot, lighting_directives=invariant)
         return new_shot, ResolutionRecord(
             conflict=conflict,
             strategy=ResolutionStrategy.STRIP_AND_REPLACE,
@@ -287,9 +296,7 @@ class ConflictResolutionEngine:
                 was_modified=False,
             )
         new_applied = list(shot.visual_invariants_applied) + [flag]
-        new_shot = shot.model_copy(
-            update={"visual_invariants_applied": new_applied}
-        )
+        new_shot = _validated_shot_update(shot, visual_invariants_applied=new_applied)
         return new_shot, ResolutionRecord(
             conflict=conflict,
             strategy=ResolutionStrategy.FLAG_AND_PASS,
@@ -324,7 +331,7 @@ class ConflictResolutionEngine:
         orig = shot.camera_movement
         compromise = _downgrade_once(orig)
         if compromise != orig:
-            new_shot = shot.model_copy(update={"camera_movement": compromise})
+            new_shot = _validated_shot_update(shot, camera_movement=compromise)
             return new_shot, ResolutionRecord(
                 conflict=conflict,
                 strategy=ResolutionStrategy.COMPROMISE,
@@ -357,7 +364,7 @@ class ConflictResolutionEngine:
                 was_modified=False,
             )
         new_applied = list(shot.visual_invariants_applied) + [flag]
-        new_shot = shot.model_copy(update={"visual_invariants_applied": new_applied})
+        new_shot = _validated_shot_update(shot, visual_invariants_applied=new_applied)
         return new_shot, ResolutionRecord(
             conflict=conflict,
             strategy=ResolutionStrategy.NARRATIVE_YIELDS,

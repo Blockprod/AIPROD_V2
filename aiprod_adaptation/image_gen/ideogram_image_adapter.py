@@ -3,7 +3,7 @@ from __future__ import annotations
 import base64
 import os
 import time
-from typing import Any
+from typing import Any, cast
 
 from aiprod_adaptation.image_gen.image_adapter import ImageAdapter
 from aiprod_adaptation.image_gen.image_request import ImageRequest, ImageResult
@@ -44,7 +44,7 @@ def _is_portrait_prompt(prompt: str) -> bool:
 def _download_image(url: str) -> bytes:
     import urllib.request
     with urllib.request.urlopen(url, timeout=30) as resp:  # noqa: S310
-        return resp.read()
+        return cast(bytes, resp.read())
 
 
 class IdeogramImageAdapter(ImageAdapter):
@@ -137,10 +137,13 @@ def _call_ideogram_api(api_key: str, fields: dict[str, Any]) -> str:
     )
 
     with urllib.request.urlopen(req, timeout=60) as resp:  # noqa: S310
-        payload = json.loads(resp.read())
+        payload: dict[str, Any] = json.loads(resp.read())
 
     data = payload.get("data", [])
     if not data:
         raise RuntimeError(f"Ideogram API returned no image data: {payload}")
 
-    return data[0]["url"]
+    image_url = data[0].get("url")
+    if not isinstance(image_url, str) or not image_url.startswith("http"):
+        raise RuntimeError(f"Ideogram API returned an invalid URL: {image_url!r}")
+    return image_url

@@ -172,9 +172,9 @@ def _detect_time(sentence_lower: str) -> str | None:
     return None
 
 
-def _collect_confirmed_nouns(all_paragraphs: list[str]) -> frozenset[str]:
+def _collect_confirmed_nouns(all_paragraphs: list[str]) -> tuple[str, ...]:
     """Pre-scan: words that appear at non-initial token position → proper nouns."""
-    confirmed: set[str] = set()
+    confirmed: list[str] = []
     for para in all_paragraphs:
         for sentence in _split_sentences(para):
             tokens = sentence.split()
@@ -182,13 +182,18 @@ def _collect_confirmed_nouns(all_paragraphs: list[str]) -> frozenset[str]:
                 if i == 0:
                     continue
                 clean = re.sub(r"'s?$", "", token).rstrip(".,!?;:\"'")
-                if clean.isalpha() and clean[0].isupper() and clean not in _EXCLUDE_WORDS:
-                    confirmed.add(clean)
-    return frozenset(confirmed)
+                if (
+                    clean.isalpha()
+                    and clean[0].isupper()
+                    and clean not in _EXCLUDE_WORDS
+                    and clean not in confirmed
+                ):
+                    confirmed.append(clean)
+    return tuple(confirmed)
 
 
 def _extract_proper_nouns(
-    sentences: list[str], confirmed: frozenset[str]
+    sentences: list[str], confirmed: tuple[str, ...]
 ) -> list[str]:
     seen: list[str] = []
     for sentence in sentences:
@@ -309,15 +314,15 @@ def _resolve_location_id(
     if norm in slugs:
         return norm
     # Pass 2: slug tokens ⊆ location tokens
-    loc_tokens = set(norm.split("_"))
+    loc_tokens = [token for token in norm.split("_") if token]
     for slug in slugs:
-        slug_tokens = set(slug.split("_"))
-        if slug_tokens and slug_tokens <= loc_tokens:
+        slug_tokens = [token for token in slug.split("_") if token]
+        if slug_tokens and all(token in loc_tokens for token in slug_tokens):
             return slug
     # Pass 3: location tokens ⊆ slug tokens
     for slug in slugs:
-        slug_tokens = set(slug.split("_"))
-        if loc_tokens and loc_tokens <= slug_tokens:
+        slug_tokens = [token for token in slug.split("_") if token]
+        if loc_tokens and all(token in slug_tokens for token in loc_tokens):
             return slug
     return None
 
@@ -361,9 +366,9 @@ def _build_cinematic_scene(
     time_of_day:      str | None,
     act_position:     str | None,
     scene_type:       str,
-    confirmed:        frozenset[str],
-    known_characters: set[str],
-    known_locations:  set[str],
+    confirmed:        tuple[str, ...],
+    known_characters: list[str],
+    known_locations:  list[str],
     visual_bible:     VisualBible | None,
     total_estimated:  int,
 ) -> CinematicScene:
@@ -466,8 +471,8 @@ def segment(
 
     scenes:           list[CinematicScene] = []
     scene_index:      int = 0
-    known_characters: set[str] = set()
-    known_locations:  set[str] = set()
+    known_characters: list[str] = []
+    known_locations:  list[str] = []
 
     current_paragraphs: list[str] = []
     current_location:   str = "Unknown"
@@ -503,9 +508,12 @@ def segment(
         )
         scenes.append(sc)
         # Update world state
-        known_characters.update(sc["characters"])
-        if sc.get("reference_location_id"):
-            known_locations.add(sc["reference_location_id"])
+        for character in sc["characters"]:
+            if character not in known_characters:
+                known_characters.append(character)
+        reference_location_id = sc.get("reference_location_id")
+        if reference_location_id and reference_location_id not in known_locations:
+            known_locations.append(reference_location_id)
         scene_index += 1
 
     pending_act_break: str | None = None  # carry act_position to next scene

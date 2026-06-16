@@ -9,7 +9,14 @@ if TYPE_CHECKING:
     from aiprod_adaptation.core.visual_bible import VisualBible
 
 from aiprod_adaptation.models.intermediate import ShotDict, VisualScene
-from aiprod_adaptation.models.schema import AIPRODOutput, Episode, Scene, Shot
+from aiprod_adaptation.models.schema import (
+    AIPRODOutput,
+    Episode,
+    IRVersion,
+    Scene,
+    Shot,
+    validated_model_update,
+)
 
 _SCENE_KNOWN_KEYS: frozenset[str] = frozenset(
     {
@@ -80,6 +87,7 @@ def compile_episode(
     visual_bible: VisualBible | None = None,
     ref_invariants: object | None = None,
     episode_index: int = 1,
+    ir_version: IRVersion | None = None,
 ) -> AIPRODOutput:
     """
     Assemble scenes and shots into a validated AIPRODOutput.
@@ -169,12 +177,49 @@ def compile_episode(
         pydantic_scenes, validated_shots, visual_bible
     )
 
+    from aiprod_adaptation.core.feasibility.engine import FeasibilityEngine
+
+    feasibility_engine = FeasibilityEngine()
+    scene_by_id = {scene.scene_id: scene for scene in pydantic_scenes}
+    rescored_shots: list[Shot] = []
+    for current_shot in validated_shots:
+        current_scene = scene_by_id[current_shot.scene_id]
+        location_invariant = None
+        if visual_bible is not None:
+            location_invariant = visual_bible.get_location(
+                current_scene.location_id or current_scene.location
+            )
+        action_intensity_value = current_shot.metadata.get("action_intensity")
+        action_intensity = (
+            str(action_intensity_value) if action_intensity_value is not None else None
+        )
+        breakdown = feasibility_engine.compute_breakdown(
+            current_shot,
+            ref_invariants,
+            location_invariant,
+            action_intensity,
+        )
+        rescored_shots.append(
+            Shot.model_validate(
+                {
+                    **current_shot.model_dump(mode="python"),
+                    "feasibility_score": breakdown.final,
+                    "feasibility_breakdown": breakdown.to_dict(),
+                }
+            )
+        )
+    validated_shots = rescored_shots
+
     # ------------------------------------------------------------------
     # Pass 4 rule engine layer — per-shot conflict detection + resolution
     # ------------------------------------------------------------------
     from aiprod_adaptation.core.rule_engine.builtin_rules import make_default_evaluator
     from aiprod_adaptation.core.rule_engine.conflict_resolver import ConflictResolutionEngine
-    from aiprod_adaptation.core.rule_engine.models import EvalContext
+    from aiprod_adaptation.core.rule_engine.models import (
+        ConflictType,
+        EvalContext,
+        ResolutionStrategy,
+    )
     from aiprod_adaptation.models.schema import RuleEngineReport
 
     _evaluator = make_default_evaluator()
@@ -184,16 +229,73 @@ def compile_episode(
     _resolved_shots: list[Shot] = []
     for _shot in validated_shots:
         _scene = _scene_index.get(_shot.scene_id, pydantic_scenes[0])
-        _ctx = EvalContext(
-            shot=_shot,
-            scene=_scene,
-            visual_bible=visual_bible,
-            ref_invariants=ref_invariants,
-            episode_id=episode_id,
-            episode_index=episode_index,
-        )
-        _eval_results = _evaluator.evaluate(_ctx)
-        _resolved_shot, _records = _resolver.resolve(_shot, _ctx, _eval_results)
+        _resolved_shot = _shot
+        _records: list[Any] = []
+        _handled_rule_ids: list[str] = []
+        while True:
+            _ctx = EvalContext(
+                shot=_resolved_shot,
+                scene=_scene,
+                visual_bible=visual_bible,
+                ref_invariants=ref_invariants,
+                episode_id=episode_id,
+                episode_index=episode_index,
+            )
+            _active = [
+                result
+                for result in _evaluator.evaluate(_ctx)
+                if result.matched
+                and result.conflict is not None
+                and result.rule_id not in _handled_rule_ids
+            ]
+            if not _active:
+                break
+            _result = _active[0]
+            _handled_rule_ids.append(_result.rule_id)
+            _resolved_shot, _new_records = _resolver.resolve(
+                _resolved_shot, _ctx, [_result]
+            )
+            _records.extend(_new_records)
+            if any(record.was_modified for record in _new_records):
+                _location_invariant = None
+                if visual_bible is not None:
+                    _location_invariant = visual_bible.get_location(
+                        _scene.location_id or _scene.location
+                    )
+                _action_intensity_value = _resolved_shot.metadata.get("action_intensity")
+                _action_intensity = (
+                    str(_action_intensity_value)
+                    if _action_intensity_value is not None
+                    else None
+                )
+                _breakdown = feasibility_engine.compute_breakdown(
+                    _resolved_shot,
+                    ref_invariants,
+                    _location_invariant,
+                    _action_intensity,
+                )
+                _resolved_shot = Shot.model_validate(
+                    {
+                        **_resolved_shot.model_dump(mode="python"),
+                        "feasibility_score": _breakdown.final,
+                        "feasibility_breakdown": _breakdown.to_dict(),
+                    }
+                )
+            for _record in _new_records:
+                if (
+                    _record.conflict.conflict_type == ConflictType.HARD
+                    and (
+                        not _record.was_modified
+                        or _record.strategy in {
+                            ResolutionStrategy.FLAG_AND_PASS,
+                            ResolutionStrategy.NO_ACTION,
+                        }
+                    )
+                ):
+                    raise ValueError(
+                        "PASS 4: unresolved HARD conflict "
+                        f"{_record.conflict.rule_id} on {_record.conflict.shot_id}"
+                    )
         _resolved_shots.append(_resolved_shot)
         _all_res_records.extend(_records)
     validated_shots = _resolved_shots
@@ -206,8 +308,15 @@ def compile_episode(
         1 for r in _all_res_records
         if r.conflict.conflict_type.value == "SOFT" and r.was_modified
     )
-    _modified_shot_ids = sorted({r.conflict.shot_id for r in _all_res_records if r.was_modified})
-    _fired_rule_ids = sorted({r.conflict.rule_id for r in _all_res_records if r.was_modified})
+    _modified_shot_ids: list[str] = []
+    _fired_rule_ids: list[str] = []
+    for _record in _all_res_records:
+        if not _record.was_modified:
+            continue
+        if _record.conflict.shot_id not in _modified_shot_ids:
+            _modified_shot_ids.append(_record.conflict.shot_id)
+        if _record.conflict.rule_id not in _fired_rule_ids:
+            _fired_rule_ids.append(_record.conflict.rule_id)
     rule_engine_report = RuleEngineReport(
         rules_evaluated=len(_evaluator.rules) * len(validated_shots),
         hard_conflicts_resolved=_hard_count,
@@ -215,11 +324,13 @@ def compile_episode(
         total_shots_modified=len(_modified_shot_ids),
         conflict_shot_ids=_modified_shot_ids,
         rule_ids_fired=_fired_rule_ids,
+        resolution_records=[record.model_dump(mode="json") for record in _all_res_records],
     )
 
     validated_shots, enrichment_count = finalize_prompts(validated_shots, visual_bible)
-    consistency_report = consistency_report.model_copy(
-        update={"prompt_enrichments": enrichment_count}
+    consistency_report = validated_model_update(
+        consistency_report,
+        prompt_enrichments=enrichment_count,
     )
     pacing_profile = analyze(validated_shots)
 
@@ -256,6 +367,7 @@ def compile_episode(
             episodes=[episode],
             visual_bible_summary=bible_summary,
             rule_engine_report=rule_engine_report,
+            ir_version=ir_version,
         )
     except ValidationError as exc:
         raise ValueError(str(exc)) from exc

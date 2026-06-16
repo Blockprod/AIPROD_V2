@@ -21,19 +21,66 @@ Integration
 -----------
 Call FeasibilityEngine.compute() in Pass 3 (after base score assignment) or
 in Pass 4 (after visual_bible and ref_invariants become available).
-The result replaces `shot.feasibility_score` via model_copy(update=...).
+The result replaces `shot.feasibility_score` via a revalidated model rebuild.
 """
 
 from __future__ import annotations
 
+from dataclasses import asdict, dataclass
 from typing import Any
 
+from aiprod_adaptation.core.rules.cinematography_catalog import CAMERA_MOVEMENTS, SHOT_TYPES
 from aiprod_adaptation.core.rules.cinematography_rules_v3 import (
     FEASIBILITY_BASE_SCORES,
-    FEASIBILITY_DEFAULT_SCORE,
     FEASIBILITY_EXPLOSIVE_PENALTY,
     FEASIBILITY_STATIC_BONUS,
 )
+
+_SHOT_BASE: dict[str, int] = {
+    "extreme_close_up": 90,
+    "close_up": 94,
+    "extreme_wide": 92,
+    "wide": 95,
+    "pov": 85,
+    "two_shot": 92,
+    "insert": 95,
+    "over_shoulder": 92,
+    "medium_wide": 94,
+    "medium_close": 94,
+    "medium": 95,
+}
+_MOVEMENT_COST: dict[str, int] = {
+    "static": 0,
+    "follow": 15,
+    "pan": 5,
+    "dolly_in": 13,
+    "dolly_out": 13,
+    "tilt_up": 8,
+    "tilt_down": 8,
+    "crane_up": 30,
+    "crane_down": 30,
+    "tracking": 20,
+    "handheld": 17,
+    "steadicam": 23,
+    "rack_focus": 10,
+    "whip_pan": 20,
+    "zoom_in": 8,
+    "zoom_out": 8,
+}
+
+
+@dataclass(frozen=True)
+class FeasibilityBreakdown:
+    base: int
+    action_adjustment: int
+    static_adjustment: int
+    camera_height_penalty: int
+    depth_penalty: int
+    architecture_penalty: int
+    final: int
+
+    def to_dict(self) -> dict[str, int]:
+        return asdict(self)
 
 # ---------------------------------------------------------------------------
 # P3 — Camera height × movement incompatibility penalties
@@ -112,55 +159,87 @@ class FeasibilityEngine:
         Returns:
             int in [0, 100].
         """
+        return self.compute_breakdown(
+            shot, ref_invariants, location_invariant, action_intensity
+        ).final
+
+    def compute_breakdown(
+        self,
+        shot: Any,
+        ref_invariants: Any | None,
+        location_invariant: Any | None = None,
+        action_intensity: str | None = None,
+    ) -> FeasibilityBreakdown:
         shot_type = shot.shot_type
-        movement  = shot.camera_movement
+        movement = shot.camera_movement
 
         # 1. Base score (from cinematography_rules_v3 lookup table)
-        base: int = FEASIBILITY_BASE_SCORES.get(
-            (shot_type, movement), FEASIBILITY_DEFAULT_SCORE
+        if shot_type not in SHOT_TYPES or movement not in CAMERA_MOVEMENTS:
+            raise ValueError(
+                f"Unknown feasibility combination: shot_type={shot_type!r}, "
+                f"camera_movement={movement!r}"
+            )
+        combination = (shot_type, movement)
+        base = FEASIBILITY_BASE_SCORES.get(
+            combination,
+            max(0, _SHOT_BASE[shot_type] - _MOVEMENT_COST[movement]),
         )
 
         # 2. Explosive action intensity penalty
-        if action_intensity == "explosive":
-            base = max(0, base - FEASIBILITY_EXPLOSIVE_PENALTY)
+        action_adjustment = -FEASIBILITY_EXPLOSIVE_PENALTY if action_intensity == "explosive" else 0
 
         # 3. Static bonus (always achievable, regardless of scene complexity)
-        if movement == "static":
-            base = min(100, base + FEASIBILITY_STATIC_BONUS)
+        static_adjustment = FEASIBILITY_STATIC_BONUS if movement == "static" else 0
 
         # 4. Reference invariant penalties (P3 + P4)
-        inv_penalty = self._invariant_penalty(shot_type, movement, ref_invariants)
+        height_penalty, depth_penalty = self._invariant_penalties(
+            shot_type, movement, ref_invariants
+        )
 
         # 5. Location architecture constraint penalty (P3)
-        loc_penalty = self._location_penalty(movement, location_invariant)
+        architecture_penalty = self._location_penalty(movement, location_invariant)
 
-        return max(0, min(100, base - inv_penalty - loc_penalty))
+        final = max(
+            0,
+            min(
+                100,
+                base + action_adjustment + static_adjustment
+                - height_penalty - depth_penalty - architecture_penalty,
+            ),
+        )
+        return FeasibilityBreakdown(
+            base=base,
+            action_adjustment=action_adjustment,
+            static_adjustment=static_adjustment,
+            camera_height_penalty=height_penalty,
+            depth_penalty=depth_penalty,
+            architecture_penalty=architecture_penalty,
+            final=final,
+        )
 
     # -----------------------------------------------------------------------
     # Private helpers
     # -----------------------------------------------------------------------
 
-    def _invariant_penalty(
+    def _invariant_penalties(
         self,
         shot_type: str,
         movement: str,
         ref_invariants: Any | None,
-    ) -> int:
+    ) -> tuple[int, int]:
         if ref_invariants is None:
-            return 0
-
-        penalty = 0
+            return (0, 0)
 
         # P3: camera height × movement
         height = ref_invariants.camera_height_class
         height_val = height.value if hasattr(height, "value") else str(height)
-        penalty += _HEIGHT_MOVEMENT_PENALTY.get((height_val, movement), 0)
+        height_penalty = _HEIGHT_MOVEMENT_PENALTY.get((height_val, movement), 0)
 
         # P4: shot type × dominant depth layer
         dominant = ref_invariants.depth_layers.dominant_layer
-        penalty += _SHOT_DEPTH_PENALTY.get((shot_type, dominant), 0)
+        depth_penalty = _SHOT_DEPTH_PENALTY.get((shot_type, dominant), 0)
 
-        return penalty
+        return (height_penalty, depth_penalty)
 
     def _location_penalty(
         self,

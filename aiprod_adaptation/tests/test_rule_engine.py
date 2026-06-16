@@ -534,7 +534,8 @@ class TestRuleEvaluator:
         cond = _leaf("shot.feasibility_score", FieldOperator.LT, value=40)
         evaluator = RuleEvaluator([_rule("R1", 1, cond)])
         results = evaluator.evaluate(ctx)
-        assert results[0].conflict.shot_id == "MY_SHOT"  # type: ignore[union-attr]
+        assert results[0].conflict is not None
+        assert results[0].conflict.shot_id == "MY_SHOT"
 
     def test_all_rules_evaluated_even_when_early_match(self):
         ctx = _ctx(shot=_shot(feasibility_score=30, camera_movement="pan"))
@@ -564,7 +565,8 @@ class TestRuleEvaluator:
             _rule("R1", 3, cond, target_field="shot.camera_movement")
         ])
         results = evaluator.evaluate(ctx)
-        assert results[0].conflict.current_value == "crane_up"  # type: ignore[union-attr]
+        assert results[0].conflict is not None
+        assert results[0].conflict.current_value == "crane_up"
 
     def test_unmatched_has_none_conflict(self):
         ctx = _ctx(shot=_shot(camera_movement="static"))

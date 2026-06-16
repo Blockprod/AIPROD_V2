@@ -8,6 +8,7 @@ from aiprod_adaptation.models.schema import (  # Episode/Shot used in type hints
     AIPRODOutput,
     Episode,
     Shot,
+    validated_model_update,
 )
 
 
@@ -42,12 +43,12 @@ class PromptEnricher:
                     ),
                     prop_hint=prop_registry.get_prompt_hint(shot.shot_id) if prop_registry else "",
                 )
-                enriched_shots.append(shot.model_copy(update={"prompt": enriched_prompt}))
+                enriched_shots.append(validated_model_update(shot, prompt=enriched_prompt))
             enriched_episodes.append(
-                episode.model_copy(update={"shots": enriched_shots})
+                validated_model_update(episode, shots=enriched_shots)
             )
 
-        return output.model_copy(update={"episodes": enriched_episodes})
+        return validated_model_update(output, episodes=enriched_episodes)
 
     def _enrich_prompt(
         self,

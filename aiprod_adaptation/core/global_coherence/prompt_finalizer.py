@@ -11,7 +11,7 @@ Rules applied (from pass4_coherence_rules):
     R07  VisualBible provided + subject_id matches known character → append fragment
     R08  VisualBible provided + location_id matches known location → append fragment
 
-All Shot mutations use model_copy(update=...) — no in-place mutation.
+All Shot mutations rebuild and revalidate models; there is no in-place mutation.
 
 Returns:
     (enriched_shots: list[Shot], enrichment_count: int)
@@ -32,7 +32,7 @@ from aiprod_adaptation.core.rules.pass4_coherence_rules import (
     PROMPT_LABEL_LIGHTING,
     PROMPT_LABEL_LOCATION,
 )
-from aiprod_adaptation.models.schema import Shot
+from aiprod_adaptation.models.schema import Shot, validated_model_update
 
 
 def finalize_prompts(
@@ -136,7 +136,7 @@ def finalize_prompts(
                 + ". ".join(additions)
                 + "."
             )
-            shot = shot.model_copy(update={"prompt": new_prompt})
+            shot = validated_model_update(shot, prompt=new_prompt)
             total_enriched += 1
 
         enriched.append(shot)

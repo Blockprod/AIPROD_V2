@@ -37,6 +37,11 @@ class ConflictType(StrEnum):
     NONE = "NONE"   # no conflict — informational
 
 
+class RulePhase(StrEnum):
+    CONSTRAINT = "CONSTRAINT"
+    FINAL_GATE = "FINAL_GATE"
+
+
 class ResolutionStrategy(StrEnum):
     STRIP_AND_REPLACE   = "STRIP_AND_REPLACE"    # remove conflicting phrase, insert invariant
     DOWNGRADE_MOVEMENT  = "DOWNGRADE_MOVEMENT"   # reduce camera movement complexity one step
@@ -144,6 +149,7 @@ class RuleSpec(BaseModel):
     conflict_type: HARD → mandatory resolution, SOFT → best-effort, NONE → audit only
     """
     id: str
+    phase: RulePhase = RulePhase.CONSTRAINT
     priority: int                               # 1–5
     description: str = ""
     condition: LeafCondition | CompoundCondition
@@ -182,8 +188,10 @@ class RuleEvalResult(BaseModel):
     """Result of evaluating one RuleSpec against one EvalContext."""
     rule_id: str
     matched: bool
+    phase: RulePhase = RulePhase.CONSTRAINT
     conflict_type: ConflictType = ConflictType.NONE
     conflict: ConflictRecord | None = None
+    action: RuleAction | None = None
     resolution: ResolutionRecord | None = None
 
 
@@ -199,7 +207,7 @@ class EvalContext:
 
     Combines local (shot/scene) and global (episode/season) data.
     Never mutated during evaluation — all mutations happen via
-    model_copy(update=...) on the Shot and are tracked in ResolutionRecord.
+    validated model rebuilds on the Shot and are tracked in ResolutionRecord.
 
     Fields
     ------

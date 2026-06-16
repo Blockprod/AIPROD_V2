@@ -3,7 +3,7 @@ from __future__ import annotations
 import structlog
 
 from aiprod_adaptation.image_gen.image_request import StoryboardOutput
-from aiprod_adaptation.models.schema import AIPRODOutput, Shot
+from aiprod_adaptation.models.schema import AIPRODOutput, Shot, validated_model_update
 from aiprod_adaptation.video_gen.runway_prompt_formatter import format_runway_prompt
 from aiprod_adaptation.video_gen.video_adapter import VideoAdapter
 from aiprod_adaptation.video_gen.video_request import (
@@ -77,7 +77,7 @@ class VideoSequencer:
             if i > 0 and requests[i - 1].scene_id == request.scene_id:
                 prev_last = clips[i - 1].last_frame_url
                 if prev_last:
-                    request = request.model_copy(update={"last_frame_hint_url": prev_last})
+                    request = validated_model_update(request, last_frame_hint_url=prev_last)
             try:
                 clip = self._adapter.generate(request)
             except Exception as exc:

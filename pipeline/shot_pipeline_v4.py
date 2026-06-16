@@ -223,7 +223,11 @@ class ComfyUIBackend(StylizationBackend):
                     images = node_outputs.get("images", [])
                     if images:
                         img_info = images[0]
-                        img_url = f"{self._url}/view?filename={img_info['filename']}&subfolder={img_info.get('subfolder','')}&type={img_info.get('type','output')}"
+                        img_url = (
+                            f"{self._url}/view?filename={img_info['filename']}"
+                            f"&subfolder={img_info.get('subfolder', '')}"
+                            f"&type={img_info.get('type', 'output')}"
+                        )
                         with urllib.request.urlopen(img_url, timeout=60) as img_resp:
                             return img_resp.read()
             time.sleep(1)
@@ -517,7 +521,8 @@ def _build_stylization_prompt(shot: dict[str, Any], storyboard: dict[str, Any]) 
     # Fin cinématographique — remplace les formules génériques IA
     parts.append(
         "Anamorphic 2.39:1. Practical light sources dominant. "
-        "Motivated shadows. Optical lens aberrations retained. Film grain at ISO push."
+        "Motivated shadows. Optical lens aberrations retained. Film grain at ISO push. "
+        "No AI artefacts, no distorted anatomy, no synthetic plastic skin."
     )
 
     return " ".join(parts)
@@ -628,17 +633,17 @@ def _resolve_char_ref(char_slug: str, char_refs_dir: Path, shot: dict[str, Any])
     action = (shot.get("action_brief") or "").lower()
     emotion_full = emotion + " " + action  # combiner pour meilleure couverture
 
-    FACES = CHAR_FACES_DIR / char_slug
-    BODIES = ROOT / "production" / "character_bodies" / char_slug
+    faces_dir = CHAR_FACES_DIR / char_slug
+    bodies_dir = ROOT / "production" / "character_bodies" / char_slug
 
     def _try(path: Path) -> Path | None:
         return path if path.exists() else None
 
     def _face(name: str) -> Path | None:
-        return _try(FACES / name)
+        return _try(faces_dir / name)
 
     def _body(name: str) -> Path | None:
-        return _try(BODIES / name)
+        return _try(bodies_dir / name)
 
     # ------------------------------------------------------------------
     # 1. Plans larges → corps
@@ -798,12 +803,12 @@ def _upload_to_comfyui(url: str, img_bytes: bytes, filename: str) -> str:
     import urllib.request
 
     boundary = "----AIPRODFormBoundary" + filename[:8]
-    CRLF = b"\r\n"
+    crlf = b"\r\n"
     body = (
         f"--{boundary}\r\n"
         f'Content-Disposition: form-data; name="image"; filename="{filename}"\r\n'
         f"Content-Type: image/png\r\n\r\n"
-    ).encode("ascii") + img_bytes + CRLF
+    ).encode("ascii") + img_bytes + crlf
     body += (
         f"--{boundary}\r\n"
         f'Content-Disposition: form-data; name="overwrite"\r\n\r\n'

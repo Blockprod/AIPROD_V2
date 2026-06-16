@@ -20,13 +20,10 @@ from __future__ import annotations
 
 import copy
 import unittest
-from typing import TYPE_CHECKING
+from typing import cast
 
 from aiprod_adaptation.core.pass2_visual import visual_rewrite
-from aiprod_adaptation.models.intermediate import RawScene
-
-if TYPE_CHECKING:
-    from aiprod_adaptation.models.intermediate import VisualScene
+from aiprod_adaptation.models.intermediate import CinematicScene, RawScene, VisualScene
 
 # ---------------------------------------------------------------------------
 # Minimal valid RawScene builders
@@ -53,7 +50,7 @@ def _make_scene(
         "scene_type":         scene_type,
     }
     base.update(extra)
-    return base  # type: ignore[return-value]
+    return cast(CinematicScene, base)
 
 
 class _FakeVisualBible:

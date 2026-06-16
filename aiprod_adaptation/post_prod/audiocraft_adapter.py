@@ -23,13 +23,19 @@ Modèles disponibles (AudioGen) :
 """
 from __future__ import annotations
 
+import importlib.util
 import io
+import logging
+import shutil
 import time
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
+from aiprod_adaptation.adapters.errors import AdapterError, AdapterFailureCategory
 from aiprod_adaptation.post_prod.audio_adapter import AudioAdapter
 from aiprod_adaptation.post_prod.audio_request import AudioRequest, AudioResult
+
+logger = logging.getLogger(__name__)
 
 # Modèles par défaut — changer selon VRAM disponible
 _DEFAULT_MUSIC_MODEL = "facebook/musicgen-stereo-large"
@@ -74,6 +80,7 @@ class MusicGenAdapter(AudioAdapter):
     # ------------------------------------------------------------------
 
     def generate(self, request: AudioRequest) -> AudioResult:
+        _preflight_local_audio(self._device, min_vram_gib=8)
         t0 = time.monotonic()
         model = self._get_model()
 
@@ -103,7 +110,7 @@ class MusicGenAdapter(AudioAdapter):
         out_path.parent.mkdir(parents=True, exist_ok=True)
         out_path.write_bytes(wav_bytes)
         elapsed = (time.monotonic() - t0) * 1000
-        print(f"[MusicGen] {request.shot_id} → {out_path.name} ({elapsed:.0f}ms, $0.00)")
+        logger.info("MusicGen generated %s in %.0fms", out_path.name, elapsed)
         return out_path
 
     # ------------------------------------------------------------------
@@ -114,7 +121,7 @@ class MusicGenAdapter(AudioAdapter):
         if self._model is not None:
             return self._model
         try:
-            from audiocraft.models import MusicGen  # type: ignore[import-untyped]
+            from audiocraft.models import MusicGen
         except ImportError as exc:
             raise ImportError(
                 "audiocraft manquant. Installer : pip install audiocraft\n"
@@ -132,7 +139,7 @@ class MusicGenAdapter(AudioAdapter):
 
     def _generate_music(self, model: Any, prompt: str, duration: float) -> bytes:
         import torch
-        import torchaudio  # type: ignore[import-untyped]
+        import torchaudio
 
         model.set_generation_params(duration=duration)
         with torch.inference_mode():
@@ -184,6 +191,7 @@ class AudioGenAdapter(AudioAdapter):
     # ------------------------------------------------------------------
 
     def generate(self, request: AudioRequest) -> AudioResult:
+        _preflight_local_audio(self._device, min_vram_gib=6)
         t0 = time.monotonic()
         model = self._get_model()
 
@@ -213,7 +221,7 @@ class AudioGenAdapter(AudioAdapter):
         out_path.parent.mkdir(parents=True, exist_ok=True)
         out_path.write_bytes(wav_bytes)
         elapsed = (time.monotonic() - t0) * 1000
-        print(f"[AudioGen] {request.shot_id} → {out_path.name} ({elapsed:.0f}ms, $0.00)")
+        logger.info("AudioGen generated %s in %.0fms", out_path.name, elapsed)
         return out_path
 
     # ------------------------------------------------------------------
@@ -224,7 +232,7 @@ class AudioGenAdapter(AudioAdapter):
         if self._model is not None:
             return self._model
         try:
-            from audiocraft.models import AudioGen  # type: ignore[import-untyped]
+            from audiocraft.models import AudioGen
         except ImportError as exc:
             raise ImportError(
                 "audiocraft manquant. Installer : pip install audiocraft\n"
@@ -237,7 +245,7 @@ class AudioGenAdapter(AudioAdapter):
 
     def _generate_sfx(self, model: Any, prompt: str, duration: float) -> bytes:
         import torch
-        import torchaudio  # type: ignore[import-untyped]
+        import torchaudio
 
         model.set_generation_params(duration=duration)
         with torch.inference_mode():
@@ -255,9 +263,43 @@ class AudioGenAdapter(AudioAdapter):
 def _cuda_available() -> bool:
     try:
         import torch
-        return torch.cuda.is_available()
+        return cast(bool, torch.cuda.is_available())
     except ImportError:
         return False
+
+
+def _preflight_local_audio(device: str, *, min_vram_gib: int) -> None:
+    if shutil.which("ffmpeg") is None:
+        raise AdapterError(
+            "AudioCraft requires ffmpeg on PATH.", provider="audiocraft",
+            category=AdapterFailureCategory.LOCAL_RUNTIME,
+        )
+    try:
+        import torch
+    except ImportError as exc:
+        raise AdapterError(
+            "AudioCraft requires torch and torchaudio.", provider="audiocraft",
+            category=AdapterFailureCategory.LOCAL_RUNTIME,
+        ) from exc
+    if importlib.util.find_spec("torchaudio") is None:
+        raise AdapterError(
+            "AudioCraft requires torchaudio.", provider="audiocraft",
+            category=AdapterFailureCategory.LOCAL_RUNTIME,
+        )
+    if device == "cuda":
+        if not torch.cuda.is_available():
+            raise AdapterError(
+                "AudioCraft requested CUDA but torch.cuda is unavailable.", provider="audiocraft",
+                category=AdapterFailureCategory.LOCAL_RUNTIME,
+            )
+        total = torch.cuda.get_device_properties(0).total_memory
+        if total < min_vram_gib * 1024**3:
+            raise AdapterError(
+                f"AudioCraft requires at least {min_vram_gib} GiB CUDA VRAM.",
+                provider="audiocraft", category=AdapterFailureCategory.LOCAL_RUNTIME,
+            )
+    else:
+        logger.warning("AudioCraft is using CPU fallback; production latency may be high")
 
 
 # ---------------------------------------------------------------------------

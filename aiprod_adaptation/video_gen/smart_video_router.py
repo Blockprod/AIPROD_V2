@@ -9,6 +9,7 @@ Routing priority:
 
 from __future__ import annotations
 
+from aiprod_adaptation.adapters.errors import AdapterError
 from aiprod_adaptation.video_gen.video_adapter import VideoAdapter
 from aiprod_adaptation.video_gen.video_request import VideoClipResult, VideoRequest
 
@@ -37,8 +38,23 @@ class SmartVideoRouter(VideoAdapter):
         self._threshold = threshold_sec
 
     def generate(self, request: VideoRequest) -> VideoClipResult:
-        if self._seedance is not None and request.character_reference_urls:
-            return self._seedance.generate(request)
-        if request.duration_sec <= self._threshold:
-            return self._runway.generate(request)
-        return self._kling.generate(request)
+        candidates: list[VideoAdapter]
+        if request.character_reference_urls:
+            candidates = [adapter for adapter in (self._seedance,) if adapter is not None]
+        elif request.duration_sec <= self._threshold:
+            candidates = [self._runway, self._kling]
+        else:
+            candidates = [self._kling, self._runway]
+        if not candidates:
+            raise RuntimeError("No compatible video provider is configured for this request.")
+
+        failures: list[AdapterError] = []
+        for index, adapter in enumerate(candidates):
+            try:
+                return adapter.generate(request)
+            except AdapterError as exc:
+                failures.append(exc)
+                if not exc.retryable or index == len(candidates) - 1:
+                    break
+        detail = "; ".join(f"{failure.provider}:{failure.category}" for failure in failures)
+        raise RuntimeError(f"All compatible video providers failed: {detail}") from failures[-1]

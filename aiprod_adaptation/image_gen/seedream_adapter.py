@@ -24,7 +24,7 @@ from __future__ import annotations
 import os
 import time
 import urllib.request
-from typing import Any
+from typing import Any, cast
 
 from aiprod_adaptation.image_gen.image_adapter import ImageAdapter
 from aiprod_adaptation.image_gen.image_request import ImageRequest, ImageResult
@@ -206,4 +206,4 @@ class SeedreamAdapter(ImageAdapter):
 
 def _download_png(url: str, timeout: int = 120) -> bytes:
     with urllib.request.urlopen(url, timeout=timeout) as resp:
-        return resp.read()
+        return cast(bytes, resp.read())

@@ -23,12 +23,17 @@ Utilisation :
 from __future__ import annotations
 
 import io
+import logging
+import shutil
 import time
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
+from aiprod_adaptation.adapters.errors import AdapterError, AdapterFailureCategory
 from aiprod_adaptation.post_prod.audio_adapter import AudioAdapter
 from aiprod_adaptation.post_prod.audio_request import AudioRequest, AudioResult
+
+logger = logging.getLogger(__name__)
 
 _DEFAULT_SAMPLE_RATE = 24000
 _DEFAULT_STEPS = 32          # 32 = bon équilibre qualité/vitesse sur RTX
@@ -66,6 +71,7 @@ class F5TTSAdapter(AudioAdapter):
         self._nfe_steps = nfe_steps
         self._device = device or ("cuda" if _cuda_available() else "cpu")
         self._pipeline: Any | None = None
+        self._preflight_done = False
 
     # ------------------------------------------------------------------
     # AudioAdapter interface
@@ -77,6 +83,7 @@ class F5TTSAdapter(AudioAdapter):
         Returns:
             AudioResult avec audio_b64 contenant le WAV base64.
         """
+        self.preflight()
         t0 = time.monotonic()
         pipe = self._get_pipeline()
 
@@ -106,14 +113,50 @@ class F5TTSAdapter(AudioAdapter):
         Returns:
             Path vers le fichier généré.
         """
+        self.preflight()
         t0 = time.monotonic()
         pipe = self._get_pipeline()
         wav_bytes = self._synthesize(pipe, request.text)
         out_path.parent.mkdir(parents=True, exist_ok=True)
         out_path.write_bytes(wav_bytes)
         elapsed = (time.monotonic() - t0) * 1000
-        print(f"[F5TTS] {request.shot_id} → {out_path.name} ({elapsed:.0f}ms, $0.00)")
+        logger.info("F5TTS generated %s in %.0fms", out_path.name, elapsed)
         return out_path
+
+    def preflight(self) -> None:
+        if self._preflight_done:
+            return
+        if self._ref_audio is not None and not self._ref_audio.is_file():
+            raise AdapterError(
+                f"F5-TTS reference audio does not exist: {self._ref_audio}",
+                provider="f5tts", category=AdapterFailureCategory.LOCAL_RUNTIME,
+            )
+        if shutil.which("ffmpeg") is None:
+            raise AdapterError(
+                "F5-TTS requires ffmpeg on PATH.", provider="f5tts",
+                category=AdapterFailureCategory.LOCAL_RUNTIME,
+            )
+        if self._device == "cuda":
+            try:
+                import torch
+            except ImportError as exc:
+                raise AdapterError(
+                    "F5-TTS CUDA preflight requires torch.", provider="f5tts",
+                    category=AdapterFailureCategory.LOCAL_RUNTIME,
+                ) from exc
+            if not torch.cuda.is_available():
+                raise AdapterError(
+                    "F5-TTS requested CUDA but torch.cuda is unavailable.", provider="f5tts",
+                    category=AdapterFailureCategory.LOCAL_RUNTIME,
+                )
+            if torch.cuda.get_device_properties(0).total_memory < 6 * 1024**3:
+                raise AdapterError(
+                    "F5-TTS requires at least 6 GiB CUDA VRAM.", provider="f5tts",
+                    category=AdapterFailureCategory.LOCAL_RUNTIME,
+                )
+        else:
+            logger.warning("F5-TTS is using CPU fallback; production latency may be high")
+        self._preflight_done = True
 
     # ------------------------------------------------------------------
     # Helpers internes
@@ -125,7 +168,7 @@ class F5TTSAdapter(AudioAdapter):
             return self._pipeline
 
         try:
-            from f5_tts.api import F5TTS  # type: ignore[import-untyped]
+            from f5_tts.api import F5TTS
         except ImportError as exc:
             raise ImportError(
                 "f5-tts manquant. Installer : pip install f5-tts\n"
@@ -140,7 +183,7 @@ class F5TTSAdapter(AudioAdapter):
 
     def _synthesize(self, pipe: Any, text: str) -> bytes:
         """Appelle F5-TTS et retourne les bytes WAV."""
-        import soundfile as sf  # type: ignore[import-untyped]
+        import soundfile as sf
 
         ref_audio_path = str(self._ref_audio) if self._ref_audio else None
         ref_text = self._ref_text if self._ref_audio else ""
@@ -162,6 +205,6 @@ class F5TTSAdapter(AudioAdapter):
 def _cuda_available() -> bool:
     try:
         import torch
-        return torch.cuda.is_available()
+        return cast(bool, torch.cuda.is_available())
     except ImportError:
         return False

@@ -173,12 +173,12 @@ class VisualBible:
             Empty list means all slugs are valid.
         """
         missing: list[str] = []
-        seen: set[str] = set()
+        seen: list[str] = []
         for scene in scenes:
             ref_id: str | None = scene.get("reference_location_id")
             if ref_id and ref_id not in self._data["locations"] and ref_id not in seen:
                 missing.append(ref_id)
-                seen.add(ref_id)
+                seen.append(ref_id)
         return missing
 
     def get_character_prompt_fragment(self, name: str) -> str:

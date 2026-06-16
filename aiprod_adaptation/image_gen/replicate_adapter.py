@@ -145,7 +145,7 @@ def _upscale_to_4k(client: Any, image_b64: str) -> str:
     from PIL import Image as _PILImage
 
     raw = base64.b64decode(image_b64)
-    img = _PILImage.open(io.BytesIO(raw))
+    img: _PILImage.Image = _PILImage.open(io.BytesIO(raw))
     w, h = img.size
     # Pre-downscale to fit within Real-ESRGAN GPU pixel budget.
     # Hardware limit: 2,096,704 px but GPU needs ~3.8 GiB at 2M px → CUDA OOM.
@@ -153,7 +153,10 @@ def _upscale_to_4k(client: Any, image_b64: str) -> str:
     max_upscale_pixels = 1_440_000  # ~1440×1000 — safe on 14 GiB GPU with other allocations
     if w * h > max_upscale_pixels:
         ratio = (max_upscale_pixels / (w * h)) ** 0.5
-        img = img.resize((max(1, int(w * ratio)), max(1, int(h * ratio))), _PILImage.LANCZOS)
+        img = img.resize(
+            (max(1, int(w * ratio)), max(1, int(h * ratio))),
+            _PILImage.Resampling.LANCZOS,
+        )
         buf = io.BytesIO()
         img.save(buf, format="PNG")
         raw = buf.getvalue()

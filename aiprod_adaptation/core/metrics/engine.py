@@ -18,11 +18,13 @@ from aiprod_adaptation.core.metrics.models import (
     SeasonMetrics,
     ShotMetrics,
 )
-from aiprod_adaptation.models.schema import AIPRODOutput, Episode, Shot
 
 # Diversity denominators — fixed by schema constants (schema.py v3.1)
-_N_SHOT_TYPES: int = 11   # len(_VALID_SHOT_TYPES)
-_N_MOVEMENTS: int = 16    # len(_VALID_CAMERA_MOVEMENTS)
+from aiprod_adaptation.core.rules.cinematography_catalog import CAMERA_MOVEMENTS, SHOT_TYPES
+from aiprod_adaptation.models.schema import AIPRODOutput, Episode, Shot
+
+_N_SHOT_TYPES: int = len(SHOT_TYPES)
+_N_MOVEMENTS: int = len(CAMERA_MOVEMENTS)
 
 _ESTABLISHING_TYPES: frozenset[str] = frozenset({"wide", "extreme_wide"})
 _CLOSE_TYPES: frozenset[str] = frozenset({"close_up", "extreme_close_up"})

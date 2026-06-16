@@ -12,7 +12,7 @@ applies the deterministic rule set from pass4_coherence_rules:
 Returns:
     (enriched_shots: list[Shot], report: ConsistencyReport)
 
-All Shot mutations use model_copy(update=...) — no in-place mutation of
+All Shot mutations rebuild and revalidate models; there is no in-place mutation of
 Pydantic objects.  The ConsistencyReport is a new Pydantic instance.
 """
 
@@ -34,7 +34,7 @@ from aiprod_adaptation.core.rules.pass4_coherence_rules import (
     TONE_COLOR_GRADE_DEFAULTS,
     WIDE_SHOT_TYPES,
 )
-from aiprod_adaptation.models.schema import ConsistencyReport, Scene, Shot
+from aiprod_adaptation.models.schema import ConsistencyReport, Scene, Shot, validated_model_update
 
 
 def check_and_enrich(
@@ -69,7 +69,7 @@ def check_and_enrich(
             shot.feasibility_score < FEASIBILITY_MOVEMENT_MINIMUM
             and shot.camera_movement != "static"
         ):
-            shot = shot.model_copy(update={"camera_movement": "static"})
+            shot = validated_model_update(shot, camera_movement="static")
             movement_simplifications.append(shot.shot_id)
         working_shots.append(shot)
 
@@ -86,11 +86,12 @@ def check_and_enrich(
         if scene is None:
             continue
         # Collect distinct colour grades
-        grades: set[str] = set()
+        grades: list[str] = []
         for i in indices:
             cg = working_shots[i].metadata.get("color_grade_hint")
-            if cg:
-                grades.add(str(cg))
+            grade = str(cg) if cg else ""
+            if grade and grade not in grades:
+                grades.append(grade)
         if len(grades) > COLOR_GRADE_MAX_DISTINCT:
             # Normalise all shots in this scene to the tone default
             tone = scene.scene_tone or "neutral"
@@ -100,7 +101,7 @@ def check_and_enrich(
                 cg = shot.metadata.get("color_grade_hint")
                 if cg and cg != default_grade:
                     new_meta = {**shot.metadata, "color_grade_hint": default_grade}
-                    working_shots[i] = shot.model_copy(update={"metadata": new_meta})
+                    working_shots[i] = validated_model_update(shot, metadata=new_meta)
             tone_conflicts.append(scene_id)
 
     # ------------------------------------------------------------------

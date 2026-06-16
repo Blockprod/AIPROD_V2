@@ -35,10 +35,16 @@ Backward compatibility:
 from __future__ import annotations
 
 import re
+from types import SimpleNamespace
 from typing import cast
 
 from aiprod_adaptation.models.intermediate import ActionSpec, BodyLanguageState, PhysicalAction, ShotDict, VisualScene
 
+from .rules.cinematography_catalog import (
+    CAMERA_MOVEMENT_RULES,
+    SHOT_TYPE_RULES,
+    resolve_first_match,
+)
 from .rules.cinematography_rules_v3 import (
     CAMERA_MOVEMENT_DEFAULT_V3,
     CAMERA_MOVEMENT_RULES_V3,
@@ -47,10 +53,6 @@ from .rules.cinematography_rules_v3 import (
     CONTINUITY_FLAG_INJECTIONS,
     DURATION_TABLE,
     EMOTIONAL_LAYER_MODIFIERS,
-    FEASIBILITY_BASE_SCORES,
-    FEASIBILITY_DEFAULT_SCORE,
-    FEASIBILITY_EXPLOSIVE_PENALTY,
-    FEASIBILITY_STATIC_BONUS,
     FRAMING_NOTE_DEFAULT,
     FRAMING_NOTES,
     GAZE_DIRECTION_RULES,
@@ -349,12 +351,10 @@ def _compute_feasibility_score(
     camera_movement: str,
     action_intensity: str | None,
 ) -> int:
-    base = FEASIBILITY_BASE_SCORES.get((shot_type, camera_movement), FEASIBILITY_DEFAULT_SCORE)
-    if camera_movement == "static":
-        base = min(100, base + FEASIBILITY_STATIC_BONUS)
-    if action_intensity == "explosive":
-        base -= FEASIBILITY_EXPLOSIVE_PENALTY
-    return max(0, min(100, base))
+    from aiprod_adaptation.core.feasibility.engine import FeasibilityEngine
+
+    shot = SimpleNamespace(shot_type=shot_type, camera_movement=camera_movement)
+    return FeasibilityEngine().compute(shot, None, None, action_intensity)
 
 
 def _resolve_duration(
@@ -525,10 +525,13 @@ def _build_scene_shot_plan(
 
         movement = _resolve_camera_movement(seq_type, beat_type, action_intensity, scene_tone)
 
-        seq_type, movement = _apply_physical_layer_override(pa, seq_type, movement)
+        seq_type = resolve_first_match(part, SHOT_TYPE_RULES, seq_type)
+        movement = resolve_first_match(part, CAMERA_MOVEMENT_RULES, movement)
 
         if gaze_dir:
             seq_type, movement = _apply_gaze_override(gaze_dir, seq_type, movement)
+
+        seq_type, movement = _apply_physical_layer_override(pa, seq_type, movement)
 
         seq_type = _apply_emotional_layer_block(emotional_layer, seq_type)
 
@@ -723,6 +726,8 @@ def simplify_shots(scenes: list[VisualScene]) -> list[ShotDict]:
                 shot_metadata["lens_mm"] = lens_mm
             if emotional_beat_idx is not None:
                 shot_metadata["emotional_beat_index"] = emotional_beat_idx
+            if action_intensity is not None:
+                shot_metadata["action_intensity"] = action_intensity
 
             shots.append({
                 "shot_id":                   _make_shot_id(scene_id, shot_num),

@@ -562,9 +562,9 @@ class TestFeasibilityScore:
         score = _compute_feasibility_score("extreme_wide", "crane_up", "explosive")
         assert score >= 0
 
-    def test_unknown_combo_uses_default(self) -> None:
-        score = _compute_feasibility_score("magic_shot", "flying", "mid")
-        assert score == FEASIBILITY_DEFAULT_SCORE
+    def test_unknown_combo_is_rejected(self) -> None:
+        with pytest.raises(ValueError, match="Unknown feasibility combination"):
+            _compute_feasibility_score("magic_shot", "flying", "mid")
 
 
 # ===========================================================================

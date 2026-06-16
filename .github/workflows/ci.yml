@@ -8,8 +8,12 @@ on:
 
 jobs:
   lint-and-test:
-    name: ruff + mypy + pytest — Python 3.11
-    runs-on: ubuntu-latest
+    name: ${{ matrix.os }} / Python 3.11
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
 
     steps:
       - name: Checkout repository
@@ -21,13 +25,19 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install -e ".[dev]"
+        run: pip install -e ".[dev,quality]"
+
+      - name: Source invariants
+        run: python scripts/check_source_invariants.py
 
       - name: Ruff
-        run: ruff check aiprod_adaptation/
+        run: ruff check aiprod_adaptation pipeline production scripts
 
       - name: Mypy
-        run: mypy aiprod_adaptation/core/ aiprod_adaptation/models/ aiprod_adaptation/backends/ aiprod_adaptation/cli.py --strict
+        run: mypy aiprod_adaptation --strict
 
       - name: Pytest
-        run: pytest aiprod_adaptation/tests/ -v --tb=short
+        run: pytest aiprod_adaptation/tests pipeline/tests production/tests -v --tb=short
+
+      - name: Tests must not modify snapshots
+        run: git diff --exit-code -- "**/__snapshots__/**"

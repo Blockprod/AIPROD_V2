@@ -41,6 +41,7 @@ from .models import (
     FieldOperator,
     LeafCondition,
     RuleEvalResult,
+    RulePhase,
     RuleSpec,
 )
 
@@ -171,8 +172,9 @@ class RuleEvaluator:
 
     def __init__(self, rules: list[RuleSpec]) -> None:
         # Immutable tuple — insertion order cannot change after construction.
+        phase_order = {RulePhase.CONSTRAINT: 0, RulePhase.FINAL_GATE: 1}
         self._rules: tuple[RuleSpec, ...] = tuple(
-            sorted(rules, key=lambda r: (r.priority, r.id))
+            sorted(rules, key=lambda r: (phase_order[r.phase], r.priority, r.id))
         )
 
     @property
@@ -199,6 +201,7 @@ class RuleEvaluator:
                     RuleEvalResult(
                         rule_id=rule.id,
                         matched=False,
+                        phase=rule.phase,
                         conflict_type=ConflictType.NONE,
                     )
                 )
@@ -223,8 +226,10 @@ class RuleEvaluator:
                 RuleEvalResult(
                     rule_id=rule.id,
                     matched=True,
+                    phase=rule.phase,
                     conflict_type=rule.conflict_type,
                     conflict=conflict,
+                    action=rule.action,
                 )
             )
         return results
