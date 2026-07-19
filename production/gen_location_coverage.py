@@ -223,6 +223,7 @@ def main() -> int:
         action="store_true",
         help="Déclenche les appels API (payants). Sans ce flag : dry-run.",
     )
+    parser.add_argument("--allow-cloud", action="store_true", help="Allow legacy paid cloud generation.")
     args = parser.parse_args()
 
     _load_env()
@@ -253,6 +254,10 @@ def main() -> int:
     print(f"  Mode          : {'EXECUTE' if args.execute else 'DRY-RUN'}")
     print(f"  [M] = vue source Meshy (wide)")
     print()
+
+    if args.execute and not args.allow_cloud:
+        print("Cloud generation blocked. Add --allow-cloud to acknowledge Replicate spend.", file=sys.stderr)
+        return 1
 
     if args.execute and not os.environ.get("REPLICATE_API_TOKEN"):
         print("ERROR: REPLICATE_API_TOKEN manquant dans .env", file=sys.stderr)

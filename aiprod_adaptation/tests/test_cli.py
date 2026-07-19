@@ -19,6 +19,7 @@ from aiprod_adaptation.cli import (
     build_parser,
     cmd_compare,
     cmd_pipeline,
+    cmd_production,
     cmd_schedule,
     cmd_storyboard,
 )
@@ -187,6 +188,84 @@ class TestCLIParser:
         assert output_action.help == (
             "Directory to write storyboard.json, video.json, production.json, and metrics.json"
         )
+
+    def test_cli_production_defaults_to_comfyui_backend(self) -> None:
+        parser = build_parser()
+        preflight = parser.parse_args([
+            "production",
+            "preflight",
+            "--ir",
+            "ir.json",
+            "--storyboard",
+            "storyboard.json",
+            "--receipt",
+            "receipt.json",
+            "--budget-cap",
+            "0",
+        ])
+        execute = parser.parse_args([
+            "production",
+            "execute",
+            "--ir",
+            "ir.json",
+            "--storyboard",
+            "storyboard.json",
+            "--receipt",
+            "receipt.json",
+            "--budget-cap",
+            "0",
+        ])
+
+        assert preflight.backend == "comfyui"
+        assert execute.backend == "comfyui"
+
+    def test_cli_production_local_preflight_parser(self) -> None:
+        parser = build_parser()
+        args = parser.parse_args([
+            "production",
+            "local-preflight",
+            "--output",
+            "local_preflight.json",
+            "--skip-comfyui",
+            "--strict",
+        ])
+
+        assert args.production_command == "local-preflight"
+        assert args.output == "local_preflight.json"
+        assert args.skip_comfyui is True
+        assert args.strict is True
+
+    def test_cli_production_certify_accepts_local_preflight(self) -> None:
+        parser = build_parser()
+        args = parser.parse_args([
+            "production",
+            "certify",
+            "--output",
+            "certification.json",
+            "--local-preflight",
+            "local_preflight.json",
+        ])
+
+        assert args.local_preflight == "local_preflight.json"
+
+    def test_cli_production_local_preflight_writes_report_without_comfyui(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_path = Path(tmp) / "local_preflight.json"
+            parser = build_parser()
+            args = parser.parse_args([
+                "production",
+                "local-preflight",
+                "--output",
+                str(output_path),
+                "--skip-comfyui",
+            ])
+
+            rc = cmd_production(args)
+            payload = json.loads(output_path.read_text(encoding="utf-8"))
+
+            assert rc == 0
+            assert payload["ready"] is False
+            assert payload["capabilities"]["image.comfyui"]["status"] == "contract-tested"
 
 
 class TestCLILoadLLMAdapter:
@@ -1030,7 +1109,7 @@ class TestCLIAdapters:
             "--image-adapter", "null", "--video-adapter", "null",
             "--audio-adapter", "null", "--budget-cap", "2.50",
         ])
-        assert args.budget_cap == pytest.approx(2.50)
+        assert args.budget_cap == 2.50
 
     def test_cli_schedule_dry_run_returns_zero_without_api_calls(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -1241,6 +1320,34 @@ class TestCLIAdapters:
             )
             assert rc == 0
             assert not out_dir.exists(), "dry-run must never write output — credits not consumed"
+
+    def test_cli_schedule_blocks_paid_adapters_without_cloud_ack(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            in_txt = Path(tmp) / "in.txt"
+            ir_json = Path(tmp) / "ir.json"
+            out_dir = Path(tmp) / "blocked"
+            in_txt.write_text(_NOVEL_TEXT, encoding="utf-8")
+            parser = build_parser()
+            cmd_pipeline(
+                parser.parse_args(
+                    ["pipeline", "--input", str(in_txt), "--title", "T", "--output", str(ir_json)]
+                )
+            )
+
+            rc = cmd_schedule(
+                parser.parse_args([
+                    "schedule",
+                    "--input", str(ir_json),
+                    "--output", str(out_dir),
+                    "--image-adapter", "openai",
+                    "--video-adapter", "null",
+                    "--audio-adapter", "null",
+                ])
+            )
+
+            assert rc == 1
+            assert not out_dir.exists()
+
 
 _NOVEL_SHORT = (
     "Alice walked into the old library and picked up a dusty book. "

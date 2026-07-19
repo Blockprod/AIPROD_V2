@@ -35,7 +35,7 @@ def build_portrait_prompt(char_id: str, char: dict) -> str:
     )
 
 
-def run(filter_chars: list[str], dry_run: bool) -> None:
+def run(filter_chars: list[str], dry_run: bool, allow_cloud: bool = False) -> None:
     _load_env(ROOT)
     characters = load_all_characters()
     targets = filter_chars if filter_chars else list(characters.keys())
@@ -52,6 +52,12 @@ def run(filter_chars: list[str], dry_run: bool) -> None:
             print(f"  {cid} | {char['full_name']} | seed={seed_str}")
         print("\n[DRY-RUN] Aucun appel API.")
         return
+    if not allow_cloud:
+        print(
+            "Cloud generation blocked. Use --allow-cloud to acknowledge Replicate spend.",
+            file=sys.stderr,
+        )
+        raise SystemExit(1)
 
     import replicate
     out_dir = ROOT / "production/character_refs"
@@ -93,5 +99,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--char", nargs="*", default=[])
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--allow-cloud", action="store_true", help="Allow legacy paid cloud generation.")
     args = parser.parse_args()
-    run(args.char, args.dry_run)
+    run(args.char, args.dry_run, args.allow_cloud)

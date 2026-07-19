@@ -60,7 +60,7 @@ _COST_PER_FRAME_REPLICATE = 0.04
 
 def run_all(
     shot_ids: list[str],
-    backend: str = "replicate",
+    backend: str = "comfyui",
     skip_blender: bool = False,
     skip_stylize: bool = False,
     skip_video: bool = False,
@@ -324,7 +324,7 @@ def main() -> int:
     parser.add_argument(
         "--backend",
         choices=["replicate", "comfyui", "null"],
-        default="replicate",
+        default="comfyui",
     )
     parser.add_argument("--skip-blender", action="store_true")
     parser.add_argument("--skip-stylize", action="store_true")

@@ -39,12 +39,26 @@ cloud = [
 local-image = [
     "Pillow>=10.0",
     "requests>=2.28",
+    "diffusers",
+    "transformers",
+    "accelerate",
+    "sentencepiece",
+    "protobuf",
 ]
 local-audio = [
     "soundfile>=0.12",
+    "f5-tts",
+    "audiocraft",
+    "torch",
+    "torchaudio",
+]
+local-video = [
+    "imageio-ffmpeg",
+    "ffmpeg-normalize",
+    "openai-whisper",
 ]
 local-all = [
-    "aiprod-adaptation[local-image,local-audio]",
+    "aiprod-adaptation[quality,local-image,local-audio,local-video]",
 ]
 llm = [
     "anthropic",
@@ -101,6 +115,11 @@ module = [
     "torchaudio.*",
     "torch",
     "torch.*",
+    "diffusers.*",
+    "transformers.*",
+    "accelerate.*",
+    "whisper.*",
+    "faster_whisper.*",
     "huggingface_hub.*",
 ]
 ignore_missing_imports = true

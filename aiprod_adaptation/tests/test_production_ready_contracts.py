@@ -312,6 +312,51 @@ class TestCertification:
             "unavailable",
         }
 
+    def test_certification_consumes_local_preflight_report(self, tmp_path: Path) -> None:
+        preflight_path = tmp_path / "local_preflight.json"
+        output_path = tmp_path / "certification.json"
+        certified_capabilities = {
+            name: {
+                "status": "certified",
+                "detail": f"{name} ok",
+                "evidence": {},
+            }
+            for name in (
+                "image.comfyui",
+                "image.local_flux_diffusers",
+                "audio.f5tts",
+                "audio.audiocraft",
+                "local.ffmpeg",
+                "local.ffmpeg_normalize",
+                "local.torch_cuda",
+                "local.comfyui_models",
+                "local.realesrgan",
+                "local.whisper",
+            )
+        }
+        _write_json(
+            preflight_path,
+            {
+                "generated_at": "2026-06-18T00:00:00+00:00",
+                "ready": True,
+                "platform": {"python": "3.11", "system": "test", "release": "test", "machine": "test"},
+                "capabilities": certified_capabilities,
+            },
+        )
+
+        certification = write_certification(output_path, local_preflight_path=preflight_path)
+
+        assert certification["capabilities"]["image.comfyui"]["status"] == "certified"
+        assert certification["capabilities"]["image.local_flux_diffusers"]["status"] == "certified"
+        assert certification["capabilities"]["audio.f5tts"]["status"] == "certified"
+        assert certification["capabilities"]["local.ffmpeg_normalize"]["status"] == "certified"
+        assert certification["capabilities"]["local.torch_cuda"]["status"] == "certified"
+        assert certification["capabilities"]["local.realesrgan"]["status"] == "certified"
+        assert certification["capabilities"]["video.runway"]["status"] in {
+            "contract-tested",
+            "unavailable",
+        }
+
 
 class TestLLMRouterQuarantine:
     def test_quarantined_provider_is_not_reused_as_fallback(self) -> None:

@@ -599,11 +599,20 @@ PROMPT_BUILDERS = {
 
 # ---------------------------------------------------------------------------
 
-def run(filter_locs: list[str], filter_angles: list[str], dry_run: bool, force: bool = False) -> None:
+def run(
+    filter_locs: list[str],
+    filter_angles: list[str],
+    dry_run: bool,
+    force: bool = False,
+    allow_cloud: bool = False,
+) -> None:
     _load_env_local()
 
     import os
     token = os.environ.get("REPLICATE_API_TOKEN", "")
+    if not dry_run and not allow_cloud:
+        print("Cloud generation blocked. Add --allow-cloud to acknowledge Replicate spend.", file=sys.stderr)
+        sys.exit(1)
     if not token and not dry_run:
         print("ERROR: REPLICATE_API_TOKEN non défini", file=sys.stderr)
         sys.exit(1)
@@ -719,5 +728,6 @@ if __name__ == "__main__":
                         help="Filtrer par angle(s) : wide medium detail")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--force",   action="store_true", help="Régénère même si le fichier existe")
+    parser.add_argument("--allow-cloud", action="store_true", help="Allow legacy paid cloud generation.")
     args = parser.parse_args()
-    run(args.loc, args.angle, args.dry_run, args.force)
+    run(args.loc, args.angle, args.dry_run, args.force, args.allow_cloud)

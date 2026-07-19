@@ -51,7 +51,7 @@ _DRY_RUN_COST_PER_SHOT: dict[str, float] = {
     "null": 0.0,
     "replicate": 0.06,      # flux-1.1-pro-ultra (portrait, worst case)
     "openai": 0.005,        # gpt-image-1-mini low 1024x1024
-    "flux": 0.003,
+    "flux": 0.0,            # local Flux/A1111-compatible endpoint
     "runway": 0.015,
     "huggingface": 0.0,
     "ideogram": 0.08,
@@ -71,9 +71,12 @@ _DRY_RUN_COST_PER_LINE: dict[str, float] = {
     "runway": 0.02,
 }
 # Paid (non-null) adapters — any active paid adapter must be flagged in dry-run
-_PAID_IMAGE_ADAPTERS: frozenset[str] = frozenset({"replicate", "openai", "flux", "runway", "ideogram", "huggingface"})
+_PAID_IMAGE_ADAPTERS: frozenset[str] = frozenset({"replicate", "openai", "runway", "ideogram"})
 _PAID_VIDEO_ADAPTERS: frozenset[str] = frozenset({"runway", "kling", "smart"})
 _PAID_AUDIO_ADAPTERS: frozenset[str] = frozenset({"elevenlabs", "openai", "runway"})
+_CLOUD_IMAGE_ADAPTERS: frozenset[str] = frozenset({"replicate", "openai", "runway", "ideogram", "huggingface"})
+_CLOUD_VIDEO_ADAPTERS: frozenset[str] = frozenset({"runway", "kling", "smart"})
+_CLOUD_AUDIO_ADAPTERS: frozenset[str] = frozenset({"elevenlabs", "openai", "runway"})
 
 _DOTENV_LOADED = False
 
@@ -432,6 +435,13 @@ def build_parser() -> argparse.ArgumentParser:
             "images.edit for subsequent shots — guarantees pixel-level face consistency."
         ),
     )
+    p_schedule.add_argument(
+        "--allow-cloud",
+        action="store_true",
+        default=False,
+        dest="allow_cloud",
+        help="Allow explicit paid cloud adapters during schedule execution.",
+    )
     _add_story_selection_options(p_schedule)
 
     p_compare = sub.add_parser("compare", help="compare rules output vs LLM output")
@@ -537,7 +547,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_preflight.add_argument("--ir", required=True)
     p_preflight.add_argument("--storyboard", required=True)
     p_preflight.add_argument("--receipt", required=True)
-    p_preflight.add_argument("--backend", choices=["replicate", "comfyui", "null"], default="null")
+    p_preflight.add_argument("--backend", choices=["replicate", "comfyui", "null"], default="comfyui")
     p_preflight.add_argument("--shot-id", action="append", default=None)
     p_preflight.add_argument("--budget-cap", type=float, required=True)
 
@@ -545,15 +555,35 @@ def build_parser() -> argparse.ArgumentParser:
     p_execute.add_argument("--ir", required=True)
     p_execute.add_argument("--storyboard", required=True)
     p_execute.add_argument("--receipt", required=True)
-    p_execute.add_argument("--backend", choices=["replicate", "comfyui", "null"], default="null")
+    p_execute.add_argument("--backend", choices=["replicate", "comfyui", "null"], default="comfyui")
     p_execute.add_argument("--shot-id", action="append", default=None)
     p_execute.add_argument("--budget-cap", type=float, required=True)
     p_execute.add_argument("--skip-blender", action="store_true")
     p_execute.add_argument("--skip-stylize", action="store_true")
     p_execute.add_argument("--skip-video", action="store_true")
+    p_local_preflight = production_sub.add_parser(
+        "local-preflight",
+        help="validate the zero-cloud local runtime and write a host-specific report",
+    )
+    p_local_preflight.add_argument("--output", required=True)
+    p_local_preflight.add_argument("--comfyui-url", default=None)
+    p_local_preflight.add_argument("--comfyui-root", default=None)
+    p_local_preflight.add_argument("--min-vram-gib", type=float, default=12.0)
+    p_local_preflight.add_argument("--timeout-sec", type=float, default=2.0)
+    p_local_preflight.add_argument("--skip-comfyui", action="store_true")
+    p_local_preflight.add_argument(
+        "--strict",
+        action="store_true",
+        help="return non-zero unless every local production capability is certified",
+    )
     p_certify = production_sub.add_parser("certify", help="write offline capability certification status")
     p_certify.add_argument("--output", required=True)
     p_certify.add_argument("--smoke-budget", type=float, default=25.0)
+    p_certify.add_argument(
+        "--local-preflight",
+        default=None,
+        help="Optional report from 'aiprod production local-preflight' used to certify local capabilities",
+    )
 
     return parser
 
@@ -661,18 +691,37 @@ def cmd_schedule(args: argparse.Namespace) -> int:
     reference_pack = (
         load_reference_pack(args.reference_pack) if getattr(args, "reference_pack", None) else None
     )
+    scene_adapter_names: dict[str, str] = (
+        reference_pack.scene_adapters if reference_pack is not None else {}
+    )
+    if not getattr(args, "dry_run", False) and not getattr(args, "allow_cloud", False):
+        paid_adapters: list[str] = []
+        if args.image_adapter in _CLOUD_IMAGE_ADAPTERS:
+            paid_adapters.append(f"image:{args.image_adapter}")
+        for scene_id, adapter_name in scene_adapter_names.items():
+            if adapter_name in _CLOUD_IMAGE_ADAPTERS:
+                paid_adapters.append(f"scene:{scene_id}:{adapter_name}")
+        if args.video_adapter in _CLOUD_VIDEO_ADAPTERS:
+            paid_adapters.append(f"video:{args.video_adapter}")
+        if args.audio_adapter in _CLOUD_AUDIO_ADAPTERS:
+            paid_adapters.append(f"audio:{args.audio_adapter}")
+        if paid_adapters:
+            print(
+                "Schedule blocked: cloud adapters require --allow-cloud "
+                f"({', '.join(paid_adapters)}).",
+                file=sys.stderr,
+            )
+            return 1
     # Build per-scene adapter overrides from reference_pack.scene_adapters
     adapter_overrides: dict[str, ImageAdapter] = {}
     if reference_pack is not None:
-        for scene_id, adapter_name in reference_pack.scene_adapters.items():
+        for scene_id, adapter_name in scene_adapter_names.items():
             adapter_overrides[scene_id] = _load_image_adapter(adapter_name)
     # Dry-run: full pre-flight validation — zero API calls, zero credits consumed
     if getattr(args, "dry_run", False):
         from aiprod_adaptation.image_gen.character_prepass import _unique_characters
 
-        _scene_adapter_names: dict[str, str] = (
-            reference_pack.scene_adapters if reference_pack is not None else {}
-        )
+        _scene_adapter_names: dict[str, str] = scene_adapter_names
         image_adapter_name: str = args.image_adapter
         video_adapter_name: str = args.video_adapter
         audio_adapter_name: str = args.audio_adapter
@@ -955,12 +1004,31 @@ def _estimate_production_cost(storyboard_path: Path, shot_ids: list[str], backen
 
 
 def cmd_production(args: argparse.Namespace) -> int:
+    if args.production_command == "local-preflight":
+        from aiprod_adaptation.production.local_preflight import write_local_preflight
+
+        report = write_local_preflight(
+            Path(args.output),
+            comfyui_url=getattr(args, "comfyui_url", None),
+            comfyui_root=(
+                Path(args.comfyui_root) if getattr(args, "comfyui_root", None) else None
+            ),
+            min_vram_gib=getattr(args, "min_vram_gib", 12.0),
+            timeout_sec=getattr(args, "timeout_sec", 2.0),
+            skip_comfyui=getattr(args, "skip_comfyui", False),
+        )
+        print(json.dumps(report, indent=2, sort_keys=True))
+        return 0 if report["ready"] or not getattr(args, "strict", False) else 1
+
     if args.production_command == "certify":
         from aiprod_adaptation.production.certification import write_certification
 
         certification = write_certification(
             Path(args.output),
             smoke_budget_usd=args.smoke_budget,
+            local_preflight_path=(
+                Path(args.local_preflight) if getattr(args, "local_preflight", None) else None
+            ),
         )
         print(json.dumps(certification, indent=2, sort_keys=True))
         return 0

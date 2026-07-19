@@ -158,7 +158,13 @@ def _strip_black_bands(img: "cv2.Mat", threshold: float = 5.0) -> "cv2.Mat":
     return img
 
 
-def run(filter_locs: list[str], dry_run: bool, ultra: bool = False, gpt2: bool = False) -> None:
+def run(
+    filter_locs: list[str],
+    dry_run: bool,
+    ultra: bool = False,
+    gpt2: bool = False,
+    allow_cloud: bool = False,
+) -> None:
     _load_env(ROOT)
     locs_data = json.loads((ROOT / "production/locations.json").read_text(encoding="utf-8"))
     targets = filter_locs if filter_locs else list(locs_data.keys())
@@ -178,6 +184,14 @@ def run(filter_locs: list[str], dry_run: bool, ultra: bool = False, gpt2: bool =
             print(f"  {lk} | seed={loc['seed']} | scènes={loc['scene_ids']}")
         print("\n[DRY-RUN] Aucun appel API.")
         return
+
+    if not allow_cloud:
+        print(
+            "Cloud generation blocked. Use --local for zero-cloud generation, "
+            "or add --allow-cloud to acknowledge Replicate/OpenAI spend.",
+            file=sys.stderr,
+        )
+        raise SystemExit(1)
 
     import replicate
     out_dir = ROOT / "production/location_refs"
@@ -374,8 +388,9 @@ if __name__ == "__main__":
     parser.add_argument("--gpt2",     action="store_true", help="GPT Image 2 high quality (Replicate, $0.128)")
     parser.add_argument("--local",    action="store_true", help="FLUX.1-schnell local via diffusers ($0.00)")
     parser.add_argument("--dry-run",  action="store_true")
+    parser.add_argument("--allow-cloud", action="store_true", help="Allow legacy paid cloud generation.")
     args = parser.parse_args()
     if args.local:
         run_local(args.loc, args.dry_run)
     else:
-        run(args.loc, args.dry_run, args.ultra, args.gpt2)
+        run(args.loc, args.dry_run, args.ultra, args.gpt2, args.allow_cloud)

@@ -25,7 +25,7 @@ Usage :
 
 Coûts :
     ComfyUI local   : ~$0.00/frame
-    Replicate       : ~$0.04/frame (4200 frames EP01 = ~$168)
+    Replicate       : ~$0.04/frame (4200 frames EP01 = ~$168; selection explicite requise)
 """
 from __future__ import annotations
 
@@ -1000,17 +1000,22 @@ def main() -> int:
     parser.add_argument(
         "--backend",
         choices=["replicate", "comfyui", "null"],
-        default="replicate",
-        help="Backend de stylisation.",
+        default="comfyui",
+        help="Backend de stylisation (defaut: comfyui local).",
     )
     parser.add_argument("--renders-dir", default=str(RENDERS_DIR))
     parser.add_argument("--char-refs", default=str(CHAR_REFS_DIR))
     parser.add_argument("--out-dir", default=str(STYLIZED_DIR))
     parser.add_argument("--fps", type=int, default=_DEFAULT_FPS)
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--allow-cloud", action="store_true", help="Allow explicit paid Replicate execution.")
     args = parser.parse_args()
 
     _load_env()
+
+    if args.backend == "replicate" and not args.dry_run and not args.allow_cloud:
+        print("Cloud generation blocked. Add --allow-cloud to acknowledge Replicate spend.", file=sys.stderr)
+        return 1
 
     backend = _make_backend(args.backend)
     result = stylize_shot(
